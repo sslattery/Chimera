@@ -1,0 +1,93 @@
+%%---------------------------------------------------------------------------%%
+%% direct_vs_adjoint.tex
+%% Stuart Slattery
+%% Wed May 23 11:25:38 2012
+%% Copyright (C) 2008-2010 Oak Ridge National Laboratory, UT-Battelle, LLC.
+%%---------------------------------------------------------------------------%%
+\documentclass[note]{TechNote}
+\usepackage[centertags]{amsmath}
+\usepackage{amssymb,amsthm}
+\usepackage[mathcal]{euscript}
+\usepackage{tabularx}
+\usepackage{cite}
+\usepackage{c++}
+\usepackage{tmadd,tmath}
+
+%%---------------------------------------------------------------------------%%
+%% DEFINE SPECIFIC ENVIRONMENTS HERE
+%%---------------------------------------------------------------------------%%
+%\newcommand{\elfit}{\ensuremath{\operatorname{Im}(-1/\epsilon(\vq,\omega)}}
+%\newcommand{\vOmega}{\ensuremath{\ve{\Omega}}}
+%\newcommand{\hOmega}{\ensuremath{\hat{\ve{\Omega}}}}
+
+%%---------------------------------------------------------------------------%%
+%% BEGIN DOCUMENT
+%%---------------------------------------------------------------------------%%
+\begin{document}
+
+%%---------------------------------------------------------------------------%%
+%% OPTIONS FOR NOTE
+%%---------------------------------------------------------------------------%%
+
+\refno{RNSD-01}
+\subject{Stochastic Linear Solver Comparison for Monte Carlo Synthetic
+Acceleration Method}
+
+%-------HEADING
+\TIname{Reactor and Nuclear Systems Division}
+\groupname{Radiation Transport Group}
+\from{uy7}
+\date{\today}
+%-------HEADING
+
+\audience{\email{uy7}{uy7@ornl.gov}}
+
+%%---------------------------------------------------------------------------%%
+%% BEGIN NOTE
+%%---------------------------------------------------------------------------%%
+
+\opening
+
+\begin{abstract}
+  The Monte Carlo Synthetic Acceleration (MCSA) method utilizes a
+  stochastic linear solver in its solution scheme. Two stochastic
+  solvers are available in the form of a direct and an adjoint
+  formulation. This work implements the direct and adjoint solvers
+  within an MCSA method and compares their speed and convergengence
+  properties to determine which, if either, is most suitable for use
+  with MCSA. 
+\end{abstract}
+
+%%---------------------------------------------------------------------------%%
+%% OPTIONAL TOC
+
+% \memotoc
+
+%%---------------------------------------------------------------------------%%
+\section{Introduction}
+
+%%---------------------------------------------------------------------------%%
+\section{Model Problem}
+
+%%---------------------------------------------------------------------------%%
+\section{Timing Study Results}
+
+%%---------------------------------------------------------------------------%%
+\section{Convergence Study Results}
+
+%%---------------------------------------------------------------------------%%
+\section{Conclusion}
+
+%%---------------------------------------------------------------------------%%
+%% BIBLIOGRAPHY STUFF
+
+% \bibliographystyle{notes}
+% \bibliography{direct_vs_adjoint}
+
+\closing
+\caution
+\end{document}
+
+%%---------------------------------------------------------------------------%%
+%% end of direct_vs_adjoint.tex
+%%---------------------------------------------------------------------------%%
