@@ -36,11 +36,13 @@ Acceleration Method}
 %-------HEADING
 \TIname{Reactor and Nuclear Systems Division}
 \groupname{Radiation Transport Group}
-\from{uy7}
+\from{Stuart R. Slattery}
 \date{\today}
 %-------HEADING
 
-\audience{\email{uy7}{uy7@ornl.gov}}
+\audience{\email{Stuart Slattery}{uy7@ornl.gov},
+          \email{Thomas Evans}{tme@ornl.gov},
+          \email{Greg Davidson}{gqe@ornl.gov}}
 
 %%---------------------------------------------------------------------------%%
 %% BEGIN NOTE
@@ -53,9 +55,12 @@ Acceleration Method}
   stochastic linear solver in its solution scheme. Two stochastic
   solvers are available in the form of a direct and an adjoint
   formulation. This work implements the direct and adjoint solvers
-  within an MCSA method and compares their speed and convergengence
+  within an MCSA solver and compares their speed and convergengence
   properties to determine which, if either, is most suitable for use
-  with MCSA. 
+  with MCSA. The studies show that the adjoint solver requires
+  significantly less CPU time for convergence than the direct
+  method. Therefore, it is recommended that the adjoint solver be used
+  as the linear solver within an MCSA solver implementation.
 \end{abstract}
 
 %%---------------------------------------------------------------------------%%
@@ -65,12 +70,160 @@ Acceleration Method}
 
 %%---------------------------------------------------------------------------%%
 \section{Introduction}
+The Monte Carlo Synthetic Acceleration (MCSA) method developed by
+Evans et. al. \cite{Evans_2009} provides an acceleration to standard
+stochastic linear solver methods that are bound by the central limit
+theorem, instead giving exponential convergence. To do this, we must
+first consider stochastic solutions for linear systems. For the
+following linear system
+
+\begin{equation}
+  A x = b
+  \label{eq:linear_system}
+\end{equation}
+
+we can rewrite using an iteration matrix formulation as follows.
+
+\begin{equation}
+  x = (I-A) x + b
+  \label{eq:iteration_form}
+\end{equation}
+
+We will define $H=I-A$ to be the iteration matrix. Using this
+definition we can then rewrite the original linear system using the
+iteration matrix.
+
+\begin{equation}
+  x = (I-H)^{-1} b
+  \label{eq:iteration_form2}
+\end{equation}
+
+If the spectral radius of the iteration matrix is less than unity,
+then we can rewrite the inverted operator as a Von Neumann series.
+
+\begin{equation}
+  (I-H)^{-1} = \sum_k H^k
+  \label{eq:von_neumann_series}
+\end{equation}
+
+We then expect the following series solution for x to converge if the
+spectral radius of the iteration matrix is less than unity.
+
+\begin{equation}
+  x = b + H b + H^2 b + H^3 b + ...
+  \label{eq:series_solution}
+\end{equation}
+
+Using this form, we can approximate the terms in the series with a
+random walk sequence as outlined in \cite{Hammersley_1964}. There are
+two primary ways of achieving this; through a direct sequence and an
+adjoint sequence. For the direct sequence, analagous (and
+inconveniently so) to an adjoint stochastic transport calculation,
+each term in the source is simulated with an equivalent number of
+random walk histories. Each step in the random walk sequence will
+contribute to the solution in the starting source state. For the
+adjoint sequence, analagous to a forward stochastic transport
+calculation, the source term is sampled with a set number of random
+walk histories, meaning that regions of larger source will be sampled
+as a starting state more regularly. In this case, each step in the
+random walk sequence will contribute to the state in which it
+currently resides, not the current source state. It is this set of
+primary differences between the two solution methods that will dictate
+solver performance with MCSA.
+
+With this knowledge, for the linear system in
+Eq. \ref{eq:linear_system} we can then define the following MCSA
+solution sequence
+
+\begin{equation}
+  x^{k+1/2} = (I-A)x^k + b
+  \label{eq:mcsa_step1}
+\end{equation}
+\begin{equation}
+  r = b - A x^{k+1/2}
+  \label{eq:mcsa_step2}
+\end{equation}
+\begin{equation}
+  A \delta x = r
+  \label{eq:mcsa_step3}
+\end{equation}
+\begin{equation}
+  x^{k+1} = x^{k+1/2} + \delta x
+  \label{eq:mcsa_step4}
+\end{equation}
+
+where k is the iteration index. In brief, in Eq. \ref{eq:mcsa_step1}
+we compute an initial relaxation for $x$ with a Richardson iteration,
+in Eq. \ref{eq:mcsa_step2} we compute the residual, in
+Eq. \ref{eq:mcsa_step3} we compute the solution update via a
+stochastic linear solve and finally we update the solution in
+Eq. \ref{eq:mcsa_step4}. Of interest to this work is the stochastic
+linear solution needed to compute the solution update in Eq.
+\ref{eq:mcsa_step3} which we will choose to use either the direct or
+adjoint method. It is important to note that the stochastic solver is
+not computing $x$, rather it is computing an error term using the
+residual that we will apply to $x$.
 
 %%---------------------------------------------------------------------------%%
 \section{Model Problem}
+To study the behaviour of the MCSA method with both direct and adjoint
+solutions, we choose the two-dimensional time-dependent heat equation
+as a simple model problem.
+
+\begin{equation}
+  \frac{\partial u}{\partial t} = \alpha \nabla^2 u
+  \label{eq:heat_equation}
+\end{equation}
+
+where $\alpha$ is a constant coefficient. For all comparisons, a
+single time step is computed with implicit Euler time integration. The
+Laplacian is differenced with a second-order five point stencil
+
+\begin{equation}
+  \nabla^2_5 = \frac{1}{h^2}[u_{i-1,j} + u_{i+1,j} + u_{i,j-1} +
+  u_{i,j+1} - 4 u_{i,j}]
+  \label{eq:five_point_stencil}
+\end{equation}
+
+and a fourth-order nine point stencil both assuming a grid size of $h$
+in both the $i$ and $j$ directions.
+
+\begin{equation}
+  \nabla^2_9 = \frac{1}{6h^2}[4 u_{i-1,j} + 4 u_{i+1,j} + 4 u_{i,j-1}
+    + 4 u_{i,j+1} + u_{i-1,j-1} + u_{i-1,j+1} + u_{i+1,j-1} +
+    u_{i+1,j+1} - 20 u_{i,j}]
+  \label{eq:nine_point_stencil}
+\end{equation}
+
+For a single time step solution, we then have the following linear
+system to be solved with the MCSA method.
+
+\begin{equation}
+  A u^{n+1} = u^n
+  \label{eq:heat_eq_lin_sys}
+\end{equation}
+
+Both the stencils will be used to vary the size and density of the
+sparse linear system in Eq. \ref{eq:heat_eq_lin_sys}.
 
 %%---------------------------------------------------------------------------%%
 \section{Timing Study Results}
+To assess both the CPU time and number of iterations required to
+converge to a solution, a problem of constant grid size and $\alpha$
+was used with varying values of problem size, fixing the spectral
+radius of the system at a constant value for each variation. Both the
+five point and nine point stencils were used with both the direct and
+adjoint solvers. For each case, 50 histories were simulated per cycle
+with a weight cutoff of $1.0E-4$ for the stochastic solver and a
+convergence tolerance of $1.0E-8$ for the MCSA solver. All
+computations were completed on a 2.66 GHz Intel Core i7 machine with 8
+GB 1067 MHz DDR3 memory.
+
+Fig. \ref{fig:cpu_time} gives the CPU time needed for each case to
+converge in seconds and Fig. \ref{fig:iterations} gives the number of
+iterations needed for each case to converge.
+
+
 
 %%---------------------------------------------------------------------------%%
 \section{Convergence Study Results}
