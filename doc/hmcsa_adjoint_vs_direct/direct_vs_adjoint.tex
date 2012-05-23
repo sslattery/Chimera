@@ -221,15 +221,50 @@ GB 1067 MHz DDR3 memory.
 
 Fig. \ref{fig:cpu_time} gives the CPU time needed for each case to
 converge in seconds and Fig. \ref{fig:iterations} gives the number of
-iterations needed for each case to converge.
-
-
+iterations needed for each case to converge. We see clearly in
+Fig. \ref{fig:cpu_time} that the using the adjoint solver with MCSA
+results in several orders of magnitude speedup over the direct solver
+while the number of iterations required to converge is of a similar
+scale. We expect this for several reasons. First, with an equivalent
+number of histories specified for both solvers and a system of size
+$N$, the direct solver will compute $N$ times the number of histories
+random walks while the adjoint solver will only compute the number of
+histories specified. Initially, this may not seem like a fair
+comparison, however, we see from Fig. \ref{fig:cpu_time} that the
+number of iterations requried to converge is approximately the
+same. This is necessary in the direct method to ensure a contribution
+from each state as the random walk sequence will only contribute to
+the starting state. For the adjoint method, because the random
+sequence contributes to the state in which it currently resides, fewer
+histories are neccessary to compute contributions from all the nonzero
+parts of the source.
 
 %%---------------------------------------------------------------------------%%
 \section{Convergence Study Results}
+Although CPU time was shown to be greatly decreased by using the
+adjoint solver in the preceeding section, the iteration behavior was
+approximately the same. To assess the convergence properties of MCSA
+using each solver and stencil, the infinity norm of the residual
+computed in Eq. \ref{eq:mcsa_step2} was computed at each iteration for
+a fixed problem size. Fig. \ref{fig:convergence} gives the results of
+these computuations. First, it is worthy to note on the semilog plot
+that we are indeed achieving the expected exponential convergence from
+MCSA. Second, we note that both the direct and adjoint methods have
+approximately equivalent convergence behavior. Finally, it is observed
+the the fourth-order accurate Laplacian stencil converges in fewer
+iterations than the second-order accurate stencil as expected.
 
 %%---------------------------------------------------------------------------%%
 \section{Conclusion}
+A parameter study has been completed to verify that an adjoint
+stochastic solver should be used with an MCSA implementation instead
+of a direct stochastic solver. Several orders of magnitude reduction
+in CPU time is observed when using the adjoint solver over the
+direct. In addition, it was observed that MCSA had similar exponential
+convergence properties with both the direct and adjoint solvers. Even
+for cases where fewer iterations were needed to converge to a solution
+using the direct solver, the large number of histories required caused
+the CPU time to become large compared to the adjoint method.
 
 %%---------------------------------------------------------------------------%%
 %% BIBLIOGRAPHY STUFF
