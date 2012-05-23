@@ -72,9 +72,14 @@
 The Monte Carlo Synthetic Acceleration (MCSA) method developed by
 Evans et. al. \cite{evans_2003} provides an acceleration to standard
 stochastic linear solver methods that are bound by the central limit
-theorem, instead giving exponential convergence. To do this, we must
-first consider stochastic solutions for linear systems. For the
-following linear system
+theorem by instead giving exponential convergence. However, a
+component of the MCSA algorithm requires a linear stochastic solve to
+still be performed. Both the direct and adjoint methods are available
+to achieve this solution and will be studied here to assess if either
+provides improved performance over the other.
+
+We first consider an overview of stochastic solutions for linear
+systems. For the following linear system
 
 \begin{equation}
   A x = b
@@ -158,9 +163,9 @@ Eq. \ref{eq:mcsa_step3} we compute the solution update via a
 stochastic linear solve and finally we update the solution in
 Eq. \ref{eq:mcsa_step4}. Of interest to this work is the stochastic
 linear solution needed to compute the solution update in Eq.
-\ref{eq:mcsa_step3} which we will choose to use either the direct or
-adjoint method. It is important to note that the stochastic solver is
-not computing $x$, rather it is computing an error term using the
+\ref{eq:mcsa_step3} for which we will choose to use either the direct
+or adjoint method. It is important to note that the stochastic solver
+is not computing $x$, rather it is computing an error term using the
 residual that we will apply to $x$.
 
 %%---------------------------------------------------------------------------%%
@@ -236,16 +241,19 @@ from each state as the random walk sequence will only contribute to
 the starting state. For the adjoint method, because the random
 sequence contributes to the state in which it currently resides, fewer
 histories are neccessary to compute contributions from all the nonzero
-parts of the source.
+parts of the source. Therefore, although the total number of histories
+per cycle is in fact larger for the direct method, the solution
+computed at each iteration is no better than that computed by the
+adjoint method.
 
 \begin{figure}[htpb!]
   \centering
   \includegraphics[width=5in]{AdjointDirectCPUTime.png}
   \caption{\sl CPU Time (s) to converge vs. Problem Size (N for an NxN
     problem). Both the adjoint and direct solvers are used with the
-    five point and nine point stencils. A siginificant CPU time
-    speedup is noted with the adjoint method due to the reduced number
-    of histories.}
+    five point and nine point stencils. A significant CPU time speedup
+    is noted with the adjoint method due to the reduced number of
+    histories.}
   \label{fig:cpu_time}
 \end{figure}
 
