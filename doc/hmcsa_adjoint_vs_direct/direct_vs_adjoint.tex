@@ -29,9 +29,8 @@
 %% OPTIONS FOR NOTE
 %%---------------------------------------------------------------------------%%
 
-\refno{RNSD-01}
-\subject{Stochastic Linear Solver Comparison for Monte Carlo Synthetic
-Acceleration Method}
+\refno{RNSD-01} \subject{Stochastic Linear Solver Comparison for the
+  Monte Carlo Synthetic Acceleration Method}
 
 %-------HEADING
 \TIname{Reactor and Nuclear Systems Division}
@@ -71,7 +70,7 @@ Acceleration Method}
 %%---------------------------------------------------------------------------%%
 \section{Introduction}
 The Monte Carlo Synthetic Acceleration (MCSA) method developed by
-Evans et. al. \cite{Evans_2009} provides an acceleration to standard
+Evans et. al. \cite{evans_2003} provides an acceleration to standard
 stochastic linear solver methods that are bound by the central limit
 theorem, instead giving exponential convergence. To do this, we must
 first consider stochastic solutions for linear systems. For the
@@ -115,7 +114,7 @@ spectral radius of the iteration matrix is less than unity.
 \end{equation}
 
 Using this form, we can approximate the terms in the series with a
-random walk sequence as outlined in \cite{Hammersley_1964}. There are
+random walk sequence as outlined in \cite{hammersley_1964}. There are
 two primary ways of achieving this; through a direct sequence and an
 adjoint sequence. For the direct sequence, analagous (and
 inconveniently so) to an adjoint stochastic transport calculation,
@@ -239,6 +238,27 @@ sequence contributes to the state in which it currently resides, fewer
 histories are neccessary to compute contributions from all the nonzero
 parts of the source.
 
+\begin{figure}[htpb!]
+  \centering
+  \includegraphics[width=5in]{AdjointDirectCPUTime.png}
+  \caption{\sl CPU Time (s) to converge vs. Problem Size (N for an NxN
+    problem). Both the adjoint and direct solvers are used with the
+    five point and nine point stencils. A siginificant CPU time
+    speedup is noted with the adjoint method due to the reduced number
+    of histories.}
+  \label{fig:cpu_time}
+\end{figure}
+
+\begin{figure}[htbp!]
+  \centering
+  \includegraphics[width=5in]{AdjointDirectIterations.png}
+  \caption{\sl Iterations to converge vs. Problem Size (N for an NxN
+    problem). Both the adjoint and direct solvers are used with the
+    five point and nine point stencils. Both methods give similar
+    iteration behavior.}
+  \label{fig:iterations}
+\end{figure}
+
 %%---------------------------------------------------------------------------%%
 \section{Convergence Study Results}
 Although CPU time was shown to be greatly decreased by using the
@@ -253,6 +273,16 @@ MCSA. Second, we note that both the direct and adjoint methods have
 approximately equivalent convergence behavior. Finally, it is observed
 the the fourth-order accurate Laplacian stencil converges in fewer
 iterations than the second-order accurate stencil as expected.
+
+\begin{figure}[htpb!]
+  \centering
+  \includegraphics[width=5in]{AdjointDirectConvergence.png}
+  \caption{\sl Infinity norm of the solution residual vs. iteration
+    number for a problem of fixed size. Both the adjoint and direct
+    solvers are used with the five point and nine point stencils. Both
+    methods give similar iteration behavior.}
+  \label{fig:convergence}
+\end{figure}
 
 %%---------------------------------------------------------------------------%%
 \section{Conclusion}
@@ -269,8 +299,8 @@ the CPU time to become large compared to the adjoint method.
 %%---------------------------------------------------------------------------%%
 %% BIBLIOGRAPHY STUFF
 
-% \bibliographystyle{notes}
-% \bibliography{direct_vs_adjoint}
+\bibliographystyle{rnotes}
+\bibliography{direct_vs_adjoint}
 
 \closing
 \caution
