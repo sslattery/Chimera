@@ -3,21 +3,21 @@ INCLUDE(TribitsAddAdvancedTest)
 
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
   Tpetra_test
-  SOURCES tstEpetra.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
-  COMM serial
+  SOURCES tstTpetra.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
+  COMM serial mpi
   STANDARD_PASS_OUTPUT
   )
 
 # TRIBITS_ADD_EXECUTABLE_AND_TEST(
 #   Belos_test
 #   SOURCES tstBelos.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
-#   COMM serial
+#   COMM serial mpi
 #   STANDARD_PASS_OUTPUT
 #   )
 
 # TRIBITS_ADD_EXECUTABLE_AND_TEST(
 #   Anasazi_test
 #   SOURCES tstAnasazi.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
-#   COMM serial
+#   COMM serial mpi
 #   STANDARD_PASS_OUTPUT
 #   )

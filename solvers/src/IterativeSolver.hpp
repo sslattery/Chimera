@@ -10,7 +10,7 @@
 #define CHIMERA_ITERATIVESOLVER_HPP
 
 #include <Teuchos_Describable.hpp>
-#include <Teuchos_RCP.hpp>
+#include <Teuchos_ParameterList.hpp>
 
 #include <BelosLinearProblem.hpp>
 
@@ -33,8 +33,7 @@ class IterativeSolver : public Teuchos::Describable
     typedef Scalar                                 scalar_type;
     typedef MV                                     multivector_type;
     typedef OP                                     operator_type;
-    typedef Belos::LinearProblem<Scalar,MV,OP>     LinearProblemType;
-    Teuchos::RCP<LinearProblemType>                RCP_LinearProblem;
+    typedef Belos::LinearProblem<Scalar,MV,OP>     LinearProblem;
     //@}
 
     /*!
@@ -69,10 +68,20 @@ class IterativeSolver : public Teuchos::Describable
      */
     virtual std::size_t getMaxIters() = 0;
 
+    /*!
+     * \brief Get the valid parameters for the solver.
+     */
+    virtual const Teuchos::ParamterList& getValidParameters() = 0;
+
+    /*!
+     * \brief Get the current solver parameters.
+     */
+    virtual const Teuchos::ParameterList& getParameterList() = 0;
+
     /*! 
      * \brief Get the linear problem.
      */
-    const RCP_LinearProblem& getLinearProblem() = 0;
+    virtual const LinearProblem& getLinearProblem() = 0;
 };
 
 } // end namespace Chimera

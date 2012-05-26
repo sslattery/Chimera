@@ -1,5 +1,8 @@
 SET(SUBPACKAGES_DIRS_CLASSIFICATIONS_OPTREQS
-  Solvers            solvers            SS  REQUIRED
+  Utils           utils           SS  REQUIRED
+  Mesh            mesh            SS  REQUIRED
+#  Solvers         solvers         SS  REQUIRED
+#  Thermal         thermal         SS  REQUIRED
   ) 
 
 SET(LIB_REQUIRED_DEP_PACKAGES)
