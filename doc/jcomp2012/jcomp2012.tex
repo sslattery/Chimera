@@ -126,53 +126,58 @@
 
 \begin{frontmatter}
 
-%% Title, authors and addresses
+  %% Title, authors and addresses
 
-%% use the tnoteref command within \title for footnotes;
-%% use the tnotetext command for the associated footnote;
-%% use the fnref command within \author or \address for footnotes;
-%% use the fntext command for the associated footnote;
-%% use the corref command within \author for corresponding author footnotes;
-%% use the cortext command for the associated footnote;
-%% use the ead command for the email address,
-%% and the form \ead[url] for the home page:
-%%
-%% \title{Title\tnoteref{label1}}
-%% \tnotetext[label1]{}
-%% \author{Name\corref{cor1}\fnref{label2}}
-%% \ead{email address}
-%% \ead[url]{home page}
-%% \fntext[label2]{}
-%% \cortext[cor1]{}
-%% \address{Address\fnref{label3}}
-%% \fntext[label3]{}
+  %% use the tnoteref command within \title for footnotes;
+  %% use the tnotetext command for the associated footnote;
+  %% use the fnref command within \author or \address for footnotes;
+  %% use the fntext command for the associated footnote;
+  %% use the corref command within \author for corresponding author footnotes;
+  %% use the cortext command for the associated footnote;
+  %% use the ead command for the email address,
+  %% and the form \ead[url] for the home page:
+  %%
+  %% \title{Title\tnoteref{label1}}
+  %% \tnotetext[label1]{}
+  %% \author{Name\corref{cor1}\fnref{label2}}
+  %% \ead{email address}
+  %% \ead[url]{home page}
+  %% \fntext[label2]{}
+  %% \cortext[cor1]{}
+  %% \address{Address\fnref{label3}}
+  %% \fntext[label3]{}
 
-\title{A Monte Carlo Synthetic Acceleration Method for Solving the
-  Thermal Radiation Diffusion Equation}
+  \title{A Monte Carlo Synthetic Acceleration Method for Solving the
+    Thermal Radiation Diffusion Equation}
 
-%% use optional labels to link authors explicitly to addresses:
-%% \author[label1,label2]{<author name>}
-%% \address[label1]{<address>}
-%% \address[label2]{<address>}
+  %% use optional labels to link authors explicitly to addresses:
+  %% \author[label1,label2]{<author name>}
+  %% \address[label1]{<address>}
+  %% \address[label2]{<address>}
 
-\author{}
+  \author{}
 
-\address{}
+  \address{}
 
-%%---------------------------------------------------------------------------%%
-\begin{abstract}
-%% Text of abstract
+  %%---------------------------------------------------------------------------%%
+  \begin{abstract}
 
-\end{abstract}
+    We present a synthetic-acceleration based Monte Carlo method for
+    solving the 1T thermal radiation diffusion equations.  We show
+    that this method can be an effective solver for sparse matrix
+    systems.  We also discuss its general applicability to broader
+    classes of problems.
 
-%%---------------------------------------------------------------------------%%
-\begin{keyword}
-%% keywords here, in the form: keyword \sep keyword
+  \end{abstract}
 
-%% MSC codes here, in the form: \MSC code \sep code
-%% or \MSC[2008] code \sep code (2000 is the default)
+  %%---------------------------------------------------------------------------%%
+  \begin{keyword}
+    %% keywords here, in the form: keyword \sep keyword
 
-\end{keyword}
+    %% MSC codes here, in the form: \MSC code \sep code
+    %% or \MSC[2008] code \sep code (2000 is the default)
+
+  \end{keyword}
 
 \end{frontmatter}
 
@@ -183,8 +188,39 @@
 
 %% main text
 %%---------------------------------------------------------------------------%%
-\section{}
-\label{}
+\section{Introduction}
+\label{sec:introduction}
+
+In Ref.~\cite{evans_2003}, we developed a residual Monte Carlo method
+that was an application of Halton's Sequential Monte Carlo
+method~\cite{halton_1962,halton_1994} to the 1D equilibrium (1T)
+thermal radiation diffusion equation.  At that time, Halton's method
+was not widely known in computational physics.  While extending our
+method to 3D, we have discovered that the Sequential Monte Carlo
+method is actually a variant of iterative refinement cast as a
+residual method.  Using Monte Carlo to accelerate fixed-point
+(Richardson) iteration, our new method surpasses our previous 1D
+method and allows for extension to more general solution techniques.
+
+The purpose of this study is to demonstrate an efficient Monte Carlo
+solution method for 3D, time-dependent discrete systems.  In this
+note, we extend our previous work in the following manner:
+\begin{itemize}
+\item We develop a rigorous synthetic-acceleration Monte Carlo method
+  for solving sparse matrix systems.
+\item We apply this solver to the 1T thermal radiation diffusion
+  equation in 3D.
+\end{itemize}
+In \S~\ref{sec:monte-carlo-matrix} we review Monte Carlo methods for
+solving matrix systems. In \S~\ref{sec:iter-refin-monte} we discuss
+our new synthetic-acceleration scheme and connect with previous work
+by Halton~\cite{halton_1994} and others~\cite{evans_2003}.  The 1T
+radiation diffusion equation and its discrete form will be derived in
+\S~\ref{sec:discr-form-radi}.  We discuss using Synthetic-Accleration
+Monte Carlo to solve the discrete radiation diffusion equation in
+\S~\ref{sec:solut-radi-diff}.  Results from two 3D test problems are
+given in \S~\ref{sec:results}.  We finish with conclusions and ideas
+for future work in \S~\ref{sec:conclusions}.
 
 %%---------------------------------------------------------------------------%%
 %% The Appendices part is started with the command \appendix;
