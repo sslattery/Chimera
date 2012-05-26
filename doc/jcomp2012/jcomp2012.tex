@@ -56,7 +56,10 @@
 %% The amssymb package provides various useful mathematical symbols
 \usepackage{amssymb}
 %% The amsthm package provides extended theorem environments
-%% \usepackage{amsthm}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{tmadd,tmath}
+\usepackage[mathcal]{euscript}
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -980,6 +983,16 @@ that, for the 3D Cartesian mesh considered in this work, the maximum
 number of non-zero entries in columns of the iteration matrix is 6.
 Cells along the problem boundary can have fewer than 6 entries.
 
+\begin{figure}[htpb!]
+  \centerline{
+    \input{3D_mesh_segment.pstex_t}}
+  \caption{3D mesh-segment.  The particle's current cell (in blue) is
+    connected to 6 adjacent cells.  The cell numbers are plotted
+    alongside the mesh such that the blue cell has index 7, the high
+    $z$ cell has index 2, etc.}
+  \label{fig:mesh_segment}
+\end{figure}
+
 %%---------------------------------------------------------------------------%%
 \section{Results}
 \label{sec:results}
@@ -1031,6 +1044,16 @@ Eq.~(\ref{eq:stopping-criteria}).  Also, the MCSA method is not bound
 by the Central Limit Theorem so convergence is not restricted to
 $1/\sqrt{N}$~\cite{halton_1994,evans_2003}.
 
+\begin{figure}[htpb!]
+  \centerline{
+    \includegraphics[width=5in,clip]{marshak_10.eps}}
+  \caption{
+    Solution of the Marshak wave problem at $t=10$~sh.  The analytic
+    solution is compared to the MCSA solution.  Note that the MCSA,
+    PCG, and PFIXED methods all give numerically identical answers.}
+  \label{fig:marshak_10}
+\end{figure}
+
 As stated in \S~\ref{sec:monte-carlo-matrix}, the MCSA method will
 converge when $\rho(\ve{H})< 1$ where $\ve{H}$ is the iteration matrix
 and is defined $\ve{H} = (\vI - \ve{M}^{-1}\ve{D})$.  The spectral
@@ -1038,6 +1061,14 @@ radius for the Marshak problem is plotted in
 Fig.~\ref{fig:marshak_spectral}.  As stated in
 \S~\ref{sec:preconditioning} the preconditioning effectively reduces
 the spectral radius of $\ve{H}$ to less than 1.
+
+\begin{figure}[htpb!]
+  \centerline{
+    \includegraphics[width=5in,clip]{spectral_radius.eps}}
+  \caption{Spectral radius of the iteration matrix, $\ve{H}$, for the
+    Marshak Wave problem as a function of elapsed problem time.}
+  \label{fig:marshak_spectral}
+\end{figure}
 
 There are two principal degrees of freedom when utilizing the MCSA
 method: (1) the number of particles per stage, and (2) the weight
@@ -1052,12 +1083,44 @@ required to converge the solution.  However, the cost of the Monte
 Carlo transport is high; thus, better performance is attained by
 running more stages with fewer particles per stage \cite{evans_2003}.
 
+\begin{figure}[htpb!]
+  \centerline{
+    \includegraphics[width=5in,clip]{mrshk_np_CPU.eps}}
+  \caption{CPU time versus number of particles per stage for the
+    Marshak problem.  The number of particles is the requested number.
+    In each stage the exact number can vary depending upon the number
+    of cells and source strength per cell.}
+  \label{fig:CPU_Np}
+\end{figure}
+
+\begin{figure}[htpb!]
+  \centerline{
+    \includegraphics[width=5in,clip]{mrshk_np_Ns.eps}}
+  \caption{
+    Maximum number of stages per cycle versus number of particles per
+    stage for the Marshak problem.  The number of particles is the
+    requested number.  In each stage the exact number can vary
+    depending upon the number of cells and source strength per cell.}
+  \label{fig:CPU_Ns}
+\end{figure}
+
 Figure~\ref{fig:CPU_wc} shows the CPU time as a function of relative
 weight cutoff.  These results indicate that the performance of the
 MCSA method is relatively insensitive to the weight cutoff.  This is
 especially true when running small numbers of particles per stage.
 When larger numbers of particles are used the weight cutoff has a more
 pronounced effect on the efficiency of the method.
+
+\begin{figure}[htpb!]
+  \centerline{
+    \includegraphics[width=5in,clip]{mrshk_wc_CPU.eps}}
+  \caption{
+    CPU time versus relative weight cutoff for the Marshak problem.
+    Results are shown for 10 and 50 requested particles per stage.
+    The numbers in parenthesis show the maximum number of particles
+    run in a stage during the course of the problem.}
+  \label{fig:CPU_wc}
+\end{figure}
 
 Having analyzed the variation of the MCSA algorithm efficiency with
 number of particles and weight cutoff, we now compare to traditional
@@ -1068,6 +1131,29 @@ that the MCSA method is the most efficient method, although the PCG
 results are nearly as fast.  More importantly, the MCSA method clearly
 accelerates Richardson iteration, as indicated by the fact that MCSA
 is 42\% faster than Richards iteration alone.
+
+\begin{table}[htpb!]
+  \begin{center}
+    \begin{tabular}{lrr}\hline\hline
+      \multicolumn{1}{c}{Method} & 
+      \multicolumn{1}{c}{Max Iterations} & 
+      \multicolumn{1}{c}{Relative CPU Time}\\\hline\hline
+      %%
+      PCG & 11 & 1.11 \\
+      %%
+      PFIX & 11 & 1.42 \\
+      %%
+      MCSA & 11 & 1.0 \\
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{Comparison of solution methods for the Marshak problem. All
+    methods were run with a stopping criterion of $\sn{1}{-8}$.  The
+    MCSA method used $N_p=10$ and $W_c = \sn{1}{-4}$.  The CPU time is
+    measured relative to the MCSA method, which required 72.6 s on a
+    3.6~GHz Xeon.}
+  \label{tab:marshak_comparision}
+\end{table}
 
 \subsection{Multi-material Problem}
 
@@ -1108,10 +1194,67 @@ shown at 4 edit points in Fig.~\ref{fig:edit-points}.  All three
 methods, PCG, PFIX, and MCSA, give numerically identical answers when
 using a stopping criterion of $\sn{1}{-8}$.
 
+\begin{figure}[htpb!]
+  \centerline{
+    \includegraphics[width=5in,clip]{mesh.eps}}
+  \caption{Multi-material problem mesh.  The duct region is blue.  The
+    wall is red.  The foil is green.  The mesh is $60\times 60\times
+    60$.}
+  \label{fig:multi-mat-mesh}
+\end{figure}
+
+\begin{figure}[htpb!]
+  \centerline{
+    \includegraphics[width=5in,clip]{T_multi_mat.eps}}
+  \caption{
+    Two-dimensional plot of the temperature at 100~sh on a cut-plane
+    positioned at the mid-point of the $z$-axis.  The positions of the
+    edit points where the time-evolution of the temperature is plotted
+    in Fig.~\ref{fig:edit-points} are indicated by the black disks.}
+  \label{fig:multi-mat_T}
+\end{figure}
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \begin{tabular}{m{2in}m{4in}}
+      \subfigure[Edit points]{\includegraphics[width=2in,clip]{points.eps}} &
+      \subfigure[Temperature]{\includegraphics[width=4in,clip]{multi_mat.eps}}
+    \end{tabular}
+  \end{center}
+  \caption{(a) Edit points and (b) time-evolution of the temperature
+    at each point.  All points are centered in the $z$-axis.}
+  \label{fig:edit-points}
+\end{figure}
+
+
 Table~\ref{tab:multimat_comparision} shows the timing results for the
 multi-material problem using PCG, PFIX, and MCSA.  The results
 correspond roughly with the results from the Marshak problem.  The
 MCSA is marginally faster than PCG and 43\% faster than PFIX.
+
+\begin{table}[htpb!]
+  \begin{center}
+    \begin{tabular}{lrr}\hline\hline
+      \multicolumn{1}{c}{Method} & 
+      \multicolumn{1}{c}{Max Iterations} & 
+      \multicolumn{1}{c}{Relative CPU Time}\\\hline\hline
+      %%
+      PCG & 18 & 1.03 \\
+      %%
+      PFIX & 38 & 1.43 \\
+      %%
+      MCSA & 20 & 1.0 \\
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{
+    Comparison of solution methods for the multi-material problem. All
+    methods were run with a stopping criterion of $\sn{1}{-8}$.  The
+    MCSA method used $N_p=1000$ and $W_c = \sn{1}{-3}$.  The problem
+    was run to an elapsed time of 10~sh.  The MCSA method required 3.4
+    hours on a 3.6~GHz Xeon.}
+  \label{tab:multimat_comparision}
+\end{table}
 
 %%---------------------------------------------------------------------------%%
 \section{Conclusions}
