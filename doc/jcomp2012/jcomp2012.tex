@@ -427,7 +427,7 @@ defined as follows:
     %%
     \hat{\vA}\delta\vx^{l+1/2} = \vr^{l+1/2}\:,
     \label{eq:MCSA-residual_solve}\\ 
-    %%
+    %% 
     \vx^{l+1}=\vx^{l+1/2}+\delta\vx^{l+1/2}\:.
   \end{gather}
   \label{eq:general-MCSA}
@@ -448,6 +448,131 @@ based on the following stopping criterion~\cite{kelley_1995},
   \|\vr\|_{\infty} < \epsilon\cdot\|\vb\|_\infty\:.
   \label{eq:stopping-criteria}
 \end{equation}
+
+\subsection{Justification of Adjoint Error Estimation}
+
+The MCSA method defined in Eq.(~\ref{eq:general-MCSA}) uses the
+adjoint method in Eq.~(\ref{eq:MCSA-residual_solve}) to estimate the
+error instead of the direct method. To demonstrate the effectiveness
+of the adjoint method over the direct method, we choose the
+two-dimensional time-dependent heat equation as a simple model
+problem
+
+\begin{equation}
+  \frac{\partial u}{\partial t} = \alpha \nabla^2 u
+  \label{eq:heat_equation}
+\end{equation}
+
+where $\alpha$ is a constant coefficient. For all comparisons, a
+single time step is computed with implicit Euler time integration. The
+Laplacian is differenced on a square Cartesian grid with a
+second-order five point stencil
+
+\begin{equation}
+  \nabla^2_5 = \frac{1}{h^2}[u_{i-1,j} + u_{i+1,j} + u_{i,j-1} +
+    u_{i,j+1} - 4 u_{i,j}]
+  \label{eq:five_point_stencil}
+\end{equation}
+
+and a fourth-order nine point stencil both assuming a grid size of $h$
+in both the $i$ and $j$ directions.
+
+\begin{equation}
+  \nabla^2_9 = \frac{1}{6h^2}[4 u_{i-1,j} + 4 u_{i+1,j} + 4 u_{i,j-1}
+    + 4 u_{i,j+1} + u_{i-1,j-1} + u_{i-1,j+1} + u_{i+1,j-1} +
+    u_{i+1,j+1} - 20 u_{i,j}]
+  \label{eq:nine_point_stencil}
+\end{equation}
+
+For a single time step solution, we then have the following linear
+system to be solved with the MCSA method.
+
+\begin{equation}
+  A u^{n+1} = u^n
+  \label{eq:heat_eq_lin_sys}
+\end{equation}
+
+Both the stencils will be used to vary the size and density of the
+sparse linear system in Eq.~(\ref{eq:heat_eq_lin_sys}).
+
+A timing study and convergence study is used to demonstrate the
+effectiveness of the adjoint method as compared to the direct
+method. To assess both the CPU time and number of iterations required
+to converge to a solution, a problem of constant grid size and
+$\alpha$ was used with varying values of problem size, fixing the
+spectral radius of the system at a constant value for each
+variation. Both the five point and nine point stencils were used with
+both the direct and adjoint solvers. For each case, 50 histories were
+simulated per cycle with a weight cutoff of $1.0E-4$ for the
+stochastic solver and a convergence tolerance of $1.0E-8$ for the MCSA
+solver. All computations were completed on a 2.66 GHz Intel Core i7
+machine with 8 GB 1067 MHz DDR3 memory.
+
+Fig.~\ref{fig:hmcsa_cpu_time} gives the CPU time needed for each case
+to converge in seconds and Fig.~\ref{fig:hmcsa_iterations} gives the
+number of iterations needed for each case to converge. We see clearly
+in Fig.~\ref{fig:hmcsa_cpu_time} that the using the adjoint solver
+with MCSA results in several orders of magnitude speedup over the
+direct solver while the number of iterations required to converge is
+of a similar scale. We expect this for several reasons. First, with an
+equivalent number of histories specified for both solvers and a system
+of size $N$, the direct solver will compute $N$ times the number of
+histories random walks while the adjoint solver will only compute the
+number of histories specified. Initially, this may not seem like a
+fair comparison, however, we see from Fig.~\ref{fig:hmcsa_cpu_time}
+that the number of iterations requried to converge is approximately
+the same. This is necessary in the direct method to ensure a
+contribution from each state as the random walk sequence will only
+contribute to the starting state. For the adjoint method, because the
+random sequence contributes to the state in which it currently
+resides, fewer histories are neccessary to compute contributions from
+all the nonzero parts of the source. Therefore, although the total
+number of histories per cycle is in fact larger for the direct method,
+the solution computed at each iteration is no better than that
+computed by the adjoint method.
+
+\begin{figure}[htpb!]
+  \centering
+  \includegraphics[width=5in,clip]{Adjoint_Direct_CPU_Time.eps}
+  \caption{\sl CPU Time (s) to converge vs. Problem Size (N for an NxN
+    problem). Both the adjoint and direct solvers are used with the
+    five point and nine point stencils. A significant CPU time speedup
+    is noted with the adjoint method due to the reduced number of
+    histories.}
+  \label{fig:hmcsa_cpu_time}
+\end{figure}
+
+\begin{figure}[htbp!]
+  \centering
+  \includegraphics[width=5in,clip]{Adjoint_Direct_Iterations.eps}
+  \caption{\sl Iterations to converge vs. Problem Size (N for an NxN
+    problem). Both the adjoint and direct solvers are used with the
+    five point and nine point stencils. Both methods give similar
+    iteration behavior.}
+  \label{fig:hmcsa_iterations}
+\end{figure}
+
+Although CPU time is shown to be greatly decreased by using the
+adjoint solver in Fig.~\ref{fig:hmcsa_cpu_time}, the iteration
+behavior was approximately the same. To assess the convergence
+properties of MCSA using each solver and stencil, the infinity norm of
+the residual computed in Eq.~(\ref{eq:general-MCSA}) was computed at
+each iteration for a fixed problem
+size. Fig.~\ref{fig:hmcsa_convergence} gives the results of these
+computations. First, it is worthy to note on the semilog plot that we
+are indeed achieving the expected exponential convergence from
+MCSA. Second, we note that both the direct and adjoint methods have
+approximately equivalent convergence behavior. 
+
+\begin{figure}[htpb!]
+  \centering
+  \includegraphics[width=5in,clip]{Adjoint_Direct_Convergence.eps}
+  \caption{\sl Infinity norm of the solution residual vs. iteration
+    number for a problem of fixed size. Both the adjoint and direct
+    solvers are used with the five point and nine point stencils. Both
+    methods give similar iteration behavior.}
+  \label{fig:hmcsa_convergence}
+\end{figure}
 
 %%---------------------------------------------------------------------------%%
 \section{Discrete Form of the Radiation Diffusion Equation}
