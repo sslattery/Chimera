@@ -41,7 +41,8 @@
 
 \audience{\email{Stuart Slattery}{uy7@ornl.gov},
           \email{Thomas Evans}{tme@ornl.gov},
-          \email{Greg Davidson}{gqe@ornl.gov}}
+          \email{Greg Davidson}{gqe@ornl.gov},
+          \email{Scott Mosher}{moshersw@ornl.gov}}
 
 %%---------------------------------------------------------------------------%%
 %% BEGIN NOTE
@@ -131,9 +132,9 @@ calculation, the source term is sampled with a set number of random
 walk histories, meaning that regions of larger source will be sampled
 as a starting state more regularly. In this case, each step in the
 random walk sequence will contribute to the state in which it
-currently resides, not the current source state. It is this set of
+currently resides, not the starting source state. It is this set of
 primary differences between the two solution methods that will dictate
-solver performance with MCSA.
+stochastic solver performance with MCSA.
 
 With this knowledge, for the linear system in
 Eq. \ref{eq:linear_system} we can then define the following MCSA
