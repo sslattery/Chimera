@@ -1,3 +1,7 @@
+%%---------------------------------------------------------------------------%%
+%% Monte Carlo Synthetic Acceleration Paper
+%% Submitted to Journal of Computational Physics 2012
+%%---------------------------------------------------------------------------%%
 %%
 %% Copyright 2007, 2008, 2009 Elsevier Ltd
 %%
@@ -15,6 +19,9 @@
 %% given in the file `manifest.txt'.
 %%
 
+%%---------------------------------------------------------------------------%%
+%% Document Options
+%%---------------------------------------------------------------------------%%
 %% Template article for Elsevier's document class `elsarticle'
 %% with numbered style bibliographic references
 %% SP 2008/03/01
@@ -77,9 +84,44 @@
 
 % \biboptions{}
 
+\journal{Computational Physics}
 
-\journal{Nuclear Physics B}
+%%---------------------------------------------------------------------------%%
+%% Math Variables
+%%---------------------------------------------------------------------------%%
+\newcommand{\email}[1]{$\langle$#1@lanl.gov$\rangle$}
 
+\newcommand{\vA}{\ensuremath{\ve{A}}}
+\newcommand{\vb}{\ensuremath{\ve{b}}}
+\newcommand{\vx}{\ensuremath{\ve{x}}}
+\newcommand{\vr}{\ensuremath{\ve{r}}}
+\newcommand{\vI}{\ensuremath{\ve{I}}}
+\newcommand{\vH}{\ensuremath{\ve{H}}}
+\newcommand{\vP}{\ensuremath{\ve{P}}}
+
+\newcommand{\Cv}{\ensuremath{C_{v}}}
+\newcommand{\ros}{\ensuremath{\sigma_{\scriptscriptstyle\mathrm{R}}}}
+\newcommand{\bOmega}{\ensuremath{\mathbf{\Omega}}}
+
+\newcommand{\dt}{\ensuremath{\Delta t}}
+\newcommand{\sign}{\ensuremath{\tilde{\sigma}^n}}
+\newcommand{\qn}{\ensuremath{q^n}}
+\newcommand{\Tn}{\ensuremath{T^n}}
+\newcommand{\Dn}{\ensuremath{D^n}}
+\newcommand{\phin}{\ensuremath{\phi^n}}
+\newcommand{\Di}{\ensuremath{\Delta_i}}
+\newcommand{\Dj}{\ensuremath{\Delta_j}}
+\newcommand{\Dk}{\ensuremath{\Delta_k}}
+
+\newcommand{\sigT}{\ensuremath{\sigma_{T\,ijk}}}
+\newcommand{\sigm}{\ensuremath{\sigma^{-}}}
+\newcommand{\sigp}{\ensuremath{\sigma^{+}}}
+
+\newcommand{\bphi}{\ensuremath{\boldsymbol{\phi}}}
+
+\DeclareMathOperator{\diag}{diag}
+
+%%---------------------------------------------------------------------------%%
 \begin{document}
 
 \begin{frontmatter}
@@ -105,7 +147,8 @@
 %% \address{Address\fnref{label3}}
 %% \fntext[label3]{}
 
-\title{}
+\title{A Monte Carlo Synthetic Acceleration Method for Solving the
+  Thermal Radiation Diffusion Equation}
 
 %% use optional labels to link authors explicitly to addresses:
 %% \author[label1,label2]{<author name>}
@@ -116,11 +159,13 @@
 
 \address{}
 
+%%---------------------------------------------------------------------------%%
 \begin{abstract}
 %% Text of abstract
 
 \end{abstract}
 
+%%---------------------------------------------------------------------------%%
 \begin{keyword}
 %% keywords here, in the form: keyword \sep keyword
 
@@ -137,9 +182,11 @@
 % \linenumbers
 
 %% main text
+%%---------------------------------------------------------------------------%%
 \section{}
 \label{}
 
+%%---------------------------------------------------------------------------%%
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
 %% \appendix
@@ -155,10 +202,11 @@
 %%   \cite[chap. 2]{key} ==>> [#, chap. 2]
 %%
 
+%%---------------------------------------------------------------------------%%
 %% References with bibTeX database:
 
 \bibliographystyle{elsarticle-num}
-\bibliography{<your-bib-database>}
+\bibliography{jcomp2012.bib}
 
 %% Authors are advised to submit their bibtex database files. They are
 %% requested to list a bibtex style file in the manuscript if they do
