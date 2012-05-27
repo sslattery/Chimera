@@ -32,7 +32,7 @@ class Partitioner
     //@}
 
     // Constructor.
-    Partitioner( RCP_Comm comm, RCP_ParameterList plist );
+    Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist );
 
     // Destructor.
     ~Partitioner();
@@ -40,6 +40,10 @@ class Partitioner
     // Get the number of blocks.
     const SizePair& getNumBlocks() const
     { return d_num_blocks; }
+
+    // Get the mesh.
+    const RCP_Mesh& getMesh() const
+    { return d_mesh; }
 
   private:
 

@@ -46,15 +46,15 @@ class Mesh
     ~Mesh();
 
     //! Get the global number of cells.
-    LongPair getNumGlobalCells() const
+    LongPair getGlobalNumCells() const
     { return d_global_N; }
 
     //! Get the global lower bounds.
-    DblPair getLowerBounds() const
+    DblPair getGlobalLowerBounds() const
     { return d_lower; }
 
     //! Get the global upper bounds.
-    DblPair getUpperBounds() const
+    DblPair getGlobalUpperBounds() const
     { return d_upper; }
 
     //! Get the block ids.
@@ -62,7 +62,7 @@ class Mesh
     { return d_block; }
 
     //! Get the local number of cells in the specified direction.
-    SizePair getNumLocalCells() const
+    SizePair getLocalNumCells() const
     { return d_local_N; }
 
     //! Get the edge vector in the specified direction.

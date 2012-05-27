@@ -25,7 +25,7 @@ Mesh::Mesh( long_type global_Ni, long_type global_Nj,
     , d_lower( global_i_min, global_j_min )
     , d_upper( global_i_max, global_j_max )
     , d_block( I_block, J_block )
-    , d_local_N( i_edges.size(), j_edges.size() )
+    , d_local_N( i_edges.size()-1, j_edges.size()-1 )
     , d_edges( i_edges, j_edges )
 {
     computeCellWidths();

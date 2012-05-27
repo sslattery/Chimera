@@ -22,21 +22,21 @@ namespace Chimera
 /*!
  * \brief Constructor.
  */
-Partitioner::Partitioner( RCP_Comm comm, RCP_ParameterList plist )
+Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
     : d_num_blocks( SizePair( plist->get<int>( "I_BLOCKS" ), 
 			      plist->get<int>( "J_BLOCKS" ) ) )
 {
     // Comm parameters.
-    unsigned int myRank = comm->getRank();
-    unsigned int mySize = comm->getSize();
+    unsigned int my_rank = comm->getRank();
+    unsigned int my_size = comm->getSize();
 
     // Check that the block specification and communicator are consistent.
-    testPrecondition( d_num_blocks.first * d_num_blocks.second == mySize,
+    testPrecondition( d_num_blocks.first * d_num_blocks.second == my_size,
 		      "I_BLOCKS*J_BLOCKS != number of processors" );
 
     // Block indices.
-    int myJBlock = std::floor( myRank / d_num_blocks.first );
-    int myIBlock = myRank - d_num_blocks.first*myJBlock;
+    int my_j_block = std::floor( my_rank / d_num_blocks.first );
+    int my_i_block = my_rank - d_num_blocks.first*my_j_block;
 
     std::vector<double> i_edges, j_edges;
     double global_i_min, global_i_max, global_j_min, global_j_max;
@@ -64,14 +64,16 @@ Partitioner::Partitioner( RCP_Comm comm, RCP_ParameterList plist )
 	double i_edge_val = 0.0;
 	for ( int i = 0; i < i_edges_size; ++i )
 	{
-	    i_edges.push_back( myRank*(i_edges_size-1) + i_edge_val );
+	    i_edges.push_back( 
+		my_rank*width_i*(i_edges_size-1) + i_edge_val );
 	    i_edge_val += width_i;
 	}
-	if ( myRank == mySize - 1 )
+	if ( my_rank == my_size - 1 )
 	{
 	    for ( int i = 0; i < i_remainder; ++i )
 	    {
-		i_edges.push_back( myRank*(i_edges_size-1) + i_edge_val );
+		i_edges.push_back( 
+		    my_rank*width_i*(i_edges_size-1) + i_edge_val );
 		i_edge_val += width_i;
 	    }
 	}
@@ -80,14 +82,16 @@ Partitioner::Partitioner( RCP_Comm comm, RCP_ParameterList plist )
 	double j_edge_val = 0.0;
 	for ( int j = 0; j < j_edges_size; ++j )
 	{
-	    j_edges.push_back( myRank*(j_edges_size-1) + j_edge_val );
+	    j_edges.push_back( 
+		my_rank*width_j*(j_edges_size-1) + j_edge_val );
 	    j_edge_val += width_j;
 	}
-	if ( myRank == mySize - 1 )
+	if ( my_rank == my_size - 1 )
 	{
 	    for ( int j = 0; j < j_remainder; ++j )
 	    {
-		j_edges.push_back( myRank*(j_edges_size-1) + j_edge_val );
+		j_edges.push_back( 
+		    my_rank*width_j*(j_edges_size-1) + j_edge_val );
 		j_edge_val += width_j;
 	    }
 	}
@@ -118,14 +122,16 @@ Partitioner::Partitioner( RCP_Comm comm, RCP_ParameterList plist )
 	int i_edge_idx;
 	for ( int i = 0; i < i_edges_size; ++i )
 	{
-	    i_edges.push_back( i_edges[ myRank*(i_edges_size-1) + i_edge_idx ] );
+	    i_edges.push_back( 
+		i_edges[ my_rank*(i_edges_size-1) + i_edge_idx ] );
 	    ++i_edge_idx;
 	}
-	if ( myRank == mySize - 1 )
+	if ( my_rank == my_size - 1 )
 	{
 	    for ( int i = 0; i < i_remainder; ++i )
 	    {
-		i_edges.push_back( i_edges[ myRank*(i_edges_size-1) + i_edge_idx ] );
+		i_edges.push_back( 
+		    i_edges[ my_rank*(i_edges_size-1) + i_edge_idx ] );
 		++i_edge_idx;
 	    }
 	}
@@ -134,14 +140,16 @@ Partitioner::Partitioner( RCP_Comm comm, RCP_ParameterList plist )
 	int j_edge_idx;
 	for ( int j = 0; j < j_edges_size; ++j )
 	{
-	    j_edges.push_back( j_edges[ myRank*(j_edges_size-1) + j_edge_idx ] );
+	    j_edges.push_back( 
+		j_edges[ my_rank*(j_edges_size-1) + j_edge_idx ] );
 	    ++j_edge_idx;
 	}
-	if ( myRank == mySize - 1 )
+	if ( my_rank == my_size - 1 )
 	{
 	    for ( int j = 0; j < j_remainder; ++j )
 	    {
-		j_edges.push_back( j_edges[ myRank*(j_edges_size-1) + j_edge_idx ] );
+		j_edges.push_back( 
+		    j_edges[ my_rank*(j_edges_size-1) + j_edge_idx ] );
 		++j_edge_idx;
 	    }
 	}
@@ -160,7 +168,7 @@ Partitioner::Partitioner( RCP_Comm comm, RCP_ParameterList plist )
     d_mesh = Teuchos::rcp( new Mesh( global_num_i, global_num_j,
 				     global_i_min, global_j_min,
 				     global_i_max, global_j_max,
-				     myIBlock, myJBlock,
+				     my_i_block, my_j_block,
 				     i_edges, j_edges ) );
 
     testPostcondition( d_mesh != Teuchos::null,
