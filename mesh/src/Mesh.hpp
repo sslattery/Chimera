@@ -26,6 +26,7 @@ class Mesh
     typedef std::vector<double>                          VecDbl;
     typedef std::pair<size_type,size_type>               SizePair;
     typedef std::pair<long_type,long_type>               LongPair;
+    typedef std::pair<double,double>                     DblPair;
     typedef std::pair<VecDbl, VecDbl>                    VecPair;
     //@}
 
@@ -36,6 +37,8 @@ class Mesh
 
     // Constructor.
     Mesh( long_type global_Ni, long_type global_Nj,
+	  double global_i_min, double global_j_min, 
+	  double global_i_max, double global_j_max,
 	  size_type I_block, size_type J_block,
 	  std::vector<double> i_edges, std::vector<double> j_edges );
 
@@ -46,6 +49,14 @@ class Mesh
     LongPair getNumGlobalCells() const
     { return d_global_N; }
 
+    //! Get the global lower bounds.
+    DblPair getLowerBounds() const
+    { return d_lower; }
+
+    //! Get the global upper bounds.
+    DblPair getUpperBounds() const
+    { return d_upper; }
+
     //! Get the block ids.
     SizePair getBlockID() const
     { return d_block; }
@@ -55,11 +66,11 @@ class Mesh
     { return d_local_N; }
 
     //! Get the edge vector in the specified direction.
-    const VecPair& getLocalEdges( const int dim ) const
+    const VecPair& getLocalEdges() const
     { return d_edges; }
 
     //! Get the width vector in the specified direction.
-    const VecPair& getLocalWidths( const int dim ) const
+    const VecPair& getLocalWidths() const
     { return d_widths; }
 
   private:
@@ -71,6 +82,12 @@ class Mesh
 
     // Global number of cells in I and J directions.
     LongPair d_global_N;
+
+    // Global lower bound.
+    DblPair d_lower;
+
+    // Global upper bound.
+    DblPair d_upper;
     
     // Block IDs.
     SizePair d_block;

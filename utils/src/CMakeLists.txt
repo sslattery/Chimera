@@ -22,6 +22,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
   Exception.hpp
+  UnitTestHelpers.hpp
   )
 
 # Set sources

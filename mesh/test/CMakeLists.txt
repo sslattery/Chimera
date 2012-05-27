@@ -4,7 +4,7 @@ INCLUDE(TribitsAddAdvancedTest)
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
   Mesh_test
   SOURCES tstMesh.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
-  COMM serial
+  COMM serial mpi
   STANDARD_PASS_OUTPUT
   )
 
