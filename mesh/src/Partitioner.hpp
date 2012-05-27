@@ -25,6 +25,7 @@ class Partitioner
     //@{
     //! typedefs.
     typedef Mesh::SizePair                        SizePair;
+    typedef Mesh::VecPair                         VecPair;
     typedef Teuchos::RCP<Mesh>                    RCP_Mesh;
     typedef Teuchos::Comm<int>                    CommType;
     typedef Teuchos::RCP<const CommType>          RCP_Comm;
@@ -37,11 +38,15 @@ class Partitioner
     // Destructor.
     ~Partitioner();
 
-    // Get the number of blocks.
+    //! Get the number of blocks.
     const SizePair& getNumBlocks() const
     { return d_num_blocks; }
 
-    // Get the mesh.
+    //! Get the global edge vectors.
+    const VecPair& getGlobalEdges() const
+    { return d_global_edges; }
+
+    //! Get the mesh.
     const RCP_Mesh& getMesh() const
     { return d_mesh; }
 
@@ -49,6 +54,9 @@ class Partitioner
 
     // Number of blocks.
     SizePair d_num_blocks;
+
+    // Global edge vectors.
+    VecPair d_global_edges;
 
     // Mesh.
     RCP_Mesh d_mesh;

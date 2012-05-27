@@ -117,8 +117,8 @@ TEUCHOS_UNIT_TEST( Partitioner, uniform_test )
     }
 
     double y_edge_val = 0.0;
-    for ( j_vec_it = mesh->getLocalEdges().first.begin();
-	  j_vec_it != mesh->getLocalEdges().first.end();
+    for ( j_vec_it = mesh->getLocalEdges().second.begin();
+	  j_vec_it != mesh->getLocalEdges().second.end();
 	  ++j_vec_it )
     {
 	TEST_ASSERT( *j_vec_it == 
@@ -133,11 +133,29 @@ TEUCHOS_UNIT_TEST( Partitioner, uniform_test )
 	TEST_ASSERT( *i_vec_it == cell_width );
     }
 
-    for ( j_vec_it = mesh->getLocalWidths().first.begin();
-	  j_vec_it != mesh->getLocalWidths().first.end();
+    for ( j_vec_it = mesh->getLocalWidths().second.begin();
+	  j_vec_it != mesh->getLocalWidths().second.end();
 	  ++j_vec_it )
     {
 	TEST_ASSERT( *j_vec_it == cell_width );
+    }
+
+    x_edge_val = 0.0;
+    for ( i_vec_it = partitioner.getGlobalEdges().first.begin();
+	  i_vec_it != partitioner.getGlobalEdges().first.end();
+	  ++i_vec_it )
+    {
+	TEST_ASSERT( *i_vec_it == x_edge_val );
+	x_edge_val += 1.0;
+    }
+
+    y_edge_val = 0.0;
+    for ( j_vec_it = partitioner.getGlobalEdges().second.begin();
+	  j_vec_it != partitioner.getGlobalEdges().second.end();
+	  ++j_vec_it )
+    {
+	TEST_ASSERT( *j_vec_it == y_edge_val );
+	y_edge_val += 1.0;
     }
 }
 
