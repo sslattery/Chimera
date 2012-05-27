@@ -9,6 +9,7 @@
 #include <cassert>
 #include <cmath>
 #include <string>
+#include <vector>
 
 #include "Partitioner.hpp"
 
@@ -98,69 +99,69 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 	comm->barrier();
     }
     
-    // Nonuniform grid case.
-    else if ( plist->get<std::string>("GRID_TYPE") == "NONUNIFORM" )
-    {
-	std::vector<double> global_i_edges = 
-	    plist->get< std::vector<double> >("I_EDGES");
-	std::vector<double> global_j_edges 
-	    = plist->get< std::vector<double> >("J_EDGES");
+    // Nonuniform grid case. Currently not supported until I figure out how to
+    // pass std::vector through the parameter list.
+    // else if ( plist->get<std::string>("GRID_TYPE") == "NONUNIFORM" )
+    // {
+    // 	std::vector<double> global_i_edges = 
+    // 	    plist->get< std::vector<double> >("X_EDGES");
+    // 	std::vector<double> global_j_edges 
+    // 	    = plist->get< std::vector<double> >("Y_EDGES");
 
-	global_i_min = global_i_edges.front();
-	global_i_max = global_i_edges.back();
-	global_j_min = global_j_edges.front();
-	global_j_max = global_j_edges.back();
-	global_num_i = global_i_edges.size() - 1;
-	global_num_j = global_j_edges.size() - 1;
+    // 	global_i_min = global_i_edges.front();
+    // 	global_i_max = global_i_edges.back();
+    // 	global_j_min = global_j_edges.front();
+    // 	global_j_max = global_j_edges.back();
+    // 	global_num_i = global_i_edges.size() - 1;
+    // 	global_num_j = global_j_edges.size() - 1;
 
-	int i_edges_size = std::floor( global_num_i / d_num_blocks.first ) + 1;
-	int j_edges_size = std::floor( global_num_j / d_num_blocks.second ) + 1;
+    // 	int i_edges_size = std::floor( global_num_i / d_num_blocks.first ) + 1;
+    // 	int j_edges_size = std::floor( global_num_j / d_num_blocks.second ) + 1;
 
-	int i_remainder = global_num_i % d_num_blocks.first;
-	int j_remainder = global_num_j % d_num_blocks.second;
+    // 	int i_remainder = global_num_i % d_num_blocks.first;
+    // 	int j_remainder = global_num_j % d_num_blocks.second;
 
-	int i_edge_idx;
-	for ( int i = 0; i < i_edges_size; ++i )
-	{
-	    i_edges.push_back( 
-		i_edges[ my_rank*(i_edges_size-1) + i_edge_idx ] );
-	    ++i_edge_idx;
-	}
-	if ( my_rank == my_size - 1 )
-	{
-	    for ( int i = 0; i < i_remainder; ++i )
-	    {
-		i_edges.push_back( 
-		    i_edges[ my_rank*(i_edges_size-1) + i_edge_idx ] );
-		++i_edge_idx;
-	    }
-	}
-	comm->barrier();
+    // 	int i_edge_idx;
+    // 	for ( int i = 0; i < i_edges_size; ++i )
+    // 	{
+    // 	    i_edges.push_back( 
+    // 		i_edges[ my_rank*(i_edges_size-1) + i_edge_idx ] );
+    // 	    ++i_edge_idx;
+    // 	}
+    // 	if ( my_rank == my_size - 1 )
+    // 	{
+    // 	    for ( int i = 0; i < i_remainder; ++i )
+    // 	    {
+    // 		i_edges.push_back( 
+    // 		    i_edges[ my_rank*(i_edges_size-1) + i_edge_idx ] );
+    // 		++i_edge_idx;
+    // 	    }
+    // 	}
+    // 	comm->barrier();
 
-	int j_edge_idx;
-	for ( int j = 0; j < j_edges_size; ++j )
-	{
-	    j_edges.push_back( 
-		j_edges[ my_rank*(j_edges_size-1) + j_edge_idx ] );
-	    ++j_edge_idx;
-	}
-	if ( my_rank == my_size - 1 )
-	{
-	    for ( int j = 0; j < j_remainder; ++j )
-	    {
-		j_edges.push_back( 
-		    j_edges[ my_rank*(j_edges_size-1) + j_edge_idx ] );
-		++j_edge_idx;
-	    }
-	}
-	comm->barrier();
-    }
+    // 	int j_edge_idx;
+    // 	for ( int j = 0; j < j_edges_size; ++j )
+    // 	{
+    // 	    j_edges.push_back( 
+    // 		j_edges[ my_rank*(j_edges_size-1) + j_edge_idx ] );
+    // 	    ++j_edge_idx;
+    // 	}
+    // 	if ( my_rank == my_size - 1 )
+    // 	{
+    // 	    for ( int j = 0; j < j_remainder; ++j )
+    // 	    {
+    // 		j_edges.push_back( 
+    // 		    j_edges[ my_rank*(j_edges_size-1) + j_edge_idx ] );
+    // 		++j_edge_idx;
+    // 	    }
+    // 	}
+    // 	comm->barrier();
+    // }
 
     // Unsupported cases.
     else
     {
-	testPrecondition( plist->get<std::string>("GRID_TYPE") == "NONUNIFORM" ||
-			  plist->get<std::string>("GRID_TYPE") == "UNIFORM",
+	testPrecondition( plist->get<std::string>("GRID_TYPE") == "UNIFORM",
 			  "Grid type not supported" );
     }
 
