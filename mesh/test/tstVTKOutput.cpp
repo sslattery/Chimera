@@ -1,14 +1,14 @@
 //---------------------------------------------------------------------------//
 /*!
- * \file tstVTKWriter.cpp
+ * \file tstVTKOutput.cpp
  * \author Stuart R. Slattery
- * \brief VTKWriter unit tests.
+ * \brief VTKOutput unit tests.
  */
 //---------------------------------------------------------------------------//
 
 #include <algorithm>
 
-#include "VTKWriter.hpp"
+#include "VTKOutput.hpp"
 #include "Partitioner.hpp"
 #include "Mesh.hpp"
 
@@ -25,7 +25,7 @@ namespace Chimera
 
 //---------------------------------------------------------------------------//
 // Uniform mesh test.
-TEUCHOS_UNIT_TEST( VTKWriter, vtkwriter_test )
+TEUCHOS_UNIT_TEST( VTKOutput, vtkoutput_test )
 {
     // Get the communicator.
     UnitTestHelpers::RCP_Comm comm = UnitTestHelpers::getDefaultComm();
@@ -68,13 +68,13 @@ TEUCHOS_UNIT_TEST( VTKWriter, vtkwriter_test )
 	Teuchos::rcp( new Partitioner( comm, plist ) );
 
     // Write a VTK file.
-    VTKWriter vtk_writer( comm, partitioner, plist );
-    vtk_writer.write();
+    VTKOutput vtk_output( comm, partitioner, plist );
+    vtk_output.write();
 }
 
 } // end namespace Chimera
 
 //---------------------------------------------------------------------------//
-// end tstVTKWriter.cpp
+// end tstVTKOutput.cpp
 //---------------------------------------------------------------------------//
 

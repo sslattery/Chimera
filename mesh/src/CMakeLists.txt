@@ -23,7 +23,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 APPEND_SET(HEADERS
   Mesh.hpp
   Partitioner.hpp
-  VTKWriter.hpp
+  VTKOutput.hpp
   )
 
 # Set sources
@@ -31,7 +31,7 @@ APPEND_SET(HEADERS
 APPEND_SET(SOURCES
   Mesh.cpp
   Partitioner.cpp
-  VTKWriter.cpp
+  VTKOutput.cpp
   )
 
 # Set addition headers and source based on package-specific
