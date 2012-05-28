@@ -29,6 +29,7 @@ class VTKOutput
     //@{
     //! Typedefs.
     typedef Partitioner::VecPair             VecPair;
+    typedef Partitioner::RCP_Mesh            RCP_Mesh;
     typedef Partitioner::RCP_Comm            RCP_Comm;
     typedef Partitioner::RCP_ParameterList   RCP_ParameterList;
     typedef Teuchos::RCP<Partitioner>        RCP_Partitioner;
@@ -39,9 +40,6 @@ class VTKOutput
     //! Field topology enum.
     enum FieldTopology{ VERTEX_FIELD = 0, CELL_FIELD };
 
-    //! Field type enum.
-    enum FieldType{ SCALAR_FIELD = 0, VECTOR_FIELD };
-
     // Constructor.
     VTKOutput( const RCP_Comm &comm, 
 	       const RCP_Partitioner &partitioner,
@@ -51,8 +49,7 @@ class VTKOutput
     ~VTKOutput();
 
     // Add a field to the file.
-    void addField( const int field_topology,
-		   const int field_type,
+    void addField( const int field_type,
 		   const RCP_MultiVector &field,
 		   const std::string &name );
 
@@ -63,6 +60,9 @@ class VTKOutput
 
     // Communicator.
     RCP_Comm d_comm;
+
+    // Mesh.
+    RCP_Mesh d_mesh;
 
     // Mesh file.
     std::ofstream d_vtk_file;
