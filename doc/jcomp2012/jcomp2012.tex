@@ -140,15 +140,15 @@
   %% use the ead command for the email address,
   %% and the form \ead[url] for the home page:
   %%
-  %% \title{Title\tnoteref{label1}}
-  %% \tnotetext[label1]{}
-  %% \author{Name\corref{cor1}\fnref{label2}}
-  %% \ead{email address}
-  %% \ead[url]{home page}
-  %% \fntext[label2]{}
-  %% \cortext[cor1]{}
-  %% \address{Address\fnref{label3}}
-  %% \fntext[label3]{}
+  \title{Title\tnoteref{label1}}
+  \tnotetext[label1]{}
+  \author{Name\corref{cor1}\fnref{label2}}
+  \ead{email address}
+  \ead[url]{home page}
+  \fntext[label2]{}
+  \cortext[cor1]{}
+  \address{Address\fnref{label3}}
+  \fntext[label3]{}
 
   \title{A Monte Carlo Synthetic Acceleration Method for Solving the
     Thermal Radiation Diffusion Equation}
@@ -455,18 +455,18 @@ The MCSA method defined in Eq.(~\ref{eq:general-MCSA}) uses the
 adjoint method in Eq.~(\ref{eq:MCSA-residual_solve}) to estimate the
 error instead of the direct method. To demonstrate the effectiveness
 of the adjoint method over the direct method, we choose the
-two-dimensional time-dependent heat equation as a simple model
+two-dimensional time-dependent Poisson equation as a simple model
 problem
 
 \begin{equation}
   \frac{\partial u}{\partial t} = \alpha \nabla^2 u
-  \label{eq:heat_equation}
+  \label{eq:poisson_equation}
 \end{equation}
 
 where $\alpha$ is a constant coefficient. For all comparisons, a
-single time step is computed with implicit Euler time integration. The
-Laplacian is differenced on a square Cartesian grid with a
-second-order five point stencil
+single time step is computed with backwards Euler time
+integration. The Laplacian is differenced on a square Cartesian grid
+with a second-order five point stencil
 
 \begin{equation}
   \nabla^2_5 = \frac{1}{h^2}[u_{i-1,j} + u_{i+1,j} + u_{i,j-1} +
@@ -489,11 +489,11 @@ system to be solved with the MCSA method.
 
 \begin{equation}
   A u^{n+1} = u^n
-  \label{eq:heat_eq_lin_sys}
+  \label{eq:poisson_eq_lin_sys}
 \end{equation}
 
 Both the stencils will be used to vary the size and density of the
-sparse linear system in Eq.~(\ref{eq:heat_eq_lin_sys}).
+sparse linear system in Eq.~(\ref{eq:poisson_eq_lin_sys}).
 
 A timing study and convergence study is used to demonstrate the
 effectiveness of the adjoint method as compared to the direct
@@ -508,10 +508,10 @@ stochastic solver and a convergence tolerance of $1.0E-8$ for the MCSA
 solver. All computations were completed on a 2.66 GHz Intel Core i7
 machine with 8 GB 1067 MHz DDR3 memory.
 
-Fig.~\ref{fig:hmcsa_cpu_time} gives the CPU time needed for each case
-to converge in seconds and Fig.~\ref{fig:hmcsa_iterations} gives the
+Fig.~\ref{fig:poisson_cpu_time} gives the CPU time needed for each case
+to converge in seconds and Fig.~\ref{fig:poisson_iterations} gives the
 number of iterations needed for each case to converge. We see clearly
-in Fig.~\ref{fig:hmcsa_cpu_time} that the using the adjoint solver
+in Fig.~\ref{fig:poisson_cpu_time} that the using the adjoint solver
 with MCSA results in several orders of magnitude speedup over the
 direct solver while the number of iterations required to converge is
 of a similar scale. We expect this for several reasons. First, with an
@@ -519,7 +519,7 @@ equivalent number of histories specified for both solvers and a system
 of size $N$, the direct solver will compute $N$ times the number of
 histories random walks while the adjoint solver will only compute the
 number of histories specified. Initially, this may not seem like a
-fair comparison, however, we see from Fig.~\ref{fig:hmcsa_cpu_time}
+fair comparison, however, we see from Fig.~\ref{fig:poisson_cpu_time}
 that the number of iterations requried to converge is approximately
 the same. This is necessary in the direct method to ensure a
 contribution from each state as the random walk sequence will only
@@ -539,7 +539,7 @@ computed by the adjoint method.
     five point and nine point stencils. A significant CPU time speedup
     is noted with the adjoint method due to the reduced number of
     histories.}
-  \label{fig:hmcsa_cpu_time}
+  \label{fig:poisson_cpu_time}
 \end{figure}
 
 \begin{figure}[htbp!]
@@ -549,16 +549,16 @@ computed by the adjoint method.
     problem). Both the adjoint and direct solvers are used with the
     five point and nine point stencils. Both methods give similar
     iteration behavior.}
-  \label{fig:hmcsa_iterations}
+  \label{fig:poisson_iterations}
 \end{figure}
 
 Although CPU time is shown to be greatly decreased by using the
-adjoint solver in Fig.~\ref{fig:hmcsa_cpu_time}, the iteration
+adjoint solver in Fig.~\ref{fig:poisson_cpu_time}, the iteration
 behavior was approximately the same. To assess the convergence
 properties of MCSA using each solver and stencil, the infinity norm of
 the residual computed in Eq.~(\ref{eq:general-MCSA}) was computed at
 each iteration for a fixed problem
-size. Fig.~\ref{fig:hmcsa_convergence} gives the results of these
+size. Fig.~\ref{fig:poisson_convergence} gives the results of these
 computations. First, it is worthy to note on the semilog plot that we
 are indeed achieving the expected exponential convergence from
 MCSA. Second, we note that both the direct and adjoint methods have
@@ -571,7 +571,7 @@ approximately equivalent convergence behavior.
     number for a problem of fixed size. Both the adjoint and direct
     solvers are used with the five point and nine point stencils. Both
     methods give similar iteration behavior.}
-  \label{fig:hmcsa_convergence}
+  \label{fig:poisson_convergence}
 \end{figure}
 
 %%---------------------------------------------------------------------------%%
@@ -1249,7 +1249,7 @@ pronounced effect on the efficiency of the method.
 
 Having analyzed the variation of the MCSA algorithm efficiency with
 number of particles and weight cutoff, we now compare to traditional
-deterministic algorithms.  Table~\ref{tab:marshak_comparision} shows
+deterministic algorithms.  Table~\ref{tab:marshak_comparison} shows
 timing results for the Marshak problem using preconditioned CG (PCG),
 preconditioned Richardson iteration (PFIX), and MCSA. The results show
 that the MCSA method is the most efficient method, although the PCG
@@ -1424,7 +1424,7 @@ the focus of future study.
 %% References with bibTeX database:
 
 \bibliographystyle{elsarticle-num}
-\bibliography{jcomp2012.bib}
+\bibliography{references}
 
 %% Authors are advised to submit their bibtex database files. They are
 %% requested to list a bibtex style file in the manuscript if they do
