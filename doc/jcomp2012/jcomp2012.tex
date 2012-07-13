@@ -453,14 +453,13 @@ two-dimensional time-dependent Poisson equation as a simple model
 problem
 
 \begin{equation}
-  \frac{\partial u}{\partial t} = \alpha \nabla^2 u
+  \frac{\partial u}{\partial t} = \nabla^2 u
   \label{eq:poisson_equation}
 \end{equation}
 
-where $\alpha$ is a constant coefficient. For all comparisons, a
-single time step is computed with backwards Euler time
-integration. The Laplacian is differenced on a square Cartesian grid
-with a second-order five point stencil
+For all comparisons, a single time step is computed with backwards
+Euler time integration. The Laplacian is differenced on a square
+Cartesian grid with a second-order five point stencil
 
 \begin{equation}
   \nabla^2_5 = \frac{1}{h^2}[u_{i-1,j} + u_{i+1,j} + u_{i,j-1} +
@@ -492,15 +491,15 @@ sparse linear system in Eq.~(\ref{eq:poisson_eq_lin_sys}).
 A timing study and convergence study is used to demonstrate the
 effectiveness of the adjoint method as compared to the direct
 method. To assess both the CPU time and number of iterations required
-to converge to a solution, a problem of constant grid size and
-$\alpha$ was used with varying values of problem size, fixing the
-spectral radius of the system at a constant value for each
-variation. Both the five point and nine point stencils were used with
-both the direct and adjoint solvers. For each case, 50 histories were
-simulated per cycle with a weight cutoff of $1.0E-4$ for the
-stochastic solver and a convergence tolerance of $1.0E-8$ for the MCSA
-solver. All computations were completed on a 2.66 GHz Intel Core i7
-machine with 8 GB 1067 MHz DDR3 memory.
+to converge to a solution, a problem of constant grid size and was
+used with varying values of problem size, fixing the spectral radius
+of the system at a constant value for each variation. Both the five
+point and nine point stencils were used with both the direct and
+adjoint solvers. For each case, 50 histories were simulated per cycle
+with a weight cutoff of $1.0E-4$ for the stochastic solver and a
+convergence tolerance of $1.0E-8$ for the MCSA solver. All
+computations were completed on a 2.66 GHz Intel Core i7 machine with 8
+GB 1067 MHz DDR3 memory.
 
 Fig.~\ref{fig:poisson_cpu_time} gives the CPU time needed for each case
 to converge in seconds and Fig.~\ref{fig:poisson_iterations} gives the
