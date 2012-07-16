@@ -16,4 +16,3 @@ all:
 	$(BIB) jcomp2012
 	$(PDFTEX) jcomp2012
 	$(PDFTEX) jcomp2012
-	$(PDF) jcomp2012

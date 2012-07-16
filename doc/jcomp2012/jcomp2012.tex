@@ -49,7 +49,8 @@
 %% use the graphics package for simple commands
 %% \usepackage{graphics}
 %% or use the graphicx package for more complicated commands
-%% \usepackage{graphicx}
+\usepackage{graphicx}
+\usepackage{subfigure}
 %% or use the epsfig package if you prefer to use the old commands
 %% \usepackage{epsfig}
 
@@ -60,6 +61,7 @@
 \usepackage{amsmath}
 \usepackage{tmadd,tmath}
 \usepackage[mathcal]{euscript}
+\usepackage{color}
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -129,8 +131,6 @@
 
 \begin{frontmatter}
 
-  %% Title, authors and addresses
-
   \title{A Monte Carlo Synthetic Acceleration Method for Solving the
     Thermal Radiation Diffusion Equation}
 
@@ -155,7 +155,6 @@
   \address[wisc]{University of Wisconsin-Madison, 1500 Engineering
     Dr., Madison, WI 53716 U.S.A.}
 
-  %%---------------------------------------------------------------------------%%
   \begin{abstract}
 
     We present a synthetic-acceleration based Monte Carlo method for
@@ -166,21 +165,11 @@
 
   \end{abstract}
 
-  %%---------------------------------------------------------------------------%%
   \begin{keyword}
-    %% keywords here, in the form: keyword \sep keyword
     radiation diffusion \sep Monte Carlo \sep sparse matrix systems
-    %% MSC codes here, in the form: \MSC code \sep code
-    %% or \MSC[2008] code \sep code (2000 is the default)
-
   \end{keyword}
 
 \end{frontmatter}
-
-%%
-%% Start line numbering here if you want
-%%
-% \linenumbers
 
 %% main text
 %%---------------------------------------------------------------------------%%
@@ -200,7 +189,7 @@ method and allows for extension to more general solution techniques.
 
 The purpose of this study is to demonstrate an efficient Monte Carlo
 solution method for 3D, time-dependent discrete systems.  In this
-note, we extend our previous work in the following manner:
+paper, we extend our previous work in the following manner:
 \begin{itemize}
 \item We develop a rigorous synthetic-acceleration Monte Carlo method
   for solving sparse matrix systems.
@@ -402,11 +391,11 @@ applied:
     \vx^{l+1} = \vx^{l} + \delta\vx^{l+1}\:.
   \end{gather}
 \end{subequations}
-In this scheme, the adjoint method is used to estimate the solution to
-Eq.~(\ref{eq:residual_solve}), and the residual is iterated to
-convergence.  This iteration sequence is closely related to iterative
-refinement; the exception being that there is no update to to
-$x^{l+1}$ between residual iterations.
+In this scheme, the Monte Carlo adjoint method is used to estimate the
+solution to Eq.~(\ref{eq:residual_solve}), and the residual is
+iterated to convergence.  This iteration sequence is closely related
+to iterative refinement; the exception being that there is no update
+to to $x^{l+1}$ between residual iterations.
 
 We propose a modification of this scheme that uses Monte Carlo as a
 synthetic-acceleration scheme for fixed-point iteration. The
@@ -442,7 +431,7 @@ based on the following stopping criterion~\cite{kelley_1995},
   \label{eq:stopping-criteria}
 \end{equation}
 
-\subsection{Justification of Adjoint Error Estimation}
+\subsection{Monte Carlo Method Selection and Convergence}
 
 The MCSA method defined in Eq.(~\ref{eq:general-MCSA}) uses the
 adjoint method in Eq.~(\ref{eq:MCSA-residual_solve}) to estimate the
@@ -500,13 +489,14 @@ convergence tolerance of $1.0E-8$ for the MCSA solver. All
 computations were completed on a 2.66 GHz Intel Core i7 machine with 8
 GB 1067 MHz DDR3 memory.
 
-Fig.~\ref{fig:poisson_cpu_time} gives the CPU time needed for each case
-to converge in seconds and Fig.~\ref{fig:poisson_iterations} gives the
-number of iterations needed for each case to converge. We see clearly
-in Fig.~\ref{fig:poisson_cpu_time} that the using the adjoint solver
-with MCSA results in several orders of magnitude speedup over the
-direct solver while the number of iterations required to converge is
-of a similar scale. We expect this for several reasons. First, with an
+Fig.~\ref{fig:poisson_cpu_time} gives the CPU time needed for each
+case to converge in seconds and Fig.~\ref{fig:poisson_iterations}
+gives the number of iterations needed for each case to converge
+relative to the problem size. We see clearly in
+Fig.~\ref{fig:poisson_cpu_time} that the using the adjoint solver with
+MCSA results in several orders of magnitude speedup over the direct
+solver while the number of iterations required to converge is of a
+similar scale. We expect this for several reasons. First, with an
 equivalent number of histories specified for both solvers and a system
 of size $N$, the direct solver will compute $N$ times the number of
 histories random walks while the adjoint solver will only compute the
@@ -527,9 +517,9 @@ computed by the adjoint method.
   \centering
   \includegraphics[width=5in,clip]{Adjoint_Direct_CPU_Time.eps}
   \caption{\sl CPU Time (s) to converge vs. Problem Size (N for an NxN
-    problem). Both the adjoint and direct solvers are used with the
-    five point and nine point stencils. A significant CPU time speedup
-    is noted with the adjoint method due to the reduced number of
+    mesh). Both the adjoint and direct solvers are used with the five
+    point and nine point stencils. A significant CPU time speedup is
+    noted with the adjoint method due to the reduced number of
     histories.}
   \label{fig:poisson_cpu_time}
 \end{figure}
@@ -538,9 +528,9 @@ computed by the adjoint method.
   \centering
   \includegraphics[width=5in,clip]{Adjoint_Direct_Iterations.eps}
   \caption{\sl Iterations to converge vs. Problem Size (N for an NxN
-    problem). Both the adjoint and direct solvers are used with the
-    five point and nine point stencils. Both methods give similar
-    iteration behavior.}
+    mesh. Both the adjoint and direct solvers are used with the five
+    point and nine point stencils. Both methods give similar iteration
+    behavior.}
   \label{fig:poisson_iterations}
 \end{figure}
 
@@ -868,10 +858,7 @@ be written in matrix-operator form as follows,
 where $\ve{D}$ is a symmetric, positive-definite (SPD) operator.
 Unfortunately, for many problems $\rho(\ve{D}) > 1$.  Therefore, we
 must precondition Eq.~(\ref{eq:diffusion-matrix}) in order to use the
-MCSA method.  Preconditioning accomplishes two purposes: it reduces
-the spectral radius of $\ve{D}$ so that Monte Carlo solution methods
-are applicable, and it reduces the number of iterations required for
-convergence.  We apply left-preconditioning and write
+MCSA method. We apply left-preconditioning and write
 \begin{equation}
   \ve{M}^{-1}\ve{D}\bphi = \ve{M}^{-1}\ve{q}\:.
   \label{eq:preconditioned-diffusion}
@@ -888,9 +875,9 @@ accomplishes several objectives:
   $\rho(\ve{M}^{-1}\ve{D}) < \rho(\ve{D})$ and
   $\rho(\ve{M}^{-1}\ve{D}) < 1$.  Thus, convergence is guaranteed and
   fewer iterations are required resulting in accelerated convergence.
-\item Makes the diagonal elements of the iteration matrix zero,
-  $\diag(\vI - \ve{M}^{-1}\ve{D}) = 0$.  Thus, there will be no time
-  wasted in transitions $i\rightarrow i$ during the random walk
+\item The diagonal elements of the preconditioned iteration matrix are
+  zero, $\diag(\vI - \ve{M}^{-1}\ve{D}) = 0$.  Thus, there will be no
+  time wasted in transitions $i\rightarrow i$ during the random walk
   process.
 \end{itemize}
 The second item is quite important for Monte Carlo solutions of linear
@@ -936,7 +923,8 @@ Eq.~(\ref{eq:discrete-diffusion}) yields
     - \frac{\sigm_{i+1}}{\sigT}\frac{\Delta_{i+1}}{\Di}&\phi_{i+1\,jk}
     - \frac{\sigp_{i-1}}{\sigT}\frac{\Delta_{i-1}}{\Di}\phi_{i-1\,jk}
     - \frac{\sigm_{j+1}}{\sigT}\frac{\Delta_{j+1}}{\Dj}\phi_{i\,j+1\,k} \\
-    &- \frac{\sigp_{j-1}}{\sigT}\frac{\Delta_{j-1}}{\Dj}\phi_{i\,j-1\,k} 
+    &-
+    \frac{\sigp_{j-1}}{\sigT}\frac{\Delta_{j-1}}{\Dj}\phi_{i\,j-1\,k}
     - \frac{\sigm_{k+1}}{\sigT}\frac{\Delta_{k+1}}{\Dk}\phi_{ij\,k+1}
     - \frac{\sigp_{k-1}}{\sigT}\frac{\Delta_{k-1}}{\Dk}\phi_{ij\,k-1}
     = \frac{\qn_{ijk}}{\sigT}\:.
@@ -954,14 +942,17 @@ Here we derive the equations required to solve
 Eq.~(\ref{eq:preconditioned-discrete-diffusion}) using the MCSA
 method.  As discussed in \S~\ref{sec:iter-refin-monte}, the MCSA
 method requires two solution steps:
+
 \begin{enumerate}
 \item A fixed-point iteration to estimate $\bphi^{l+1/2}$.  This is a
   matrix-vector multiply operation.
 \item An adjoint Monte Carlo solve to estimate $\delta\bphi^{l+1/2}$.
 \end{enumerate}
+
 For clarity, we rewrite the iteration scheme in
 Eqs.~(\ref{eq:general-MCSA}) using the diffusion operator notation
 from Eq.~(\ref{eq:preconditioned-diffusion}),
+
 \begin{align*}
   %%
   \bphi^{l+1/2} = (\vI - \ve{M}^{-1}\ve{D})\bphi^{l} +
@@ -976,6 +967,7 @@ from Eq.~(\ref{eq:preconditioned-diffusion}),
   \bphi^{l+1} = \bphi^{l+1/2} + \delta\bphi^{l+1/2}\:. \quad&
   (\text{update}\ \bphi)
 \end{align*}
+
 As described in \S~\ref{sec:iter-refin-monte}, the adjoint Monte Carlo
 method only approximately inverts $\ve{M}^{-1}\ve{D}$.  We now
 describe each of these steps in turn.
@@ -983,6 +975,7 @@ describe each of these steps in turn.
 First, we use Eq.~(\ref{eq:preconditioned-discrete-diffusion}) to
 evaluate $\bphi^{l+1/2}$ via a single fixed-point iteration as
 follows:
+
 \begin{equation}
   \begin{aligned}
     \phi_{ijk}^{l+1/2} =  
@@ -996,6 +989,7 @@ follows:
     + \frac{\qn_{ijk}}{\sigT}\:.
   \end{aligned}
 \end{equation}
+
 This result is used to compute the residual of the system.  The
 residual then becomes the source for the Monte Carlo simulation.
 
@@ -1333,7 +1327,7 @@ using a stopping criterion of $\sn{1}{-8}$.
 
 \begin{figure}[htpb!]
   \begin{center}
-    \begin{tabular}{m{2in}m{4in}}
+    \begin{tabular}{cc}
       \subfigure[Edit points]{\includegraphics[width=2in,clip]{points.eps}} &
       \subfigure[Temperature]{\includegraphics[width=4in,clip]{multi_mat.eps}}
     \end{tabular}
