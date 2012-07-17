@@ -183,7 +183,7 @@ thermal radiation diffusion equation.  At that time, Halton's method
 was not widely known in computational physics.  While extending our
 method to 3D, we have discovered that the Sequential Monte Carlo
 method is actually a variant of iterative refinement cast as a
-residual method.  Using Monte Carlo to accelerate fixed-point
+residual method.  Using Monte Carlo to accelerate a fixed-point
 (Richardson) iteration, our new method surpasses our previous 1D
 method and allows for extension to more general solution techniques.
 
@@ -654,8 +654,17 @@ Fig.~\ref{fig:cell} gives
   \sign_{ijk}\phi_{ijk}V_{ijk}=\qn_{ijk}V_{ijk}\:,
   \label{eq:flux-balance-vol-integral}
 \end{equation}
-and $V_{ijk} = \Delta_i\Delta_j\Delta_k$.  We now apply the divergence
-theorem,
+and $V_{ijk} = \Delta_i\Delta_j\Delta_k$.  
+
+\begin{figure}[htpb!]
+  \centerline{
+    \input{mesh_cell.pdftex_t}}
+  \caption{Mesh Cell.}
+  \label{fig:cell}
+\end{figure}
+
+
+We now apply the divergence theorem,
 \begin{equation}
   \begin{split}
     \iiint\dive{F}\,d\ve{r} &= \oint\hat{\ve{n}}\cdot\ve{F}\,dA\\
@@ -1328,8 +1337,8 @@ using a stopping criterion of $\sn{1}{-8}$.
 \begin{figure}[htpb!]
   \begin{center}
     \begin{tabular}{cc}
-      \subfigure[Edit points]{\includegraphics[width=2in,clip]{points.eps}} &
-      \subfigure[Temperature]{\includegraphics[width=4in,clip]{multi_mat.eps}}
+      \subfigure[Edit points]{\includegraphics[width=1.5in,clip]{points.eps}} &
+      \subfigure[Temperature]{\includegraphics[width=3.5in,clip]{multi_mat.eps}}
     \end{tabular}
   \end{center}
   \caption{(a) Edit points and (b) time-evolution of the temperature

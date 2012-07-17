@@ -11,7 +11,7 @@ mesh_cell.pdf: mesh_cell.fig
 	fig2dev -L pdftex -p 3D_mesh_segment.pdf -m 0.4 3D_mesh_segment.fig 3D_mesh_segment.pdf
 	fig2dev -L pdftex_t -p 3D_mesh_segment.pdf -m 0.4 3D_mesh_segment.fig 3D_mesh_segment.pdftex_t
 
-all: 3D_mesh_segment.pdf
+all: 3D_mesh_segment.pdf mesh_cell.pdf
 	$(PDFTEX) jcomp2012
 	$(BIB) jcomp2012
 	$(PDFTEX) jcomp2012
