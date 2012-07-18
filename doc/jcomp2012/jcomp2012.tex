@@ -100,6 +100,7 @@
 \newcommand{\vb}{\ensuremath{\ve{b}}}
 \newcommand{\vx}{\ensuremath{\ve{x}}}
 \newcommand{\vr}{\ensuremath{\ve{r}}}
+\newcommand{\vu}{\ensuremath{\ve{u}}}
 \newcommand{\vI}{\ensuremath{\ve{I}}}
 \newcommand{\vH}{\ensuremath{\ve{H}}}
 \newcommand{\vP}{\ensuremath{\ve{P}}}
@@ -158,15 +159,16 @@
   \begin{abstract}
 
     We present a synthetic-acceleration based Monte Carlo method for
-    solving the 1T thermal radiation diffusion equations.  We show
-    that this method can be an effective solver for sparse matrix
-    systems.  We also discuss its general applicability to broader
-    classes of problems.
+    solving the 1T thermal radiation diffusion equation.  We show that
+    this method can be an effective solver for sparse matrix systems
+    and is competitive with deterministic methods.  We also discuss
+    its general applicability to broader classes of problems.
 
   \end{abstract}
 
   \begin{keyword}
-    radiation diffusion \sep Monte Carlo \sep sparse matrix systems
+    radiation diffusion \sep synthetic acceleration \sep Monte Carlo
+    \sep sparse matrix systems
   \end{keyword}
 
 \end{frontmatter}
@@ -188,14 +190,16 @@ residual method.  Using Monte Carlo to accelerate a fixed-point
 method and allows for extension to more general solution techniques.
 
 The purpose of this study is to demonstrate an efficient Monte Carlo
-solution method for 3D, time-dependent discrete systems.  In this
-paper, we extend our previous work in the following manner:
+solution method for 3D, time-dependent discrete systems. In this
+work, we extend our previous work in the following manner:
+
 \begin{itemize}
 \item We develop a rigorous synthetic-acceleration Monte Carlo method
   for solving sparse matrix systems.
 \item We apply this solver to the 1T thermal radiation diffusion
   equation in 3D.
 \end{itemize}
+
 In \S~\ref{sec:monte-carlo-matrix} we review Monte Carlo methods for
 solving matrix systems. In \S~\ref{sec:iter-refin-monte} we discuss
 our new synthetic-acceleration scheme and connect with previous work
@@ -212,11 +216,14 @@ for future work in \S~\ref{sec:conclusions}.
 \label{sec:monte-carlo-matrix}
 
 Consider the following matrix equation:
+
 \begin{equation}
   \vA\vx = \vb\:,
   \label{eq:Ax=b}
 \end{equation}
+
 which can be written,
+
 \begin{equation}
   \begin{split}
     \vx &= (\vI - \vA)\vx + \vb\\
@@ -224,17 +231,23 @@ which can be written,
   \end{split}
   \label{eq:point_iteration}
 \end{equation}
+
 Here, $\vH = (\vI - \vA)$ is the \latin{iteration matrix}.  When the
 spectral radius, $\rho(\vH)$, of the iteration matrix satisfies
+
 \begin{equation}
   \rho(\vH) < 1\:,
 \end{equation}
+
 we can expand $\vA^{-1}$ using the \latin{Neumann Series},
+
 \begin{equation}
   \vA^{-1} = (\vI - \vH)^{-1} =  \sum_{k=0}^{\infty} \vH^k\:.
 \end{equation} 
+
 Thus, when $\rho(\vH) < 1$ we can recast the solution vector $\vx$ as
 a series,
+
 \begin{equation}
   \begin{split}
     \vx &= (\vI - \vH)^{-1}\vb\\
@@ -242,22 +255,26 @@ a series,
     \label{eq:neumann_series}
   \end{split}
 \end{equation}
+
 With this knowledge in hand, we can write an iterative method that
 solves Eq.~(\ref{eq:Ax=b}) (Richardson's Iteration),
+
 \begin{equation}
   \vx^{k+1} = \vH\vx^k + \vb\:.
   \label{eq:richardson}
 \end{equation}
+
 Equation~(\ref{eq:richardson}) will converge when $\rho(\vH) < 1\ 
 \forall\ \vb \in \mathcal{R}^{N}$~\cite{kelley_1995}.
 
 \subsection{Direct Method}
 \label{sec:direct-method}
 
-Now we consider a Monte Carlo method that can be used to estimate the solution
-to Eq.~(\ref{eq:Ax=b})~\cite{hammersley_1964}.  First, rewrite
-Eq.~(\ref{eq:neumann_series}) in order to calculate a component of
-$\vx$,
+Now we consider a Monte Carlo method that can be used to estimate the
+solution to Eq.~(\ref{eq:Ax=b})~\cite{hammersley_1964}.  First,
+rewrite Eq.~(\ref{eq:neumann_series}) in order to calculate a
+component of $\vx$,
+
 \begin{equation}
   \begin{split}
     x_i &= (\vb)_i + (\vH\vb)_i + (\vH^2\vb)_i + (\vH^3\vb)_i +
@@ -267,10 +284,12 @@ $\vx$,
   \end{split}
   \label{eq:neumann_series_i}
 \end{equation}
-This series can be interpreted as a series of transitions from
-$i_{m-1}\rightarrow i_m$ that can be simulated by a random walk.
-Let $X$ be a random variable sampled from a random walk with $k$
-events that initiates in state $i$,
+
+The terms in the Neumann series can be interpreted as a series of
+transitions from $i_{m-1}\rightarrow i_m$ that can be simulated by a
+random walk.  Let $X$ be a random variable sampled from a random walk
+with $k$ events (particles) that initiates in state $i$,
+
 \begin{equation}
   \begin{split}
     X(i_0 = i) &= \sum_{m=0}^{k}W_m b_{i_m}\\
@@ -279,15 +298,26 @@ events that initiates in state $i$,
   \end{split}
   \label{eq:estimator_xi}
 \end{equation}
+
 Here, the particle weight on the $m^\text{th}$ step is denoted $W_m$,
-and each particle starts with unit weight. When the particle
-transitions between states, for example $i\rightarrow j$, the weight
-is multiplied by the factor
+and each particle starts with unit weight. At every step,
+contributions to each component of $X$ are provided only by the
+starting state of the particle, $b_{i_m}$. Therefore, for a given
+random walk permutation, each state must be used as a starting value
+in order to calculated its contribution to the expectation value
+(i.e. a state of size $N$ will have $N$ particles per random walk
+permutation). When the particle transitions between states, for
+example $i\rightarrow j$, the particle weight is multiplied by the
+transition factor.
+
 \begin{equation}
-  w_{ij} = \frac{h_{ij}}{p_{ij}}\:.
+  w_{ij} = \frac{h_{ij}}{p_{ij}}\:,
   \label{eq:weight}
 \end{equation}
-Then, the expected value of $X$ is
+
+where $p_{ij}$ denotes the probability of transitioning from state $i$
+to $j$. Then, the expected value of $X$ is
+
 \begin{equation}
   \begin{split}
     E[X(i_0=i)] &= \sum_{\nu}P_\nu X_\nu\\
@@ -298,24 +328,28 @@ Then, the expected value of $X$ is
   \end{split}
   \label{eq:expectation_xi}
 \end{equation}
+
 where $\nu$ denotes a particular random walk permutation.
 Therefore, the estimator in Eq.~(\ref{eq:estimator_xi}) is an unbiased
 estimator of the components of $\vx$ provided $\rho(\vH) < 1$.
 
 We are left to define the transition probabilities, $p_{ij}$. The most
 straightforward approach is to set
+
 \begin{equation}
   p_{ij} = \frac{|h_{ij}|}{\sum_{j}|h_{ij}|}\:.
   \label{eq:probability}
 \end{equation}
+
 Each row of the transition probability matrix, $\vP$, represents a
-discrete probability density function for selecting a new state $j$,
-given that the current state is $i$.  Random walks can be terminated
-in two ways: the matrix can be augmented with a terminating event
-equation that describes the probability that a particle ends its walk,
-or the random walk can be terminated by weight cutoff.  Generally, we
-choose to terminate random walks using a weight cutoff as opposed to
-augmenting the matrix.
+discrete probability density function that can be sampled to select a
+new state $j$, given that the current state is $i$.  Random walks can
+be terminated in two ways: the matrix can be augmented with a
+terminating event equation that describes the probability that a
+particle ends its walk, or the random walk can be terminated by weight
+cutoff, $W_c$.  Generally, we choose to terminate random walks using a
+weight cutoff as opposed to augmenting the matrix sucth that the
+random walk terminates when $W_m < W_c$.
 
 \subsection{Adjoint Method}
 \label{sec:adjoint-method}
@@ -326,20 +360,25 @@ the mathematical literature this is referred to as an adjoint method;
 however, to transport practitioners this approach more closely
 resembles a traditional forward method.  In this method, the weight
 change from state $i\rightarrow j$ is
+
 \begin{equation}
   w_{ij} = \frac{h_{ji}}{p_{ij}}\:.
   \label{eq:adjoint-weight}
 \end{equation}
+
 The transition probabilities may be calculated as
+
 \begin{equation}
   p_{ij} = \frac{|h_{ji}|}{\sum_{j}|h_{ji}|}\:.
   \label{eq:adjoint-probability}
 \end{equation}
+
 Note that the indices are reversed so that the probabilities are
 normalized over a column, as opposed to the forward method in which
 the probabilities are normalized over a row.  This is equivalent to
 forming the Neumann series in reverse order.  Correspondingly, the
 estimator for this method is
+
 \begin{equation}
   \begin{split}
     X &= \sum_{m=0}^{k}W_m\delta_{i_m,i}\\
@@ -348,24 +387,30 @@ estimator for this method is
   \end{split}
   \label{eq:adjoint-tally}
 \end{equation}
-Here, $\hat{b}_{i_0}$ is the sampled source in cell/state $i_0$.  The
-Kronecker delta implies that tallies are only made in the cell/state
-where the random walk currently resides.  This is the common approach
-in standard Monte Carlo transport simulations.  We will investigate
-this approach as applied to the 1T thermal radiation diffusion
-problem in \S~\ref{sec:solut-radi-diff}.
+
+Here, $\hat{b}_{i_0}$ is the sampled source and initial particle
+weight in state $i_0$.  The Kronecker delta implies that tallies are
+only made in the state where the random walk currently resides.  This
+is the common approach in standard Monte Carlo transport
+simulations. Unlike the direct method, because tallies are made in the
+state in which the particle currently resides, we are no longer
+required to start a particle in each state for each random walk
+permutation. Instead, sampling the source is suffucient and requires
+only one particle per permutation.
 
 Similar to the Direct Method, the Adjoint Method random walk process
 requires a terminating condition.  In all of the work that follows we
 utilize a relative weight cutoff.  The weight cutoff is defined as a
 fraction of the starting weight such that
+
 \begin{equation}
   W_f = W_c\hat{b}_{i_0}\:,
   \label{eq:weight_cutoff}
 \end{equation}
+
 where $W_f$ is the terminating weight of the random walk, $W_c$ is the
 input relative weight cutoff, and $\hat{b}_{i_0}$ is the initial
-weight of the source particle.  The random walk ends on the
+weight of the source particle.  The random walk terminates on the
 $m^\text{th}$ step if $W_m < W_f$.
 
 %%---------------------------------------------------------------------------%%
@@ -373,17 +418,18 @@ $m^\text{th}$ step if $W_m < W_f$.
 \label{sec:iter-refin-monte}
 
 The methods presented in \S~\ref{sec:monte-carlo-matrix} are
-characterized by slow convergence rates.
-Halton~\cite{halton_1962,halton_1994} proposed a staged residual
-scheme called Sequential Monte Carlo to speed up the convergence of
-these methods.  A variant of this scheme has been successfully applied
-to the 1D nonlinear thermal radiation diffusion equation in
-Ref.~\cite{evans_2003}.
+characterized by slow convergence rates bound by the Central Limit
+Theorem.  Halton~\cite{halton_1962,halton_1994} proposed a staged
+residual scheme called Sequential Monte Carlo to speed up the
+convergence of these methods.  A variant of this scheme has been
+successfully applied to the 1D nonlinear thermal radiation diffusion
+equation in Ref.~\cite{evans_2003}.
 
 Concisely, the Sequential Monte Carlo method solves
 Eq.~(\ref{eq:Ax=b}) using the adjoint solution technique described in
 \S~\ref{sec:adjoint-method}.  The following iteration scheme is
 applied:
+
 \begin{subequations}
   \begin{gather}
     \vr^{l+1} = \vb - \vA\vx^{l}\:, \\
@@ -391,6 +437,7 @@ applied:
     \vx^{l+1} = \vx^{l} + \delta\vx^{l+1}\:.
   \end{gather}
 \end{subequations}
+
 In this scheme, the Monte Carlo adjoint method is used to estimate the
 solution to Eq.~(\ref{eq:residual_solve}), and the residual is
 iterated to convergence.  This iteration sequence is closely related
@@ -398,14 +445,55 @@ to iterative refinement; the exception being that there is no update
 to to $x^{l+1}$ between residual iterations.
 
 We propose a modification of this scheme that uses Monte Carlo as a
-synthetic-acceleration scheme for fixed-point iteration. The
-Fixed-Point Monte Carlo Synthetic-Acceleration (MCSA) method is
-defined as follows:
+synthetic-acceleration scheme for fixed-point iteration. We begin by
+subtracting Eq.~(\ref{eq:richardson}) from Eq:~(\ref{eq:point_iteration}):
+
+\begin{equation}
+  \delta \vx^{l+1} = (\vI - \vA)\delta \vx^{l}\:,
+  \label{eq:synthetic_error}
+\end{equation}
+
+where
+
+\begin{equation}
+  \delta \vx^{l+1} = \vx - \vx^{l+1}
+  \label{eq:lplus1error}
+\end{equation}
+
+is defined as the error at iteration $l+1$. We then subtract
+$(\vI-\vA) \delta \vx^{l+1}$ from Eq.~(\ref{eq:synthetic_error}) giving:
+
+\begin{equation}
+  \vA \delta \vx^{l+1} = (\vI - \vA)(\vx^{l+1} - \vx^{l})\:.
+  \label{eq:synthetic_error2}
+\end{equation}
+
+The following iterative scheme will then converge in one iteration:
+
 \begin{subequations}
   \begin{gather}
-    \vx^{l+1/2} = (\vI - \vA)\vx^l + \vb\:, \\
+    \vx^{l+1} = (\vI - \vA)\vx^l + \vb\:,\\
     %%
-    \vr^{l+1/2} = \vb - \vA\vx^{l+1/2}\:,\\
+    \vA \delta \vx^{l+1} = (\vI - \vA)(\vx^{l+1} - \vx^{l})\:.
+    \label{eq:synthetic-residual_solve}\\ 
+    %% 
+    \vx=\vx^{l+1}+\delta\vx^{l+1}\:.
+  \end{gather}
+  \label{eq:general-synthetic}
+\end{subequations}
+
+To accelerate the fixed point method, we can instead create a new
+iterative scheme by approximating the operator $\vA$ using the Monte
+Carlo method to estimate the solution error. With this idea hand, the
+Fixed-Point Monte Carlo Synthetic-Acceleration (MCSA) method can be
+defined as follows:
+
+\begin{subequations}
+  \begin{gather}
+    \vx^{l+1/2} = (\vI - \vA)\vx^l + \vb\:,\\
+    %%
+    \vr^{l+1/2} = \vb - \vA\vx^{l+1/2}\:,
+    \label{eq:MCSA-residual}\\     
     %%
     \hat{\vA}\delta\vx^{l+1/2} = \vr^{l+1/2}\:,
     \label{eq:MCSA-residual_solve}\\ 
@@ -414,6 +502,7 @@ defined as follows:
   \end{gather}
   \label{eq:general-MCSA}
 \end{subequations}
+
 The hat on $\vA$ in Eq.~(\ref{eq:MCSA-residual_solve}) indicates that
 the Monte Carlo solution only approximately inverts this operator.
 However, $\hat{\vA}$ is the same operator as $\vA$;
@@ -422,26 +511,27 @@ initial estimate of $\vx$ in each iteration is updated using a single
 fixed-point iteration\footnote{Although, a Krylov method could be used
   here.}.  The residual is calculated and is used as a source to
 estimate the error, $\delta\vx^{l+1/2}$, by solving
-Eq.~(\ref{eq:MCSA-residual_solve}) via the Monte Carlo adjoint method.
-The error is used to calculate an updated iterate of the solution
-vector, $\vx^{l+1}$.  The entire sequence is iterated to convergence
-based on the following stopping criterion~\cite{kelley_1995},
+Eq.~(\ref{eq:MCSA-residual_solve}) via the Monte Carlo adjoint
+method. The error is then used to calculate an updated iterate of the
+solution vector, $\vx^{l+1}$.  The entire sequence is iterated to
+convergence based on the following stopping
+criterion~\cite{kelley_1995},
 \begin{equation}
   \|\vr\|_{\infty} < \epsilon\cdot\|\vb\|_\infty\:.
   \label{eq:stopping-criteria}
 \end{equation}
 
-\subsection{Monte Carlo Method Selection and Convergence}
+\subsection{Monte Carlo Method Selection}
 
 The MCSA method defined in Eq.(~\ref{eq:general-MCSA}) uses the
 adjoint method in Eq.~(\ref{eq:MCSA-residual_solve}) to estimate the
-error instead of the direct method. To demonstrate the effectiveness
-of the adjoint method over the direct method, we choose the
-two-dimensional time-dependent Poisson equation as a simple model
-problem
+error instead of the direct method outlined in
+\S~\ref{sec:direct-method}. To demonstrate the effectiveness of the
+adjoint method over the direct method, we choose the two-dimensional
+time-dependent Poisson equation as a simple model problem:
 
 \begin{equation}
-  \frac{\partial u}{\partial t} = \nabla^2 u
+  \frac{\partial \vu}{\partial t} = \nabla^2 \vu\:.
   \label{eq:poisson_equation}
 \end{equation}
 
@@ -450,26 +540,26 @@ Euler time integration. The Laplacian is differenced on a square
 Cartesian grid with a second-order five point stencil
 
 \begin{equation}
-  \nabla^2_5 = \frac{1}{h^2}[u_{i-1,j} + u_{i+1,j} + u_{i,j-1} +
+  \nabla^2_5 = \frac{1}{\Delta^2}[u_{i-1,j} + u_{i+1,j} + u_{i,j-1} +
     u_{i,j+1} - 4 u_{i,j}]
   \label{eq:five_point_stencil}
 \end{equation}
 
-and a fourth-order nine point stencil both assuming a grid size of $h$
-in both the $i$ and $j$ directions.
+and a fourth-order nine point stencil both assuming a grid size of
+$\Delta$ in both the $i$ and $j$ directions.
 
-\begin{equation}
-  \nabla^2_9 = \frac{1}{6h^2}[4 u_{i-1,j} + 4 u_{i+1,j} + 4 u_{i,j-1}
-    + 4 u_{i,j+1} + u_{i-1,j-1} + u_{i-1,j+1} + u_{i+1,j-1} +
-    u_{i+1,j+1} - 20 u_{i,j}]
+\begin{multline}
+  \nabla^2_9 = \frac{1}{6\Delta^2}[4 u_{i-1,j} + 4 u_{i+1,j} + 4
+    u_{i,j-1} + 4 u_{i,j+1} + u_{i-1,j-1}\\
+    + u_{i-1,j+1} + u_{i+1,j-1} + u_{i+1,j+1} - 20 u_{i,j}]
   \label{eq:nine_point_stencil}
-\end{equation}
+\end{multline}
 
-For a single time step solution, we then have the following linear
-system to be solved with the MCSA method.
+For a single time step solution, we then have the following sparse
+linear system to be solved with the MCSA method.
 
 \begin{equation}
-  A u^{n+1} = u^n
+  \vA \vu^{n+1} = \vu^n
   \label{eq:poisson_eq_lin_sys}
 \end{equation}
 
@@ -479,72 +569,73 @@ sparse linear system in Eq.~(\ref{eq:poisson_eq_lin_sys}).
 A timing study and convergence study is used to demonstrate the
 effectiveness of the adjoint method as compared to the direct
 method. To assess both the CPU time and number of iterations required
-to converge to a solution, a problem of constant grid size and was
-used with varying values of problem size, fixing the spectral radius
-of the system at a constant value for each variation. Both the five
-point and nine point stencils were used with both the direct and
-adjoint solvers. For each case, 50 histories were simulated per cycle
-with a weight cutoff of $1.0E-4$ for the stochastic solver and a
-convergence tolerance of $1.0E-8$ for the MCSA solver. All
-computations were completed on a 2.66 GHz Intel Core i7 machine with 8
-GB 1067 MHz DDR3 memory.
-
-Fig.~\ref{fig:poisson_cpu_time} gives the CPU time needed for each
-case to converge in seconds and Fig.~\ref{fig:poisson_iterations}
-gives the number of iterations needed for each case to converge
-relative to the problem size. We see clearly in
-Fig.~\ref{fig:poisson_cpu_time} that the using the adjoint solver with
-MCSA results in several orders of magnitude speedup over the direct
-solver while the number of iterations required to converge is of a
-similar scale. We expect this for several reasons. First, with an
-equivalent number of histories specified for both solvers and a system
-of size $N$, the direct solver will compute $N$ times the number of
-histories random walks while the adjoint solver will only compute the
-number of histories specified. Initially, this may not seem like a
-fair comparison, however, we see from Fig.~\ref{fig:poisson_cpu_time}
-that the number of iterations requried to converge is approximately
-the same. This is necessary in the direct method to ensure a
-contribution from each state as the random walk sequence will only
-contribute to the starting state. For the adjoint method, because the
-random sequence contributes to the state in which it currently
-resides, fewer histories are neccessary to compute contributions from
-all the nonzero parts of the source. Therefore, although the total
-number of histories per cycle is in fact larger for the direct method,
-the solution computed at each iteration is no better than that
-computed by the adjoint method.
+to converge to a solution, a problem of constant $\Delta$ and was used
+with varying values of grid size, fixing the spectral radius of the
+system at a constant value for each variation. Both the five point and
+nine point stencils were used with both the direct and adjoint
+solvers. For each case, 50 random walk permuations were simulated per
+iteration with a weight cutoff of $1.0E-4$ for the stochastic linear
+solver and a convergence tolerance of $1.0E-8$ for the MCSA iterative
+solver. All computations were completed on a 2.66 GHz Intel Core i7
+machine with 8 GB 1067 MHz DDR3 memory used for all computations
+presented in this section. Fig.~\ref{fig:poisson_cpu_time} gives the
+CPU time needed for each case to converge in seconds and
+Fig.~\ref{fig:poisson_iterations} gives the number of iterations
+needed for each case to converge relative to the problem size.
 
 \begin{figure}[htpb!]
   \centering
   \includegraphics[width=5in,clip]{Adjoint_Direct_CPU_Time.eps}
-  \caption{\sl CPU Time (s) to converge vs. Problem Size (N for an NxN
-    mesh). Both the adjoint and direct solvers are used with the five
-    point and nine point stencils. A significant CPU time speedup is
-    noted with the adjoint method due to the reduced number of
-    histories.}
+  \caption{\sl CPU Time (s) to converge vs. Problem Size ($N$ for an
+    $N \times N$ mesh). Both the adjoint and direct solvers are used
+    with the five point and nine point stencils. A significant CPU
+    time speedup is noted with the adjoint method due to the reduced
+    number of histories.}
   \label{fig:poisson_cpu_time}
 \end{figure}
 
 \begin{figure}[htbp!]
   \centering
   \includegraphics[width=5in,clip]{Adjoint_Direct_Iterations.eps}
-  \caption{\sl Iterations to converge vs. Problem Size (N for an NxN
-    mesh. Both the adjoint and direct solvers are used with the five
-    point and nine point stencils. Both methods give similar iteration
-    behavior.}
+  \caption{\sl Iterations to converge vs. Problem Size ($N$ for an $N
+    \times N$ mesh. Both the adjoint and direct solvers are used with
+    the five point and nine point stencils. Both methods give similar
+    iteration behavior.}
   \label{fig:poisson_iterations}
 \end{figure}
+
+We see clearly in Fig.~\ref{fig:poisson_cpu_time} that the using the
+adjoint solver with MCSA results in several orders of magnitude
+speedup over the direct solver while the number of iterations required
+to converge is of a similar scale. We expect this for several
+reasons. First, with an equivalent number of histories specified for
+both solvers and a system of size $N \times N$, the direct solver will
+compute $N \times N$ random walks per permuation while the adjoint solver
+will only compute one. Initially, this may not seem like a fair
+comparison, however, we see from Fig.~\ref{fig:poisson_cpu_time} that
+the number of iterations requried to converge is approximately the
+same. This is necessary in the direct method to ensure a contribution
+from each state as the random walk sequence will only contribute to
+the starting state. For the adjoint method, because the random walk
+sequence contributes to the state in which it currently resides, fewer
+histories are neccessary to compute contributions from all the nonzero
+parts of the source. Therefore, although the total number of random
+walks per iteration is in fact larger for the direct method, the
+solution computed at each iteration is no better than that computed by
+the adjoint method.
 
 Although CPU time is shown to be greatly decreased by using the
 adjoint solver in Fig.~\ref{fig:poisson_cpu_time}, the iteration
 behavior was approximately the same. To assess the convergence
 properties of MCSA using each solver and stencil, the infinity norm of
-the residual computed in Eq.~(\ref{eq:general-MCSA}) was computed at
+the residual computed in Eq.~(\ref{eq:general-MCSA}) was collected at
 each iteration for a fixed problem
 size. Fig.~\ref{fig:poisson_convergence} gives the results of these
 computations. First, it is worthy to note on the semilog plot that we
 are indeed achieving the expected exponential convergence from
 MCSA. Second, we note that both the direct and adjoint methods have
-approximately equivalent convergence behavior. 
+approximately equivalent convergence behavior, leading to CPU time
+being the dominating factor in method selection.
 
 \begin{figure}[htpb!]
   \centering
@@ -564,11 +655,13 @@ approximately equivalent convergence behavior.
 
 The general form of the equilibrium diffusion equation is
 \cite{morel_1996}
+
 \begin{equation} 
   (\rho\Cv + 4aT^{3})\pder{T}{t} -
   \nabla\cdot{\Bigl(\frac{4acT^{3}}{3\ros}\Bigr)\grad{T}} = Q\:,
   \label{eq:eq-diff-T}
 \end{equation}
+
 where $\Cv\equiv\Cv(\ve{r},T(\ve{r},t))$
 $[\text{Jerks}\cdot\text{g}^{-1}\cdot\text{keV}^{-1}]$ is the specific
 heat capacity of the material, $\rho\equiv\rho(\ve{r})$
@@ -587,6 +680,7 @@ We chose to use the angle-energy integrated radiation intensity,
 $\phi\equiv\phi(\ve{r},t)$
 $[\text{Jerks}\cdot\text{cm}^{-2}\cdot\text{sh}^{-1}]$, as the primary
 state variable.  The intensity is defined,
+
 \begin{equation}
   \label{eq:lte-phi}
   \begin{split}
@@ -596,29 +690,39 @@ state variable.  The intensity is defined,
     &= acT^{4}\:,
   \end{split}
 \end{equation}
-where $\psi$ is the angular radiation intensity.  The Planck function
-(or Planckian) is defined as,
+
+where $\psi$ is the angular radiation intensity and $\nu$ is the
+radiation frequency.  The Planck function (or Planckian) is defined
+as,
+
 \begin{equation}
   B(\nu,T)=\frac{2h\nu^{3}}{c^{2}}\bigl(e^{\frac{h\nu}{kT}} -
   1\bigr)^{-1}\:,
 \end{equation}
+
 where $h$ is Planck's constant and $k$ is the Boltzmann constant.
 Utilizing this definition of $\phi$ we can write
+
 \begin{equation}
   \label{eq:partial-T}
   \partial T = \frac{1}{4acT^{3}}\partial\phi\:.
 \end{equation}
+
 Inserting \eqref{eq:partial-T} into \eqref{eq:eq-diff-T} yields
+
 \begin{equation}
   \label{eq:eq-diff}
-  \Bigl(\frac{\Cv}{4acT^{3}} + \frac{1}{c}\Bigr)\pder{\phi}{t} - 
+  \Bigl(\frac{\rho\Cv}{4acT^{3}} + \frac{1}{c}\Bigr)\pder{\phi}{t} - 
   \nabla\cdot D\grad{\phi} = Q\:,
 \end{equation}
+
 where $D$ is the diffusion coefficient, $D\equiv
 D(\ve{r},T(\ve{r},t))\ [\text{cm}]$, and is defined
+
 \begin{equation}
   D = \frac{1}{3\ros}\:.
 \end{equation}
+
 Equation~\eqref{eq:eq-diff} is the model equation we will solve using
 the Monte Carlo techniques presented in
 \S~\ref{sec:monte-carlo-matrix} and \ref{sec:iter-refin-monte}.
@@ -627,56 +731,68 @@ the Monte Carlo techniques presented in
 
 Applying backward-Euler time differencing to Eq.~(\ref{eq:eq-diff})
 and lagging the temperature-dependent coefficients at $t^n$ gives
+
 \begin{equation}
   -\nabla\cdot \Dn\grad{\phi} + \sign\phi = \qn\:,
 \end{equation}
+
 where we have suppressed the $n+1$ indices on $\phi$ and 
+
 \begin{align}
   \sign &= \frac{\rho \Cv^n}{4ac(\Tn)^3\dt} + \frac{1}{c\dt}\:,\\
   \qn &= \sign\phin + Q^n\:,\\
   \phin &= ac(\Tn)^4\:.
 \end{align}
+
 Applying Fick's Law,
+
 \begin{equation}
   \ve{F} = -D\grad{\phi}\:,
   \label{eq:fick}
 \end{equation}
+
 where $\ve{F}$ is the radiation flux, we define a flux-balance
 equation,
+
 \begin{equation}
   \dive{F} + \sign\phi = \qn\:.
   \label{eq:flux-balance}
 \end{equation}
+
 Integrating Eq.~(\ref{eq:flux-balance}) over the cell illustrated in
 Fig.~\ref{fig:cell} gives
+
 \begin{equation}
   \iiint\dive{F}\,d\ve{r} +
   \sign_{ijk}\phi_{ijk}V_{ijk}=\qn_{ijk}V_{ijk}\:,
   \label{eq:flux-balance-vol-integral}
 \end{equation}
+
 and $V_{ijk} = \Delta_i\Delta_j\Delta_k$.  
 
 \begin{figure}[htpb!]
   \centerline{
     \input{mesh_cell.pdftex_t}}
-  \caption{Mesh Cell.}
+  \caption{Orthogonal 3D mesh Cell.}
   \label{fig:cell}
 \end{figure}
 
-
 We now apply the divergence theorem,
+
 \begin{equation}
   \begin{split}
     \iiint\dive{F}\,d\ve{r} &= \oint\hat{\ve{n}}\cdot\ve{F}\,dA\\
     &= \sum_{f=1}^{6}\hat{\ve{n}}_f\cdot\ve{F}_f A_f\:,
   \end{split}
 \end{equation}
+
 to Eq.(\ref{eq:flux-balance-vol-integral}) yielding
+
 \begin{equation}
   \begin{split}
-    (F_{i+1/2} - F_{i-1/2})\Dj\Dk + (F_{j+1/2} &- F_{j-1/2})\Di\Dk \\
-    &+ (F_{k+1/2} - F_{k-1/2})\Di\Dj
-    + \sign_{ijk}\phi_{ijk}V_{ijk} = \qn_{ijk}V_{ijk}\:.
+    (F_{i+1/2} - F_{i-1/2})\Dj\Dk + (F_{j+1/2} &- F_{j-1/2})\Di\Dk +
+    (F_{k+1/2}\\ &- F_{k-1/2})\Di\Dj + \sign_{ijk}\phi_{ijk}V_{ijk} =
+    \qn_{ijk}V_{ijk}\:.
   \end{split}
   \label{eq:flux-balance-difference}
 \end{equation}
@@ -684,20 +800,25 @@ to Eq.(\ref{eq:flux-balance-vol-integral}) yielding
 Using Fick's Law, Eq.~(\ref{eq:fick}), we can write $O(\Delta^2)$
 expressions for the face-centered fluxes.  Defining $l\in\{i,j,k\}$,
 the face-centered fluxes are
+
 \begin{align}
   F_{l+1/2} &= -D_{l+1/2}\frac{\phi_{l+1} -
     \phi_{l}}{\Delta_{l+1/2}}\:, \label{eq:F_l+1/2}\\
   F_{l-1/2} &= -D_{l-1/2}\frac{\phi_{l} -
     \phi_{l-1}}{\Delta_{l-1/2}}\:, \label{eq:F_l-1/2}
 \end{align}
+
 where
+
 \begin{align}
   \Delta_{l+1/2} &= \frac{\Delta_{l+1} + \Delta_{l}}{2}\:,\\
   \Delta_{l-1/2} &= \frac{\Delta_{l} + \Delta_{l-1}}{2}\:.
 \end{align}
+
 In order to be conservative, the flux must be continuous across a
 face.  Thus, the face-centered flux evaluated from either side of the
 face must be equivalent,
+
 \begin{equation}
   \begin{aligned}
     F_{l+1/2}^{+} &= F_{l+1/2}^{-}\:,\\
@@ -707,45 +828,55 @@ face must be equivalent,
     \frac{1}{3\sigma_{l}}\frac{\phi_{l+1/2} - \phi_{l}}{\Delta_l}\:,
   \end{aligned}
 \end{equation}
+
 where we have dropped the subscript $\mathrm{R}$ from $\sigma$ for
 clarity.  Solving this system for $\phi_{l+1/2}$ and plugging into
 either $F_{l+1/2}^{+}$ or $F_{l+1/2}^{-}$ and setting the resulting
 expression equal to Eq.~(\ref{eq:F_l+1/2}), one finds the
 face-centered diffusion coefficient,
+
 \begin{equation}
   D_{l+1/2} = \frac{2\Delta_{l+1/2}}{3\sigma_l\Delta_l + 
     3\sigma_{l+1}\Delta_{l+1}}\:.
   \label{eq:D_l+1/2}
 \end{equation}
+
 Following the same procedure at the $l-1/2$ face gives the diffusion
 coefficient on the low-side face,
+
 \begin{equation}
   D_{l-1/2} = \frac{2\Delta_{l-1/2}}{3\sigma_l\Delta_l + 
     3\sigma_{l-1}\Delta_{l-1}}\:.
   \label{eq:D_l-1/2} 
 \end{equation}
+
 Using Eqs.~(\ref{eq:F_l+1/2}), (\ref{eq:F_l-1/2}), (\ref{eq:D_l+1/2}),
 and (\ref{eq:D_l-1/2}) in the discrete flux-balance equation,
 (\ref{eq:flux-balance-difference}), we obtain
+
 \begin{equation}
   \begin{aligned}
     \sigT\phi_{ijk} 
     - \sigm_{i+1}\frac{\Delta_{i+1}}{\Di}\phi_{i+1\,jk} &
-    - \sigp_{i-1}\frac{\Delta_{i-1}}{\Di}\phi_{i-1\,jk}
-    - \sigm_{j+1}\frac{\Delta_{j+1}}{\Dj}\phi_{i\,j+1\,k} \\
-    &- \sigp_{j-1}\frac{\Delta_{j-1}}{\Dj}\phi_{i\,j-1\,k} 
-    - \sigm_{k+1}\frac{\Delta_{k+1}}{\Dk}\phi_{ij\,k+1}
+    - \sigp_{i-1}\frac{\Delta_{i-1}}{\Di}\phi_{i-1\,jk}\\
+    &- \sigm_{j+1}\frac{\Delta_{j+1}}{\Dj}\phi_{i\,j+1\,k}
+    - \sigp_{j-1}\frac{\Delta_{j-1}}{\Dj}\phi_{i\,j-1\,k}\\ 
+    &- \sigm_{k+1}\frac{\Delta_{k+1}}{\Dk}\phi_{ij\,k+1}
     - \sigp_{k-1}\frac{\Delta_{k-1}}{\Dk}\phi_{ij\,k-1}
     = \qn_{ijk}\:.
   \end{aligned}
   \label{eq:discrete-diffusion}
 \end{equation}
+
 Here,
+
 \begin{equation}
   \sigT = \sigp_i + \sigm_i + \sigp_j + \sigm_j + \sigp_k + \sigm_k
   + \sign_{ijk}\:,
 \end{equation}
+
 and
+
 \begin{subequations}
   \begin{align}
     \sigp_{i} &= \frac{1}{\Di}\frac{2}{3\sigma_{ijk}\Di
@@ -763,7 +894,9 @@ and
   \end{align}
   \label{eq:sigmas}
 \end{subequations}
+
 Also, note that
+
 \begin{align*}
   \sigp_{i-1} &= \frac{1}{\Delta_{i-1}}\frac{2}{3\sigma_{ijk}\Di
     + 3\sigma_{i-1\,jk}\Delta_{i-1}}\:,\\
@@ -771,6 +904,7 @@ Also, note that
     + 3\sigma_{i+1\,jk}\Delta_{i+1}}\:,\\
   \ldots\:.
 \end{align*}
+
 Equations~(\ref{eq:discrete-diffusion}) through (\ref{eq:sigmas})
 represent the discretized, 1T diffusion equation on an orthogonal
 3D grid. 
@@ -796,47 +930,61 @@ spectral radius must be less than 1.
 Before completing the derivation of discrete equations required to
 solve Eq.~(\ref{eq:discrete-diffusion}), we must specify boundary
 conditions.  For this work, the Marshak Boundary condition suffices,
+
 \begin{equation}
   f_b^\pm = \frac{1}{4}\phi - \frac{1}{2}\ve{F}\cdot\hat{\ve{n}}\:,\quad
   \vr\in \partial\Gamma\:,
 \end{equation}
+
 where $f_b$ is the incoming partial current on the problem boundary,
+
 $\partial\Gamma$.  On any low boundary we can write the flux using a
 first-order discrete form of Fick's Law,
+
 \begin{equation}
   F_{1/2} = -\frac{2}{3\sigma_1}\frac{\phi_1 - \phi_{1/2}}{\Delta_1}\:.
   \label{eq:low-boundary-flux}
 \end{equation}
+
 As before, we enforce continuity of flux on the boundary using the
 Marshak Boundary condition,
+
 \begin{equation}
   -\frac{2}{3\sigma_1}\frac{\phi_1 - \phi_{1/2}}{\Delta_1} = 2f_b^{+}
   -\frac{1}{2}\phi_{1/2}\:. 
 \end{equation}
+
 Solving for $\phi_{1/2}$ and plugging into
 Eq.~(\ref{eq:low-boundary-flux}) yields an expression for the low-side
 boundary flux,
+
 \begin{equation}
   F_{1/2} = \frac{2}{3\sigma_1\Delta_1 + 4}(4f_b^{+}-\phi_1)\:.
 \end{equation}
+
 Following an identical procedure on high-side problem boundaries gives
+
 \begin{equation}
   F_{N_l+1/2} = \frac{2}{3\sigma_{N_l}\Delta_{N_l} +
     4}(\phi_{N_l}-4f_b^{-})\:, 
 \end{equation}
+
 where $l\in\{i,j,k\}$ is defined over the range $[1,N_l]$.
 
 These boundary fluxes take the place of the interior face-centered
 fluxes (defined in Eqs.~(\ref{eq:F_l+1/2}) and (\ref{eq:F_l-1/2})) in
 Eq.~(\ref{eq:flux-balance-difference}) yielding the following
 modifications to Eqs.~(\ref{eq:sigmas}) on a boundary,
+
 \begin{align}
   \text{low boundary:}\quad & \sigma_1^{-} = \frac{1}{\Delta_1}
   \frac{2}{3\sigma_1\Delta_1 + 4}\:,\\
   \text{high boundary:}\quad & \sigma_{N_l}^{+} = \frac{1}{\Delta_{N_l}}
   \frac{2}{3\sigma_{N_l}\Delta_{N_l} + 4}\:.
 \end{align}
+
 Furthermore, the following contributions are added to the source,
+
 $\qn_{ijk}$ on a boundary cell,
 \begin{align}
   \text{low boundary:}\quad & \frac{8}{\Delta_1}
@@ -844,14 +992,17 @@ $\qn_{ijk}$ on a boundary cell,
   \text{high boundary:}\quad & \frac{8}{\Delta_{N_l}}
   \frac{1}{3\sigma_{N_l}\Delta_{N_l} + 4}f_b^{-}\:.
 \end{align}
+
 Note that for vacuum boundary conditions, $f_b^{\pm} = 0$.
 
 For reflective boundary conditions we have the simple modification
 that
+
 \begin{align}
   F_{1/2} &= 0\:, \\
   F_{N_l+1/2} &= 0\:.
 \end{align}
+
 Thus, there are no leakage or adjacent cell source terms resulting
 from this boundary face.
 
@@ -860,25 +1011,33 @@ from this boundary face.
 
 The discrete diffusion equation in (\ref{eq:discrete-diffusion}) can
 be written in matrix-operator form as follows,
+
 \begin{equation}
   \ve{D}\bphi = \ve{q}\:,
   \label{eq:diffusion-matrix}
 \end{equation}
+
 where $\ve{D}$ is a symmetric, positive-definite (SPD) operator.
 Unfortunately, for many problems $\rho(\ve{D}) > 1$.  Therefore, we
 must precondition Eq.~(\ref{eq:diffusion-matrix}) in order to use the
 MCSA method. We apply left-preconditioning and write
+
 \begin{equation}
   \ve{M}^{-1}\ve{D}\bphi = \ve{M}^{-1}\ve{q}\:.
   \label{eq:preconditioned-diffusion}
 \end{equation}
-A good choice for the preconditioner, $\ve{M}$, is
+
+A good choice for the preconditioner, $\ve{M}$, is to use Jacobi
+preconditioning:
+
 \begin{equation}
   \ve{M}=\diag(\ve{D})\:.
   \label{eq:preconditioner}
 \end{equation}
+
 Setting $\ve{M}$ equal to the diagonal elements of $\ve{D}$
 accomplishes several objectives:
+
 \begin{itemize}
 \item It reduces the spectral radius such that
   $\rho(\ve{M}^{-1}\ve{D}) < \rho(\ve{D})$ and
@@ -886,9 +1045,10 @@ accomplishes several objectives:
   fewer iterations are required resulting in accelerated convergence.
 \item The diagonal elements of the preconditioned iteration matrix are
   zero, $\diag(\vI - \ve{M}^{-1}\ve{D}) = 0$.  Thus, there will be no
-  time wasted in transitions $i\rightarrow i$ during the random walk
-  process.
+  computations wasted in transitions $i\rightarrow i$ during the
+  random walk process.
 \end{itemize}
+
 The second item is quite important for Monte Carlo solutions of linear
 systems, and this type of scaling should be performed regardless of
 any additional preconditioner choices.  
@@ -896,11 +1056,14 @@ any additional preconditioner choices.
 A side effect of this preconditioner choice is that the preconditioned
 system, $\ve{M}^{-1}\ve{D}$, is no longer SPD.  This situation can be
 rectified by doing right-left preconditioning and defining
+
 \begin{equation}
   \ve{M} = \ve{L}\ve{L}^{T}\:,
 \end{equation}
+
 where $\ve{L} = \ve{L}^{T} = \sqrt{\ve{M}}$.  Applying right-left
 preconditioning gives
+
 \begin{equation}
   \begin{gathered}
     \ve{M}^{-1}\ve{D}\ve{M}^{-1}\ve{M}\bphi = \ve{M}^{-1}\ve{q}\:,\\
@@ -913,6 +1076,7 @@ preconditioning gives
   \end{gathered}
   \label{eq:right-left-preconditioning}
 \end{equation}
+
 This type of preconditioning is also referred to as row-column
 scaling.  The resulting preconditioned matrix, $\hat{\ve{D}}$, is now
 SPD, and we can use Conjugate Gradient (CG) solvers.  Therefore, we
@@ -926,20 +1090,21 @@ MCSA.
 The preconditioned system we will solve is defined in
 Eq.~(\ref{eq:preconditioned-diffusion}).  Applying $\ve{M}^{-1}$ to
 Eq.~(\ref{eq:discrete-diffusion}) yields
+
 \begin{equation}
   \begin{aligned}
     \phi_{ijk} 
     - \frac{\sigm_{i+1}}{\sigT}\frac{\Delta_{i+1}}{\Di}&\phi_{i+1\,jk}
-    - \frac{\sigp_{i-1}}{\sigT}\frac{\Delta_{i-1}}{\Di}\phi_{i-1\,jk}
-    - \frac{\sigm_{j+1}}{\sigT}\frac{\Delta_{j+1}}{\Dj}\phi_{i\,j+1\,k} \\
-    &-
-    \frac{\sigp_{j-1}}{\sigT}\frac{\Delta_{j-1}}{\Dj}\phi_{i\,j-1\,k}
-    - \frac{\sigm_{k+1}}{\sigT}\frac{\Delta_{k+1}}{\Dk}\phi_{ij\,k+1}
+    - \frac{\sigp_{i-1}}{\sigT}\frac{\Delta_{i-1}}{\Di}\phi_{i-1\,jk}\\
+    &- \frac{\sigm_{j+1}}{\sigT}\frac{\Delta_{j+1}}{\Dj}\phi_{i\,j+1\,k}
+    -\frac{\sigp_{j-1}}{\sigT}\frac{\Delta_{j-1}}{\Dj}\phi_{i\,j-1\,k}\\
+    &- \frac{\sigm_{k+1}}{\sigT}\frac{\Delta_{k+1}}{\Dk}\phi_{ij\,k+1}
     - \frac{\sigp_{k-1}}{\sigT}\frac{\Delta_{k-1}}{\Dk}\phi_{ij\,k-1}
     = \frac{\qn_{ijk}}{\sigT}\:.
   \end{aligned}
   \label{eq:preconditioned-discrete-diffusion}
 \end{equation}
+
 In the next section we will derive an MCSA method to solve this
 equation.
 
@@ -989,11 +1154,11 @@ follows:
   \begin{aligned}
     \phi_{ijk}^{l+1/2} =  
     \frac{\sigm_{i+1}}{\sigT}\frac{\Delta_{i+1}}{\Di}&\phi_{i+1\,jk}^l
-    + \frac{\sigp_{i-1}}{\sigT}\frac{\Delta_{i-1}}{\Di}\phi_{i-1\,jk}^l
     +
-    \frac{\sigm_{j+1}}{\sigT}\frac{\Delta_{j+1}}{\Dj}\phi_{i\,j+1\,k}^l \\ 
-    &+ \frac{\sigp_{j-1}}{\sigT}\frac{\Delta_{j-1}}{\Dj}\phi_{i\,j-1\,k}^l 
-    + \frac{\sigm_{k+1}}{\sigT}\frac{\Delta_{k+1}}{\Dk}\phi_{ij\,k+1}^l
+    \frac{\sigp_{i-1}}{\sigT}\frac{\Delta_{i-1}}{\Di}\phi_{i-1\,jk}^l \\
+    &+ \frac{\sigm_{j+1}}{\sigT}\frac{\Delta_{j+1}}{\Dj}\phi_{i\,j+1\,k}^l 
+    + \frac{\sigp_{j-1}}{\sigT}\frac{\Delta_{j-1}}{\Dj}\phi_{i\,j-1\,k}^l \\
+    &+ \frac{\sigm_{k+1}}{\sigT}\frac{\Delta_{k+1}}{\Dk}\phi_{ij\,k+1}^l
     + \frac{\sigp_{k-1}}{\sigT}\frac{\Delta_{k-1}}{\Dk}\phi_{ij\,k-1}^l
     + \frac{\qn_{ijk}}{\sigT}\:.
   \end{aligned}
@@ -1004,9 +1169,11 @@ residual then becomes the source for the Monte Carlo simulation.
 
 The adjoint Monte Carlo method described in
 \S~\ref{sec:adjoint-method} is used to estimate
+
 \begin{equation}
   \ve{M}^{-1}\ve{D}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:.
 \end{equation}
+
 As noted above, the residual acts as the source for this simulation,
 and the operator $\ve{M}^{-1}\ve{D}$ is implicitly defined in
 Eq.~(\ref{eq:preconditioned-discrete-diffusion}).  There are two Monte
@@ -1040,7 +1207,9 @@ Eq.~(\ref{eq:preconditioned-discrete-diffusion}) without explicitly
 forming the iteration matrix.  In this mesh cell, the probabilities
 for leakage out of each face are derived from the equations from each
 adjacent cell.  Using Eq.~(\ref{eq:preconditioned-discrete-diffusion})
-we can explicitly write the equations from each adjacent cell,
+we can explicitly write the equations from each adjacent cell, here
+only noting the contribution from cell 7:
+
 \begin{align*}
   \phi_1 &= \frac{\sigm_{7\rightarrow
       1}}{\sigma_{T\,1}}\frac{\Delta_7}{\Delta_1}\phi_7 + \ldots\:,\\
@@ -1060,10 +1229,11 @@ we can explicitly write the equations from each adjacent cell,
   \phi_6 &= \frac{\sigp_{7\rightarrow
       6}}{\sigma_{T\,6}}\frac{\Delta_7}{\Delta_6}\phi_7 + \ldots\:,\\
   %%
-  \ldots\:.
 \end{align*} 
+
 A quick view of these equations reveals that the only non-zero entries
 in column 7 of the iteration matrix are
+
 \begin{equation*}
   \begin{pmatrix}
     h_{1,7} &
@@ -1083,25 +1253,31 @@ in column 7 of the iteration matrix are
     \frac{\sigp_{7\rightarrow 6}}{\sigma_{T\,6}}\frac{\Delta_7}{\Delta_6}
   \end{pmatrix}\:,
 \end{equation*}
+
 where, following Eq.~(\ref{eq:point_iteration}), $\ve{H} = (\vI -
 \ve{M}^{-1}\ve{D})$ is the iteration matrix.  Now, using
 Eq.~(\ref{eq:adjoint-probability}), we define the scattering
 probabilities for cell 7 as
+
 \begin{equation*}
   P_{7\rightarrow n} = p_{7,n} = \frac{|h_{n,7}|}{|h_{1,7} + 
     h_{2,7} + h_{3,7} + h_{4,7} + h_{5,7} + h_{6,7}|}\:,\quad
   n\in \{1,\ldots,6\}\:.
 \end{equation*}
+
 The weight change for each scattering event is calculated using
 Eq.~(\ref{eq:adjoint-weight}),
+
 \begin{equation*}
   W_{m} = \frac{h_{n,7}}{p_{7,n}}W_{m-1}\:,\quad
   n\in \{1,\ldots,6\}\:,
 \end{equation*}
+
 where $m$ is the step-index in the particle history.  We also note
 that, for the 3D Cartesian mesh considered in this work, the maximum
-number of non-zero entries in columns of the iteration matrix is 6.
-Cells along the problem boundary can have fewer than 6 entries.
+number of non-zero entries in columns of the iteration matrix is 6,
+generating a sparse system.  Cells along the problem boundary can have
+fewer than 6 entries.
 
 \begin{figure}[htpb!]
   \centerline{
@@ -1130,10 +1306,10 @@ problems: a Marshak wave problem and a multi-material duct problem.
 \subsection{Marshak Wave}
 
 The Marshak wave problem under consideration in this study has an
-incoming 1~keV blackbody boundary flux at $x=0$ and propagates
-in the $x$-dimension in time.  In other words, this a 3D
-representation of a 1D problem.  The full set of problem conditions
-is:
+incoming 1~keV blackbody boundary flux at $x=0$ and propagates in the
+$x$-dimension in time.  In other words, this a 3D representation of a
+1D problem.  The full set of problem conditions is:
+
 \begin{center}
   \begin{tabular}{ll}\hline
     %%
@@ -1152,6 +1328,7 @@ is:
     \hline
   \end{tabular}
 \end{center}
+
 The problem is run to $10$~shakes.
 
 Figure~\ref{fig:marshak_10} shows the analytic Marshak Wave solution
@@ -1194,7 +1371,7 @@ There are two principal degrees of freedom when utilizing the MCSA
 method: (1) the number of particles per stage, and (2) the weight
 cutoff.  Figure~\ref{fig:CPU_Np} shows the CPU time as a function of
 the requested number of particles per stage for a relative weight
-cutoff of $\sn{1}{-4}$.  For less than 5 particles per stage teh
+cutoff of $\sn{1}{-4}$.  For less than 5 particles per stage the
 method does not converge.  Figure~\ref{fig:CPU_Ns} shows the variation
 in the maximum number of stages (iterations) per cycle with number of
 particles.  Analysis of these two figures shows that increasing the
@@ -1250,7 +1427,7 @@ preconditioned Richardson iteration (PFIX), and MCSA. The results show
 that the MCSA method is the most efficient method, although the PCG
 results are nearly as fast.  More importantly, the MCSA method clearly
 accelerates Richardson iteration, as indicated by the fact that MCSA
-is 42\% faster than Richards iteration alone.
+is 42\% faster than Richardson iteration alone.
 
 \begin{table}[htpb!]
   \begin{center}
@@ -1284,6 +1461,7 @@ bound by a foil on one side.  The mesh and geometry are illustrated in
 Fig.~\ref{fig:multi-mat-mesh}.  A blackbody boundary flux is defined
 on the low-$x$ face at $T=0.5$~keV.  The full set of problem
 conditions is:
+
 \begin{center}
   \begin{tabular}{ll}\hline
     %%
@@ -1308,6 +1486,7 @@ conditions is:
     \hline
   \end{tabular}
 \end{center}
+
 A 2D plot of the temperature at 100~sh elapsed time is illustrated in
 Fig.~\ref{fig:multi-mat_T}.  The time-evolution of the temperature is
 shown at 4 edit points in Fig.~\ref{fig:edit-points}.  All three
@@ -1346,7 +1525,6 @@ using a stopping criterion of $\sn{1}{-8}$.
   \label{fig:edit-points}
 \end{figure}
 
-
 Table~\ref{tab:multimat_comparison} shows the timing results for the
 multi-material problem using PCG, PFIX, and MCSA.  The results
 correspond roughly with the results from the Marshak problem.  The
@@ -1381,10 +1559,11 @@ MCSA is marginally faster than PCG and 43\% faster than PFIX.
 \label{sec:conclusions}
 
 We have presented a new Monte Carlo solution method for solving the
-discrete, time-dependent diffusion equation in 3D.  The MCSA method
-has been shown to match results using standard solution techniques to
-arbitrary precision.  Also, the new method is faster than
-preconditioned CG and Richardson iteration.
+discrete, time-dependent radiation diffusion equation in 3D.  The MCSA
+method has been shown to match results using standard solution
+techniques to arbitrary precision.  Also, the new method has been to
+shown to be faster than preconditioned CG and Richardson iteration for
+the model problems presented here.
 
 While we have demonstrated marginal improvements over standard
 solution schemes in this study, significant improvements could be
@@ -1397,7 +1576,6 @@ because of the changing cell volumes at different refinement levels.
 A smart transport algorithm could be developed that more efficiently
 solves the residual on these types of meshes.  These topics will be
 the focus of future study.
-
 
 %%---------------------------------------------------------------------------%%
 %% The Appendices part is started with the command \appendix;
