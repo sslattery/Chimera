@@ -536,8 +536,9 @@ The MCSA method defined in Eq.(~\ref{eq:general-MCSA}) uses the
 adjoint method in Eq.~(\ref{eq:MCSA-residual_solve}) to estimate the
 error instead of the direct method outlined in
 \S~\ref{sec:direct-method}. To demonstrate the effectiveness of the
-adjoint method over the direct method, we choose the two-dimensional
-time-dependent Poisson equation as a simple model problem:
+adjoint method over the direct method within the context of MCSA, we
+choose the two-dimensional time-dependent Poisson equation as a simple
+model problem:
 
 \begin{equation}
   \frac{\partial \vu}{\partial t} = \nabla^2 \vu\:.
@@ -620,31 +621,32 @@ to converge is of a similar scale. We expect this for several
 reasons. First, with an equivalent number of histories specified for
 both solvers and a system of size $N \times N$, the direct solver will
 compute $N \times N$ random walks per permuation while the adjoint
-solver will only compute one. Initially, this may not seem like a fair
-comparison, however, we see from Fig.~\ref{fig:poisson_iterations}
-that the number of iterations requried to converge is approximately
-the same. This is necessary in the direct method to ensure a
-contribution from each state as the random walk sequence will only
-contribute to the starting state. For the adjoint method, because the
-random walk sequence contributes to the state in which it currently
-resides, fewer histories are neccessary to compute contributions from
-all the nonzero parts of the source. Therefore, although the total
-number of random walks per iteration is in fact larger for the direct
-method, the solution computed at each iteration is no better than that
-computed by the adjoint method.
+solver will only compute one. This is necessary in the direct method
+to ensure a contribution from each state as the random walk sequence
+will only contribute to the starting state. For the adjoint method,
+because the random walk sequence contributes to the state in which it
+currently resides, fewer histories are neccessary to compute
+contributions from all the nonzero parts of the source. Initially,
+this may not seem like a fair comparison, however, we see from
+Fig.~\ref{fig:poisson_iterations} that the number of iterations
+requried to converge is approximately the same and therefore the extra
+computations performed by the direct method do not improve the error
+estimation. Therefore, although the total number of random walks per
+iteration is in fact larger for the direct method, the solution
+computed at each iteration is no better than that computed by the
+adjoint method.
 
-Although CPU time is shown to be greatly decreased by using the
-adjoint solver in Fig.~\ref{fig:poisson_cpu_time}, the iteration
-behavior was approximately the same. To assess the convergence
-properties of MCSA using each solver and stencil, the infinity norm of
-the residual computed in Eq.~(\ref{eq:general-MCSA}) was collected at
-each iteration for a fixed problem
-size. Fig.~\ref{fig:poisson_convergence} gives the results of these
-computations. First, it is worthy to note on the semilog plot that we
-are indeed achieving the expected exponential convergence from
-MCSA. Second, we note that both the direct and adjoint methods have
-approximately equivalent convergence behavior, leading to CPU time
-being the dominating factor in method selection.
+As an additional comparision, the convergence behavior of MCSA can be
+analyzed using both solvers to detect any performance benefits. To
+assess the convergence properties of MCSA using each solver and
+stencil, the infinity norm of the residual computed in
+Eq.~(\ref{eq:MCSA-residual}) was collected at each iteration for a
+fixed problem size. Fig.~\ref{fig:poisson_convergence} gives the
+results of these computations. First, it is worthy to note on the
+semilog plot that we are indeed achieving the expected exponential
+convergence from MCSA. Second, we note that both the direct and
+adjoint methods have approximately equivalent convergence behavior,
+leading to CPU time being the dominating factor in method selection.
 
 \begin{figure}[h!]
   \centering
