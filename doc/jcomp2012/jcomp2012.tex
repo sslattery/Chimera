@@ -49,10 +49,11 @@
 %% use the graphics package for simple commands
 %% \usepackage{graphics}
 %% or use the graphicx package for more complicated commands
+\usepackage{epsfig}
 \usepackage{graphicx}
 \usepackage{subfigure}
-%% or use the epsfig package if you prefer to use the old commands
-%% \usepackage{epsfig}
+%% or use the.pdffig package if you prefer to use the old commands
+%% \usepackage.pdffig}
 
 %% The amssymb package provides various useful mathematical symbols
 \usepackage{amssymb}
@@ -517,7 +518,7 @@ solution vector, $\vx^{l+1}$.  The entire sequence is iterated to
 convergence based on the following stopping
 criterion~\cite{kelley_1995},
 \begin{equation}
-  \|\vr\|_{\infty} < \epsilon\cdot\|\vb\|_\infty\:.
+  \|\vr\|_{\infty} < .pdfilon\cdot\|\vb\|_\infty\:.
   \label{eq:stopping-criteria}
 \end{equation}
 
@@ -585,7 +586,7 @@ needed for each case to converge relative to the problem size.
 
 \begin{figure}[htpb!]
   \centering
-  \includegraphics[width=5in,clip]{Adjoint_Direct_CPU_Time.eps}
+  \includegraphics[width=5in,clip]{Adjoint_Direct_CPU_Time.pdf}
   \caption{\sl CPU Time (s) to converge vs. Problem Size ($N$ for an
     $N \times N$ mesh). Both the adjoint and direct solvers are used
     with the five point and nine point stencils. A significant CPU
@@ -596,7 +597,7 @@ needed for each case to converge relative to the problem size.
 
 \begin{figure}[htbp!]
   \centering
-  \includegraphics[width=5in,clip]{Adjoint_Direct_Iterations.eps}
+  \includegraphics[width=5in,clip]{Adjoint_Direct_Iterations.pdf}
   \caption{\sl Iterations to converge vs. Problem Size ($N$ for an $N
     \times N$ mesh. Both the adjoint and direct solvers are used with
     the five point and nine point stencils. Both methods give similar
@@ -639,7 +640,7 @@ being the dominating factor in method selection.
 
 \begin{figure}[htpb!]
   \centering
-  \includegraphics[width=5in,clip]{Adjoint_Direct_Convergence.eps}
+  \includegraphics[width=5in,clip]{Adjoint_Direct_Convergence.pdf}
   \caption{\sl Infinity norm of the solution residual vs. iteration
     number for a problem of fixed size. Both the adjoint and direct
     solvers are used with the five point and nine point stencils. Both
@@ -1115,7 +1116,7 @@ equation.
 Here we derive the equations required to solve
 Eq.~(\ref{eq:preconditioned-discrete-diffusion}) using the MCSA
 method.  As discussed in \S~\ref{sec:iter-refin-monte}, the MCSA
-method requires two solution steps:
+method requires two solution s.pdf:
 
 \begin{enumerate}
 \item A fixed-point iteration to estimate $\bphi^{l+1/2}$.  This is a
@@ -1144,7 +1145,7 @@ from Eq.~(\ref{eq:preconditioned-diffusion}),
 
 As described in \S~\ref{sec:iter-refin-monte}, the adjoint Monte Carlo
 method only approximately inverts $\ve{M}^{-1}\ve{D}$.  We now
-describe each of these steps in turn.
+describe each of these s.pdf in turn.
 
 First, we use Eq.~(\ref{eq:preconditioned-discrete-diffusion}) to
 evaluate $\bphi^{l+1/2}$ via a single fixed-point iteration as
@@ -1195,7 +1196,7 @@ probability of scattering to an adjacent cell. We tally the
 contribution of $\phi$ in each cell using
 Eq.~(\ref{eq:adjoint-tally}).  The transport is terminated using a
 relative weight cutoff that is defined in
-Eq.~(\ref{eq:weight_cutoff}).  We now examine each of these steps in
+Eq.~(\ref{eq:weight_cutoff}).  We now examine each of these s.pdf in
 more detail.
 
 The connectivity of an arbitrary cell is illustrated in the 3D mesh
@@ -1343,7 +1344,7 @@ $1/\sqrt{N}$~\cite{halton_1994,evans_2003}.
 
 \begin{figure}[htpb!]
   \centerline{
-    \includegraphics[width=5in,clip]{marshak_10.eps}}
+    \includegraphics[width=5in,clip]{marshak_10.pdf}}
   \caption{
     Solution of the Marshak wave problem at $t=10$~sh.  The analytic
     solution is compared to the MCSA solution.  Note that the MCSA,
@@ -1361,7 +1362,7 @@ the spectral radius of $\ve{H}$ to less than 1.
 
 \begin{figure}[htpb!]
   \centerline{
-    \includegraphics[width=5in,clip]{spectral_radius.eps}}
+    \includegraphics[width=5in,clip]{spectral_radius.pdf}}
   \caption{Spectral radius of the iteration matrix, $\ve{H}$, for the
     Marshak Wave problem as a function of elapsed problem time.}
   \label{fig:marshak_spectral}
@@ -1382,7 +1383,7 @@ running more stages with fewer particles per stage \cite{evans_2003}.
 
 \begin{figure}[htpb!]
   \centerline{
-    \includegraphics[width=5in,clip]{mrshk_np_CPU.eps}}
+    \includegraphics[width=5in,clip]{mrshk_np_CPU.pdf}}
   \caption{CPU time versus number of particles per stage for the
     Marshak problem.  The number of particles is the requested number.
     In each stage the exact number can vary depending upon the number
@@ -1392,7 +1393,7 @@ running more stages with fewer particles per stage \cite{evans_2003}.
 
 \begin{figure}[htpb!]
   \centerline{
-    \includegraphics[width=5in,clip]{mrshk_np_Ns.eps}}
+    \includegraphics[width=5in,clip]{mrshk_np_Ns.pdf}}
   \caption{
     Maximum number of stages per cycle versus number of particles per
     stage for the Marshak problem.  The number of particles is the
@@ -1410,7 +1411,7 @@ pronounced effect on the efficiency of the method.
 
 \begin{figure}[htpb!]
   \centerline{
-    \includegraphics[width=5in,clip]{mrshk_wc_CPU.eps}}
+    \includegraphics[width=5in,clip]{mrshk_wc_CPU.pdf}}
   \caption{
     CPU time versus relative weight cutoff for the Marshak problem.
     Results are shown for 10 and 50 requested particles per stage.
@@ -1495,7 +1496,7 @@ using a stopping criterion of $\sn{1}{-8}$.
 
 \begin{figure}[htpb!]
   \centerline{
-    \includegraphics[width=5in,clip]{mesh.eps}}
+    \includegraphics[width=5in,clip]{mesh.pdf}}
   \caption{Multi-material problem mesh.  The duct region is blue.  The
     wall is red.  The foil is green.  The mesh is $60\times 60\times
     60$.}
@@ -1504,7 +1505,7 @@ using a stopping criterion of $\sn{1}{-8}$.
 
 \begin{figure}[htpb!]
   \centerline{
-    \includegraphics[width=5in,clip]{T_multi_mat.eps}}
+    \includegraphics[width=5in,clip]{T_multi_mat.pdf}}
   \caption{
     Two-dimensional plot of the temperature at 100~sh on a cut-plane
     positioned at the mid-point of the $z$-axis.  The positions of the
@@ -1516,8 +1517,8 @@ using a stopping criterion of $\sn{1}{-8}$.
 \begin{figure}[htpb!]
   \begin{center}
     \begin{tabular}{cc}
-      \subfigure[Edit points]{\includegraphics[width=1.5in,clip]{points.eps}} &
-      \subfigure[Temperature]{\includegraphics[width=3.5in,clip]{multi_mat.eps}}
+      \subfigure[Edit points]{\includegraphics[width=1.5in,clip]{points.pdf}} &
+      \subfigure[Temperature]{\includegraphics[width=3.5in,clip]{multi_mat.pdf}}
     \end{tabular}
   \end{center}
   \caption{(a) Edit points and (b) time-evolution of the temperature
