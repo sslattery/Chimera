@@ -1,5 +1,5 @@
 %%---------------------------------------------------------------------------%%
-%% Monte Carlo Synthetic Acceleration Paper
+%% Monte Carlo Synthetic-Acceleration Paper
 %% Submitted to Journal of Computational Physics 2012
 %%---------------------------------------------------------------------------%%
 %%
@@ -133,7 +133,7 @@
 
 \begin{frontmatter}
 
-  \title{A Monte Carlo Synthetic Acceleration Method for Solving the
+  \title{A Monte Carlo Synthetic-Acceleration Method for Solving the
     Thermal Radiation Diffusion Equation}
 
   \author[ornl]{Thomas M. Evans\corref{cor1}\fnref{fn1}}
@@ -153,17 +153,19 @@
   \fntext[fn2]{Department of Engineering Physics, College of Engineering}
 
   \address[ornl]{Oak Ridge National Laboratory, 
-    1 Bethel Valley Rd., Oak Ridge, TN 378131 U.S.A.}
+    1 Bethel Valley Rd., Oak Ridge, TN 37831 U.S.A.}
   \address[wisc]{University of Wisconsin-Madison, 1500 Engineering
     Dr., Madison, WI 53716 U.S.A.}
 
   \begin{abstract}
 
     We present a synthetic-acceleration based Monte Carlo method for
-    solving the 1T thermal radiation diffusion equation.  We show that
-    this method can be an effective solver for sparse matrix systems
-    and is competitive with deterministic methods.  We also discuss
-    its general applicability to broader classes of problems.
+    solving the 1T thermal radiation diffusion equation in 3
+    dimensions. We show that this method can be an effective solver
+    for sparse matrix systems and is competitive with deterministic
+    methods including preconditioned Conjugate Gradient. We also
+    discuss various aspects of preconditioning and its general
+    applicability to broader classes of problems.
 
   \end{abstract}
 
@@ -191,13 +193,13 @@ residual method.  Using Monte Carlo to accelerate a fixed-point
 method and allows for extension to more general solution techniques.
 
 The purpose of this study is to demonstrate an efficient Monte Carlo
-solution method for 3D, time-dependent discrete systems. In this
+solution method for 3D, time-dependent, discrete systems. In this
 work, we extend our previous work in the following manner:
 
 \begin{itemize}
 \item We develop a rigorous synthetic-acceleration Monte Carlo method
   for solving sparse matrix systems.
-\item We apply this solver to the 1T thermal radiation diffusion
+\item We apply this method to the 1T thermal radiation diffusion
   equation in 3D.
 \end{itemize}
 
@@ -206,11 +208,11 @@ solving matrix systems. In \S~\ref{sec:iter-refin-monte} we discuss
 our new synthetic-acceleration scheme and connect with previous work
 by Halton~\cite{halton_1994} and others~\cite{evans_2003}.  The 1T
 radiation diffusion equation and its discrete form will be derived in
-\S~\ref{sec:discr-form-radi}.  We discuss using Synthetic-Accleration
-Monte Carlo to solve the discrete radiation diffusion equation in
-\S~\ref{sec:solut-radi-diff}.  Results from two 3D test problems are
-given in \S~\ref{sec:results}.  We finish with conclusions and ideas
-for future work in \S~\ref{sec:conclusions}.
+\S~\ref{sec:discr-form-radi}.  We discuss using Monte Carlo
+Synthetic-Accleration to solve the discrete radiation diffusion
+equation in \S~\ref{sec:solut-radi-diff}.  Results from two 3D test
+problems are given in \S~\ref{sec:results}.  We finish with
+conclusions and ideas for future work in \S~\ref{sec:conclusions}.
 
 %%---------------------------------------------------------------------------%%
 \section{Monte Carlo Matrix Solution Methods}
@@ -289,7 +291,8 @@ component of $\vx$,
 The terms in the Neumann series can be interpreted as a series of
 transitions from $i_{m-1}\rightarrow i_m$ that can be simulated by a
 random walk.  Let $X$ be a random variable sampled from a random walk
-with $k$ events (particles) that initiates in state $i$,
+with $k$ events (particles in the context of radiative transfer) that
+initiates in state $i$,
 
 \begin{equation}
   \begin{split}
@@ -302,14 +305,14 @@ with $k$ events (particles) that initiates in state $i$,
 
 Here, the particle weight on the $m^\text{th}$ step is denoted $W_m$,
 and each particle starts with unit weight. At every step,
-contributions to each component of $X$ are provided only by the
-starting state of the particle, $b_{i_m}$. Therefore, for a given
-random walk permutation, each state must be used as a starting value
-in order to calculated its contribution to the expectation value
-(i.e. a state of size $N$ will have $N$ particles per random walk
-permutation). When the particle transitions between states, for
-example $i\rightarrow j$, the particle weight is multiplied by the
-transition factor.
+contributions to each component of $X$ are generated only in the
+starting state of the particle, $i_0$, by the source term in the
+current state, $b_{i_m}$. Therefore, for a given random walk
+permutation, each state must be used as a starting value in order to
+calculate its component of the expectation value (i.e. a state of size
+$N$ will have $N$ particles per random walk permutation). When the
+particle transitions between states, for example $i\rightarrow j$, the
+particle weight is multiplied by the transition factor.
 
 \begin{equation}
   w_{ij} = \frac{h_{ij}}{p_{ij}}\:,
@@ -334,7 +337,7 @@ where $\nu$ denotes a particular random walk permutation.
 Therefore, the estimator in Eq.~(\ref{eq:estimator_xi}) is an unbiased
 estimator of the components of $\vx$ provided $\rho(\vH) < 1$.
 
-We are left to define the transition probabilities, $p_{ij}$. The most
+We are left to define the transition probabilities. The most
 straightforward approach is to set
 
 \begin{equation}
@@ -349,8 +352,8 @@ be terminated in two ways: the matrix can be augmented with a
 terminating event equation that describes the probability that a
 particle ends its walk, or the random walk can be terminated by weight
 cutoff, $W_c$.  Generally, we choose to terminate random walks using a
-weight cutoff as opposed to augmenting the matrix sucth that the
-random walk terminates when $W_m < W_c$.
+weight cutoff as opposed to augmenting the matrix such that the random
+walk terminates when $W_m < W_c$.
 
 \subsection{Adjoint Method}
 \label{sec:adjoint-method}
@@ -399,7 +402,7 @@ required to start a particle in each state for each random walk
 permutation. Instead, sampling the source is suffucient and requires
 only one particle per permutation.
 
-Similar to the Direct Method, the Adjoint Method random walk process
+Similar to the direct method, the adjoint method random walk process
 requires a terminating condition.  In all of the work that follows we
 utilize a relative weight cutoff.  The weight cutoff is defined as a
 fraction of the starting weight such that
@@ -409,13 +412,12 @@ fraction of the starting weight such that
   \label{eq:weight_cutoff}
 \end{equation}
 
-where $W_f$ is the terminating weight of the random walk, $W_c$ is the
-input relative weight cutoff, and $\hat{b}_{i_0}$ is the initial
-weight of the source particle.  The random walk terminates on the
+where $W_f$ is the terminating weight of the random walk and $W_c$ is
+the input relative weight cutoff. The random walk terminates on the
 $m^\text{th}$ step if $W_m < W_f$.
 
 %%---------------------------------------------------------------------------%%
-\section{Synthetic-Acceleration Monte Carlo}
+\section{Monte Carlo Synthetic-Acceleration}
 \label{sec:iter-refin-monte}
 
 The methods presented in \S~\ref{sec:monte-carlo-matrix} are
@@ -446,8 +448,9 @@ to iterative refinement; the exception being that there is no update
 to to $x^{l+1}$ between residual iterations.
 
 We propose a modification of this scheme that uses Monte Carlo as a
-synthetic-acceleration scheme for fixed-point iteration. We begin by
-subtracting Eq.~(\ref{eq:richardson}) from Eq:~(\ref{eq:point_iteration}):
+synthetic-acceleration for the fixed-point iteration given by
+Eq.~(\ref{eq:richardson}). We begin by subtracting
+Eq.~(\ref{eq:richardson}) from Eq:~(\ref{eq:point_iteration}):
 
 \begin{equation}
   \delta \vx^{l+1} = (\vI - \vA)\delta \vx^{l}\:,
@@ -462,32 +465,37 @@ where
 \end{equation}
 
 is defined as the error at iteration $l+1$. We then subtract
-$(\vI-\vA) \delta \vx^{l+1}$ from Eq.~(\ref{eq:synthetic_error}) giving:
+$(\vI-\vA) \delta \vx^{l+1}$ from Eq.~(\ref{eq:synthetic_error}),
+giving a linear system to solve for the error:
 
 \begin{equation}
-  \vA \delta \vx^{l+1} = (\vI - \vA)(\vx^{l+1} - \vx^{l})\:.
+  \begin{split}
+    \vA \delta \vx^{l+1} &= (\vI - \vA)(\vx^{l+1} - \vx^{l}) \\
+    &= \vr^{l+1}\:.
+  \end{split}
   \label{eq:synthetic_error2}
 \end{equation}
 
-The following iterative scheme will then converge in one iteration:
+The following scheme will then converge in one iteration:
 
 \begin{subequations}
   \begin{gather}
     \vx^{l+1} = (\vI - \vA)\vx^l + \vb\:,\\
     %%
-    \vA \delta \vx^{l+1} = (\vI - \vA)(\vx^{l+1} - \vx^{l})\:.
-    \label{eq:synthetic-residual_solve}\\ 
+    \vA \delta \vx^{l+1} = \vr^{l+1}
+    \label{eq:synthetic-residual-solve}\\ 
     %% 
     \vx=\vx^{l+1}+\delta\vx^{l+1}\:.
   \end{gather}
   \label{eq:general-synthetic}
 \end{subequations}
 
-To accelerate the fixed point method, we can instead create a new
-iterative scheme by approximating the operator $\vA$ using the Monte
-Carlo method to estimate the solution error. With this idea hand, the
-Fixed-Point Monte Carlo Synthetic-Acceleration (MCSA) method can be
-defined as follows:
+To accelerate the fixed-point method and avoid inverting $\vA$
+directly in Eq.~(\ref{eq:synthetic-residual-solve}), we can instead
+use the above ideas to create a new iterative scheme by using the
+Monte Carlo method to estimate the solution error. With this in hand,
+the Fixed-Point Monte Carlo Synthetic-Acceleration (MCSA) method can
+be defined as follows:
 
 \begin{subequations}
   \begin{gather}
@@ -510,15 +518,15 @@ However, $\hat{\vA}$ is the same operator as $\vA$;
 $\hat{\vA}\equiv\vA$.  Thus, we have defined a scheme in which the
 initial estimate of $\vx$ in each iteration is updated using a single
 fixed-point iteration\footnote{Although, a Krylov method could be used
-  here.}.  The residual is calculated and is used as a source to
-estimate the error, $\delta\vx^{l+1/2}$, by solving
-Eq.~(\ref{eq:MCSA-residual_solve}) via the Monte Carlo adjoint
+  instead of a stationary method here.}.  The residual is calculated
+and is used as a source to estimate the error, $\delta\vx^{l+1/2}$, by
+solving Eq.~(\ref{eq:MCSA-residual_solve}) via the Monte Carlo adjoint
 method. The error is then used to calculate an updated iterate of the
 solution vector, $\vx^{l+1}$.  The entire sequence is iterated to
 convergence based on the following stopping
 criterion~\cite{kelley_1995},
 \begin{equation}
-  \|\vr\|_{\infty} < .pdfilon\cdot\|\vb\|_\infty\:.
+  \|\vr\|_{\infty} < \epsilon\cdot\|\vb\|_\infty\:.
   \label{eq:stopping-criteria}
 \end{equation}
 
@@ -577,31 +585,31 @@ nine point stencils were used with both the direct and adjoint
 solvers. For each case, 50 random walk permuations were simulated per
 iteration with a weight cutoff of $1.0E-4$ for the stochastic linear
 solver and a convergence tolerance of $1.0E-8$ for the MCSA iterative
-solver. All computations were completed on a 2.66 GHz Intel Core i7
-machine with 8 GB 1067 MHz DDR3 memory used for all computations
-presented in this section. Fig.~\ref{fig:poisson_cpu_time} gives the
-CPU time needed for each case to converge in seconds and
-Fig.~\ref{fig:poisson_iterations} gives the number of iterations
-needed for each case to converge relative to the problem size.
+solver. All computations presented in this section were completed on a
+2.66 GHz Intel Core i7 machine with 8 GB 1067 MHz DDR3 memory
+. Fig.~\ref{fig:poisson_cpu_time} gives the CPU time needed for each
+case to converge in seconds and Fig.~\ref{fig:poisson_iterations}
+gives the number of iterations needed for each case to converge
+relative to the problem size.
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=5in,clip]{Adjoint_Direct_CPU_Time.pdf}
   \caption{\sl CPU Time (s) to converge vs. Problem Size ($N$ for an
-    $N \times N$ mesh). Both the adjoint and direct solvers are used
-    with the five point and nine point stencils. A significant CPU
-    time speedup is noted with the adjoint method due to the reduced
-    number of histories.}
+    $N \times N$ square mesh). Both the adjoint and direct solvers are
+    used with the five point and nine point stencils. A significant
+    CPU time speedup is noted with the adjoint method due to the
+    reduced number of random walk events.}
   \label{fig:poisson_cpu_time}
 \end{figure}
 
-\begin{figure}[htbp!]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=5in,clip]{Adjoint_Direct_Iterations.pdf}
   \caption{\sl Iterations to converge vs. Problem Size ($N$ for an $N
-    \times N$ mesh. Both the adjoint and direct solvers are used with
-    the five point and nine point stencils. Both methods give similar
-    iteration behavior.}
+    \times N$ square mesh. Both the adjoint and direct solvers are
+    used with the five point and nine point stencils. Both methods
+    give similar iteration behavior.}
   \label{fig:poisson_iterations}
 \end{figure}
 
@@ -611,19 +619,19 @@ speedup over the direct solver while the number of iterations required
 to converge is of a similar scale. We expect this for several
 reasons. First, with an equivalent number of histories specified for
 both solvers and a system of size $N \times N$, the direct solver will
-compute $N \times N$ random walks per permuation while the adjoint solver
-will only compute one. Initially, this may not seem like a fair
-comparison, however, we see from Fig.~\ref{fig:poisson_cpu_time} that
-the number of iterations requried to converge is approximately the
-same. This is necessary in the direct method to ensure a contribution
-from each state as the random walk sequence will only contribute to
-the starting state. For the adjoint method, because the random walk
-sequence contributes to the state in which it currently resides, fewer
-histories are neccessary to compute contributions from all the nonzero
-parts of the source. Therefore, although the total number of random
-walks per iteration is in fact larger for the direct method, the
-solution computed at each iteration is no better than that computed by
-the adjoint method.
+compute $N \times N$ random walks per permuation while the adjoint
+solver will only compute one. Initially, this may not seem like a fair
+comparison, however, we see from Fig.~\ref{fig:poisson_iterations}
+that the number of iterations requried to converge is approximately
+the same. This is necessary in the direct method to ensure a
+contribution from each state as the random walk sequence will only
+contribute to the starting state. For the adjoint method, because the
+random walk sequence contributes to the state in which it currently
+resides, fewer histories are neccessary to compute contributions from
+all the nonzero parts of the source. Therefore, although the total
+number of random walks per iteration is in fact larger for the direct
+method, the solution computed at each iteration is no better than that
+computed by the adjoint method.
 
 Although CPU time is shown to be greatly decreased by using the
 adjoint solver in Fig.~\ref{fig:poisson_cpu_time}, the iteration
@@ -638,7 +646,7 @@ MCSA. Second, we note that both the direct and adjoint methods have
 approximately equivalent convergence behavior, leading to CPU time
 being the dominating factor in method selection.
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=5in,clip]{Adjoint_Direct_Convergence.pdf}
   \caption{\sl Infinity norm of the solution residual vs. iteration
@@ -771,10 +779,10 @@ Fig.~\ref{fig:cell} gives
 
 and $V_{ijk} = \Delta_i\Delta_j\Delta_k$.  
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \centerline{
     \input{mesh_cell.pdftex_t}}
-  \caption{Orthogonal 3D mesh Cell.}
+  \caption{Orthogonal 3D mesh cell.}
   \label{fig:cell}
 \end{figure}
 
@@ -1106,9 +1114,6 @@ Eq.~(\ref{eq:discrete-diffusion}) yields
   \label{eq:preconditioned-discrete-diffusion}
 \end{equation}
 
-In the next section we will derive an MCSA method to solve this
-equation.
-
 %%---------------------------------------------------------------------------%%
 \section{Solution of the Radiation Diffusion Equation}
 \label{sec:solut-radi-diff}
@@ -1280,7 +1285,7 @@ number of non-zero entries in columns of the iteration matrix is 6,
 generating a sparse system.  Cells along the problem boundary can have
 fewer than 6 entries.
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \centerline{
     \input{3D_mesh_segment.pdftex_t}}
   \caption{3D mesh-segment.  The particle's current cell (in blue) is
@@ -1342,7 +1347,7 @@ Eq.~(\ref{eq:stopping-criteria}).  Also, the MCSA method is not bound
 by the Central Limit Theorem so convergence is not restricted to
 $1/\sqrt{N}$~\cite{halton_1994,evans_2003}.
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \centerline{
     \includegraphics[width=5in,clip]{marshak_10.pdf}}
   \caption{
@@ -1360,7 +1365,7 @@ Fig.~\ref{fig:marshak_spectral}.  As stated in
 \S~\ref{sec:preconditioning} the preconditioning effectively reduces
 the spectral radius of $\ve{H}$ to less than 1.
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \centerline{
     \includegraphics[width=5in,clip]{spectral_radius.pdf}}
   \caption{Spectral radius of the iteration matrix, $\ve{H}$, for the
@@ -1381,7 +1386,7 @@ required to converge the solution.  However, the cost of the Monte
 Carlo transport is high; thus, better performance is attained by
 running more stages with fewer particles per stage \cite{evans_2003}.
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \centerline{
     \includegraphics[width=5in,clip]{mrshk_np_CPU.pdf}}
   \caption{CPU time versus number of particles per stage for the
@@ -1391,7 +1396,7 @@ running more stages with fewer particles per stage \cite{evans_2003}.
   \label{fig:CPU_Np}
 \end{figure}
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \centerline{
     \includegraphics[width=5in,clip]{mrshk_np_Ns.pdf}}
   \caption{
@@ -1409,7 +1414,7 @@ especially true when running small numbers of particles per stage.
 When larger numbers of particles are used the weight cutoff has a more
 pronounced effect on the efficiency of the method.
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \centerline{
     \includegraphics[width=5in,clip]{mrshk_wc_CPU.pdf}}
   \caption{
@@ -1430,7 +1435,7 @@ results are nearly as fast.  More importantly, the MCSA method clearly
 accelerates Richardson iteration, as indicated by the fact that MCSA
 is 42\% faster than Richardson iteration alone.
 
-\begin{table}[htpb!]
+\begin{table}[h!]
   \begin{center}
     \begin{tabular}{lrr}\hline\hline
       \multicolumn{1}{c}{Method} & 
@@ -1494,7 +1499,7 @@ shown at 4 edit points in Fig.~\ref{fig:edit-points}.  All three
 methods, PCG, PFIX, and MCSA, give numerically identical answers when
 using a stopping criterion of $\sn{1}{-8}$.
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \centerline{
     \includegraphics[width=5in,clip]{mesh.pdf}}
   \caption{Multi-material problem mesh.  The duct region is blue.  The
@@ -1503,7 +1508,7 @@ using a stopping criterion of $\sn{1}{-8}$.
   \label{fig:multi-mat-mesh}
 \end{figure}
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \centerline{
     \includegraphics[width=5in,clip]{T_multi_mat.pdf}}
   \caption{
@@ -1514,11 +1519,11 @@ using a stopping criterion of $\sn{1}{-8}$.
   \label{fig:multi-mat_T}
 \end{figure}
 
-\begin{figure}[htpb!]
+\begin{figure}[h!]
   \begin{center}
     \begin{tabular}{cc}
-      \subfigure[Edit points]{\includegraphics[width=1.5in,clip]{points.pdf}} &
-      \subfigure[Temperature]{\includegraphics[width=3.5in,clip]{multi_mat.pdf}}
+      \subfigure[Edit points]{\includegraphics[width=2in,clip]{points.pdf}} &
+      \subfigure[Temperature]{\includegraphics[width=4in,clip]{multi_mat.pdf}}
     \end{tabular}
   \end{center}
   \caption{(a) Edit points and (b) time-evolution of the temperature
@@ -1531,7 +1536,7 @@ multi-material problem using PCG, PFIX, and MCSA.  The results
 correspond roughly with the results from the Marshak problem.  The
 MCSA is marginally faster than PCG and 43\% faster than PFIX.
 
-\begin{table}[htpb!]
+\begin{table}[htbp!]
   \begin{center}
     \begin{tabular}{lrr}\hline\hline
       \multicolumn{1}{c}{Method} & 
