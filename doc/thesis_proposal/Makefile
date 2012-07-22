@@ -4,10 +4,10 @@ PDFTEX := pdflatex
 PDF    := dvipdf
 
 all: 
-	$(PDFTEX) model_problems
-	$(BIB) model_problems
-	$(PDFTEX) model_problems
-	$(PDFTEX) model_problems
+	$(PDFTEX) thesis_proposal
+	$(BIB) thesis_proposal
+	$(PDFTEX) thesis_proposal
+	$(PDFTEX) thesis_proposal
 
 clean:
 	-rm -f *~
@@ -23,4 +23,4 @@ clean:
 	-rm -f TAGS
 
 realclean: clean
-	-rm -f model_problems.pdf
+	-rm -f thesis_proposal.pdf

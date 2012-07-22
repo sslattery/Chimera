@@ -1,9 +1,7 @@
-%        File: latexdoc.tex
-%     Created: Friday March 4 12:24:15 2011
-% Last Change: Friday March 4 12:24:20 2011
+%        File: thesis_proposal.tex
 %
 \documentclass[letterpaper,12pt]{article}
-\usepackage[top=1.0in,bottom=1.0in,left=1.0in,right=1.0in]{geometry}
+\usepackage[top=1.0in,bottom=1.0in,left=1.25in,right=1.25in]{geometry}
 \usepackage{verbatim}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -20,33 +18,6 @@ citecolor = black,
 menucolor = black,
 urlcolor = blue
 ]{hyperref}
-\usepackage{listings}
-\usepackage{textcomp}
-\definecolor{listinggray}{gray}{0.9}
-\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
-\lstset{
-  backgroundcolor=\color{lbcolor},
-  tabsize=4,
-  rulecolor=,
-  language=c++,
-  basicstyle=\scriptsize,
-  upquote=true,
-  aboveskip={1.5\baselineskip},
-  columns=fixed,
-  showstringspaces=false,
-  extendedchars=true,
-  breaklines=true,
-  prebreak =
-  \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
-  frame=single,
-  showtabs=false,
-  showspaces=false,
-  showstringspaces=false,
-  identifierstyle=\ttfamily,
-  keywordstyle=\color[rgb]{0,0,1},
-  commentstyle=\color[rgb]{0.133,0.545,0.133},
-  stringstyle=\color[rgb]{0.627,0.126,0.941},
-}
 
 %%---------------------------------------------------------------------------%%
 \author{Stuart R. Slattery
@@ -54,18 +25,158 @@ urlcolor = blue
 }
 
 \date{\today}
-\title{<+  +>:\\
-<+  +>}
+\title{Thesis Proposal:\\
+  A Massively Parallel Stochastic Method for Nonlinear Problems}
 \begin{document}
 \maketitle
 
 %%---------------------------------------------------------------------------%%
-\section{<+  +>}<+  +>
+\section{Introduction}
+In many fields of engineering and physics, nonlinear problems are a
+primary focus of study. Recent focus on multiple physics systems adds
+a new level of complexity to common nonlinear systems as solution
+strategies change when they are coupled to other
+problems. Furthermore, a desire for predictive simulations to enhance
+the safety and performance of engineered systems creates a need for
+extremely high fidelity computations to be performed for these coupled
+systems as a means to capture effects not modeled by coarser
+methods. In order to achieve this high fidelity, state-of-the-art
+computing facilities must be leveraged in a way that is both efficient
+and considerate of hardware-related issues. As scientific computing
+moves towards exascale facilities with machines of $O(1,000,000)$
+cores already coming online, new algorithms to solve these complex
+problems must be developed to leverage this new hardware. Issues such
+as resiliency to node failure and scaling to large numbers of cores
+will be pertinent to robust algorithms aimed at this new
+hardware. Considering these issues, this thesis proposes a novel
+stochastic method to advance solution techniques for nonlinear
+problems.
+
+For some time, the particle transport community has been utilizing
+Monte Carlo methods for the solution of transport problems
+\cite{Lewis_1993}. The partial differential equation (PDE) community
+has focused on various deterministic methods for solutions to linear
+problems \cite{Saad_2003}. In between these two areas are a
+not widely known small group of stochastic methods for solving sparse
+linear systems \cite{Hammersley_1964, Halton_1962, Halton_1994,
+  Evans_2003}. In recent years, these methods have been further
+developed for transport problems in the form of Monte Carlo
+Synthetic-Acceleration (MCSA) \cite{Evans_2009} but have yet to be
+applied to more general sparse linear systems. Compared to other
+methods in these regime, MCSA offers two attractive qualities; (1) the
+linear problem operator need not be symmetric or positive-definite,
+thereby reducing preconditioning complexity and (2) the stochastic
+nature of the solution method provides a natural solution to the issue
+of resiliency and is amenable to parallelization using modern methods
+developed by the transport community \cite{Wagner_2011}. The
+developement of MCSA as a general linear solver and the development of
+a parallel MCSA method will be new and unique features of this work.
+
+In addition to linear solver advancements, nonlinear solvers may also
+benefit from a general and parallel MCSA scheme. In the engineering
+community, nonlinear problems are often addressed by linearizing the
+problem and using traditionaly iterative or direct methods
+\cite{Tannehill_1997}. In the mathematics community, various Newton
+methods have been popular \cite{Kelley_1995}. Recently, Jacobian-Free
+Newton-Krylov (JFNK) schemes have been utilized in multiple physics
+architectures and advanced single physics codes \cite{Knoll_2004,
+  Gaston_2009}. The benefits of JFNK schemes are that the Jacobian is
+never formed, simplifying the implementation, and a Krylov solver is
+leveraged (typically GMRES or Conjugate Gradient) providing excellent
+convergence properties for well-conditioned systems. However, there
+are two potential drawbacks to these methods for high fidelity
+predictive simulations: (1) the Jacobian is approximated by a
+first-order differencing method on the order of machine precision that
+can cause large errors for fine-grained simulation and (2) for systems
+that are not symmetric positive-definite (which will be the case for
+most multiphysics systems and certainly for most preconditioned
+systems) the Krylov subspace generated by the GMRES solver my become
+prohibitively large. To address these issues, this thesis proposes a
+new and novel method for nonlinear systems based on the MCSA method.
+
+The Forward-Automated Newton-MCSA (FANM) method is proposed as new
+nonlinear solution method. The key features of FANM are: full Jacobian
+generation using modern Forward Automated Differencing (FAD) methods
+\cite{Bartlett_2006}, and MCSA as the inner linear solver. This method
+has several attractive properties. First, the first-order
+approximation to the Jacobian used in JFNK type methods is eliminated
+by generating the Jacobian explicitly with the model equations through
+FAD. Second, the Jacobian need not be explicitly formed by the user
+but is instead automated through FAD; this eleminates the complexity
+of hand-coding derivatives and has also been demonstrated to be more
+efficient computationally than hand-coded derivatives
+\cite{Bartlett_2006}. Third, unlike GMRES, MCSA does not build a
+subspace during iterations. Although the Jacobian must be explicitly
+formed to use MCSA, for problems that take more than a few GMRES
+iterations to converge the size of the Krylov subspace will grow
+beyond that of the Jacobian. Finally, using MCSA for the linear solve
+provides its benefits for preconditioning, potential resiliency, and
+parallelism.
+
+%%---------------------------------------------------------------------------%%
+\section{Deliverables}
+
+This work will deliver the following items:
+
+\begin{itemize}
+\item Develop a massively parallel strategy for the MCSA method for
+  sparse linear systems.
+\item Implement a massively parallel strategy for the MCSA method for
+  sparse linear systems.
+\item Fully assess the performance of parallel MCSA on leadership class
+  computing systems in order to determine its feasibility using
+  benchmark problems.
+\item Compare the performance of MCSA to other iterative methods for
+  sparse linear systems including GMRES.
+\item Develop the FANM method for nonlinear systems.
+\item Implement the FANM method for nonlinear systems.
+\item Fully assess the performance of the FANM method on leadership
+  class computing systems using model problems.
+\item Compare the performance of MCSA to other nonlinear methods
+  including JFNK.
+\end{itemize}
+
+This work will not address the resiliency of these algorithms.
+
+%%---------------------------------------------------------------------------%%
+\section{Dissertation Outline}
+
+Based on the above work, the dissertation can be outlined in five
+distinct parts:
+
+\begin{enumerate}
+\item Iterative methods for sparse linear systems (fixed-point,
+  subspace, and stochastic methods).
+\item MCSA and MSOD (development and implementation).
+\item Iterative methods for nonlinear systems (Newton methods).
+\item FANM (developement and implementation).
+\item Application to model problems (conduction, Navier-Stokes,
+  conjugate heat transfer).
+\end{enumerate}
+
+%%---------------------------------------------------------------------------%%
+\section{Committee}
+
+\begin{itemize}
+\item Paul Wilson (advisor): Associate Professor, Department of
+  Engineering Physics.
+\item Greg Moses: Professor, Department of Engineering Physics.
+\item Carl Sovinec: Profssor, Department of Engineering Physics.
+\item Chris Rutland: Professor, Deptartment of Mechanical Engineering.
+\item Tom Evans: Senior R\&D Staff, Reactor and Nuclear Systems
+  Division, Oak Ridge National Laboratory.
+
+\end{itemize}
+
+Potential alternates include Robert Witt and Leslie Smith.
+
+%%---------------------------------------------------------------------------%%
+\section{Timeline}
 
 %%---------------------------------------------------------------------------%%
 \pagebreak
 \bibliographystyle{ieeetr}
-\bibliography{paper}
+\bibliography{references}
 \end{document}
 
 
