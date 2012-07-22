@@ -1,13 +1,16 @@
 %        File: model_problems.tex
 %
 \documentclass[letterpaper,12pt]{article}
-\usepackage[top=1.0in,bottom=1.0in,left=1.0in,right=1.0in]{geometry}
+\usepackage[top=1.0in,bottom=1.0in,left=1.25in,right=1.25in]{geometry}
 \usepackage{verbatim}
-\usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{longtable}
 \usepackage{amsfonts}
 \usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{tmadd,tmath}
+\usepackage[mathcal]{euscript}
 \usepackage[usenames]{color}
 \usepackage[
 naturalnames = true, 
@@ -44,7 +47,7 @@ conserved quantity, energy, in terms of temperature:
 \end{equation}
 
 where $C_P$ is the specific heat capacity of the material. We also
-define the heat flux using Fick's law:
+define the heat flux, $F$, in terms of temperature using Fick's law:
 
 \begin{equation}
   F(T(x,y,t)) = -\beta(x,y) \nabla T(x,y,t)\:,
@@ -60,8 +63,8 @@ two relations in hand, we can then write a conservation law for energy
   \label{eq:conduction_conservation}
 \end{equation}
 
-Here we balance the change in energy in the unit cell over a unit of
-time with the flux on the cell boundaries. Inserting
+Here we balance the time rate of change in energy in the unit cell
+with the flux on the cell boundaries. Inserting
 Eq.~(\ref{eq:conduction_energy}) int
 Eq.~(\ref{eq:conduction_conservation}) and dividing by the cell volume
 recovers the cell averaged temperature and specific heat on the left
@@ -74,38 +77,76 @@ hand side:
 \end{equation}
 
 We then insert Eq.~(\ref{eq:conduction_ficks_law}), difference the
-left hand side, and integrate the right hand side over a unit time
-step, maintaining the conservation properties of the system:
+left hand side, and integrate, maintaining the conservation properties
+of the system:
 
-\begin{equation}
+\begin{multline}
   C_{P_{ij}} ( T^{n+1}_{ij} - T^n_{ij} ) = \frac{1}{\Delta_i \Delta_j}
-  \int_{t^n}^{t^{n+1}} [ -\beta_{i-1/2,j} \nabla T_{i-1/2,j} +
-    \beta_{i+1/2,j} \nabla T_{i+1/2,j} - \beta_{i,j-1/2} \nabla
+  \int_{t^n}^{t^{n+1}} [ -\beta_{i-1/2,j} \nabla T_{i-1/2,j}\\
+    + \beta_{i+1/2,j} \nabla T_{i+1/2,j} - \beta_{i,j-1/2} \nabla
     T_{i,j-1/2} +\beta_{i,j+1/2} \nabla T_{i,j+1/2} ] dt\:.
   \label{eq:conduction_time_integral}
-\end{equation}
+\end{multline}
 
 We choose to approximate the integral on the right hand side and use a
 first order central difference for the derivative in the heat flux
 terms giving a backwards Euler representation for the time
 integration:
 
-\begin{equation}
+\begin{multline}
   C_{P_{ij}}( T^{n+1}_{ij} - T^n_{ij} ) = \frac{\Delta_t}{\Delta_i
     \Delta_j} -\beta_{i-1/2,j} \frac{T^{n+1}_{ij}
     -T^{n+1}_{i-1,j}}{\Delta_i} +\beta_{i+1/2,j} \frac{T^{n+1}_{i+1,j}
-    -T^{n+1}_{ij}}{\Delta_i} -\beta_{i,j-1/2} \frac{T^{n+1}_{ij}
+    -T^{n+1}_{ij}}{\Delta_i}\\
+  -\beta_{i,j-1/2} \frac{T^{n+1}_{ij}
     -T^{n+1}_{i,j-1}}{\Delta_j} +\beta_{i,j+1/2} \frac{T^{n+1}_{i,j+1}
-    -T^{n+1}_{i,j-1}}{\Delta_j}
-  \label{eq:conduction_fv_equation}
+    -T^{n+1}_{i,j-1}}{\Delta_j}\:.
+  \label{eq:conduction_fv_multline}
+\end{multline}
+
+We will define $\alpha$ as:
+
+\begin{equation}
+  \alpha_{ij} = \frac{\Delta_t}{C_{P_{ij}} \Delta_i \Delta_j}
+  \label{eq:conduction_coeff}\:.
 \end{equation}
 
+Rearranging for temperature, we can then form a system of equations
+amenable to matrix solutions, not yet considering boundary conditions,
+arriving at the discrete, time-dependent conduction equation:
+
+\begin{multline}
+ \Big[1 + \frac{\alpha_{ij}}{\Delta_i}(\beta_{i-1/2,j} + \beta_{i+1/2,j})\Big]
+ T^{n+1}_{ij} + \Big[-\frac{\alpha_{ij}}{\Delta_i} \beta_{i-1/2,j}\Big]
+ T^{n+1}_{i-1,j} + \Big[\frac{-\alpha_{ij}}{\Delta_i} \beta_{i+1/2,j}\Big]
+ T^{n+1}_{i+1,j}\\
+ + \Big[-\frac{\alpha_{ij}}{\Delta_j} \beta_{i-1/2,j}\Big]
+ T^{n+1}_{i,j-1} + \Big[-\frac{\alpha_{ij}}{\Delta_j} \beta_{i+1/2,j}\Big]
+ T^{n+1}_{i,j+1} = T^n_{ij}\:.
+ \label{eq:conduction_inner_terms}
+\end{multline}
+
 \subsection{Boundary Conditions}
+
+We will consider both Neumann and Dirichlet type boundary conditions
+for the conduction equation. For the Neumann condition we have a
+constant temperature at the boundary:
+
+\begin{equation}
+  T_{ij} = T_0, \forall (i,j) \in \Gamma
+  \label{eq:conduction_neumann}
+\end{equation}
+
+For the Dirichlet condition, we have a constant heat flux at the boundary.
+
+\subsection{Linear System Form}
 
 %%---------------------------------------------------------------------------%%
 \section{Navier-Stokes Equations}
 
 \subsection{Boundary Conditions}
+
+\subsection{Nonlinear System Form}
 
 %%---------------------------------------------------------------------------%%
 \pagebreak
