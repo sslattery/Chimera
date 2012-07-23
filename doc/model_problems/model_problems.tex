@@ -100,7 +100,7 @@ integration:
     -T^{n+1}_{ij}}{\Delta_i}\\
   -\beta_{i,j-1/2} \frac{T^{n+1}_{ij}
     -T^{n+1}_{i,j-1}}{\Delta_j} +\beta_{i,j+1/2} \frac{T^{n+1}_{i,j+1}
-    -T^{n+1}_{i,j-1}}{\Delta_j}\:.
+    -T^{n+1}_{i,j}}{\Delta_j}\:.
   \label{eq:conduction_fv_multline}
 \end{multline}
 
@@ -112,19 +112,49 @@ We will define $\alpha$ as:
 \end{equation}
 
 Rearranging for temperature, we can then form a system of equations
-amenable to matrix solutions, not yet considering boundary conditions,
-arriving at the discrete, time-dependent conduction equation:
+amenable to matrix solutions, not yet considering boundary conditions:
 
 \begin{multline}
- \Big[1 + \frac{\alpha_{ij}}{\Delta_i}(\beta_{i-1/2,j} + \beta_{i+1/2,j})\Big]
- T^{n+1}_{ij} + \Big[-\frac{\alpha_{ij}}{\Delta_i} \beta_{i-1/2,j}\Big]
- T^{n+1}_{i-1,j} + \Big[\frac{-\alpha_{ij}}{\Delta_i} \beta_{i+1/2,j}\Big]
- T^{n+1}_{i+1,j}\\
- + \Big[-\frac{\alpha_{ij}}{\Delta_j} \beta_{i-1/2,j}\Big]
- T^{n+1}_{i,j-1} + \Big[-\frac{\alpha_{ij}}{\Delta_j} \beta_{i+1/2,j}\Big]
+ \Big[1 + \frac{\alpha_{ij}}{\Delta_i}(\beta_{i-1/2,j} +
+   \beta_{i+1/2,j} + \beta_{i,j-1/2} + \beta_{i,j+1/2})\Big]
+ T^{n+1}_{ij} \\
+ + \Big[-\frac{\alpha_{ij}}{\Delta_i}
+   \beta_{i-1/2,j}\Big] T^{n+1}_{i-1,j}
+ + \Big[-\frac{\alpha_{ij}}{\Delta_i} \beta_{i+1/2,j}\Big]
+ T^{n+1}_{i+1,j} \\
+ + \Big[-\frac{\alpha_{ij}}{\Delta_j}
+   \beta_{i,j-1/2}\Big] T^{n+1}_{i,j-1} +
+ \Big[-\frac{\alpha_{ij}}{\Delta_j} \beta_{i,j+1/2}\Big]
  T^{n+1}_{i,j+1} = T^n_{ij}\:.
  \label{eq:conduction_inner_terms}
 \end{multline}
+
+Finally, we consider cell-centered thermal conductivity values as a
+single material occupies an entire cell:
+
+\begin{equation}
+  \beta_{i-1/2,j} = \frac{\beta_{ij}+\beta_{i-1,j}}{2}
+  \label{eq:conduction_conductivity}
+\end{equation}
+
+Applying Eq.~(\ref{eq:conduction_conductivity}), we arrive at the discrete,
+time-dependent conduction equation:
+
+\begin{multline}
+ \Big[1 + \frac{\alpha_{ij}}{2\Delta_i}(\beta_{i-1,j} +
+   \beta_{i+1,j} + 4 \beta_{i,j} + \beta_{i,j-1} + \beta_{i,j+1})\Big]
+ T^{n+1}_{ij} \\
+ + \Big[-\frac{\alpha_{ij}}{2 \Delta_i}
+   (\beta_{i-1,j}+\beta_{ij})\Big] T^{n+1}_{i-1,j}
+ + \Big[-\frac{\alpha_{ij}}{2 \Delta_i}(\beta_{ij}+\beta_{i+1,j})\Big]
+ T^{n+1}_{i+1,j} \\
+ + \Big[-\frac{\alpha_{ij}}{2 \Delta_j}
+   (\beta_{i,j-1}+\beta_{ij})\Big] T^{n+1}_{i,j-1} +
+ \Big[-\frac{\alpha_{ij}}{2 \Delta_j}(\beta_{ij}+\beta_{i,j+1})\Big]
+ T^{n+1}_{i,j+1} = T^n_{ij}\:.
+ \label{eq:conduction_discrete_equation}
+\end{multline}
+
 
 \subsection{Boundary Conditions}
 
