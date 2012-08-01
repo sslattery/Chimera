@@ -33,24 +33,24 @@ urlcolor = blue
 %%---------------------------------------------------------------------------%%
 \section{Introduction}
 In many fields of engineering and physics, nonlinear problems are a
-primary focus of study. Recent focus on multiple physics systems adds
-a new level of complexity to common nonlinear systems as solution
-strategies change when they are coupled to other
-problems. Furthermore, a desire for predictive simulations to enhance
-the safety and performance of engineered systems creates a need for
-extremely high fidelity computations to be performed for these coupled
-systems as a means to capture effects not modeled by coarser
-methods. In order to achieve this high fidelity, state-of-the-art
-computing facilities must be leveraged in a way that is both efficient
-and considerate of hardware-related issues. As scientific computing
-moves towards exascale facilities with machines of $O(1,000,000)$
-cores already coming online, new algorithms to solve these complex
-problems must be developed to leverage this new hardware. Issues such
-as resiliency to node failure and scaling to large numbers of cores
-will be pertinent to robust algorithms aimed at this new
-hardware. Considering these issues, this thesis proposes a novel
-stochastic method to advance solution techniques for nonlinear
-problems.
+primary focus of study. Recent focus on multiple physics systems (and
+in particular nuclear systems) adds a new level of complexity to
+common nonlinear systems as solution strategies change when they are
+coupled to other problems. Furthermore, a desire for predictive
+simulations to enhance the safety and performance of engineered
+systems creates a need for extremely high fidelity computations to be
+performed for these coupled systems as a means to capture effects not
+modeled by coarser methods. In order to achieve this high fidelity,
+state-of-the-art computing facilities must be leveraged in a way that
+is both efficient and considerate of hardware-related issues. As
+scientific computing moves towards exascale facilities with machines
+of $O(1,000,000)$ cores already coming online, new algorithms to solve
+these complex problems must be developed to leverage this new
+hardware. Issues such as resiliency to node failure and scaling to
+large numbers of cores will be pertinent to robust algorithms aimed at
+this new hardware. Considering these issues, this thesis proposes a
+novel stochastic method to advance solution techniques for nonlinear
+problems with a focus on coupled physics systems.
 
 For some time, the particle transport community has been utilizing
 Monte Carlo methods for the solution of transport problems
@@ -63,11 +63,11 @@ years, these methods have been further developed for transport
 problems in the form of Monte Carlo Synthetic-Acceleration (MCSA)
 \cite{Evans_2003, Evans_2009} but have yet to be applied to more
 general sparse linear systems. Compared to other methods in these
-regime, MCSA offers two attractive qualities; (1) the linear problem
+regime, MCSA offers three attractive qualities; (1) the linear problem
 operator need not be symmetric or positive-definite, thereby reducing
-preconditioning complexity and (2) the stochastic nature of the
-solution method provides a natural solution to the issue of resiliency
-and is amenable to parallelization using modern methods developed by
+preconditioning complexity, (2) the stochastic nature of the
+solution method provides a natural solution to the issue of resiliency,
+and (3) is amenable to parallelization using modern methods developed by
 the transport community \cite{Wagner_2011}. The developement of MCSA
 as a general linear solver and the development of a parallel MCSA
 method will be new and unique features of this work. Resiliency will
@@ -84,7 +84,7 @@ multiple physics architectures and advanced single physics codes
 \cite{Gaston_2009}. The benefits of JFNK schemes are that the Jacobian
 is never formed, simplifying the implementation, and a Krylov solver
 is leveraged (typically GMRES or Conjugate Gradient), providing
-excellent convergence properties for well-conditioned
+excellent convergence properties for well-conditioned and well-scaled
 systems. However, there are two potential drawbacks to these methods
 for high fidelity predictive simulations: (1) the Jacobian is
 approximated by a first-order differencing method on the order of
@@ -106,7 +106,7 @@ by generating the Jacobian explicitly with the model equations through
 FAD. Second, the Jacobian need not be explicitly formed by the user
 but is instead automated through FAD; this eleminates the complexity
 of hand-coding derivatives and has also been demonstrated to be more
-efficient computationally than evaluating hand-coded derivatives
+efficient computationally than evaluating differenced derivatives
 \cite{Bartlett_2006}. Third, unlike GMRES, MCSA does not build a
 subspace during iterations. Although the Jacobian must be explicitly
 formed to use MCSA, for problems that take more than a few GMRES
