@@ -28,18 +28,28 @@ urlcolor = blue
 }
 
 \date{\today}
-\title{A Finite Volume Formulation for the 2D Incompressible
-  Navier-Stokes and Conduction Equations}
+\title{Chimera Model Problems and Solution Schemes}
 \begin{document}
 \maketitle
 
 %%---------------------------------------------------------------------------%%
-\section{Computational Domain}
+\section{Introduction}
+In this document, finite volume formulations for the 2D incompressible
+Navier-Stokes equations and conduction equation are generated. The
+computational grid, boundary conditions, time integrations, and
+solution methods are also formulated. Using these formulations, the
+conjugate heat transfer problem is posed. These model problems and
+solution schemes will be used within the Chimera code framework.
+
+%%---------------------------------------------------------------------------%%
+\section{Computational Grid}
 
 %%---------------------------------------------------------------------------%%
 \section{Conduction Equation}
-We begin the derivation of the conduction equation by defining the
-conserved quantity, energy, in terms of temperature:
+The conduction equation describes the movement of thermal energy
+through a solid material. We begin the derivation of the conduction
+equation by defining the conserved quantity, energy, in terms of
+temperature:
 
 \begin{equation}
   E(x,y,t) = C_p(x,y) T(x,y,t)\:,
@@ -47,7 +57,7 @@ conserved quantity, energy, in terms of temperature:
 \end{equation}
 
 where $C_P$ is the specific heat capacity of the material. We also
-define the heat flux, $F$, in terms of temperature using Fick's law:
+define the energy flux, $F$, in terms of temperature using Fick's law:
 
 \begin{equation}
   F(T(x,y,t)) = -\beta(x,y) \nabla T(x,y,t)\:,
@@ -55,11 +65,12 @@ define the heat flux, $F$, in terms of temperature using Fick's law:
 \end{equation}
 
 where $\beta$ is the thermal conductivity of the material. With these
-two relations in hand, we can then write a conservation law for energy
-\cite{leveque_2002}:
+two relations in hand, we can then write a conservation statement for
+energy over a grid cell \cite{leveque_2002}:
 
 \begin{equation}
-  \frac{d}{dt} \iint_{C_{ij}} E(x,y,t) dx dy = -F(T(x,y,t)) |_{B_{ij}}\:.
+  \frac{d}{dt} \iint_{C_{ij}} E(x,y,t) dx dy = -F(T(x,y,t))
+  |_{B_{ij}}\:.
   \label{eq:conduction_conservation}
 \end{equation}
 
@@ -67,94 +78,158 @@ Here we balance the time rate of change in energy in the unit cell
 with the flux on the cell boundaries. Inserting
 Eq.~(\ref{eq:conduction_energy}) into
 Eq.~(\ref{eq:conduction_conservation}) and dividing by the cell volume
-recovers the cell averaged temperature and specific heat on the left
+recovers the cell-averaged temperature and specific heat on the left
 hand side:
 
 \begin{equation}
-  \frac{d}{dt} C_{P_{ij}} T_{ij} = -\frac{1}{\Delta_i
-    \Delta_j}F(T(x,y,t)) |_{B_{ij}}\:.
+  \frac{d}{dt} C_{P_{ij}} T_{ij} = -\frac{1}{V_{ij}}F(T(x,y,t))
+  |_{B_{ij}}\:.
   \label{eq:conduction_cell_averaged}
 \end{equation}
 
-We then insert Eq.~(\ref{eq:conduction_ficks_law}), difference the
-left hand side, and integrate, maintaining the conservation properties
-of the system:
+\subsection{Spatial Discretization}
 
-\begin{multline}
-  C_{P_{ij}} ( T^{n+1}_{ij} - T^n_{ij} ) = \frac{1}{\Delta_i \Delta_j}
-  \int_{t^n}^{t^{n+1}} [ -\beta_{i-1/2,j} \nabla T_{i-1/2,j}\\
-    + \beta_{i+1/2,j} \nabla T_{i+1/2,j} - \beta_{i,j-1/2} \nabla
-    T_{i,j-1/2} +\beta_{i,j+1/2} \nabla T_{i,j+1/2} ] dt\:.
+We begin the spatial discretization by inserting
+Eq.~(\ref{eq:conduction_ficks_law}) and differencing the left hand
+side, and integrate, maintaining the conservation properties of the
+system:
+
+\begin{equation}
+  C_{P_{ij}} ( T^{n+1}_{ij} - T^n_{ij} ) = \frac{1}{V_{ij}}
+  \int_{t^n}^{t^{n+1}} \Big[(F_{i+1/2,j}-F_{i-1/2,j})\Delta_j +
+    (F_{i,j+1/2}-F_{i,j-1/2})\Delta_i \Big] dt\:.
   \label{eq:conduction_time_integral}
-\end{multline}
+\end{equation}
 
 We choose to approximate the integral on the right hand side and use a
 first order central difference for the derivative in the heat flux
-terms giving a backwards Euler representation for the time
-integration:
-
-\begin{multline}
-  C_{P_{ij}}( T^{n+1}_{ij} - T^n_{ij} ) = \frac{\Delta_t}{\Delta_i
-    \Delta_j} -\beta_{i-1/2,j} \frac{T^{n+1}_{ij}
-    -T^{n+1}_{i-1,j}}{\Delta_i} +\beta_{i+1/2,j} \frac{T^{n+1}_{i+1,j}
-    -T^{n+1}_{ij}}{\Delta_i}\\
-  -\beta_{i,j-1/2} \frac{T^{n+1}_{ij}
-    -T^{n+1}_{i,j-1}}{\Delta_j} +\beta_{i,j+1/2} \frac{T^{n+1}_{i,j+1}
-    -T^{n+1}_{i,j}}{\Delta_j}\:.
-  \label{eq:conduction_fv_multline}
-\end{multline}
-
-We will define $\alpha$ as:
+terms with a backwards Euler representation for the time integration:
 
 \begin{equation}
-  \alpha_{ij} = \frac{\Delta_t}{C_{P_{ij}} \Delta_i \Delta_j}\:.
-  \label{eq:conduction_coeff}
+  C_{P_{ij}}( T^{n+1}_{ij} - T^n_{ij} ) = \frac{\Delta_t}{V_{ij}}
+  \Big[ (F^{n+1}_{i+1/2,j}-F^{n+1}_{i-1/2,j})\Delta_j +
+    (F^{n+1}_{i,j+1/2}-F^{n+1}_{i,j-1/2})\Delta_i \Big]
+  \label{eq:conduction_fv_equation}
 \end{equation}
 
-Rearranging for temperature, we can then form a system of equations
-amenable to matrix solutions, not yet considering boundary conditions:
+The energy fluxes on the boundaries will be approximated with a
+second-order accurate central differencing scheme with the thermal
+conductivities lagged:
 
-\begin{multline}
- \Big[1 + \frac{\alpha_{ij}}{\Delta_i}(\beta_{i-1/2,j} +
-   \beta_{i+1/2,j} + \beta_{i,j-1/2} + \beta_{i,j+1/2})\Big]
- T^{n+1}_{ij} \\
- + \Big[-\frac{\alpha_{ij}}{\Delta_i}
-   \beta_{i-1/2,j}\Big] T^{n+1}_{i-1,j}
- + \Big[-\frac{\alpha_{ij}}{\Delta_i} \beta_{i+1/2,j}\Big]
- T^{n+1}_{i+1,j} \\
- + \Big[-\frac{\alpha_{ij}}{\Delta_j}
-   \beta_{i,j-1/2}\Big] T^{n+1}_{i,j-1} +
- \Big[-\frac{\alpha_{ij}}{\Delta_j} \beta_{i,j+1/2}\Big]
- T^{n+1}_{i,j+1} = T^n_{ij}\:.
+\begin{equation}
+  \begin{aligned}
+  F^{n+1}_{i-1/2,j} = -\beta^n_{i-1/2,j} \frac{T^{n+1}_{ij}
+    -T^{n+1}_{i-1,j}}{\Delta_{i-1/2}} \\ F^{n+1}_{i+1/2,j} =
+  -\beta^n_{i+1/2,j} \frac{T^{n+1}_{i+1,j}
+    -T^{n+1}_{ij}}{\Delta_{i+1/2}} \\ F^{n+1}_{i,j-1/2} =
+  -\beta^n_{i,j-1/2} \frac{T^{n+1}_{ij}
+    -T^{n+1}_{i,j-1}}{\Delta_{j-1/2}} \\ F^{n+1}_{i,j+1/2} =
+  -\beta^n_{i,j+1/2} \frac{T^{n+1}_{i,j+1}
+    -T^{n+1}_{i,j}}{\Delta_{j+1/2}}\:.
+    \label{eq:conduction_fluxes}
+  \end{aligned}
+\end{equation}
+
+Here, we define:
+
+\begin{equation}
+  \begin{aligned}
+    \Delta_{l-1/2} = \frac{\Delta_l + \Delta_{l-1}}{2}
+    \\ \Delta_{l+1/2} = \frac{\Delta_{l+1} + \Delta_l}{2}\:,
+    \label{eq:conduction_half_delta}
+  \end{aligned}
+\end{equation}
+
+where $l \in [i,j]$. Rearranging for temperature, we can then form a
+system of equations amenable to matrix solutions, not yet considering
+boundary conditions:
+
+\begin{equation}
+ a_{ij}T^{n+1}_{ij} + a_{i-1,j}T^{n+1}_{i-1,j} +
+ a_{i+1,j}T^{n+1}_{i+1,j} + a_{i,j-1}T^{n+1}_{i,j-1} +
+ a_{i,j+1}T^{n+1}_{i,j+1} = \frac{C_{P_{ij}}V_{ij}}{\Delta t}
+ T^n_{ij}\:,
  \label{eq:conduction_inner_terms}
-\end{multline}
-
-Finally, we consider cell-centered thermal conductivity values as a
-single material occupies an entire cell:
-
-\begin{equation}
-  \beta_{i-1/2,j} = \frac{\beta_{ij}+\beta_{i-1,j}}{2}\:.
-  \label{eq:conduction_conductivity}
 \end{equation}
 
-Applying Eq.~(\ref{eq:conduction_conductivity}), we arrive at the discrete,
-time-dependent conduction equation:
+where:
 
-\begin{multline}
- \Big[1 + \frac{\alpha_{ij}}{2\Delta_i}(\beta_{i-1,j} +
-   \beta_{i+1,j} + 4 \beta_{i,j} + \beta_{i,j-1} + \beta_{i,j+1})\Big]
- T^{n+1}_{ij} \\
- + \Big[-\frac{\alpha_{ij}}{2 \Delta_i}
-   (\beta_{i-1,j}+\beta_{ij})\Big] T^{n+1}_{i-1,j}
- + \Big[-\frac{\alpha_{ij}}{2 \Delta_i}(\beta_{ij}+\beta_{i+1,j})\Big]
- T^{n+1}_{i+1,j} \\
- + \Big[-\frac{\alpha_{ij}}{2 \Delta_j}
-   (\beta_{i,j-1}+\beta_{ij})\Big] T^{n+1}_{i,j-1} +
- \Big[-\frac{\alpha_{ij}}{2 \Delta_j}(\beta_{ij}+\beta_{i,j+1})\Big]
- T^{n+1}_{i,j+1} = T^n_{ij}\:.
- \label{eq:conduction_discrete_equation}
-\end{multline}
+\begin{equation}
+  \begin{aligned}
+    a_{i+1,j} = -\frac{\Delta_j \beta^n_{i+1/2}}{\Delta_{i+1/2}}
+    \\ a_{i-1,j} = -\frac{\Delta_j \beta^n_{i-1/2}}{\Delta_{i-1/2}}
+    \\ a_{ij} = \frac{\Delta_j \beta^n_{i+1/2}}{\Delta_{i+1/2}} +
+    \frac{\Delta_j \beta^n_{i-1/2}}{\Delta_{i-1/2}} + \frac{\Delta_i
+      \beta^n_{j-1/2}}{\Delta_{j-1/2}} + \frac{\Delta_i
+      \beta^n_{j+1/2}}{\Delta_{j+1/2}} +
+    \frac{C_{P_{ij}}V_{ij}}{\Delta t} \\ a_{i,j-1} = -\frac{\Delta_i
+      \beta^n_{j-1/2}}{\Delta_{j-1/2}} \\ a_{i,j+1} = -\frac{\Delta_i
+      \beta^n_{j+1/2}}{\Delta_{j+1/2}} \:.
+    \label{eq:conduction_coeffs}
+  \end{aligned}
+\end{equation}
 
+We are then left to resolve the thermal conductivity values defined on
+the cell boundaries with values defined at the cell centers. We choose
+these values such that the energy flux across a cell boundary is
+continuous from cell to cell, even if two adjacent cells have
+different materials. We do this be equating the boundary flux computed
+from the perspective of each neighboring cell with the gradient
+generated using a one sided difference:
+
+\begin{equation}
+  \begin{aligned}
+    F^{l+1}_{l+1/2} = -2 \beta_{l+1}
+    \frac{T_{l+1}-T_{l+1/2}}{\Delta_l} \\ F^{l}_{l+1/2} = -2 \beta_{l}
+    \frac{T_{l+1/2}-T_l}{\Delta_l} \\
+    F^{l+1}_{l+1/2} = F^{l}_{l+1/2} \:,
+    \label{eq:conduction_tc_step1}
+  \end{aligned}
+\end{equation}
+
+with $F^{l}_{l+1/2}$ defined by the cell-centered values in cell $l$
+and $l \in [i,j]$. We can follow the same procedure for the other side
+of the cell:
+
+\begin{equation}
+  \begin{aligned}
+    F^{l}_{l-1/2} = -2 \beta_{l} \frac{T_{l}-T_{l-1/2}}{\Delta_l}
+    \\ F^{l-1}_{l-1/2} = -2 \beta_{l-1}
+    \frac{T_{l-1/2}-T_{l-1}}{\Delta_l} \\ F^{l}_{l-1/2} =
+    F^{l-1}_{l-1/2} \:,
+    \label{eq:conduction_tc_step2}
+  \end{aligned}
+\end{equation}
+
+We solve Eqs~(\ref{eq:conduction_tc_step1}) and
+(\ref{eq:conduction_tc_step2}) for $T_{l+1/2}$ and $T_{l-1/2}$ to
+eliminate the cell centered temperatures:
+
+\begin{equation}
+  \begin{aligned}
+    T_{l+1/2} = \frac{\Delta_l \beta_{l+1} T_{l} + \Delta_{l+1}
+      \beta_{l} T_{l+1}} {\Delta_l \beta_{l+1} + \Delta_{l+1} \beta_{l}}
+    \\ T_{l-1/2} = \frac{\Delta_{l-1} \beta_{l} T_{l} + \Delta_{l}
+      \beta_{l-1} T_{l-1}} {\Delta_{l} \beta_{l-1} + \Delta_{l}
+      \beta_{l-1}} \:.
+    \label{eq:conduction_tc_step3}
+  \end{aligned}
+\end{equation}
+
+We then substitute into either of the the equations in both
+Eqs~(\ref{eq:conduction_tc_step1}) and (\ref{eq:conduction_tc_step2})
+and equate the result with Eq~(\ref{eq:conduction_fluxes}) to arrive
+at the final cell-centered thermal conductivity values:
+
+\begin{equation}
+  \begin{aligned}
+    \beta^n_{i+1/2,j} = \\
+    \beta^n_{i-1/2,j} = \\
+    \beta^n_{i,j+1/2} = \\
+    \beta^n_{i,j-1/2} = \:.
+    \label{eq:conduction_tc_step_4}
+  \end{aligned}
+\end{equation}
 
 \subsection{Boundary Conditions}
 
@@ -167,7 +242,8 @@ constant temperature at the boundary:
   \label{eq:conduction_neumann}
 \end{equation}
 
-For the Dirichlet condition, we have a constant heat flux at the boundary.
+For the Dirichlet condition, we have a constant heat flux at the
+boundary.
 
 \subsection{Linear System Form}
 
