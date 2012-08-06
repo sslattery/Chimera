@@ -35,14 +35,15 @@ urlcolor = blue
 %%---------------------------------------------------------------------------%%
 \section{Introduction}
 In this document, finite volume formulations for the 2D incompressible
-Navier-Stokes equations and conduction equation are generated. The
-computational grid, boundary conditions, time integrations, and
-solution methods are also formulated. Using these formulations, the
-conjugate heat transfer problem is posed. These model problems and
-solution schemes will be used within the Chimera code framework.
+Navier-Stokes equations and conduction equation are generated using an
+Eulerian approach. The computational grid, boundary conditions, time
+integrations, and solution methods are also formulated. Using these
+formulations, the conjugate heat transfer problem is posed. These
+model problems and solution schemes will be used within the Chimera
+code framework to demonstrate nonlinear capabilities.
 
 %%---------------------------------------------------------------------------%%
-\section{Computational Grid}
+\section{Computational Domain}
 
 %%---------------------------------------------------------------------------%%
 \section{Conduction Equation}
@@ -249,6 +250,19 @@ boundary.
 
 %%---------------------------------------------------------------------------%%
 \section{Incompressible Navier-Stokes Equations}
+The incompressible Navier-Stokes equations describe a fluid a constant
+density. The will generated through mass, momentum, and energy
+conservation statements with an equation of state to close the system.
+
+\subsection{Mass}
+
+\subsection{Momentum}
+
+\subsection{Energy}
+For energy conservation, we choose a temperature framework in the same
+manner as the conduction problem.
+
+\subsection{Equation of State}
 
 \subsection{Boundary Conditions}
 
