@@ -524,18 +524,18 @@ Cartesian grid with a second-order five point stencil
   \label{eq:five_point_stencil}
 \end{equation}
 
-and a fourth-order nine point stencil both assuming a grid size of
-$\Delta$ in both the $i$ and $j$ directions
+and a fourth-order nine point stencil 
 
 \begin{multline}
   \nabla^2_9 = \frac{1}{6\Delta^2}[4 u_{i-1,j} + 4 u_{i+1,j} + 4
     u_{i,j-1} + 4 u_{i,j+1} + u_{i-1,j-1}\\ + u_{i-1,j+1} +
-    u_{i+1,j-1} + u_{i+1,j+1} - 20 u_{i,j}]\:.
+    u_{i+1,j-1} + u_{i+1,j+1} - 20 u_{i,j}]\:,
   \label{eq:nine_point_stencil}
 \end{multline}
 
-For a single time step solution, we then have the following sparse
-linear system to be solved with the MCSA method:
+both assuming a grid size of $\Delta$ in both the $i$ and $j$
+directions. For a single time step solution, we then have the
+following sparse linear system to be solved with the MCSA method:
 
 \begin{equation}
   \vA \vu^{n+1} = \vu^n\:.
@@ -552,13 +552,13 @@ to converge to a solution, a problem of constant $\Delta$ was used
 with varying values of grid size, fixing the spectral radius of the
 system at a constant value for each variation. Both the five point and
 nine point stencils were used with both the direct and adjoint
-solvers. For each case, 50 random walk permuations were simulated per
-iteration with a weight cutoff of $1.0E-4$ for the stochastic linear
-solver and a convergence tolerance of $1.0E-8$ for the MCSA iterative
-solver. All computations presented in this section were completed on a
-2.66 GHz Intel Core i7 machine with 8 GB 1067 MHz DDR3 memory
-. Fig.~\ref{fig:poisson_cpu_time} gives the CPU time needed for each
-case to converge in seconds and Fig.~\ref{fig:poisson_iterations}
+solvers. For each case, 50 random walk permutations were computed per
+MCSA iteration with a weight cutoff of $1.0E-4$ for the stochastic
+linear solver and a convergence tolerance of $1.0E-8$ for the MCSA
+iterative solver. All computations presented in this section were
+completed on a 2.66 GHz Intel Core i7 machine with 8 GB 1067 MHz DDR3
+memory. Fig.~\ref{fig:poisson_cpu_time} gives the CPU time needed for
+each case to converge in seconds and Fig.~\ref{fig:poisson_iterations}
 gives the number of iterations needed for each case to converge
 relative to the problem size.
 
@@ -577,7 +577,7 @@ relative to the problem size.
   \centering
   \includegraphics[width=5in,clip]{Adjoint_Direct_Iterations.pdf}
   \caption{\sl Iterations to converge vs. Problem Size ($N$ for an $N
-    \times N$ square mesh. Both the adjoint and direct solvers are
+    \times N$ square mesh). Both the adjoint and direct solvers are
     used with the five point and nine point stencils. Both methods
     give similar iteration behavior.}
   \label{fig:poisson_iterations}
@@ -589,7 +589,7 @@ speedup over the direct solver while the number of iterations required
 to converge is of a similar scale. We expect this for several
 reasons. First, with an equivalent number of histories specified for
 both solvers and a system of size $N \times N$, the direct solver will
-compute $N \times N$ random walks per permuation while the adjoint
+compute $N \times N$ random walks per permutation while the adjoint
 solver will only compute one. This is necessary in the direct method
 to ensure a contribution from each state as the random walk sequence
 will only contribute to the starting state. For the adjoint method,
@@ -598,14 +598,14 @@ currently resides, fewer histories are neccessary to compute
 contributions from all the nonzero parts of the source. Initially,
 this may not seem like a fair comparison, however, we see from
 Fig.~\ref{fig:poisson_iterations} that the number of iterations
-requried to converge is approximately the same and therefore the extra
+required to converge is approximately the same and therefore the extra
 computations performed by the direct method do not improve the error
 estimation. Therefore, although the total number of random walks per
 iteration is in fact larger for the direct method, the solution
 computed at each iteration is no better than that computed by the
 adjoint method.
 
-As an additional comparision, the convergence behavior of MCSA can be
+As an additional comparison, the convergence behavior of MCSA can be
 analyzed using both solvers to detect any performance benefits. To
 assess the convergence properties of MCSA using each solver and
 stencil, the infinity norm of the residual computed in
@@ -622,8 +622,7 @@ leading to CPU time being the dominating factor in method selection.
   \includegraphics[width=5in,clip]{Adjoint_Direct_Convergence.pdf}
   \caption{\sl Infinity norm of the solution residual vs. iteration
     number for a problem of fixed size. Both the adjoint and direct
-    solvers are used with the five point and nine point stencils. Both
-    methods give similar iteration behavior.}
+    solvers are used with the five point and nine point stencils.}
   \label{fig:poisson_convergence}
 \end{figure}
 
@@ -662,10 +661,10 @@ $Q\equiv Q(\ve{r},t)$
 $[\text{Jerks}\cdot\text{cm}^{-3}\cdot\text{sh}^{-1}]$, is assumed to
 be independent of $T$.
 
-We chose to use the angle-energy integrated radiation intensity,
+We choose to use the angle-energy integrated radiation intensity,
 $\phi\equiv\phi(\ve{r},t)$
 $[\text{Jerks}\cdot\text{cm}^{-2}\cdot\text{sh}^{-1}]$, as the primary
-state variable.  The intensity is defined,
+state variable.  The intensity is defined as:
 
 \begin{equation}
   \label{eq:lte-phi}
@@ -702,7 +701,7 @@ Inserting \eqref{eq:partial-T} into \eqref{eq:eq-diff-T} yields
 \end{equation}
 
 where $D$ is the diffusion coefficient, $D\equiv
-D(\ve{r},T(\ve{r},t))\ [\text{cm}]$, and is defined
+D(\ve{r},T(\ve{r},t))\ [\text{cm}]$, and is defined as
 
 \begin{equation}
   D = \frac{1}{3\ros}\:.
