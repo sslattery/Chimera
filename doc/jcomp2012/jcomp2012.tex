@@ -149,13 +149,13 @@
 
   \begin{abstract}
 
-    We present a synthetic-acceleration based Monte Carlo method for
-    solving the 1T thermal radiation diffusion equation in three
-    dimensions. The algorithm performance is compared against
-    traditional solution schemes using a Marshak benchmark problem and
-    a more sophisticated multiple material problem. Our results show
-    that not only can our Monte Carlo method be an effective
-    solver for sparse matrix systems, but also that it is competitive
+    We present a novel synthetic-acceleration based Monte Carlo method
+    for solving the equilibrium thermal radiation diffusion equation
+    in three dimensions. The algorithm performance is compared against
+    traditional solution techniques using a Marshak benchmark problem
+    and a more complex multiple material problem. Our results show
+    that not only can our Monte Carlo method be an effective solver
+    for sparse matrix systems, but also that it performs competitively
     with deterministic methods including preconditioned Conjugate
     Gradient while producing numerically identical results. We also
     discuss various aspects of preconditioning the method and its
@@ -180,21 +180,25 @@ Carlo method that was an application of Halton's Sequential Monte
 Carlo method~\cite{halton_1962,halton_1994} to the one-dimensional
 equilibrium (1T) thermal radiation diffusion equation.  At that time,
 Halton's method was not widely known in computational physics.  While
-extending our method to three dimensions, we have discovered that the Sequential
-Monte Carlo method is actually a variant of iterative refinement cast
-as a residual method.  Using Monte Carlo to accelerate a fixed-point
-(Richardson) iteration, our new method surpasses our previous 1D
-method and allows for extension to more general solution techniques.
+extending our method to three dimensions, we have discovered that the
+Sequential Monte Carlo method is actually a variant of iterative
+refinement cast as a residual method.  Using Monte Carlo to accelerate
+a fixed-point (Richardson) iteration, our new method surpasses our
+previous one dimensional method and allows for extension to more
+general solution techniques.
 
 The purpose of this study is to demonstrate an efficient Monte Carlo
-solution method for 3D, time-dependent, discrete systems. In this
-work, we extend our previous work in the following manner:
+solution method for three dimensional (3D), time-dependent, discrete
+systems. In this work, we extend our previous work in the following
+manner:
 
 \begin{itemize}
 \item We develop a rigorous synthetic-acceleration Monte Carlo method
   for solving sparse matrix systems.
 \item We apply this method to the 1T thermal radiation diffusion
-  equation in 3D.
+  equation in three dimensions.
+\item We compare numerical and performance results of the Monte Carlo
+  method against traditional deterministic solution methods.
 \end{itemize}
 
 In \S~\ref{sec:monte-carlo-matrix} we review Monte Carlo methods for
@@ -225,8 +229,8 @@ made any significant impact in the physics community.
 In order to address the convergence issues plaguing Monte Carlo
 solvers, Halton \cite{halton_1962,halton_1994} proposed a Sequential
 Monte Carlo method.  This algorithm demonstrated dramatically improved
-convergence over regular Monte Carlo.  Nonetheless, this method has
-not gained widespread use in computational physics.  In the next
+convergence over regular Monte Carlo.  Nonetheless, Halton's method
+has not gained widespread use in computational physics.  In the next
 sections, we will briefly describe the Monte Carlo methods that can be
 used to solve linear systems and expand them to present our new
 synthetic acceleration method.
@@ -247,8 +251,9 @@ which can be written,
   \end{split}
   \label{eq:point_iteration}
 \end{equation}
-When the spectral radius of the iteration matrix ($\vH$) is less than
-1, we can expand $\vA^{-1}$ using the \latin{Neumann Series},
+When the spectral radius ($\rho$) of the iteration matrix ($\vH$) is
+less than 1, we can expand $\vA^{-1}$ using the \latin{Neumann
+  Series},
 \begin{equation}
   \vA^{-1} = (\vI - \vH)^{-1} = \sum_{k=0}^{\infty} \vH^k\:.
 \end{equation} 
@@ -388,8 +393,8 @@ per permutation.
 
 Similar to the direct method, the adjoint method random walk process
 requires a terminating condition.  In all of the work that follows we
-utilize a relative weight cutoff.  The weight cutoff is defined as a
-fraction of the starting weight such that
+utilize a relative weight cutoff.  The relative weight cutoff is
+defined as a fraction of the starting weight such that
 \begin{equation}
   W_f = W_c\hat{b}_{i_0}\:,
   \label{eq:weight_cutoff}
@@ -481,8 +486,8 @@ The hat on $\vA$ in Eq.~(\ref{eq:MCSA-residual_solve}) indicates that
 the Monte Carlo solution only approximately inverts this operator.
 Thus, we have defined a scheme in which the initial estimate of $\vx$
 in each iteration is updated using a single fixed-point
-iteration\footnote{Although, a subspace method could be used instead of
-  a stationary method here.}.  The residual is calculated and is used
+iteration\footnote{Although, a subspace method could be used instead
+  of a stationary method here.}.  The residual is calculated and used
 as a source to estimate the error, $\delta\vx^{l+1/2}$, by solving
 Eq.~(\ref{eq:MCSA-residual_solve}) via the Monte Carlo adjoint
 method. The error is then used to calculate an updated iterate of the
@@ -496,8 +501,9 @@ criterion~\cite{kelley_1995},
 
 \subsection{Monte Carlo Method Selection}
 
-The MCSA method defined in Eq.(~\ref{eq:MCSA-residual_solve}) uses the
-adjoint method to estimate the error instead of the direct method
+The MCSA method defined in Eq.~(\ref{eq:MCSA-iteration}) uses the
+adjoint method to estimate the error in
+Eq.~(\ref{eq:MCSA-residual_solve}) instead of the direct method
 outlined in \S~\ref{sec:direct-method}. To demonstrate the
 effectiveness of the adjoint method over the direct method within the
 context of MCSA, we choose the two-dimensional time-dependent Poisson
@@ -624,6 +630,12 @@ leading to CPU time being the dominating factor in method selection.
 %%---------------------------------------------------------------------------%%
 \section{Discrete Form of the Radiation Diffusion Equation}
 \label{sec:discr-form-radi}
+
+Using the mathematical preliminaries developed in the previous
+section, we can now generate a discrete form of the radiation
+diffusion equation. We will show that this discrete form is amenable
+to interpretation using Monte Carlo concepts and can be written in a
+way that a random walk sequence can be generated.
 
 \subsection{Equilibrium Diffusion Model}
 
@@ -1015,8 +1027,8 @@ accomplishes several objectives:
   fewer iterations are required resulting in accelerated convergence.
 \item The diagonal elements of the preconditioned iteration matrix are
   zero, $\diag(\vI - \ve{M}^{-1}\ve{D}) = 0$.  Thus, there will be no
-  computations wasted in transitions $i\rightarrow i$ during the
-  random walk process.
+  computations wasted for in-state transitions $i\rightarrow i$ during
+  the random walk process.
 \end{itemize}
 
 The second item is quite important for Monte Carlo solutions of linear
@@ -1081,7 +1093,7 @@ Eq.~(\ref{eq:discrete-diffusion}) yields
 Here we derive the equations required to solve
 Eq.~(\ref{eq:preconditioned-discrete-diffusion}) using the MCSA
 method.  As discussed in \S~\ref{sec:iter-refin-monte}, the MCSA
-method requires two solution s.pdf:
+method requires two solutions:
 
 \begin{enumerate}
 \item A fixed-point iteration to estimate $\bphi^{l+1/2}$.  This is a
@@ -1161,7 +1173,7 @@ probability of scattering to an adjacent cell. We tally the
 contribution of $\phi$ in each cell using
 Eq.~(\ref{eq:adjoint-tally}).  The transport is terminated using a
 relative weight cutoff that is defined in
-Eq.~(\ref{eq:weight_cutoff}).  We now examine each of these s.pdf in
+Eq.~(\ref{eq:weight_cutoff}).  We now examine each of these in
 more detail.
 
 The connectivity of an arbitrary cell is illustrated in the 3D mesh
