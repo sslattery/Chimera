@@ -179,11 +179,12 @@ In previous work~\cite{evans_2003}, we developed a residual Monte
 Carlo method that was an application of Halton's Sequential Monte
 Carlo method~\cite{halton_1962,halton_1994} to the one-dimensional
 equilibrium (1T) thermal radiation diffusion equation.  At that time,
-Halton's method was not widely known in computational physics.  While
-extending our method to three dimensions, we have discovered that the
-Sequential Monte Carlo method is actually a variant of iterative
-refinement cast as a residual method.  Using Monte Carlo to accelerate
-a fixed-point (Richardson) iteration, our new method surpasses our
+Halton's method was not widely known in the general computational
+physics community.  While extending our method to three dimensions, we
+have realized that the Sequential Monte Carlo method is actually a
+variant of iterative refinement cast as a residual method. We have
+developed a new method in which Monte Carlo is used to accelerate a
+fixed-point (Richardson) iteration. This algorithm surpasses our
 previous one dimensional method and allows for extension to more
 general solution techniques.
 
@@ -230,10 +231,10 @@ In order to address the convergence issues plaguing Monte Carlo
 solvers, Halton \cite{halton_1962,halton_1994} proposed a Sequential
 Monte Carlo method.  This algorithm demonstrated dramatically improved
 convergence over regular Monte Carlo.  Nonetheless, Halton's method
-has not gained widespread use in computational physics.  In the next
-sections, we will briefly describe the Monte Carlo methods that can be
-used to solve linear systems and expand them to present our new
-synthetic acceleration method.
+has not gained widespread use in computational physics
+applications. In the next sections, we will briefly describe the Monte
+Carlo methods that can be used to solve linear systems and expand them
+to present our new synthetic acceleration method.
 
 %%---------------------------------------------------------------------------%%
 \subsection{Monte Carlo Matrix Solution Methods}
@@ -553,8 +554,8 @@ with varying values of grid size, fixing the spectral radius of the
 system at a constant value for each variation. Both the five point and
 nine point stencils were used with both the direct and adjoint
 solvers. For each case, 50 random walk permutations were computed per
-MCSA iteration with a weight cutoff of $1.0E-4$ for the stochastic
-linear solver and a convergence tolerance of $1.0E-8$ for the MCSA
+MCSA iteration with a weight cutoff of \sn{1}{-4} for the stochastic
+linear solver and a convergence tolerance of \sn{1}{-8} for the MCSA
 iterative solver. All computations presented in this section were
 completed on a 2.66 GHz Intel Core i7 machine with 8 GB 1067 MHz DDR3
 memory. Fig.~\ref{fig:poisson_cpu_time} gives the CPU time needed for
@@ -648,22 +649,22 @@ The general form of the equilibrium diffusion equation is
 \end{equation}
 
 where $\Cv\equiv\Cv(\ve{r},T(\ve{r},t))$
-$[\text{Jerks}\cdot\text{g}^{-1}\cdot\text{keV}^{-1}]$ is the specific
+$[\text{GJ}\cdot\text{g}^{-1}\cdot\text{keV}^{-1}]$ is the specific
 heat capacity of the material, $\rho\equiv\rho(\ve{r})$
 $[\text{g}\cdot\text{cm}^{-3}]$ is the density of the material,
-$a=0.01372$ $[\text{Jerks}\cdot\text{cm}^{-3}\cdot\text{keV}^{-4}]$ is
-the radiation constant, $c=299.79$ $[\text{cm}\cdot\text{sh}^{-1}]$ is
+$a=0.01372$ $[\text{GJ}\cdot\text{cm}^{-3}\cdot\text{keV}^{-4}]$ is
+the radiation constant, $c=29.979$ $[\text{cm}\cdot\text{ns}^{-1}]$ is
 the vacuum light speed, and $T\equiv T(\ve{r},t)$ $[\text{keV}]$ is
 the temperature that characterizes both the radiation and the
 material.  The opacity, $\ros\equiv\ros$(\ve{r},T(\ve{r},t))
 $[\text{cm}^{-1}]$, is the Rosseland Mean opacity.  The source,
 $Q\equiv Q(\ve{r},t)$
-$[\text{Jerks}\cdot\text{cm}^{-3}\cdot\text{sh}^{-1}]$, is assumed to
+$[\text{GJ}\cdot\text{cm}^{-3}\cdot\text{ns}^{-1}]$, is assumed to
 be independent of $T$.
 
 We choose to use the angle-energy integrated radiation intensity,
 $\phi\equiv\phi(\ve{r},t)$
-$[\text{Jerks}\cdot\text{cm}^{-2}\cdot\text{sh}^{-1}]$, as the primary
+$[\text{GJ}\cdot\text{cm}^{-2}\cdot\text{ns}^{-1}]$, as the primary
 state variable.  The intensity is defined as:
 
 \begin{equation}
@@ -1032,44 +1033,11 @@ accomplishes several objectives:
 
 The second item is quite important for Monte Carlo solutions of linear
 systems, and this type of scaling should be performed regardless of
-any additional preconditioner choices.
-
-A side effect of this preconditioner choice is that the preconditioned
-system, $\ve{M}^{-1}\ve{D}$, is no longer SPD.  This situation can be
-rectified by doing right-left preconditioning and defining
-
-\begin{equation}
-  \ve{M} = \ve{L}\ve{L}^{T}\:,
-\end{equation}
-
-where $\ve{L} = \ve{L}^{T} = \sqrt{\ve{M}}$.  Applying right-left
-preconditioning gives
-
-\begin{equation}
-  \begin{gathered}
-    \ve{M}^{-1}\ve{D}\ve{M}^{-1}\ve{M}\bphi =
-    \ve{M}^{-1}\ve{q}\:,\\ (\ve{LL}^T)^{-1}\ve{D}(\ve{LL}^T)^{-1}\ve{LL}^T\bphi
-    = (\ve{LL}^T)^{-1}\ve{q}\:,
-    \\ \ve{L}^{-T}\ve{L}^{-1}\ve{D}\ve{L}^{-T}\ve{L}^T\phi =
-    \ve{L}^{-T}\ve{L}^{-1}\ve{q}\:,\\ (\ve{L}^{-1}\ve{D}\ve{L}^{-T})\ve{L}^T\bphi
-    = \ve{L}^{-1}\ve{q}\:,\\ \hat{\ve{D}}\hat{\bphi} = \hat{\ve{q}}\:.
-  \end{gathered}
-  \label{eq:right-left-preconditioning}
-\end{equation}
-
-This type of preconditioning is also referred to as row-column
-scaling.  The resulting preconditioned matrix, $\hat{\ve{D}}$, is now
-SPD, and we can use Conjugate Gradient (CG) solvers.  Therefore, we
-will use this preconditioning scheme for deterministic solutions of
-Eq.~(\ref{eq:diffusion-matrix}).  However, given that the convergence
-properties of $\hat{\ve{D}}$ are similar to $\ve{M}^{-1}\ve{D}$ and
-the Monte Carlo solvers do not require SPD matrices, we will be
-content with solving Eq.~(\ref{eq:preconditioned-diffusion}) using
-MCSA.
-
-The preconditioned system we will solve is defined in
-Eq.~(\ref{eq:preconditioned-diffusion}).  Applying $\ve{M}^{-1}$ to
-Eq.~(\ref{eq:discrete-diffusion}) yields
+any additional preconditioner choices. We note that the resulting
+system does not have to be SPD for the MCSA algorithm, thus any
+suitable choice of $\ve{M}$ will suffice.  The preconditioned system
+we will solve is defined in Eq.~(\ref{eq:preconditioned-diffusion}).
+Applying $\ve{M}^{-1}$ to Eq.~(\ref{eq:discrete-diffusion}) yields
 
 \begin{equation}
   \begin{aligned}
@@ -1269,18 +1237,19 @@ Here we examine the effectiveness of the MCSA method and compare it to
 traditional deterministic solution methods.  The deterministic methods
 considered are preconditioned Conjugate Gradient (PCG) and
 preconditioned fixed-point (Richardson) iteration (PFIX).  The PCG
-method uses right-left preconditioning a shown in
-Eq.~(\ref{eq:right-left-preconditioning}).  The PFIX scheme is used to
-solve Eq.~(\ref{eq:preconditioned-diffusion}), which is identical to
-the system being solved with MCSA.  We examine each method on two 3D
+method uses right-left preconditioning with
+$\ve{M}=\ve{L}\ve{L}^{-1}$.  The PFIX scheme is used to solve
+Eq.~(\ref{eq:preconditioned-diffusion}), which is identical to the
+system being solved with MCSA.  We examine each method on two 3D
 problems: a Marshak wave problem and a multi-material duct problem.
 
 \subsection{Marshak Wave}
 
 The Marshak wave problem under consideration in this study has an
 incoming 1~keV blackbody boundary flux at $x=0$ and propagates in the
-$x$-dimension in time.  In other words, this a 3D representation of a
-1D problem.  The full set of problem conditions is:
+$x$-dimension in time as outlined in Ref.~\cite{larsen_1980}.  In
+other words, this a 3D representation of a 1D problem.  The full set
+of problem conditions is:
 
 \begin{center}
   \begin{tabular}{ll}\hline
@@ -1288,7 +1257,7 @@ $x$-dimension in time.  In other words, this a 3D representation of a
     0\quad \partial\Gamma \in \{x^{+}, y^{-}, y^{+}, z^{-}, z^{+}\}$
     \\ material properties & $\rho =
     3.0\,\text{g}\cdot\text{cm}^{-3}$ \\ & $\Cv =
-    0.1\,\text{Jerks}\cdot\text{g}^{-1}\cdot\text{keV}^{-1}$\\ &
+    0.1\,\text{GJ}\cdot\text{g}^{-1}\cdot\text{keV}^{-1}$\\ &
     $T(t=0) = \sn{1}{-4}\,\text{keV}$\\  opacity & $\sigma =
     100T^{-3}\,\text{cm}^2\cdot\text{g}^{-1}$ \\  mesh & $\Di = \Dj
     = \Dk = 0.01\,\text{cm}$ \\ & $N_i = 100\quad N_j = N_k = 4$
@@ -1296,7 +1265,7 @@ $x$-dimension in time.  In other words, this a 3D representation of a
   \end{tabular}
 \end{center}
 
-The problem is run to $10$~shakes.
+The problem is run to $100$~nanoseconds.
 
 Figure~\ref{fig:marshak_10} shows the analytic Marshak Wave solution
 compared to the MCSA solution.  As opposed to most Monte Carlo
@@ -1310,7 +1279,7 @@ $1/\sqrt{N}$~\cite{halton_1994,evans_2003}.
 
 \begin{figure}[h!]
   \centerline{ \includegraphics[width=5in,clip]{marshak_10.pdf}}
-  \caption{ Solution of the Marshak wave problem at $t=10$~sh.  The
+  \caption{ Solution of the Marshak wave problem at $t=100$~ns.  The
     analytic solution is compared to the MCSA solution.  Note that the
     MCSA, PCG, and PFIXED methods all give numerically identical
     answers.}
@@ -1425,7 +1394,7 @@ conditions is:
     1.5\,\text{g}\cdot\text{cm}^{-3}$ (duct) \\ & $\rho =
     8.0\,\text{g}\cdot\text{cm}^{-3}$ (wall) \\ & $\rho =
     4.0\,\text{g}\cdot\text{cm}^{-3}$ (foil) \\ & $\Cv =
-    0.1\,\text{Jerks}\cdot\text{g}^{-1}\cdot\text{keV}^{-1}$\\ &
+    0.1\,\text{GJ}\cdot\text{g}^{-1}\cdot\text{keV}^{-1}$\\ &
     $T(t=0) = \sn{1}{-4}\,\text{keV}$\\  opacity & $\sigma =
     T^{-3}\,\text{cm}^2\cdot\text{g}^{-1}$ (duct) \\ & $\sigma =
     1000T^{-1}\,\text{cm}^2\cdot\text{g}^{-1}$ (wall) \\ & $\sigma =
@@ -1435,7 +1404,7 @@ conditions is:
   \end{tabular}
 \end{center}
 
-A 2D plot of the temperature at 100~sh elapsed time is illustrated in
+A 2D plot of the temperature at 1000~ns elapsed time is illustrated in
 Fig.~\ref{fig:multi-mat_T}.  The time-evolution of the temperature is
 shown at 4 edit points in Fig.~\ref{fig:edit-points}.  All three
 methods, PCG, PFIX, and MCSA, give numerically identical answers when
@@ -1451,7 +1420,7 @@ using a stopping criterion of $\sn{1}{-8}$.
 
 \begin{figure}[h!]
   \centerline{ \includegraphics[width=5in,clip]{T_multi_mat.pdf}}
-  \caption{ Two-dimensional plot of the temperature at 100~sh on a
+  \caption{ Two-dimensional plot of the temperature at 1000~ns on a
     cut-plane positioned at the mid-point of the $z$-axis.  The
     positions of the edit points where the time-evolution of the
     temperature is plotted in Fig.~\ref{fig:edit-points} are indicated
@@ -1489,7 +1458,7 @@ MCSA is marginally faster than PCG and 43\% faster than PFIX.
   \caption{ Comparison of solution methods for the multi-material
     problem. All methods were run with a stopping criterion of
     $\sn{1}{-8}$.  The MCSA method used $N_p=1000$ and $W_c =
-    \sn{1}{-3}$.  The problem was run to an elapsed time of 10~sh.
+    \sn{1}{-3}$.  The problem was run to an elapsed time of 100~ns.
     The MCSA method required 3.4 hours on a 3.6~GHz Xeon.}
   \label{tab:multimat_comparison}
 \end{table}
