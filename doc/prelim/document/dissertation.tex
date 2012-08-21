@@ -17,7 +17,8 @@
 %
 
 %%% You'll want ``oneside'' for the deposit version, but probably not for any versions that don't need to meet the UW requirements
-\documentclass[12pt,oneside,letterpaper]{memoir}
+% \documentclass[12pt,oneside,letterpaper]{memoir}
+\documentclass[12pt,letterpaper]{memoir}
 
 \input{includes/preamble}
 \input{includes/defs}
@@ -26,17 +27,17 @@
 
 \clearpage\pagenumbering{roman}  % This makes the page numbers Roman (i, ii, etc)
 
-\title{Not Finished, But Abandoned}
-\author{Buckingham B.~Badger}
-\department{Computer Sciences}
+\title{Massively Parallel Stochastic Methods for Linear and Nonlinear Problems}
+\author{Stuart R.~Slattery}
+\department{Engineering Physics}
 
-\date{2008}
+\date{2012}
 
 \begin{document}
 
 %%% Uncomment the following if your .bib contains references that you will not 
 %%% explicitly cite, but that should be in the final bibliography:
-% \nocite{*}
+\nocite{*}
 
 \ifpdf
 \DeclareGraphicsExtensions{.pdf, .jpg, .tif}
@@ -52,9 +53,8 @@
 \include{frontmatter/frontmatter}
 
 %% Now include the tex files for each chapter, like so (I put these in separate dirs): 
-% \include{intro/intro}
-% \include{motivation/motivation}
-% \include{related/related}
+\include{chapters/linear_problem/linear_problem}
+\include{chapters/nonlinear_problem/nonlinear_problem}
 
 %% etc, etc.
 
