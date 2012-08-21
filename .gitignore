@@ -7,3 +7,7 @@
 *.blg
 *.spl
 *.pdftex_t
+*.idx
+*.lof
+*.lot
+*.toc
