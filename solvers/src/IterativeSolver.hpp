@@ -23,7 +23,7 @@ namespace Chimera
  * Scalar must implement Teuchos::ScalarTraits, MV must implement
  * Belos::MultiVecTraits, and OP must implement Belos::OperatorTraits.
  */
-template<typename Scalar typename MV, typename OP>
+template<typename Scalar, typename MV, typename OP>
 class IterativeSolver : public Teuchos::Describable
 {
   public:
