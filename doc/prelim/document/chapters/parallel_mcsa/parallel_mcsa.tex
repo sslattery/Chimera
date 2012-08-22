@@ -1,8 +1,33 @@
 \chapter{Parallelization of the MCSA Algorithm}
 \label{ch:parallel_mcsa}
 
+For the prelim, I suspect that I will not have a parallel MCSA
+algorithm up and running as I will be focusing on generating the code
+base needed to build the physics operators and tools for linear and
+nonlinear systems analysis. Therefore, here we should focus on
+motivating a parallel scheme for this work. We should start by first
+looking at current parallel methods for solving linear systems using
+the conventional techniques from the previous chapter. It must be
+clearly pointed out that for the new hardware coming online, these
+methods (or at least their current implementations) will be lacking in
+scalability and the potential for resiliency, and therefore a parallel
+MCSA is attractive, even if it ultimately does not show performance
+gains from a wall time perspective.
+
+Once we have done this, MSOD will need to be defined. The literature
+is actually quite lacking here even for reactor physics problems as
+this is really bleeding edge. Therefore, I should strive here to more
+rigorously define this methodology in terms of solving general linear
+systems. Furthermore, we should discuss the aspects of being able to
+vary the overlap such that we can generate a spectrum between complete
+domain decomposition and complete domain replication. Finally, the
+beginnings of the algorithm should be sketched out.
+
+\section{Current Parallel Methodologies for Solving Linear Systems}
+\label{sec:current_parallel_methods}
+
 \section{Multiple-Set Overlapping-Domain Decomposition}
 \label{sec:msod}
 
 \section{Algorithm Outline}
-\label{sec:algorithm_outline}
+\label{sec:parallel_mcsa_algorithm_outline}

@@ -1,6 +1,35 @@
 \chapter{The Nonlinear Problem}
 \label{ch:nonlinear_problem}
 
+This work will result in a new and novel nonlinear solver, FANM. To
+movitate the development of FANM and thoroughly understand both its
+mathematical properties and its qualities as related to other
+nonlinear methods, we need a full workup of current iterative methods
+for solving nonlinear systems. We should acknowledge operator split
+and linearization methods for dealing with nonlinear systems
+(e.g. think pressure correction strategies for Navier-Stokes) but the
+focus here should be on fully-implicit nonlinear solves that are
+amenable to solving tightly-coupled multi-physics systems in a way that
+is fully consistent.
+
+The key here will be a full understanding of Newton methods (and they
+actually are quite simple compared to some of the linear solver
+methods like subspace methods). It is important to understand how the
+correction is computed from the Jacobian and how we may improve this
+with globalization methods. Although I may not use globalization
+methods in my work, they are important enough in practice that we must
+be sure that a FANM method is not prohibited from using these. Current
+methods, primarily Newton-Krylov methods, will of primary concern here
+as these will serve as the baseline for assessing the qualities of a
+FANM solver. 
+
+Finally, as we will choose transient problems for our models, time
+integration in the context of nonlinear systems will be consider and
+we will survey applications to model problems in the field ( there is
+a vast amount of literature on fully-implicit nonlinear solves for the
+Navier-Stokes equations) that will give good benchmarks to test (such
+as natural convection and driven cavity problems).
+
 \section{Formulation of the Nonlinear System}
 \label{sec:nonlinear_system}
 

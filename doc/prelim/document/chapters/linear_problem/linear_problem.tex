@@ -1,6 +1,22 @@
 \chapter{The Linear Problem}
 \label{ch:linear_problem}
 
+The purpose of this chapter is to provide a full background on solving
+linear systems as it relates to this work. It may seem like there is a
+lot here, but we really do need it to fully define our new methods and
+compare both qualitatively and quantitatively to convential
+methods. For example, we need a solid explanation of stationary
+methods because MCSA is in fact an acceleration of a stationary method
+and therefore shares many properties with them. Subspace methods are
+the current class of methods most widely used for sparse systems and
+are at the core of the Newton-Krylov methods that we will be comparing
+the FANM method with. The most rigorous piece of this chapter should
+of course be the stochastic solver definitions, also providing me a
+place to include some of my work in this area. Finally,
+preconditioning is important for this work, MCSA requires it and
+Newton-Krylov methods almost always need some type of
+preconditioning. Therefore, we must also discuss these aspects.
+
 \section{Formulation of the Linear System}
 \label{sec:linear_system}
 
