@@ -91,7 +91,7 @@ and the heat flux:
 \end{equation}
 
 where $\ve{I}$ is the identity matrix, $\mu$ is the dynamic
-viscosityof the fluid, and $\kappa$ is the thermal conductivity of the
+viscosity of the fluid, and $\kappa$ is the thermal conductivity of the
 fluid. These fluid properties will be assumed constant and boundary
 conditions will be chosen as a combination of Neumann and Dirichlet
 conditions depending on the problem chosen.
@@ -103,9 +103,9 @@ Petrov-Galerkin finite element formulation of these equations
 developed, these may or may not be as easy to formulate as the finite
 volume discretizations in \cite{mchugh_1994} due to the availabilty of
 finite element discretization libraries, finite element assembly
-engines, and unstructured mesh databases available in the Trilinos
-scientific computing libraries \cite{trilinos_2005}. It will likely be
-easiest to start with the finite volume approach.
+engines, and unstructured mesh databases in the Trilinos scientific
+computing libraries \cite{trilinos_2005}. It will likely be easiest to
+start with the finite volume approach.
 
 \subsection{Solution Method}
 We will choose an inexact Newton method for the nonlinear scheme to
@@ -114,14 +114,16 @@ be investigating how the forcing term affects convergence of the
 nonlinear resdiual \cite{eisenstat_1996}. In addition, if convergence
 issues are noted, globalization methods may be investigated to improve
 the Newton correction \cite{pawlowski_2006}. The linear solver for the
-Newton method will be GMRES as its convergence properties for these
-types of systems are well documented \cite{saad_1986}. We will seek to
-solve these equations using parallel methods provided by well
-established framework libraries provided by the Trilinos suite of
-scientific computing libraries \cite{trilinos_2005}.
+Newton method will be GMRES \cite{saad_1986} as its convergence
+properties for these types of systems are well documented and its long
+recurrence relation has been shown to improve robustness and preserve
+a monotonically decreasing residuals in nonlinear solves. We will seek
+to solve these equations using parallel methods provided by well
+established framework libraries in the Trilinos suite of scientific
+computing libraries \cite{trilinos_2005}.
 
 \subsection{Benchmark Problems}
-To verify the implementation, three widely reference two-dimensional
+To verify the implementation, three widely referenced two-dimensional
 benchmark problems will be assessed using the resulting software. The
 natural convection cavity problem \cite{davis_1983}, the driven cavity
 problem \cite{ghia_1982}, and flow over a backwards step
