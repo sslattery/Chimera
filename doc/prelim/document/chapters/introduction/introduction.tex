@@ -41,21 +41,21 @@ settings.
 
 For some time, the particle transport community has been utilizing
 Monte Carlo methods for the solution of transport problems
-\cite{lewis_1993}. The partial differential equation (PDE) community
+\citep{lewis_1993}. The partial differential equation (PDE) community
 has focused on various deterministic methods for solutions to linear
-problems \cite{saad_2003}. In between these two areas are a not widely
+problems \citep{saad_2003}. In between these two areas are a not widely
 known small group of stochastic methods for solving sparse linear
-systems \cite{hammersley_1964, halton_1962, halton_1994}. In recent
+systems \citep{hammersley_1964, halton_1962, halton_1994}. In recent
 years, these methods have been further developed for transport
 problems in the form of Monte Carlo Synthetic-Acceleration (MCSA)
-\cite{evans_2003, evans_2009} but have yet to be applied to more
+\citep{evans_2003, evans_2009} but have yet to be applied to more
 general sparse linear systems. Compared to other methods in these
 regime, MCSA offers three attractive qualities; (1) the linear problem
 operator need not be symmetric or positive-definite, thereby reducing
 preconditioning complexity, (2) the stochastic nature of the
 solution method provides a natural solution to the issue of resiliency,
 and (3) is amenable to parallelization using modern methods developed by
-the transport community \cite{wagner_2011}. The developement of MCSA
+the transport community \citep{wagner_2011}. The developement of MCSA
 as a general linear solver and the development of a parallel MCSA
 method will be new and unique features of this work. Resiliency will
 not be addressed.
@@ -64,11 +64,11 @@ In addition to linear solver advancements, nonlinear solvers may also
 benefit from a general and parallel MCSA scheme. In the engineering
 community, nonlinear problems are often addressed by linearizing the
 problem and using traditionaly iterative or direct methods
-\cite{tannehill_1997}. In the mathematics community, various Newton
-methods have been popular \cite{kelley_1995}. Recently, Jacobian-Free
-Newton-Krylov (JFNK) schemes \cite{knoll_2004} have been utilized in
+\citep{tannehill_1997}. In the mathematics community, various Newton
+methods have been popular \citep{kelley_1995}. Recently, Jacobian-Free
+Newton-Krylov (JFNK) schemes \citep{knoll_2004} have been utilized in
 multiple physics architectures and advanced single physics codes
-\cite{gaston_2009}. The benefits of JFNK schemes are that the Jacobian
+\citep{gaston_2009}. The benefits of JFNK schemes are that the Jacobian
 is never formed, simplifying the implementation, and a Krylov solver
 is leveraged (typically GMRES or Conjugate Gradient), providing
 excellent convergence properties for well-conditioned and well-scaled
@@ -86,7 +86,7 @@ method for nonlinear systems based on the MCSA method.
 The Forward-Automated Newton-MCSA (FANM) method is proposed as new
 nonlinear solution method. The key features of FANM are: full Jacobian
 generation using modern Forward Automated Differencing (FAD) methods
-\cite{bartlett_2006}, and MCSA as the inner linear solver. This method
+\citep{bartlett_2006}, and MCSA as the inner linear solver. This method
 has several attractive properties. First, the first-order
 approximation to the Jacobian used in JFNK type methods is eliminated
 by generating the Jacobian explicitly with the model equations through
@@ -94,7 +94,7 @@ FAD. Second, the Jacobian need not be explicitly formed by the user
 but is instead automated through FAD; this eleminates the complexity
 of hand-coding derivatives and has also been demonstrated to be more
 efficient computationally than evaluating differenced derivatives
-\cite{bartlett_2006}. Third, unlike GMRES, MCSA does not build a
+\citep{bartlett_2006}. Third, unlike GMRES, MCSA does not build a
 subspace during iterations. Although the Jacobian must be explicitly
 formed to use MCSA, for problems that take more than a few GMRES
 iterations to converge the size of the Krylov subspace will grow

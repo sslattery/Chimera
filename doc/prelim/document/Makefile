@@ -13,6 +13,7 @@ all:
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
 	$(PDFTEX) dissertation
+	$(PDFTEX) dissertation
 
 clean:
 	-rm -f *~
