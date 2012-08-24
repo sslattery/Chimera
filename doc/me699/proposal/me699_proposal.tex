@@ -1,0 +1,136 @@
+%        File: me699_proposal.tex
+%
+\documentclass[letterpaper,12pt]{article}
+\usepackage[top=1.0in,bottom=1.0in,left=1.25in,right=1.25in]{geometry}
+\usepackage{verbatim}
+\usepackage{amsthm} 
+\usepackage{tmadd,tmath}
+\usepackage[mathcal]{euscript}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage[usenames]{color}
+\usepackage[
+naturalnames = true, 
+colorlinks = true, 
+linkcolor = black,
+anchorcolor = black,
+citecolor = black,
+menucolor = black,
+urlcolor = blue
+]{hyperref}
+
+%%---------------------------------------------------------------------------%%
+\author{Stuart R. Slattery
+\\ \href{mailto:sslattery@wisc.edu}{\texttt{sslattery@wisc.edu}}
+}
+
+\date{\today} \title{ME699 Proposal: Fully Implicit Solutions to the
+  Steady and Incompressible Navier-Stokes Equations}
+\begin{document}
+\maketitle
+
+%%---------------------------------------------------------------------------%%
+\section{Proposal}
+Fully implicit formulations of the Navier-Stokes equations are
+becoming increasingly popular due to their robustness over
+conventional segregated methods that arises from a fully consistent
+problem formulation. Solutions with inexact Newton methods have
+proliferated due to advancements in both hardware and numerical
+methods for solving sparse linear sytems and preconditioning
+\cite{shadid_1997,mchugh_1994,gropp_2001,knoll_2004}. To study the
+details of how fully implicit solutions are implemented in practice,
+and independent study is posed to develop a piece of software aimed at
+generating fully implicit solutions to the steady and incompressible
+Navier-Stokes equations.
+
+\subsection{Model Problem}
+We choose the steady incompressible Navier-Stokes equations as model
+problems in residual form to solve for the state vector
+$\{\ve{u},P,T\}$ where $\ve{u}$ is the fluid velocity, $P$ is the
+fluid pressure, and $T$ is the fluid temperature. As formulated in
+\cite{shadid_1997}, we consider vector forms of momentum transport:
+
+\begin{equation}
+  \rho \ve{u} \cdot \nabla \ve{u} - \nabla \cdot \ve{T} - \rho \ve{g}
+  = \ve{0} \:,
+  \label{eq:momentum_transport}
+\end{equation}
+
+continuity:
+
+\begin{equation}
+  \nabla \cdot \ve{u} = \ve{0} \:,
+  \label{eq:continuity}
+\end{equation}
+
+and energy transport with the effects of viscous dissipation neglected
+for low Mach number flow:
+
+\begin{equation}
+  \rho C_p \ve{u} \cdot \nabla T + \nabla \ve{q} = \ve{0} \:,
+  \label{eq:energy_transport}
+\end{equation}
+
+where $\rho$ is the fluid density, $\ve{g}$ the gravity vector and
+$C_p$ the specific heat of the fluid at constant pressure. To close
+the system we define the stress tensor:
+
+\begin{equation}
+  \ve{T} = -P \ve{I} + \mu [ \nabla \ve{u} \nabla \ve{u}^{T} ] \:,
+  \label{eq:stress_tensor}
+\end{equation}
+
+and the heat flux:
+
+\begin{equation}
+  \ve{q} = -\kappa \nabla T
+  \label{eq:heat_flux}
+\end{equation}
+
+where $\ve{I}$ is the identity matrix, $\mu$ is the dynamic
+viscosityof the fluid, and $\kappa$ is the thermal conductivity of the
+fluid. These fluid properties will be assumed constant and boundary
+conditions will be chosen as a combination of Neumann and Dirichlet
+conditions depending on the problem chosen.
+
+\subsection{Discretization}
+Reference \cite{shadid_1997} uses a pressure stabilized
+Petrov-Galerkin finite element formulation of these equations
+\cite{hughes_1986}. Depending on the software infrastructure
+developed, these may or may not be as easy to formulate as the finite
+volume discretizations in \cite{mchugh_1994} due to the availabilty of
+finite element discretization libraries, finite element assembly
+engines, and unstructured mesh databases available in the Trilinos
+scientific computing libraries \cite{trilinos_2005}. It will likely be
+easiest to start with the finite volume approach.
+
+\subsection{Solution Method}
+We will choose an inexact Newton method for the nonlinear scheme solve
+these equations \cite{dembo_1982}. Of particular interest will be
+investigating how the forcing term affects convergence of the
+nonlinear resdiual \cite{eisenstat_1996}. In addition, if convergence
+issues are noted, globalization methods may be investigated to improve
+the Newton correction \cite{pawlowski_2006}. The linear solver for the
+Newton method will be GMRES as its convergence properties for these
+types of systems are well documented \cite{saad_1986}. We will seek to
+solve these equations using parallel methods provided by well
+established framework libraries provided by the Trilinos suite of
+scientific computing libraries \cite{trilinos_2005}.
+
+\subsection{Benchmark Problems}
+To verify the implementation, three widely reference two-dimensional
+benchmark problems will be assessed using the resulting software. The
+natural convection cavity problem \cite{davis_1983}, the driven cavity
+problem \cite{ghia_1982}, and flow over a backwards step
+\cite{gartling_1990}.
+
+%%---------------------------------------------------------------------------%%
+\pagebreak
+\bibliographystyle{ieeetr}
+\bibliography{references}
+\end{document}
+
+
