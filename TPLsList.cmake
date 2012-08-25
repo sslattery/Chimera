@@ -6,7 +6,7 @@
 #   Trilinos/cmake/TrilinosTPLs.cmake
 #
 
-SET(HMCSA_TPLS_FINDMODS_CLASSIFICATIONS
+SET(Chimera_TPLS_FINDMODS_CLASSIFICATIONS
   )
 
 # NOTE: Above, the paths to the FindTPL<TPLNAME> modules (with an implicit

@@ -1,17 +1,19 @@
 ##---------------------------------------------------------------------------##
-## HMCSA/CMakeLists.txt
+## Chimera/CMakeLists.txt
 ## Stuart R. Slattery
 ##---------------------------------------------------------------------------##
-## TriBITS package file for the HMCSA package
+## TriBITS package file for the Chimera package
 ##---------------------------------------------------------------------------##
 
 INCLUDE(TribitsPackageMacros)
+INCLUDE(TribitsAddOptionAndDefine)
+INCLUDE(CombinedOption)
 
 ##---------------------------------------------------------------------------##
 ## A) Define the package
 ##---------------------------------------------------------------------------##
 
-TRIBITS_PACKAGE_DECL(Chimera)
+TRIBITS_PACKAGE(Chimera)
 
 ##---------------------------------------------------------------------------##
 ## B) Set up package-specific options
@@ -22,19 +24,21 @@ TRIBITS_ADD_DEBUG_OPTION()
 TRIBITS_ADD_SHOW_DEPRECATED_WARNINGS_OPTION()
 
 ##---------------------------------------------------------------------------##
-## C) Process subpackages
+## C) Add library, test, and examples.
 ##---------------------------------------------------------------------------##
 
-TRIBITS_PROCESS_SUBPACKAGES()
+ADD_SUBDIRECTORY(drivers)
+
+#TRIBITS_ADD_TEST_DIRECTORIES(test)
+
+#TRIBITS_ADD_EXAMPLE_DIRECTORIES(example)
 
 ##---------------------------------------------------------------------------##
-## F) Do standard postprocessing
+## D) Do standard postprocessing
 ##---------------------------------------------------------------------------##
-
-TRIBITS_PACKAGE_DEF()
 
 TRIBITS_PACKAGE_POSTPROCESS()
 
 ##---------------------------------------------------------------------------##
-##                      end of HMCSA/CMakeLists.txt
+##                      end of Chimera/CMakeLists.txt
 ##---------------------------------------------------------------------------##
