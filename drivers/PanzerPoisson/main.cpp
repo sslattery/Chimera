@@ -124,8 +124,8 @@ int main(int argc,char * argv[])
    RCP<Teuchos::ParameterList> pl = rcp(new Teuchos::ParameterList);
    pl->set("X Blocks",1);
    pl->set("Y Blocks",1);
-   pl->set("X Elements",10);
-   pl->set("Y Elements",10);
+   pl->set("X Elements",100);
+   pl->set("Y Elements",100);
    mesh_factory.setParameterList(pl);
 
    RCP<panzer_stk::STK_Interface> mesh = mesh_factory.buildUncommitedMesh(MPI_COMM_WORLD);
@@ -207,7 +207,7 @@ int main(int argc,char * argv[])
    cm_factory.buildObjects(cm_builder);
 
    Teuchos::ParameterList closure_models("Closure Models");
-   closure_models.sublist("solid").sublist("SOURCE_TEMPERATURE").set<double>("Value",0.0); // a constant source
+   closure_models.sublist("solid").sublist("SOURCE_TEMPERATURE").set<double>("Value",1.0); // a constant source
       // SOURCE_TEMPERATURE field is required by the PoissonEquationSet
 
    Teuchos::ParameterList user_data("User Data"); // user data can be empty here
@@ -347,7 +347,22 @@ void testInitialzation(panzer::InputPhysicsBlock& ipb,
       std::string element_block_id = "eblock-0_0";
       std::string dof_name = "TEMPERATURE";
       std::string strategy = "Constant";
-      double value = -5.0;
+      double value = 5.0;
+      Teuchos::ParameterList p;
+      p.set("Value",value);
+      panzer::BC bc(bc_id, bctype, sideset_id, element_block_id, dof_name, 
+  		    strategy, p);
+      bcs.push_back(bc);
+   }    
+
+   {
+      std::size_t bc_id = 2;
+      panzer::BCType bctype = panzer::BCT_Dirichlet;
+      std::string sideset_id = "right";
+      std::string element_block_id = "eblock-0_0";
+      std::string dof_name = "TEMPERATURE";
+      std::string strategy = "Constant";
+      double value = 5.0;
       Teuchos::ParameterList p;
       p.set("Value",value);
       panzer::BC bc(bc_id, bctype, sideset_id, element_block_id, dof_name, 
