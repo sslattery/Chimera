@@ -192,7 +192,6 @@ The purpose of this study is to demonstrate an efficient Monte Carlo
 solution method for three dimensional (3D), time-dependent, discrete
 systems. In this work, we extend our previous work in the following
 manner:
-
 \begin{itemize}
 \item We develop a rigorous synthetic-acceleration Monte Carlo method
   for solving sparse matrix systems.
@@ -280,7 +279,6 @@ through \ref{sec:iter-refin-monte} rely on estimating the terms in
 Eq.~(\ref{eq:neumann_series}) through random walks.
 
 %%---------------------------------------------------------------------------%%
-
 \subsubsection{Direct Method}
 \label{sec:direct-method}
 
@@ -353,7 +351,6 @@ weight cutoff as opposed to augmenting the matrix such that the random
 walk terminates when $W_m < W_c$.
 
 %%---------------------------------------------------------------------------%%
-
 \subsubsection{Adjoint Method}
 \label{sec:adjoint-method}
 
@@ -369,11 +366,10 @@ The transition probabilities may be calculated as
   p_{ij} = \frac{|h_{ji}|}{\sum_{j}|h_{ji}|}\:.
   \label{eq:adjoint-probability}
 \end{equation}
-Note that the indices are reversed so that the probabilities are
-normalized over a column, as opposed to the forward method in which
-the probabilities are normalized over a row.  This is equivalent to
-forming the Neumann series in reverse order.  Correspondingly, the
-estimator for this method is
+Note that the indices are reversed so that the probabilities are normalized
+over a column, as opposed to the forward method in which the probabilities are
+normalized over a row.  This is equivalent to forming the Neumann series in
+reverse order.  Correspondingly, the estimator for this method is
 \begin{equation}
   \begin{split}
     X &= \sum_{m=0}^{k}W_m\delta_{i_m,i}\\ &=
@@ -382,15 +378,14 @@ estimator for this method is
   \end{split}
   \label{eq:adjoint-tally}
 \end{equation}
-Here, $\hat{b}_{i_0}$ is the sampled source and initial weight in
-state $i_0$.  The Kronecker delta implies that tallies are only made
-in the state where the random walk currently resides.  This is the
-common approach in standard Monte Carlo transport simulations. Unlike
-the direct method, because tallies are made in the state in which the
-random walk currently resides, we are no longer required to start a
-history in each state for each random walk permutation. Instead,
-sampling the source is sufficient and requires only one random walk
-per permutation.
+Here, $\hat{b}_{i_0}$ is the sampled source and initial weight in state $i_0$.
+The Kronecker delta implies that tallies are only made in the state where the
+random walk currently resides.  This is the common approach in standard Monte
+Carlo transport simulations. Unlike the direct method, because tallies are
+made in the state in which the random walk currently resides, we are no longer
+required to start a history in each state for each random walk
+permutation. Instead, sampling the source is sufficient and requires only one
+random walk per permutation.
 
 Similar to the direct method, the adjoint method random walk process
 requires a terminating condition.  In all of the work that follows we
@@ -405,22 +400,19 @@ the input relative weight cutoff. The random walk terminates on the
 $m^\text{th}$ step if $W_m < W_f$.
 
 %%---------------------------------------------------------------------------%%
-
 \subsection{Monte Carlo Synthetic-Acceleration}
 \label{sec:iter-refin-monte}
 
-The methods presented in \S~\ref{sec:background} are characterized by
-slow convergence rates bound by the Central Limit Theorem.
-Halton~\cite{halton_1962,halton_1994} proposed a staged residual
-scheme called Sequential Monte Carlo to speed up the convergence of
-these methods.  A variant of this scheme has been successfully applied
-to the 1D non-linear thermal radiation diffusion equation in
-Ref.~\cite{evans_2003}.
+The methods presented in \S~\ref{sec:background} are characterized by slow
+convergence rates bound by the Central Limit Theorem.
+Halton~\cite{halton_1962,halton_1994} proposed a staged residual scheme called
+Sequential Monte Carlo to speed up the convergence of these methods.  A
+variant of this scheme has been successfully applied to the 1D non-linear
+thermal radiation diffusion equation in Ref.~\cite{evans_2003}.
 
-Concisely, the Sequential Monte Carlo method solves
-Eq.~(\ref{eq:Ax=b}) using the adjoint solution technique described in
-\S~\ref{sec:adjoint-method}.  The following iteration scheme is
-applied:
+Concisely, the Sequential Monte Carlo method solves Eq.~(\ref{eq:Ax=b}) using
+the adjoint solution technique described in \S~\ref{sec:adjoint-method}.  The
+following iteration scheme is applied:
 \begin{subequations}
   \begin{gather}
     \vr^{l} = \vb - \vA\vx^{l}\:, \\ \vA\delta\vx^{l+1} =
@@ -429,15 +421,15 @@ applied:
   \end{gather}
 \end{subequations}
 In this scheme, the Monte Carlo adjoint method is used to estimate the
-solution to Eq.~(\ref{eq:residual_solve}), and the residual is
-iterated to convergence.  This iteration sequence is closely related
-to iterative refinement; the exception being that there is no update
-to $x^{l+1}$ between residual iterations.
+solution to Eq.~(\ref{eq:residual_solve}), and the residual is iterated to
+convergence.  This iteration sequence is closely related to iterative
+refinement; the exception being that there is no update to $x^{l+1}$ between
+residual iterations.
 
 We propose a modification of this scheme that uses Monte Carlo as a
 synthetic-acceleration for the fixed-point iteration given by
-Eq.~(\ref{eq:richardson}). We begin by subtracting
-Eq.~(\ref{eq:richardson}) from Eq:~(\ref{eq:point_iteration}):
+Eq.~(\ref{eq:richardson}). We begin by subtracting Eq.~(\ref{eq:richardson})
+from Eq:~(\ref{eq:point_iteration}):
 \begin{equation}
   \delta \vx^{l+1} = (\vI - \vA)\delta \vx^{l}\:,
   \label{eq:synthetic_error}
@@ -466,12 +458,11 @@ The following scheme will then converge in one iteration:
     \vx=\vx^{l+1}+\delta\vx^{l+1}\:.
   \end{gather}
 \end{subequations}
-To accelerate the fixed-point method and avoid inverting $\vA$
-directly in Eq.~(\ref{eq:synthetic-residual-solve}), we can instead
-use the above ideas to create a new iterative scheme by using the
-Monte Carlo method to estimate the solution error. With this in hand,
-the Fixed-Point Monte Carlo Synthetic-Acceleration (MCSA) method can
-be defined as follows:
+To accelerate the fixed-point method and avoid inverting $\vA$ directly in
+Eq.~(\ref{eq:synthetic-residual-solve}), we can instead use the above ideas to
+create a new iterative scheme by using the Monte Carlo method to estimate the
+solution error. With this in hand, the Fixed-Point Monte Carlo
+Synthetic-Acceleration (MCSA) method can be defined as follows:
 \begin{subequations}
   \label{eq:MCSA-iteration}
   \begin{gather}
@@ -483,18 +474,16 @@ be defined as follows:
      \vx^{l+1}=\vx^{l+1/2}+\delta\vx^{l+1/2}\:.
   \end{gather}
 \end{subequations}
-The hat on $\vA$ in Eq.~(\ref{eq:MCSA-residual_solve}) indicates that
-the Monte Carlo solution only approximately inverts this operator.
-Thus, we have defined a scheme in which the initial estimate of $\vx$
-in each iteration is updated using a single fixed-point
-iteration\footnote{Although, a subspace method could be used instead
-  of a stationary method here.}.  The residual is calculated and used
-as a source to estimate the error, $\delta\vx^{l+1/2}$, by solving
-Eq.~(\ref{eq:MCSA-residual_solve}) via the Monte Carlo adjoint
-method. The error is then used to calculate an updated iterate of the
-solution vector, $\vx^{l+1}$.  The entire sequence is iterated to
-convergence based on the following stopping
-criterion~\cite{kelley_1995},
+The hat on $\vA$ in Eq.~(\ref{eq:MCSA-residual_solve}) indicates that the
+Monte Carlo solution only approximately inverts this operator.  Thus, we have
+defined a scheme in which the initial estimate of $\vx$ in each iteration is
+updated using a single fixed-point iteration\footnote{Although, a subspace
+  method could be used instead of a stationary method here.}.  The residual is
+calculated and used as a source to estimate the error, $\delta\vx^{l+1/2}$, by
+solving Eq.~(\ref{eq:MCSA-residual_solve}) via the Monte Carlo adjoint
+method. The error is then used to calculate an updated iterate of the solution
+vector, $\vx^{l+1}$.  The entire sequence is iterated to convergence based on
+the following stopping criterion~\cite{kelley_1995},
 \begin{equation}
   \|\vr\|_{\infty} < \epsilon\cdot\|\vb\|_\infty\:.
   \label{eq:stopping-criteria}
@@ -502,67 +491,55 @@ criterion~\cite{kelley_1995},
 
 \subsection{Monte Carlo Method Selection}
 
-The MCSA method defined in Eq.~(\ref{eq:MCSA-iteration}) uses the
-adjoint method to estimate the error in
-Eq.~(\ref{eq:MCSA-residual_solve}) instead of the direct method
-outlined in \S~\ref{sec:direct-method}. To demonstrate the
-effectiveness of the adjoint method over the direct method within the
-context of MCSA, we choose the two-dimensional time-dependent Poisson
-equation as a simple model problem:
-
+The MCSA method defined in Eq.~(\ref{eq:MCSA-iteration}) uses the adjoint
+method to estimate the error in Eq.~(\ref{eq:MCSA-residual_solve}) instead of
+the direct method outlined in \S~\ref{sec:direct-method}. To demonstrate the
+effectiveness of the adjoint method over the direct method within the context
+of MCSA, we choose the two-dimensional time-dependent Poisson equation as a
+simple model problem:
 \begin{equation}
   \frac{\partial \vu}{\partial t} = \nabla^2 \vu\:.
   \label{eq:poisson_equation}
 \end{equation}
-
-For all comparisons, a single time step is computed with backwards
-Euler time integration. The Laplacian is differenced on a square
-Cartesian grid with a second-order five point stencil
-
+For all comparisons, a single time step is computed with backwards Euler time
+integration. The Laplacian is differenced on a square Cartesian grid with a
+second-order five point stencil
 \begin{equation}
   \nabla^2_5 = \frac{1}{\Delta^2}[u_{i-1,j} + u_{i+1,j} + u_{i,j-1} +
     u_{i,j+1} - 4 u_{i,j}]\:,
   \label{eq:five_point_stencil}
 \end{equation}
-
 and a fourth-order nine point stencil 
-
 \begin{multline}
   \nabla^2_9 = \frac{1}{6\Delta^2}[4 u_{i-1,j} + 4 u_{i+1,j} + 4
     u_{i,j-1} + 4 u_{i,j+1} + u_{i-1,j-1}\\ + u_{i-1,j+1} +
     u_{i+1,j-1} + u_{i+1,j+1} - 20 u_{i,j}]\:,
   \label{eq:nine_point_stencil}
 \end{multline}
-
-both assuming a grid size of $\Delta$ in both the $i$ and $j$
-directions. For a single time step solution, we then have the
-following sparse linear system to be solved with the MCSA method:
-
+both assuming a grid size of $\Delta$ in both the $i$ and $j$ directions. For
+a single time step solution, we then have the following sparse linear system
+to be solved with the MCSA method:
 \begin{equation}
   \vA \vu^{n+1} = \vu^n\:.
   \label{eq:poisson_eq_lin_sys}
 \end{equation}
+Both the stencils will be used to vary the size and density of the sparse
+linear system in Eq.~(\ref{eq:poisson_eq_lin_sys}).
 
-Both the stencils will be used to vary the size and density of the
-sparse linear system in Eq.~(\ref{eq:poisson_eq_lin_sys}).
-
-A timing study and convergence study is used to demonstrate the
-effectiveness of the adjoint method as compared to the direct
-method. To assess both the CPU time and number of iterations required
-to converge to a solution, a problem of constant $\Delta$ was used
-with varying values of grid size, fixing the spectral radius of the
-system at a constant value for each variation. Both the five point and
-nine point stencils were used with both the direct and adjoint
-solvers. For each case, 50 random walk permutations were computed per
-MCSA iteration with a weight cutoff of \sn{1}{-4} for the stochastic
-linear solver and a convergence tolerance of \sn{1}{-8} for the MCSA
-iterative solver. All computations presented in this section were
-completed on a 2.66 GHz Intel Core i7 machine with 8 GB 1067 MHz DDR3
-memory. Fig.~\ref{fig:poisson_cpu_time} gives the CPU time needed for
-each case to converge in seconds and Fig.~\ref{fig:poisson_iterations}
-gives the number of iterations needed for each case to converge
-relative to the problem size.
-
+A timing study and convergence study is used to demonstrate the effectiveness
+of the adjoint method as compared to the direct method. To assess both the CPU
+time and number of iterations required to converge to a solution, a problem of
+constant $\Delta$ was used with varying values of grid size, fixing the
+spectral radius of the system at a constant value for each variation. Both the
+five point and nine point stencils were used with both the direct and adjoint
+solvers. For each case, 50 random walk permutations were computed per MCSA
+iteration with a weight cutoff of \sn{1}{-4} for the stochastic linear solver
+and a convergence tolerance of \sn{1}{-8} for the MCSA iterative solver. All
+computations presented in this section were completed on a 2.66 GHz Intel Core
+i7 machine with 8 GB 1067 MHz DDR3 memory. Fig.~\ref{fig:poisson_cpu_time}
+gives the CPU time needed for each case to converge in seconds and
+Fig.~\ref{fig:poisson_iterations} gives the number of iterations needed for
+each case to converge relative to the problem size.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=5in,clip]{Adjoint_Direct_CPU_Time.pdf}
@@ -584,40 +561,35 @@ relative to the problem size.
   \label{fig:poisson_iterations}
 \end{figure}
 
-We see clearly in Fig.~\ref{fig:poisson_cpu_time} that the using the
-adjoint solver with MCSA results in several orders of magnitude
-speedup over the direct solver while the number of iterations required
-to converge is of a similar scale. We expect this for several
-reasons. First, with an equivalent number of histories specified for
-both solvers and a system of size $N \times N$, the direct solver will
-compute $N \times N$ random walks per permutation while the adjoint
-solver will only compute one. This is necessary in the direct method
-to ensure a contribution from each state as the random walk sequence
-will only contribute to the starting state. For the adjoint method,
+We see clearly in Fig.~\ref{fig:poisson_cpu_time} that the using the adjoint
+solver with MCSA results in several orders of magnitude speedup over the
+direct solver while the number of iterations required to converge is of a
+similar scale. We expect this for several reasons. First, with an equivalent
+number of histories specified for both solvers and a system of size $N \times
+N$, the direct solver will compute $N \times N$ random walks per permutation
+while the adjoint solver will only compute one. This is necessary in the
+direct method to ensure a contribution from each state as the random walk
+sequence will only contribute to the starting state. For the adjoint method,
 because the random walk sequence contributes to the state in which it
-currently resides, fewer histories are neccessary to compute
-contributions from all the nonzero parts of the source. Initially,
-this may not seem like a fair comparison, however, we see from
-Fig.~\ref{fig:poisson_iterations} that the number of iterations
-required to converge is approximately the same and therefore the extra
-computations performed by the direct method do not improve the error
-estimation. Therefore, although the total number of random walks per
-iteration is in fact larger for the direct method, the solution
-computed at each iteration is no better than that computed by the
-adjoint method.
+currently resides, fewer histories are neccessary to compute contributions
+from all the nonzero parts of the source. Initially, this may not seem like a
+fair comparison, however, we see from Fig.~\ref{fig:poisson_iterations} that
+the number of iterations required to converge is approximately the same and
+therefore the extra computations performed by the direct method do not improve
+the error estimation. Therefore, although the total number of random walks per
+iteration is in fact larger for the direct method, the solution computed at
+each iteration is no better than that computed by the adjoint method.
 
-As an additional comparison, the convergence behavior of MCSA can be
-analyzed using both solvers to detect any performance benefits. To
-assess the convergence properties of MCSA using each solver and
-stencil, the infinity norm of the residual computed in
-Eq.~(\ref{eq:MCSA-residual}) was collected at each iteration for a
-fixed problem size. Fig.~\ref{fig:poisson_convergence} gives the
-results of these computations. First, it is worthy to note on the
-semilog plot that we are indeed achieving the expected exponential
-convergence from MCSA. Second, we note that both the direct and
-adjoint methods have approximately equivalent convergence behavior,
-leading to CPU time being the dominating factor in method selection.
-
+As an additional comparison, the convergence behavior of MCSA can be analyzed
+using both solvers to detect any performance benefits. To assess the
+convergence properties of MCSA using each solver and stencil, the infinity
+norm of the residual computed in Eq.~(\ref{eq:MCSA-residual}) was collected at
+each iteration for a fixed problem size. Fig.~\ref{fig:poisson_convergence}
+gives the results of these computations. First, it is worthy to note on the
+semilog plot that we are indeed achieving the expected exponential convergence
+from MCSA. Second, we note that both the direct and adjoint methods have
+approximately equivalent convergence behavior, leading to CPU time being the
+dominating factor in method selection.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=5in,clip]{Adjoint_Direct_Convergence.pdf}
@@ -631,42 +603,37 @@ leading to CPU time being the dominating factor in method selection.
 \section{Discrete Form of the Radiation Diffusion Equation}
 \label{sec:discr-form-radi}
 
-Using the mathematical preliminaries developed in the previous
-section, we can now generate a discrete form of the radiation
-diffusion equation. We will show that this discrete form is amenable
-to interpretation using Monte Carlo concepts and can be written in a
-way that a random walk sequence can be generated.
+Using the mathematical preliminaries developed in the previous section, we can
+now generate a discrete form of the radiation diffusion equation. We will show
+that this discrete form is amenable to interpretation using Monte Carlo
+concepts and can be written in a way that a random walk sequence can be
+generated.
 
 \subsection{Equilibrium Diffusion Model}
 
-The general form of the equilibrium diffusion equation is
-\cite{morel_1996}
-
+The general form of the equilibrium diffusion equation is \cite{morel_1996}
 \begin{equation} 
   (\rho\Cv + 4aT^{3})\pder{T}{t} -
   \nabla\cdot{\Bigl(\frac{4acT^{3}}{3\ros}\Bigr)\grad{T}} = Q\:,
   \label{eq:eq-diff-T}
 \end{equation}
-
 where $\Cv\equiv\Cv(\ve{r},T(\ve{r},t))$
-$[\text{GJ}\cdot\text{g}^{-1}\cdot\text{keV}^{-1}]$ is the specific
-heat capacity of the material, $\rho\equiv\rho(\ve{r})$
-$[\text{g}\cdot\text{cm}^{-3}]$ is the density of the material,
-$a=0.01372$ $[\text{GJ}\cdot\text{cm}^{-3}\cdot\text{keV}^{-4}]$ is
-the radiation constant, $c=29.979$ $[\text{cm}\cdot\text{ns}^{-1}]$ is
-the vacuum light speed, and $T\equiv T(\ve{r},t)$ $[\text{keV}]$ is
-the temperature that characterizes both the radiation and the
-material.  The opacity, $\ros\equiv\ros$(\ve{r},T(\ve{r},t))
-$[\text{cm}^{-1}]$, is the Rosseland Mean opacity.  The source,
-$Q\equiv Q(\ve{r},t)$
-$[\text{GJ}\cdot\text{cm}^{-3}\cdot\text{ns}^{-1}]$, is assumed to
-be independent of $T$.
+$[\text{GJ}\cdot\text{g}^{-1}\cdot\text{keV}^{-1}]$ is the specific heat
+capacity of the material, $\rho\equiv\rho(\ve{r})$
+$[\text{g}\cdot\text{cm}^{-3}]$ is the density of the material, $a=0.01372$
+$[\text{GJ}\cdot\text{cm}^{-3}\cdot\text{keV}^{-4}]$ is the radiation
+constant, $c=29.979$ $[\text{cm}\cdot\text{ns}^{-1}]$ is the vacuum light
+speed, and $T\equiv T(\ve{r},t)$ $[\text{keV}]$ is the temperature that
+characterizes both the radiation and the material.  The opacity,
+$\ros\equiv\ros$(\ve{r},T(\ve{r},t)) $[\text{cm}^{-1}]$, is the Rosseland Mean
+opacity.  The source, $Q\equiv Q(\ve{r},t)$
+$[\text{GJ}\cdot\text{cm}^{-3}\cdot\text{ns}^{-1}]$, is assumed to be
+independent of $T$.
 
 We choose to use the angle-energy integrated radiation intensity,
 $\phi\equiv\phi(\ve{r},t)$
-$[\text{GJ}\cdot\text{cm}^{-2}\cdot\text{ns}^{-1}]$, as the primary
-state variable.  The intensity is defined as:
-
+$[\text{GJ}\cdot\text{cm}^{-2}\cdot\text{ns}^{-1}]$, as the primary state
+variable.  The intensity is defined as:
 \begin{equation}
   \label{eq:lte-phi}
   \begin{split}
@@ -675,102 +642,76 @@ state variable.  The intensity is defined as:
     \\ &= \int_{\nu}d\nu\: 4\pi B(\nu,T) \\ &= acT^{4}\:,
   \end{split}
 \end{equation}
-
-where $\psi$ is the angular radiation intensity and $\nu$ is the
-radiation frequency.  The Planck function (or Planckian) is defined
-as,
-
+where $\psi$ is the angular radiation intensity and $\nu$ is the radiation
+frequency.  The Planck function (or Planckian) is defined as,
 \begin{equation}
   B(\nu,T)=\frac{2h\nu^{3}}{c^{2}}\bigl(e^{\frac{h\nu}{kT}} -
   1\bigr)^{-1}\:,
 \end{equation}
-
-where $h$ is Planck's constant and $k$ is the Boltzmann constant.
-Utilizing this definition of $\phi$ we can write
-
+where $h$ is Planck's constant and $k$ is the Boltzmann constant.  Utilizing
+this definition of $\phi$ we can write
 \begin{equation}
   \label{eq:partial-T}
   \partial T = \frac{1}{4acT^{3}}\partial\phi\:.
 \end{equation}
-
 Inserting \eqref{eq:partial-T} into \eqref{eq:eq-diff-T} yields
-
 \begin{equation}
   \label{eq:eq-diff}
   \Bigl(\frac{\rho\Cv}{4acT^{3}} + \frac{1}{c}\Bigr)\pder{\phi}{t} -
   \nabla\cdot D\grad{\phi} = Q\:,
 \end{equation}
-
 where $D$ is the diffusion coefficient, $D\equiv
 D(\ve{r},T(\ve{r},t))\ [\text{cm}]$, and is defined as
-
 \begin{equation}
   D = \frac{1}{3\ros}\:.
 \end{equation}
-
-Equation~\eqref{eq:eq-diff} is the model equation we will solve using
-the Monte Carlo techniques presented in
-\S~\ref{sec:monte-carlo-matrix} and \ref{sec:iter-refin-monte}.
+Equation~\eqref{eq:eq-diff} is the model equation we will solve using the
+Monte Carlo techniques presented in \S~\ref{sec:monte-carlo-matrix} and
+\ref{sec:iter-refin-monte}.
 
 \subsection{Discrete Diffusion Equation}
 
-Applying backward-Euler time differencing to Eq.~(\ref{eq:eq-diff})
-and lagging the temperature-dependent coefficients at $t^n$ gives
-
+Applying backward-Euler time differencing to Eq.~(\ref{eq:eq-diff}) and
+lagging the temperature-dependent coefficients at $t^n$ gives
 \begin{equation}
   -\nabla\cdot \Dn\grad{\phi} + \sign\phi = \qn\:,
 \end{equation}
-
 where we have suppressed the $n+1$ indices on $\phi$ and
-
 \begin{align}
   \sign &= \frac{\rho \Cv^n}{4ac(\Tn)^3\dt} + \frac{1}{c\dt}\:,\\ \qn
   &= \sign\phin + Q^n\:,\\ \phin &= ac(\Tn)^4\:.
 \end{align}
-
 Applying Fick's Law,
-
 \begin{equation}
   \ve{F} = -D\grad{\phi}\:,
   \label{eq:fick}
 \end{equation}
-
-where $\ve{F}$ is the radiation flux, we define a flux-balance
-equation,
-
+where $\ve{F}$ is the radiation flux, we define a flux-balance equation,
 \begin{equation}
   \dive{F} + \sign\phi = \qn\:.
   \label{eq:flux-balance}
 \end{equation}
-
 Integrating Eq.~(\ref{eq:flux-balance}) over the cell illustrated in
 Fig.~\ref{fig:cell} gives
-
 \begin{equation}
   \iiint\dive{F}\,d\ve{r} +
   \sign_{ijk}\phi_{ijk}V_{ijk}=\qn_{ijk}V_{ijk}\:,
   \label{eq:flux-balance-vol-integral}
 \end{equation}
-
 and $V_{ijk} = \Delta_i\Delta_j\Delta_k$.
-
 \begin{figure}[h!]
   \centerline{ \input{mesh_cell.pdftex_t}}
   \caption{Orthogonal 3D mesh cell.}
   \label{fig:cell}
 \end{figure}
-
 We now apply the divergence theorem,
-
 \begin{equation}
   \begin{split}
     \iiint\dive{F}\,d\ve{r} &= \oint\hat{\ve{n}}\cdot\ve{F}\,dA\\ &=
     \sum_{f=1}^{6}\hat{\ve{n}}_f\cdot\ve{F}_f A_f\:,
   \end{split}
 \end{equation}
-
 to Eq.(\ref{eq:flux-balance-vol-integral}) yielding
-
 \begin{equation}
   \begin{split}
     (F_{i+1/2} - F_{i-1/2})\Dj\Dk + (F_{j+1/2} &- F_{j-1/2})\Di\Dk +
@@ -780,29 +721,24 @@ to Eq.(\ref{eq:flux-balance-vol-integral}) yielding
   \label{eq:flux-balance-difference}
 \end{equation}
 
-Using Fick's Law, Eq.~(\ref{eq:fick}), we can write $O(\Delta^2)$
-expressions for the face-centered fluxes.  Defining $l\in\{i,j,k\}$,
-the face-centered fluxes are
-
+Using Fick's Law, Eq.~(\ref{eq:fick}), we can write $O(\Delta^2)$ expressions
+for the face-centered fluxes.  Defining $l\in\{i,j,k\}$, the face-centered
+fluxes are
 \begin{align}
   F_{l+1/2} &= -D_{l+1/2}\frac{\phi_{l+1} -
     \phi_{l}}{\Delta_{l+1/2}}\:, \label{eq:F_l+1/2}\\ F_{l-1/2} &=
   -D_{l-1/2}\frac{\phi_{l} -
     \phi_{l-1}}{\Delta_{l-1/2}}\:, \label{eq:F_l-1/2}
 \end{align}
-
 where
-
 \begin{align}
   \Delta_{l+1/2} &= \frac{\Delta_{l+1} +
     \Delta_{l}}{2}\:,\\ \Delta_{l-1/2} &= \frac{\Delta_{l} +
     \Delta_{l-1}}{2}\:.
 \end{align}
-
-In order to be conservative, the flux must be continuous across a
-face.  Thus, the face-centered flux evaluated from either side of the
-face must be equivalent,
-
+In order to be conservative, the flux must be continuous across a face.  Thus,
+the face-centered flux evaluated from either side of the face must be
+equivalent,
 \begin{equation}
   \begin{aligned}
     F_{l+1/2}^{+} &= F_{l+1/2}^{-}\:,\\ 2D_{l+1}\frac{\phi_{l+1} -
@@ -812,22 +748,17 @@ face must be equivalent,
     \frac{1}{3\sigma_{l}}\frac{\phi_{l+1/2} - \phi_{l}}{\Delta_l}\:,
   \end{aligned}
 \end{equation}
-
-where we have dropped the subscript $\mathrm{R}$ from $\sigma$ for
-clarity.  Solving this system for $\phi_{l+1/2}$ and applying to
-either $F_{l+1/2}^{+}$ or $F_{l+1/2}^{-}$ and setting the resulting
-expression equal to Eq.~(\ref{eq:F_l+1/2}), one finds the
-face-centered diffusion coefficient,
-
+where we have dropped the subscript $\mathrm{R}$ from $\sigma$ for clarity.
+Solving this system for $\phi_{l+1/2}$ and applying to either $F_{l+1/2}^{+}$
+or $F_{l+1/2}^{-}$ and setting the resulting expression equal to
+Eq.~(\ref{eq:F_l+1/2}), one finds the face-centered diffusion coefficient,
 \begin{equation}
   D_{l+1/2} = \frac{2\Delta_{l+1/2}}{3\sigma_l\Delta_l +
     3\sigma_{l+1}\Delta_{l+1}}\:.
   \label{eq:D_l+1/2}
 \end{equation}
-
 Following the same procedure at the $l-1/2$ face gives the diffusion
 coefficient on the low-side face,
-
 \begin{equation}
   D_{l-1/2} = \frac{2\Delta_{l-1/2}}{3\sigma_l\Delta_l +
     3\sigma_{l-1}\Delta_{l-1}}\:.
@@ -837,7 +768,6 @@ coefficient on the low-side face,
 Using Eqs.~(\ref{eq:F_l+1/2}), (\ref{eq:F_l-1/2}), (\ref{eq:D_l+1/2}),
 and (\ref{eq:D_l-1/2}) in the discrete flux-balance equation,
 (\ref{eq:flux-balance-difference}), we obtain
-
 \begin{equation}
   \begin{aligned}
     \sigT\phi_{ijk} -
@@ -850,16 +780,12 @@ and (\ref{eq:D_l-1/2}) in the discrete flux-balance equation,
   \end{aligned}
   \label{eq:discrete-diffusion}
 \end{equation}
-
 Here,
-
 \begin{equation}
   \sigT = \sigp_i + \sigm_i + \sigp_j + \sigm_j + \sigp_k + \sigm_k +
   \sign_{ijk}\:,
 \end{equation}
-
 and
-
 \begin{subequations}
   \begin{align}
     \sigp_{i} &= \frac{1}{\Di}\frac{2}{3\sigma_{ijk}\Di +
@@ -877,149 +803,118 @@ and
   \end{align}
   \label{eq:sigmas}
 \end{subequations}
-
 Also, note that
-
 \begin{align*}
   \sigp_{i-1} &= \frac{1}{\Delta_{i-1}}\frac{2}{3\sigma_{ijk}\Di +
     3\sigma_{i-1\,jk}\Delta_{i-1}}\:,\\ \sigm_{i+1} &=
   \frac{1}{\Delta_{i+1}}\frac{2}{3\sigma_{ijk}\Di +
     3\sigma_{i+1\,jk}\Delta_{i+1}}\:,\\ \ldots\:.
 \end{align*}
+Equations~(\ref{eq:discrete-diffusion}) through (\ref{eq:sigmas}) represent
+the discretized, 1T diffusion equation on an orthogonal 3D grid.
 
-Equations~(\ref{eq:discrete-diffusion}) through (\ref{eq:sigmas})
-represent the discretized, 1T diffusion equation on an orthogonal 3D
-grid.
-
-Equations~(\ref{eq:discrete-diffusion}) through (\ref{eq:sigmas}) have
-been written in a manner that is amenable to Monte Carlo
-interpretation.  One can envision the terms in Eq.~(\ref{eq:sigmas})
-representing leakage out of each face of a cell.  The off-diagonal
-terms then represent sources into the cell, or, equivalently, these
-terms are leakage out of the neighboring cells.  A limitation of this
-interpretation is that it requires a symmetric system to implement the
-Monte Carlo scheme.  More specifically, the operator $\ve{D}$ must be
-an H-matrix \cite{kelley_1995} such that the off-diagonal elements are
-negative and symmetric.  In other words, the leakage out of a cell
-must be equivalent to the source into the adjacent cell.
+Equations~(\ref{eq:discrete-diffusion}) through (\ref{eq:sigmas}) have been
+written in a manner that is amenable to Monte Carlo interpretation.  One can
+envision the terms in Eq.~(\ref{eq:sigmas}) representing leakage out of each
+face of a cell.  The off-diagonal terms then represent sources into the cell,
+or, equivalently, these terms are leakage out of the neighboring cells.  A
+limitation of this interpretation is that it requires a symmetric system to
+implement the Monte Carlo scheme.  More specifically, the operator $\ve{D}$
+must be an H-matrix \cite{kelley_1995} such that the off-diagonal elements are
+negative and symmetric.  In other words, the leakage out of a cell must be
+equivalent to the source into the adjacent cell.
 
 The methods described in \S\S~\ref{sec:monte-carlo-matrix} and
-\ref{sec:iter-refin-monte} do not suffer this limitation.  Thus, we
-will interpret the solution via MCSA as a transport-like process, but
-we do not require any constraints on the system other than the
-spectral radius must be less than 1.
+\ref{sec:iter-refin-monte} do not suffer this limitation.  Thus, we will
+interpret the solution via MCSA as a transport-like process, but we do not
+require any constraints on the system other than the spectral radius must be
+less than 1.
 
-Before completing the derivation of discrete equations required to
-solve Eq.~(\ref{eq:discrete-diffusion}), we must specify boundary
-conditions.  For this work, the Marshak Boundary condition suffices,
-
+Before completing the derivation of discrete equations required to solve
+Eq.~(\ref{eq:discrete-diffusion}), we must specify boundary conditions.  For
+this work, the Marshak Boundary condition suffices,
 \begin{equation}
   f_b^\pm = \frac{1}{4}\phi -
   \frac{1}{2}\ve{F}\cdot\hat{\ve{n}}\:,\quad \vr\in \partial\Gamma\:,
 \end{equation}
-
 where $f_b$ is the incoming partial current on the problem boundary,
-
 $\partial\Gamma$.  On any low boundary we can write the flux using a
 first-order discrete form of Fick's Law,
-
 \begin{equation}
   F_{1/2} = -\frac{2}{3\sigma_1}\frac{\phi_1 -
     \phi_{1/2}}{\Delta_1}\:.
   \label{eq:low-boundary-flux}
 \end{equation}
-
 As before, we enforce continuity of flux on the boundary using the
 Marshak Boundary condition,
-
 \begin{equation}
   -\frac{2}{3\sigma_1}\frac{\phi_1 - \phi_{1/2}}{\Delta_1} = 2f_b^{+}
   -\frac{1}{2}\phi_{1/2}\:.
 \end{equation}
-
-Solving for $\phi_{1/2}$ and applying to
-Eq.~(\ref{eq:low-boundary-flux}) yields an expression for the low-side
-boundary flux,
-
+Solving for $\phi_{1/2}$ and applying to Eq.~(\ref{eq:low-boundary-flux})
+yields an expression for the low-side boundary flux,
 \begin{equation}
   F_{1/2} = \frac{2}{3\sigma_1\Delta_1 + 4}(4f_b^{+}-\phi_1)\:.
 \end{equation}
-
 Following an identical procedure on high-side problem boundaries gives
-
 \begin{equation}
   F_{N_l+1/2} = \frac{2}{3\sigma_{N_l}\Delta_{N_l} +
     4}(\phi_{N_l}-4f_b^{-})\:,
 \end{equation}
-
 where $l\in\{i,j,k\}$ is defined over the range $[1,N_l]$.
 
-These boundary fluxes take the place of the interior face-centered
-fluxes (defined in Eqs.~(\ref{eq:F_l+1/2}) and (\ref{eq:F_l-1/2})) in
-Eq.~(\ref{eq:flux-balance-difference}) yielding the following
-modifications to Eqs.~(\ref{eq:sigmas}) on a boundary,
-
+These boundary fluxes take the place of the interior face-centered fluxes
+(defined in Eqs.~(\ref{eq:F_l+1/2}) and (\ref{eq:F_l-1/2})) in
+Eq.~(\ref{eq:flux-balance-difference}) yielding the following modifications to
+Eqs.~(\ref{eq:sigmas}) on a boundary,
 \begin{align}
   \text{low boundary:}\quad & \sigma_1^{-} = \frac{1}{\Delta_1}
   \frac{2}{3\sigma_1\Delta_1 + 4}\:,\\ \text{high boundary:}\quad &
   \sigma_{N_l}^{+} = \frac{1}{\Delta_{N_l}}
   \frac{2}{3\sigma_{N_l}\Delta_{N_l} + 4}\:.
 \end{align}
-
-Furthermore, the following contributions are added to the source,
-
-$\qn_{ijk}$ on a boundary cell,
+Furthermore, the following contributions are added to the source, $\qn_{ijk}$
+on a boundary cell,
 \begin{align}
   \text{low boundary:}\quad & \frac{8}{\Delta_1}
   \frac{1}{3\sigma_1\Delta_1 + 4}f_b^{+}\:,\\ \text{high
     boundary:}\quad & \frac{8}{\Delta_{N_l}}
   \frac{1}{3\sigma_{N_l}\Delta_{N_l} + 4}f_b^{-}\:.
 \end{align}
-
 Note that for vacuum boundary conditions, $f_b^{\pm} = 0$.
 
-For reflective boundary conditions we have the simple modification
-that
-
+For reflective boundary conditions we have the simple modification that
 \begin{align}
   F_{1/2} &= 0\:, \\ F_{N_l+1/2} &= 0\:.
 \end{align}
-
-Thus, there are no leakage or adjacent cell source terms resulting
-from this boundary face.
+Thus, there are no leakage or adjacent cell source terms resulting from this
+boundary face.
 
 \subsection{Preconditioning}
 \label{sec:preconditioning}
 
-The discrete diffusion equation in (\ref{eq:discrete-diffusion}) can
-be written in matrix-operator form as follows,
-
+The discrete diffusion equation in (\ref{eq:discrete-diffusion}) can be
+written in matrix-operator form as follows,
 \begin{equation}
   \ve{D}\bphi = \ve{q}\:,
   \label{eq:diffusion-matrix}
 \end{equation}
-
 where $\ve{D}$ is a symmetric, positive-definite (SPD) operator.
-Unfortunately, for many problems $\rho(\ve{D}) > 1$.  Therefore, we
-must precondition Eq.~(\ref{eq:diffusion-matrix}) in order to use the
-MCSA method. We apply left-preconditioning and write
-
+Unfortunately, for many problems $\rho(\ve{D}) > 1$.  Therefore, we must
+precondition Eq.~(\ref{eq:diffusion-matrix}) in order to use the MCSA
+method. We apply left-preconditioning and write
 \begin{equation}
   \ve{M}^{-1}\ve{D}\bphi = \ve{M}^{-1}\ve{q}\:.
   \label{eq:preconditioned-diffusion}
 \end{equation}
-
 A good choice for the preconditioner, $\ve{M}$, is to use Jacobi
 preconditioning:
-
 \begin{equation}
   \ve{M}=\diag(\ve{D})\:.
   \label{eq:preconditioner}
 \end{equation}
-
-Setting $\ve{M}$ equal to the diagonal elements of $\ve{D}$
-accomplishes several objectives:
-
+Setting $\ve{M}$ equal to the diagonal elements of $\ve{D}$ accomplishes
+several objectives:
 \begin{itemize}
 \item It reduces the spectral radius such that
   $\rho(\ve{M}^{-1}\ve{D}) < \rho(\ve{D})$ and
@@ -1030,15 +925,14 @@ accomplishes several objectives:
   computations wasted for in-state transitions $i\rightarrow i$ during
   the random walk process.
 \end{itemize}
-
 The second item is quite important for Monte Carlo solutions of linear
-systems, and this type of scaling should be performed regardless of
-any additional preconditioner choices. We note that the resulting
-system does not have to be SPD for the MCSA algorithm, thus any
-suitable choice of $\ve{M}$ will suffice.  The preconditioned system
-we will solve is defined in Eq.~(\ref{eq:preconditioned-diffusion}).
-Applying $\ve{M}^{-1}$ to Eq.~(\ref{eq:discrete-diffusion}) yields
+systems, and this type of scaling should be performed regardless of any
+additional preconditioner choices. 
 
+An advantage of MCSA is that the resulting system does not have to be SPD,
+thus any suitable choice of $\ve{M}$ will suffice.  The preconditioned system
+we will solve is defined in Eq.~(\ref{eq:preconditioned-diffusion}).  Applying
+$\ve{M}^{-1}$ to Eq.~(\ref{eq:discrete-diffusion}) yields
 \begin{equation}
   \begin{aligned}
     \phi_{ijk} -
@@ -1058,20 +952,17 @@ Applying $\ve{M}^{-1}$ to Eq.~(\ref{eq:discrete-diffusion}) yields
 \label{sec:solut-radi-diff}
 
 Here we derive the equations required to solve
-Eq.~(\ref{eq:preconditioned-discrete-diffusion}) using the MCSA
-method.  As discussed in \S~\ref{sec:iter-refin-monte}, the MCSA
-method requires two solutions:
-
+Eq.~(\ref{eq:preconditioned-discrete-diffusion}) using the MCSA method.  As
+discussed in \S~\ref{sec:iter-refin-monte}, the MCSA method requires two
+solutions:
 \begin{enumerate}
 \item A fixed-point iteration to estimate $\bphi^{l+1/2}$.  This is a
   matrix-vector multiply operation.
 \item An adjoint Monte Carlo solve to estimate $\delta\bphi^{l+1/2}$.
 \end{enumerate}
-
 For clarity, we rewrite the iteration scheme in
 Eq.~(\ref{eq:MCSA-iteration}) using the diffusion operator notation
 from Eq.~(\ref{eq:preconditioned-diffusion}),
-
 \begin{align*}
    \bphi^{l+1/2} = (\vI - \ve{M}^{-1}\ve{D})\bphi^{l} +
   \ve{M}^{-1}\ve{q}\:, \quad & (\text{fixed-point iteration})\\ 
@@ -1082,15 +973,12 @@ from Eq.~(\ref{eq:preconditioned-diffusion}),
   \bphi^{l+1} = \bphi^{l+1/2} + \delta\bphi^{l+1/2}\:. \quad&
   (\text{update}\ \bphi)
 \end{align*}
+As described in \S~\ref{sec:iter-refin-monte}, the adjoint Monte Carlo method
+only approximately inverts $\ve{M}^{-1}\ve{D}$.  We now describe each of these
+in turn.
 
-As described in \S~\ref{sec:iter-refin-monte}, the adjoint Monte Carlo
-method only approximately inverts $\ve{M}^{-1}\ve{D}$.  We now
-describe each of these in turn.
-
-First, we use Eq.~(\ref{eq:preconditioned-discrete-diffusion}) to
-evaluate $\bphi^{l+1/2}$ via a single fixed-point iteration as
-follows:
-
+First, we use Eq.~(\ref{eq:preconditioned-discrete-diffusion}) to evaluate
+$\bphi^{l+1/2}$ via a single fixed-point iteration as follows:
 \begin{equation}
   \begin{aligned}
     \phi_{ijk}^{l+1/2} =
@@ -1108,53 +996,45 @@ follows:
     + \frac{\qn_{ijk}}{\sigT}\:.
   \end{aligned}
 \end{equation}
+This result is used to compute the residual of the system.  The residual then
+becomes the source for the Monte Carlo simulation.
 
-This result is used to compute the residual of the system.  The
-residual then becomes the source for the Monte Carlo simulation.
-
-The adjoint Monte Carlo method described in
-\S~\ref{sec:adjoint-method} is used to estimate
-
+The adjoint Monte Carlo method described in \S~\ref{sec:adjoint-method} is
+used to estimate
 \begin{equation}
   \ve{M}^{-1}\ve{D}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:.
 \end{equation}
+As noted above, the residual acts as the source for this simulation, and the
+operator $\ve{M}^{-1}\ve{D}$ is implicitly defined in
+Eq.~(\ref{eq:preconditioned-discrete-diffusion}).  There are two Monte Carlo
+interpretations that can be applied to this system.  The first follows the
+mathematical presentation given in \S~\ref{sec:monte-carlo-matrix}.  Namely,
+we form probabilities from the iteration matrix and perform random walks to
+generate unbiased estimates of the solution vector, $\delta\bphi^{l+1/2}$,
+using the estimator in Eq.~(\ref{eq:adjoint-tally}).
 
-As noted above, the residual acts as the source for this simulation,
-and the operator $\ve{M}^{-1}\ve{D}$ is implicitly defined in
-Eq.~(\ref{eq:preconditioned-discrete-diffusion}).  There are two Monte
-Carlo interpretations that can be applied to this system.  The first
-follows the mathematical presentation given in
-\S~\ref{sec:monte-carlo-matrix}.  Namely, we form probabilities from
-the iteration matrix and perform random walks to generate unbiased
-estimates of the solution vector, $\delta\bphi^{l+1/2}$, using the
-estimator in Eq.~(\ref{eq:adjoint-tally}).
-
-However, a more natural interpretation for Monte Carlo transport
-practitioners is to use the machinery described in
-\S~\ref{sec:monte-carlo-matrix} to define Probability Distribution
-Functions (PDF) that describe the transport of particles between
-cells.  We then do a Monte Carlo transport calculation using
+However, a more natural interpretation for Monte Carlo transport practitioners
+is to use the machinery described in \S~\ref{sec:monte-carlo-matrix} to define
+Probability Distribution Functions (PDF) that describe the transport of
+particles between cells.  We then do a Monte Carlo transport calculation using
 Eq.~(\ref{eq:adjoint-weight}) to calculate the weight change at each
-collision. Equation~(\ref{eq:adjoint-probability}) gives the
-probability of scattering to an adjacent cell. We tally the
-contribution of $\phi$ in each cell using
-Eq.~(\ref{eq:adjoint-tally}).  The transport is terminated using a
-relative weight cutoff that is defined in
-Eq.~(\ref{eq:weight_cutoff}).  We now examine each of these in
-more detail.
+collision. Equation~(\ref{eq:adjoint-probability}) gives the probability of
+scattering to an adjacent cell. We tally the contribution of $\phi$ in each
+cell using Eq.~(\ref{eq:adjoint-tally}).  The transport is terminated using a
+relative weight cutoff that is defined in Eq.~(\ref{eq:weight_cutoff}).  We
+now examine each of these in more detail.
 
-The connectivity of an arbitrary cell is illustrated in the 3D mesh
-segment in Fig.~\ref{fig:mesh_segment}.  For a particle residing in
-the blue cell, any collision results in a scatter to one of the six
-adjacent cells since $p_{ii}=0$ in the preconditioned system.  We can
-easily calculate the probabilities for each scattering event from
-Eq.~(\ref{eq:preconditioned-discrete-diffusion}) without explicitly
-forming the iteration matrix.  In this mesh cell, the probabilities
-for leakage out of each face are derived from the equations from each
-adjacent cell.  Using Eq.~(\ref{eq:preconditioned-discrete-diffusion})
-we can explicitly write the equations from each adjacent cell, here
-only noting the contribution from cell 7:
-
+The connectivity of an arbitrary cell is illustrated in the 3D mesh segment in
+Fig.~\ref{fig:mesh_segment}.  For a particle residing in the blue cell, any
+collision results in a scatter to one of the six adjacent cells since
+$p_{ii}=0$ in the preconditioned system.  We can easily calculate the
+probabilities for each scattering event from
+Eq.~(\ref{eq:preconditioned-discrete-diffusion}) without explicitly forming
+the iteration matrix.  In this mesh cell, the probabilities for leakage out of
+each face are derived from the equations from each adjacent cell.  Using
+Eq.~(\ref{eq:preconditioned-discrete-diffusion}) we can explicitly write the
+equations from each adjacent cell, here only noting the contribution from cell
+7:
 \begin{align*}
   \phi_1 &= \frac{\sigm_{7\rightarrow
       1}}{\sigma_{T\,1}}\frac{\Delta_7}{\Delta_1}\phi_7 +
@@ -1170,10 +1050,8 @@ only noting the contribution from cell 7:
               6}}{\sigma_{T\,6}}\frac{\Delta_7}{\Delta_6}\phi_7 +
                   \ldots\:,\\ 
 \end{align*} 
-
-A quick view of these equations reveals that the only non-zero entries
-in column 7 of the iteration matrix are
-
+A quick view of these equations reveals that the only non-zero entries in
+column 7 of the iteration matrix are
 \begin{equation*}
   \begin{pmatrix}
     h_{1,7} & h_{2,7} & h_{3,7} & h_{4,7} & h_{5,7} & h_{6,7}
@@ -1194,32 +1072,25 @@ in column 7 of the iteration matrix are
         6}}{\sigma_{T\,6}}\frac{\Delta_7}{\Delta_6}
   \end{pmatrix}\:,
 \end{equation*}
-
 where, following Eq.~(\ref{eq:point_iteration}), $\ve{H} = (\vI -
 \ve{M}^{-1}\ve{D})$ is the iteration matrix.  Now, using
-Eq.~(\ref{eq:adjoint-probability}), we define the scattering
-probabilities for cell 7 as
-
+Eq.~(\ref{eq:adjoint-probability}), we define the scattering probabilities for
+cell 7 as
 \begin{equation*}
   P_{7\rightarrow n} = p_{7,n} = \frac{|h_{n,7}|}{|h_{1,7} + h_{2,7} +
     h_{3,7} + h_{4,7} + h_{5,7} + h_{6,7}|}\:,\quad n\in
   \{1,\ldots,6\}\:.
 \end{equation*}
-
 The weight change for each scattering event is calculated using
 Eq.~(\ref{eq:adjoint-weight}),
-
 \begin{equation*}
   W_{m} = \frac{h_{n,7}}{p_{7,n}}W_{m-1}\:,\quad n\in
   \{1,\ldots,6\}\:,
 \end{equation*}
-
-where $m$ is the step-index in the particle history.  We also note
-that, for the 3D Cartesian mesh considered in this work, the maximum
-number of non-zero entries in columns of the iteration matrix is 6,
-generating a sparse system.  Cells along the problem boundary can have
-fewer than 6 entries.
-
+where $m$ is the step-index in the particle history.  We also note that, for
+the 3D Cartesian mesh considered in this work, the maximum number of non-zero
+entries in columns of the iteration matrix is 6, generating a sparse system.
+Cells along the problem boundary can have fewer than 6 entries.
 \begin{figure}[h!]
   \centerline{ \input{3D_mesh_segment.pdftex_t}}
   \caption{3D mesh-segment.  The particle's current cell (in blue) is
@@ -1235,22 +1106,19 @@ fewer than 6 entries.
 
 Here we examine the effectiveness of the MCSA method and compare it to
 traditional deterministic solution methods.  The deterministic methods
-considered are preconditioned Conjugate Gradient (PCG) and
-preconditioned fixed-point (Richardson) iteration (PFIX).  The PCG
-method uses right-left preconditioning with
-$\ve{M}=\ve{L}\ve{L}^{-1}$.  The PFIX scheme is used to solve
-Eq.~(\ref{eq:preconditioned-diffusion}), which is identical to the
-system being solved with MCSA.  We examine each method on two 3D
-problems: a Marshak wave problem and a multi-material duct problem.
+considered are preconditioned Conjugate Gradient (PCG) and preconditioned
+fixed-point (Richardson) iteration (PFIX).  The PCG method uses right-left
+preconditioning with $\ve{M}=\ve{L}\ve{L}^{-1}$.  The PFIX scheme is used to
+solve Eq.~(\ref{eq:preconditioned-diffusion}), which is identical to the
+system being solved with MCSA.  We examine each method on two 3D problems: a
+Marshak wave problem and a multi-material duct problem.
 
 \subsection{Marshak Wave}
 
-The Marshak wave problem under consideration in this study has an
-incoming 1~keV blackbody boundary flux at $x=0$ and propagates in the
-$x$-dimension in time as outlined in Ref.~\cite{larsen_1980}.  In
-other words, this a 3D representation of a 1D problem.  The full set
-of problem conditions is:
-
+The Marshak wave problem under consideration in this study has an incoming
+1~keV blackbody boundary flux at $x=0$ and propagates in the $x$-dimension in
+time as outlined in Ref.~\cite{larsen_1980}.  In other words, this a 3D
+representation of a 1D problem.  The full set of problem conditions is:
 \begin{center}
   \begin{tabular}{ll}\hline
     B.C. & $f_b^{+}(x=0,T=1.0) = \frac{ac}{4}T^4$ \\ & $\ve{F} =
@@ -1264,19 +1132,16 @@ of problem conditions is:
     \\ \hline
   \end{tabular}
 \end{center}
-
 The problem is run to $100$~nanoseconds.
 
-Figure~\ref{fig:marshak_10} shows the analytic Marshak Wave solution
-compared to the MCSA solution.  As opposed to most Monte Carlo
-techniques, the MCSA method generates solutions that are numerically
-equivalent to the PCG and PFIX results.  Because the MCSA method
-converges the residual of the system, the numerical accuracy is
-determined by the stopping criterion shown in
-Eq.~(\ref{eq:stopping-criteria}).  Also, the MCSA method is not bound
-by the Central Limit Theorem so convergence is not restricted to
+Figure~\ref{fig:marshak_10} shows the analytic Marshak Wave solution compared
+to the MCSA solution.  As opposed to most Monte Carlo techniques, the MCSA
+method generates solutions that are numerically equivalent to the PCG and PFIX
+results.  Because the MCSA method converges the residual of the system, the
+numerical accuracy is determined by the stopping criterion shown in
+Eq.~(\ref{eq:stopping-criteria}).  Also, the MCSA method is not bound by the
+Central Limit Theorem so convergence is not restricted to
 $1/\sqrt{N}$~\cite{halton_1994,evans_2003}.
-
 \begin{figure}[h!]
   \centerline{ \includegraphics[width=5in,clip]{marshak_10.pdf}}
   \caption{ Solution of the Marshak wave problem at $t=100$~ns.  The
@@ -1286,14 +1151,12 @@ $1/\sqrt{N}$~\cite{halton_1994,evans_2003}.
   \label{fig:marshak_10}
 \end{figure}
 
-As stated in \S~\ref{sec:monte-carlo-matrix}, the MCSA method will
-converge when $\rho(\ve{H})< 1$ where $\ve{H}$ is the iteration matrix
-and is defined $\ve{H} = (\vI - \ve{M}^{-1}\ve{D})$.  The spectral
-radius for the Marshak problem is plotted in
-Fig.~\ref{fig:marshak_spectral}.  As stated in
-\S~\ref{sec:preconditioning} the preconditioning effectively reduces
-the spectral radius of $\ve{H}$ to less than 1.
-
+As stated in \S~\ref{sec:monte-carlo-matrix}, the MCSA method will converge
+when $\rho(\ve{H})< 1$ where $\ve{H}$ is the iteration matrix and is defined
+$\ve{H} = (\vI - \ve{M}^{-1}\ve{D})$.  The spectral radius for the Marshak
+problem is plotted in Fig.~\ref{fig:marshak_spectral}.  As stated in
+\S~\ref{sec:preconditioning} the preconditioning effectively reduces the
+spectral radius of $\ve{H}$ to less than 1.
 \begin{figure}[h!]
   \centerline{ \includegraphics[width=5in,clip]{spectral_radius.pdf}}
   \caption{Spectral radius of the iteration matrix, $\ve{H}$, for the
@@ -1301,19 +1164,17 @@ the spectral radius of $\ve{H}$ to less than 1.
   \label{fig:marshak_spectral}
 \end{figure}
 
-There are two principal degrees of freedom when utilizing the MCSA
-method: (1) the number of particles per stage, and (2) the weight
-cutoff.  Figure~\ref{fig:CPU_Np} shows the CPU time as a function of
-the requested number of particles per stage for a relative weight
-cutoff of $\sn{1}{-4}$.  For less than 5 particles per stage the
-method does not converge.  Figure~\ref{fig:CPU_Ns} shows the variation
-in the maximum number of stages (iterations) per cycle with number of
-particles.  Analysis of these two figures shows that increasing the
-number of particles per stage reduces the number of iterations
-required to converge the solution.  However, the cost of the Monte
-Carlo transport is high; thus, better performance is attained by
+There are two principal degrees of freedom when utilizing the MCSA method: (1)
+the number of particles per stage, and (2) the weight cutoff.
+Figure~\ref{fig:CPU_Np} shows the CPU time as a function of the requested
+number of particles per stage for a relative weight cutoff of $\sn{1}{-4}$.
+For less than 5 particles per stage the method does not converge.
+Figure~\ref{fig:CPU_Ns} shows the variation in the maximum number of stages
+(iterations) per cycle with number of particles.  Analysis of these two
+figures shows that increasing the number of particles per stage reduces the
+number of iterations required to converge the solution.  However, the cost of
+the Monte Carlo transport is high; thus, better performance is attained by
 running more stages with fewer particles per stage \cite{evans_2003}.
-
 \begin{figure}[h!]
   \centerline{ \includegraphics[width=5in,clip]{mrshk_np_CPU.pdf}}
   \caption{CPU time versus number of particles per stage for the
@@ -1333,13 +1194,12 @@ running more stages with fewer particles per stage \cite{evans_2003}.
   \label{fig:CPU_Ns}
 \end{figure}
 
-Figure~\ref{fig:CPU_wc} shows the CPU time as a function of relative
-weight cutoff.  These results indicate that the performance of the
-MCSA method is relatively insensitive to the weight cutoff.  This is
-especially true when running small numbers of particles per stage.
-When larger numbers of particles are used the weight cutoff has a more
-pronounced effect on the efficiency of the method.
-
+Figure~\ref{fig:CPU_wc} shows the CPU time as a function of relative weight
+cutoff.  These results indicate that the performance of the MCSA method is
+relatively insensitive to the weight cutoff.  This is especially true when
+running small numbers of particles per stage.  When larger numbers of
+particles are used the weight cutoff has a more pronounced effect on the
+efficiency of the method.
 \begin{figure}[h!]
   \centerline{ \includegraphics[width=5in,clip]{mrshk_wc_CPU.pdf}}
   \caption{ CPU time versus relative weight cutoff for the Marshak
@@ -1349,16 +1209,15 @@ pronounced effect on the efficiency of the method.
   \label{fig:CPU_wc}
 \end{figure}
 
-Having analyzed the variation of the MCSA algorithm efficiency with
-number of particles and weight cutoff, we now compare to traditional
-deterministic algorithms.  Table~\ref{tab:marshak_comparison} shows
-timing results for the Marshak problem using preconditioned CG (PCG),
-preconditioned Richardson iteration (PFIX), and MCSA. The results show
-that the MCSA method is the most efficient method, although the PCG
-results are nearly as fast.  More importantly, the MCSA method clearly
-accelerates Richardson iteration, as indicated by the fact that MCSA
-is 42\% faster than Richardson iteration alone.
-
+Having analyzed the variation of the MCSA algorithm efficiency with number of
+particles and weight cutoff, we now compare to traditional deterministic
+algorithms.  Table~\ref{tab:marshak_comparison} shows timing results for the
+Marshak problem using preconditioned CG (PCG), preconditioned Richardson
+iteration (PFIX), and MCSA. The results show that the MCSA method is the most
+efficient method, although the PCG results are nearly as fast.  More
+importantly, the MCSA method clearly accelerates Richardson iteration, as
+indicated by the fact that MCSA is 42\% faster than Richardson iteration
+alone.
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{lrr}\hline\hline
@@ -1378,14 +1237,12 @@ is 42\% faster than Richardson iteration alone.
 
 \subsection{Multi-material Problem}
 
-We now test the performance of the MCSA method on a large
-multi-material problem.  The multi-material problem has a dog-legged
-duct through a thick wall where the radiation flows into a thin region
-bound by a foil on one side.  The mesh and geometry are illustrated in
-Fig.~\ref{fig:multi-mat-mesh}.  A blackbody boundary flux is defined
-on the low-$x$ face at $T=0.5$~keV.  The full set of problem
-conditions is:
-
+We now test the performance of the MCSA method on a large multi-material
+problem.  The multi-material problem has a dog-legged duct through a thick
+wall where the radiation flows into a thin region bound by a foil on one side.
+The mesh and geometry are illustrated in Fig.~\ref{fig:multi-mat-mesh}.  A
+blackbody boundary flux is defined on the low-$x$ face at $T=0.5$~keV.  The
+full set of problem conditions is:
 \begin{center}
   \begin{tabular}{ll}\hline
     B.C. & $f_b^{+}(x=0,T=0.5) = \frac{ac}{4}T^4$\\ & $\ve{F} =
@@ -1405,11 +1262,10 @@ conditions is:
 \end{center}
 
 A 2D plot of the temperature at 1000~ns elapsed time is illustrated in
-Fig.~\ref{fig:multi-mat_T}.  The time-evolution of the temperature is
-shown at 4 edit points in Fig.~\ref{fig:edit-points}.  All three
-methods, PCG, PFIX, and MCSA, give numerically identical answers when
-using a stopping criterion of $\sn{1}{-8}$.
-
+Fig.~\ref{fig:multi-mat_T}.  The time-evolution of the temperature is shown at
+4 edit points in Fig.~\ref{fig:edit-points}.  All three methods, PCG, PFIX,
+and MCSA, give numerically identical answers when using a stopping criterion
+of $\sn{1}{-8}$.
 \begin{figure}[h!]
   \centerline{ \includegraphics[width=5in,clip]{mesh.pdf}}
   \caption{Multi-material problem mesh.  The duct region is blue.  The
@@ -1442,10 +1298,9 @@ using a stopping criterion of $\sn{1}{-8}$.
 \end{figure}
 
 Table~\ref{tab:multimat_comparison} shows the timing results for the
-multi-material problem using PCG, PFIX, and MCSA.  The results
-correspond roughly with the results from the Marshak problem.  The
-MCSA is marginally faster than PCG and 43\% faster than PFIX.
-
+multi-material problem using PCG, PFIX, and MCSA.  The results correspond
+roughly with the results from the Marshak problem.  The MCSA is marginally
+faster than PCG and 43\% faster than PFIX.
 \begin{table}[htbp!]
   \begin{center}
     \begin{tabular}{lrr}\hline\hline
@@ -1467,24 +1322,23 @@ MCSA is marginally faster than PCG and 43\% faster than PFIX.
 \section{Conclusions}
 \label{sec:conclusions}
 
-We have presented a new Monte Carlo solution method for solving the
-discrete, time-dependent radiation diffusion equation in three
-dimensions.  The MCSA method has been shown to match results using
-standard solution techniques to arbitrary precision. Also, the new
-method has been to shown to be faster than preconditioned CG and
-Richardson iteration for the model problems presented here.
+We have presented a new Monte Carlo solution method for solving the discrete,
+time-dependent radiation diffusion equation in three dimensions.  The MCSA
+method has been shown to match results using standard solution techniques to
+arbitrary precision. Also, the new method has been to shown to be faster than
+preconditioned CG and Richardson iteration for the model problems presented
+here.
 
-While we have demonstrated marginal improvements over standard
-solution schemes in this study, significant improvements could be
-realized in fully nonlinear-consistent solutions.  In these cases, the
-MCSA method competes with GMRES, which is more costly in memory and
-time than CG.  Another area where the MCSA scheme may have advantages
-over traditional solution methods is on dentritic, or adaptive,
-meshes.  These meshes yield matrices with poor condition numbers
-because of the changing cell volumes at different refinement levels.
-A smart transport algorithm could be developed that more efficiently
-solves the residual on these types of meshes.  These topics will be
-the focus of future study.
+While we have demonstrated marginal improvements over standard solution
+schemes in this study, significant improvements could be realized in fully
+nonlinear-consistent solutions.  In these cases, the MCSA method competes with
+GMRES, which is more costly in memory and time than CG.  Another area where
+the MCSA scheme may have advantages over traditional solution methods is on
+dentritic, or adaptive, meshes.  These meshes yield matrices with poor
+condition numbers because of the changing cell volumes at different refinement
+levels.  A smart transport algorithm could be developed that more efficiently
+solves the residual on these types of meshes.  These topics will be the focus
+of future study.
 
 %%---------------------------------------------------------------------------%%
 %% The Appendices part is started with the command \appendix;
@@ -1505,7 +1359,8 @@ the focus of future study.
 %%---------------------------------------------------------------------------%%
 %% References with bibTeX database:
 
-\bibliographystyle{elsarticle-num} \bibliography{references}
+\bibliographystyle{elsarticle-num} 
+\bibliography{references}
 
 %% Authors are advised to submit their bibtex database files. They are
 %% requested to list a bibtex style file in the manuscript if they do
