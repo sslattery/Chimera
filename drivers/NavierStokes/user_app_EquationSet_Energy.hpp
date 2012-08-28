@@ -40,41 +40,39 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef __Example_BC_Dirichlet_Constant_hpp__
-#define __Example_BC_Dirichlet_Constant_hpp__
+#ifndef USER_APP_EQUATIONSET_ENERGY_HPP
+#define USER_APP_EQUATIONSET_ENERGY_HPP
 
 #include <vector>
 #include <string>
 
 #include "Teuchos_RCP.hpp"
-#include "Panzer_BCStrategy_Dirichlet_DefaultImpl.hpp"
+#include "Panzer_EquationSet_DefaultImpl.hpp"
 #include "Panzer_Traits.hpp"
-#include "Panzer_PureBasis.hpp"
 #include "Phalanx_FieldManager.hpp"
 
-namespace Example {
+namespace user_app {
 
   template <typename EvalT>
-  class BCStrategy_Dirichlet_Constant : public panzer::BCStrategy_Dirichlet_DefaultImpl<EvalT> {
-  public:    
-    
-    BCStrategy_Dirichlet_Constant(const panzer::BC& bc, const Teuchos::RCP<panzer::GlobalData>& global_data);
-    
-    void setup(const panzer::PhysicsBlock& side_pb,
-	       const Teuchos::ParameterList& user_data);
-    
-    void buildAndRegisterEvaluators(PHX::FieldManager<panzer::Traits>& fm,
-				    const panzer::PhysicsBlock& pb,
-				    const panzer::ClosureModelFactory_TemplateManager<panzer::Traits>& factory,
-				    const Teuchos::ParameterList& models,
-				    const Teuchos::ParameterList& user_data) const;
+    class EquationSet_Energy : public panzer::EquationSet_DefaultImpl<EvalT> {
 
-    std::string residual_name;
-    Teuchos::RCP<panzer::PureBasis> basis;
+  public:    
+
+    EquationSet_Energy(const panzer::InputEquationSet& ies,
+		       const panzer::CellData& cell_data,
+		       const Teuchos::RCP<panzer::GlobalData>& gd,
+		       const bool build_transient_support);
+    
+      void buildAndRegisterEquationSetEvaluators(PHX::FieldManager<panzer::Traits>& fm, const std::vector<std::pair<std::string,Teuchos::RCP<panzer::BasisIRLayout> > > & dofs,
+						 const Teuchos::ParameterList& user_data) const;
+
+  protected:
+
+      std::string m_do_convection;
   };
 
 }
 
-#include "Example_BCStrategy_Dirichlet_Constant_impl.hpp"
+#include "user_app_EquationSet_Energy_impl.hpp"
 
 #endif

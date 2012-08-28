@@ -40,50 +40,55 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef __Example_BCStrategyFactory_hpp__
-#define __Example_BCStrategyFactory_hpp__
 
-#include "Teuchos_RCP.hpp"
-#include "Panzer_Traits.hpp"
-#include "Panzer_BCStrategy_TemplateManager.hpp"
-#include "Panzer_BCStrategy_Factory.hpp"
-#include "Panzer_BCStrategy_Factory_Defines.hpp"
+#include "Panzer_EquationSet_Factory.hpp"
+#include "Panzer_EquationSet_Factory_Defines.hpp"
+#include "Panzer_InputEquationSet.hpp"
+#include "Panzer_CellData.hpp"
 
-// Add my bcstrategies here
-#include "Example_BCStrategy_Dirichlet_Constant.hpp"
+// Add my equation sets here
+#include "user_app_EquationSet_Energy.hpp"
 
-namespace Example {
-  
-PANZER_DECLARE_BCSTRATEGY_TEMPLATE_BUILDER("Constant", 
-                                           BCStrategy_Dirichlet_Constant,
-                                           BCStrategy_Dirichlet_Constant)
+namespace user_app {
 
-struct BCStrategyFactory : public panzer::BCStrategyFactory {
+  PANZER_DECLARE_EQSET_TEMPLATE_BUILDER("Energy 1", user_app::EquationSet_Energy,
+					EquationSet_Energy)
 
-   Teuchos::RCP<panzer::BCStrategy_TemplateManager<panzer::Traits> >
-   buildBCStrategy(const panzer::BC& bc,const Teuchos::RCP<panzer::GlobalData>& global_data) const
-   {
+  class MyFactory1 : public panzer::EquationSetFactory {
 
-      Teuchos::RCP<panzer::BCStrategy_TemplateManager<panzer::Traits> > bcs_tm = 
-	Teuchos::rcp(new panzer::BCStrategy_TemplateManager<panzer::Traits>);
+    bool m_throw_on_failure;
+
+  public:
+
+    MyFactory1(bool throw_on_failure) : m_throw_on_failure(throw_on_failure) {}
+
+    Teuchos::RCP<panzer::EquationSet_TemplateManager<panzer::Traits> >
+    buildEquationSet(const panzer::InputEquationSet& ies,
+		     const panzer::CellData& cell_data,
+		     const Teuchos::RCP<panzer::GlobalData>& global_data,
+		     const bool build_transient_support) const
+    {
+      Teuchos::RCP<panzer::EquationSet_TemplateManager<panzer::Traits> > eq_set= 
+	Teuchos::rcp(new panzer::EquationSet_TemplateManager<panzer::Traits>);
       
       bool found = false;
-
-      PANZER_BUILD_BCSTRATEGY_OBJECTS("Constant", 
-				      Example::BCStrategy_Dirichlet_Constant,
-				      BCStrategy_Dirichlet_Constant)
-
-      TEUCHOS_TEST_FOR_EXCEPTION(!found, std::logic_error, 
-			 "Error - the BC Strategy called \"" << bc.strategy() <<
-			 "\" is not a valid identifier in the BCStrategyFactory.  Either add a "
-                         "valid implementation to your factory or fix your input file.  The "
-                         "relevant boundary condition is:\n\n" << bc << std::endl);
       
-      return bcs_tm;
-   }
+      PANZER_BUILD_EQSET_OBJECTS("Energy 1", my_app::EquationSet_Energy,
+				 EquationSet_Energy)
+      
+      if (!found && m_throw_on_failure) {
+	std::string msg = "Error - the \"Equation Set\" called \"" + ies.name +
+	  "\" is not a valid equation set identifier. Please supply the correct factory.\n";
+	TEUCHOS_TEST_FOR_EXCEPTION(!found && m_throw_on_failure, std::logic_error, msg);
+      }
+      
+      if (!found)
+	return Teuchos::null;
 
-};
-  
+      return eq_set;
+    }
+    
+  };
+
 }
 
-#endif

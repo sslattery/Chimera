@@ -47,7 +47,7 @@
 #include "Phalanx_FieldManager.hpp"
 #include "Panzer_PhysicsBlock.hpp"
 
-#include "Panzer_PureBasis.hpp"
+#include "Panzer_BasisIRLayout.hpp"
 
 // Evaluators
 #include "Panzer_Constant.hpp"
@@ -58,16 +58,18 @@
 
 // ***********************************************************************
 template <typename EvalT>
-Example::BCStrategy_Dirichlet_Constant<EvalT>::
+user_app::BCStrategy_Dirichlet_Constant<EvalT>::
 BCStrategy_Dirichlet_Constant(const panzer::BC& bc, const Teuchos::RCP<panzer::GlobalData>& global_data) :
   panzer::BCStrategy_Dirichlet_DefaultImpl<EvalT>(bc,global_data)
 {
-  TEUCHOS_ASSERT(this->m_bc.strategy() == "Constant");
+  TEUCHOS_ASSERT( (this->m_bc.strategy() == "Constant") ||
+		  (this->m_bc.strategy() == "Constant 1") ||
+		  (this->m_bc.strategy() == "Constant 2") );
 }
 
 // ***********************************************************************
 template <typename EvalT>
-void Example::BCStrategy_Dirichlet_Constant<EvalT>::
+void user_app::BCStrategy_Dirichlet_Constant<EvalT>::
 setup(const panzer::PhysicsBlock& side_pb,
       const Teuchos::ParameterList& user_data)
 {
@@ -106,7 +108,7 @@ setup(const panzer::PhysicsBlock& side_pb,
 
 // ***********************************************************************
 template <typename EvalT>
-void Example::BCStrategy_Dirichlet_Constant<EvalT>::
+void user_app::BCStrategy_Dirichlet_Constant<EvalT>::
 buildAndRegisterEvaluators(PHX::FieldManager<panzer::Traits>& fm,
 			   const panzer::PhysicsBlock& pb,
 			   const panzer::ClosureModelFactory_TemplateManager<panzer::Traits>& factory,

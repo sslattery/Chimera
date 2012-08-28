@@ -40,28 +40,57 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef __Example_ClosureModel_Factory_TemplateBuilder_hpp__
-#define __Example_ClosureModel_Factory_TemplateBuilder_hpp__
 
-#include <string>
-#include "boost/mpl/apply.hpp"
-#include "Teuchos_RCP.hpp"
-#include "Panzer_Base.hpp"
-#include "Example_ClosureModel_Factory.hpp"
+#include "Panzer_EquationSet_Factory.hpp"
+#include "Panzer_EquationSet_Factory_Defines.hpp"
+#include "Panzer_InputEquationSet.hpp"
+#include "Panzer_CellData.hpp"
 
-namespace Example {
+// Add my equation sets here
+#include "user_app_EquationSet_Energy.hpp"
 
-class ClosureModelFactory_TemplateBuilder {
-public:
-    
-   template <typename EvalT>
-   Teuchos::RCP<panzer::Base> build() const 
-   {
-      return Teuchos::rcp( static_cast<panzer::Base*>(new Example::ModelFactory<EvalT>) );
-   }
-    
-};
+namespace user_app {
+
+  /* comment out - already declared in physics 1
+  PANZER_DECLARE_EQSET_TEMPLATE_BUILDER("Energy 1", user_app::EquationSet_Energy,
+					EquationSet_Energy)
+  */
   
+  class MyFactory2 : public panzer::EquationSetFactory {
+
+    bool m_throw_on_failure;
+
+  public:
+
+    MyFactory2(bool throw_on_failure) : m_throw_on_failure(throw_on_failure) {}
+
+    Teuchos::RCP<panzer::EquationSet_TemplateManager<panzer::Traits> >
+    buildEquationSet(const panzer::InputEquationSet& ies,
+		     const panzer::CellData& cell_data,
+		     const Teuchos::RCP<panzer::GlobalData>& global_data,
+		     const bool build_transient_support) const
+    {
+      Teuchos::RCP<panzer::EquationSet_TemplateManager<panzer::Traits> > eq_set= 
+	Teuchos::rcp(new panzer::EquationSet_TemplateManager<panzer::Traits>);
+      
+      bool found = false;
+      
+      PANZER_BUILD_EQSET_OBJECTS("Energy 2", my_app::EquationSet_Energy,
+				 EquationSet_Energy)
+      
+      if (!found && m_throw_on_failure) {
+	std::string msg = "Error - the \"Equation Set\" called \"" + ies.name +
+	  "\" is not a valid equation set identifier. Please supply the correct factory.\n";
+	TEUCHOS_TEST_FOR_EXCEPTION(!found && m_throw_on_failure, std::logic_error, msg);
+      }
+      
+      if (!found)
+	return Teuchos::null;
+
+      return eq_set;
+    }
+    
+  };
+
 }
 
-#endif 
