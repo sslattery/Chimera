@@ -151,14 +151,14 @@
 
     We present a novel synthetic-acceleration based Monte Carlo method for
     solving the equilibrium thermal radiation diffusion equation in three
-    dimensions. The algorithm performance is compared against traditional
-    solution techniques using a Marshak benchmark problem and a more complex
-    multiple material problem. Our results show that not only can our Monte
-    Carlo method be an effective solver for sparse matrix systems, but also
-    that it performs competitively with deterministic methods including
-    preconditioned conjugate gradient while producing numerically identical
-    results. We also discuss various aspects of preconditioning the method and
-    its general applicability to broader classes of problems.
+    spatial dimensions. The algorithm performance is compared against
+    traditional solution techniques using a Marshak benchmark problem and a
+    more complex multiple material problem. Our results show that our Monte
+    Carlo method is an effective solver for sparse matrix systems. For
+    solutions converged to the same tolerance, it performs competitively with
+    deterministic methods including preconditioned conjugate gradient. We also
+    discuss various aspects of preconditioning the method and its general
+    applicability to broader classes of problems.
 
   \end{abstract}
 
@@ -176,14 +176,14 @@
 
 In previous work~\cite{evans_2003}, we developed a residual Monte Carlo method
 that was an application of Halton's Sequential Monte Carlo
-method~\cite{halton_1962,halton_1994} to the one-dimensional equilibrium (1T)
+method~\cite{halton_1962,halton_1994} to the one-dimensional equilibrium
 thermal radiation diffusion equation.  At that time, Halton's method was not
 widely known in the general computational physics community.  While extending
-our method to three dimensions, we have realized that the Sequential Monte
-Carlo method is actually a variant of iterative refinement cast as a residual
-method. We have developed a new method in which Monte Carlo is used to
-accelerate a fixed-point (Richardson) iteration. This algorithm surpasses our
-previous one dimensional method and allows for extension to more general
+our method to three spatial dimensions, we have realized that the Sequential
+Monte Carlo method is actually a variant of iterative refinement cast as a
+residual method. We have developed a new method in which Monte Carlo is used
+to accelerate a fixed-point (Richardson) iteration. This algorithm surpasses
+our previous one dimensional method and allows for extension to more general
 solution techniques.
 
 The purpose of this study is to demonstrate an efficient Monte Carlo solution
@@ -192,8 +192,8 @@ work, our previous investigations are extended in the following manner:
 \begin{itemize}
 \item we develop a rigorous synthetic-acceleration Monte Carlo method
   for solving sparse matrix systems;
-\item we apply this method to the 1T thermal radiation diffusion
-  equation in three dimensions;
+\item we apply this method to the one-temperature (1T) thermal radiation
+  diffusion equation in three dimensions;
 \item we compare numerical and performance results of the Monte Carlo
   method against traditional deterministic solution methods.
 \end{itemize}
@@ -958,22 +958,25 @@ solutions:
   matrix-vector multiply operation.
 \item An adjoint Monte Carlo solve to estimate $\delta\bphi^{l+1/2}$.
 \end{enumerate}
-For clarity, we rewrite the iteration scheme in
-Eq.~(\ref{eq:MCSA-iteration}) using the diffusion operator notation
-from Eq.~(\ref{eq:preconditioned-diffusion}),
+For clarity, we rewrite the iteration scheme in Eq.~(\ref{eq:MCSA-iteration})
+using the diffusion operator notation from
+Eq.~(\ref{eq:preconditioned-diffusion}),
 \begin{align*}
    \bphi^{l+1/2} = (\vI - \ve{M}^{-1}\ve{D})\bphi^{l} +
-  \ve{M}^{-1}\ve{q}\:, \quad & (\text{fixed-point iteration})\\ 
+  \ve{M}^{-1}\ve{q}\:, \quad & (\text{fixed-point iteration})\\
+  %%
   \vr^{l+1/2} = \ve{M}^{-1}\ve{q} - \ve{M}^{-1}\ve{D}\bphi^{l+1/2}\:,
   \quad & (\text{compute residual})\\ 
-  \ve{M}^{-1}\ve{D}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:, \quad&
-  (\text{estimate $\delta\phi$ using adjoint Monte Carlo method})\\ 
+  %%
+  \ve{M}^{-1}\hat{\ve{D}}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:, \quad&
+  (\text{estimate $\delta\phi$ using adjoint Monte Carlo method})\\
+  %%
   \bphi^{l+1} = \bphi^{l+1/2} + \delta\bphi^{l+1/2}\:. \quad&
   (\text{update}\ \bphi)
 \end{align*}
 As described in \S~\ref{sec:iter-refin-monte}, the adjoint Monte Carlo method
-only approximately inverts $\ve{M}^{-1}\ve{D}$.  We now describe each of these
-in turn.
+only approximately inverts $\ve{M}^{-1}\hat{\ve{D}}$ as indicated by the
+$\hat{\cdot}$ notation.  We now describe each of these in turn.
 
 First, we use Eq.~(\ref{eq:preconditioned-discrete-diffusion}) to evaluate
 $\bphi^{l+1/2}$ via a single fixed-point iteration as follows:
@@ -1000,10 +1003,10 @@ becomes the source for the Monte Carlo simulation.
 The adjoint Monte Carlo method described in \S~\ref{sec:adjoint-method} is
 used to estimate
 \begin{equation}
-  \ve{M}^{-1}\ve{D}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:.
+  \ve{M}^{-1}\hat{\ve{D}}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:.
 \end{equation}
 As noted above, the residual acts as the source for this simulation, and the
-operator $\ve{M}^{-1}\ve{D}$ is implicitly defined in
+operator $\ve{M}^{-1}\hat{\ve{D}}$ is implicitly defined in
 Eq.~(\ref{eq:preconditioned-discrete-diffusion}).  There are two Monte Carlo
 interpretations that can be applied to this system.  The first follows the
 mathematical presentation given in \S~\ref{sec:monte-carlo-matrix}.  Namely,
@@ -1034,19 +1037,23 @@ Eq.~(\ref{eq:preconditioned-discrete-diffusion}) we can explicitly write the
 equations from each adjacent cell, here only noting the contribution from cell
 7:
 \begin{align*}
-  \phi_1 &= \frac{\sigm_{7\rightarrow
-      1}}{\sigma_{T\,1}}\frac{\Delta_7}{\Delta_1}\phi_7 +
-  \ldots\:,\\ \phi_2 &= \frac{\sigp_{7\rightarrow 2}}
-          {\sigma_{T\,2}}\frac{\Delta_7}{\Delta_2}\phi_7 + \ldots\:,\\ 
-      \phi_3 &= \frac{\sigm_{7\rightarrow
-          3}}{\sigma_{T\,3}}\frac{\Delta_7}{\Delta_3}\phi_7 +
-      \ldots\:,\\  \phi_4 &= \frac{\sigp_{7\rightarrow
-      4}}{\sigma_{T\,4}}\frac{\Delta_7}{\Delta_4}\phi_7 +
-          \ldots\:,\\  \phi_5 &= \frac{\sigm_{7\rightarrow
-          5}}{\sigma_{T\,5}}\frac{\Delta_7}{\Delta_5}\phi_7 +
-              \ldots\:,\\  \phi_6 &= \frac{\sigp_{7\rightarrow
-              6}}{\sigma_{T\,6}}\frac{\Delta_7}{\Delta_6}\phi_7 +
-                  \ldots\:,\\ 
+  \phi_1 &= \frac{\sigm_{7\rightarrow 1}}{\sigma_{T\,1}}
+  \frac{\Delta_7}{\Delta_1}\phi_7 + \ldots\:,\\ 
+  %%
+  \phi_2 &= \frac{\sigp_{7\rightarrow 2}}
+  {\sigma_{T\,2}}\frac{\Delta_7}{\Delta_2}\phi_7 + \ldots\:,\\
+  %%
+  \phi_3 &= \frac{\sigm_{7\rightarrow 3}}{\sigma_{T\,3}}
+  \frac{\Delta_7}{\Delta_3}\phi_7 + \ldots\:,\\ 
+  %%
+  \phi_4 &= \frac{\sigp_{7\rightarrow 4}}{\sigma_{T\,4}}
+  \frac{\Delta_7}{\Delta_4}\phi_7 + \ldots\:,\\
+  %%
+  \phi_5 &= \frac{\sigm_{7\rightarrow 5}}{\sigma_{T\,5}}
+  \frac{\Delta_7}{\Delta_5}\phi_7 + \ldots\:,\\
+  %%
+  \phi_6 &= \frac{\sigp_{7\rightarrow 6}}{\sigma_{T\,6}}
+  \frac{\Delta_7}{\Delta_6}\phi_7 + \ldots\:,\\ 
 \end{align*} 
 A quick view of these equations reveals that the only non-zero entries in
 column 7 of the iteration matrix are
@@ -1106,10 +1113,14 @@ Here we examine the effectiveness of the MCSA method and compare it to
 traditional deterministic solution methods.  The deterministic methods
 considered are preconditioned Conjugate Gradient (PCG) and preconditioned
 fixed-point (Richardson) iteration (PFIX).  The PCG method uses right-left
-preconditioning with $\ve{M}=\ve{L}\ve{L}^{-1}$.  The PFIX scheme is used to
-solve Eq.~(\ref{eq:preconditioned-diffusion}), which is identical to the
-system being solved with MCSA.  We examine each method on two 3D problems: a
-Marshak wave problem and a multi-material duct problem.
+preconditioning with $\ve{M}=\ve{L}\ve{L}^{-1}$, where $\ve{L} = \ve{L}^{T} =
+\sqrt{\ve{M}}$.  Naturally, more powerful preconditioning methods could be
+used; however, this provides a fair comparison with the preconditioning used
+in the MCSA method.  Different precondioning strategies within MCSA will be
+the focus of a future paper.  The PFIX scheme is used to solve
+Eq.~(\ref{eq:preconditioned-diffusion}), which is identical to the system
+being solved with MCSA.  We examine each method on two 3D problems: a Marshak
+wave problem and a multi-material duct problem.
 
 \subsection{Marshak Wave}
 
@@ -1142,10 +1153,10 @@ Central Limit Theorem so convergence is not restricted to
 $1/\sqrt{N}$~\cite{halton_1994,evans_2003}.
 \begin{figure}[h!]
   \centerline{ \includegraphics[width=5in,clip]{marshak_10.pdf}}
-  \caption{ Solution of the Marshak wave problem at $t=100$~ns.  The
-    analytic solution is compared to the MCSA solution.  Note that the
-    MCSA, PCG, and PFIXED methods all give numerically identical
-    answers.}
+  \caption{ Solution of the Marshak wave problem at $t=100$~ns.  The analytic
+    solution is compared to the MCSA solution.  The MCSA, PCG, and PFIXED
+    methods are all converged to the same tolerance and therefore give
+    numerically equivalent answers.}
   \label{fig:marshak_10}
 \end{figure}
 
