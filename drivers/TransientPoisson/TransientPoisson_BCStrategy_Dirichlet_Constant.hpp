@@ -39,7 +39,7 @@ class BCStrategy_Dirichlet_Constant :
 		const Teuchos::ParameterList& user_data );
 
     void buildAndRegisterEvaluators( PHX::FieldManager<panzer::Traits>& fm,
-				     cont panzer::PhysicsBlock& pb,
+				     const panzer::PhysicsBlock& pb,
 				     const panzer::ClosureModelFactory_TemplateManager<panzer::Traits>& factory,
 				     const Teuchos::ParameterList& models,
 				     const Teuchos::ParameterList& user_data ) const;

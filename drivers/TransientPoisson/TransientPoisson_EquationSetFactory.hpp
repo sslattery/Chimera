@@ -24,13 +24,14 @@
 
 namespace Chimera
 {
-namespace TransientPoissson
+namespace TransientPoisson
 {
 
 // Define a class for building the equation sets with a macro.
-PANZER_DECLARE_EQSET_TEMPLATE_BUILDER( "TransientPoisson", 
-				       TransientPoissonEquationSet, 
-				       TransientPoissonEquationSet );
+PANZER_DECLARE_EQSET_TEMPLATE_BUILDER( 
+    "TransientPoisson", 
+    TransientPoissonEquationSet, 
+    TransientPoissonEquationSet )
 
 // Define the factory method for the equations.
 class EquationSetFactory : public panzer::EquationSetFactory
@@ -52,9 +53,10 @@ class EquationSetFactory : public panzer::EquationSetFactory
 
 	// Build the equation set.
 	bool found = false;
-	PANZER_BUILD_EQSET_OBJECTS( "TransientPoisson",
-				    TransientPoissonEquationSet, 
-				    TransientPoissonEquationSet );
+	PANZER_BUILD_EQSET_OBJECTS( 
+	    "TransientPoisson",
+	    TransientPoissonEquationSet, 
+	    TransientPoissonEquationSet )
 
 	// Verify that it was valid.
 	TEUCHOS_TEST_FOR_EXCEPTION( 

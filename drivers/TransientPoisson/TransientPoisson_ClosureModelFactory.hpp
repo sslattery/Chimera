@@ -13,7 +13,7 @@
 #include <vector>
 
 #include <Teuchos_RCP.hpp>
-#include <Teuchos_ParamterList.hpp>
+#include <Teuchos_ParameterList.hpp>
 
 #include <Phalanx_Evaluator.hpp>
 #include <Phalanx_FieldManager.hpp>

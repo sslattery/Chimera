@@ -60,7 +60,7 @@ void BCStrategy_Dirichlet_Constant<EvaluationType>::setup(
     {
 	if ( dof_iterator->first == this->m_bc.equationSetName() )
 	{
-	    this->basis = dof_it->second;
+	    this->basis = dof_iterator->second;
 	}
     }
 
@@ -77,7 +77,7 @@ void BCStrategy_Dirichlet_Constant<EvaluationType>::setup(
 template<typename EvaluationType>
 void BCStrategy_Dirichlet_Constant<EvaluationType>::buildAndRegisterEvaluators( 
     PHX::FieldManager<panzer::Traits>& fm,
-    cont panzer::PhysicsBlock& pb,
+    const panzer::PhysicsBlock& pb,
     const panzer::ClosureModelFactory_TemplateManager<panzer::Traits>& factory,
     const Teuchos::ParameterList& models,
     const Teuchos::ParameterList& user_data ) const

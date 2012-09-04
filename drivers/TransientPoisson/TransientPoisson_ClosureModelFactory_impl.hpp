@@ -68,9 +68,9 @@ ClosureModelFactory<EvaluationType>::buildClosureModels(
 		input.set( "Value", plist.get<double>( "Value" ) );
 		input.set( "Data Layout", 
 			   default_params.get<Teuchos::RCP<panzer::IntegrationRule> >( "IR" )->dl_scalar );
-	      Teuchos:RCP<PHX::Evaluator<EvaluationType,panzer::Traits> > constant_evaluator =
+		Teuchos::RCP<PHX::Evaluator<panzer::Traits> > constant_evaluator =
 		    Teuchos::rcp( new panzer::Constant<EvaluationType,panzer::Traits>( input ) );
-		evaluators.push_back( constant_evaluator );
+		evaluators->push_back( constant_evaluator );
 	    }
 
 	    // Set constant scalar evaluator at basis supports.
@@ -79,9 +79,9 @@ ClosureModelFactory<EvaluationType>::buildClosureModels(
 		input.set( "Value", plist.get<double>( "Value" ) );
 		input.set( "Data Layout", 
 			   default_params.get<Teuchos::RCP<panzer::BasisIRLayout> >( "Basis" )->functional );
-	      Teuchos:RCP<PHX::Evaluator<EvaluationType,panzer::Traits> > constant_evaluator =
+		Teuchos::RCP<PHX::Evaluator<panzer::Traits> > constant_evaluator =
 		    Teuchos::rcp( new panzer::Constant<EvaluationType,panzer::Traits>( input ) );
-		evaluators.push_back( constant_evaluator );
+		evaluators->push_back( constant_evaluator );
 	    }
 
 	    found = true;
@@ -89,7 +89,7 @@ ClosureModelFactory<EvaluationType>::buildClosureModels(
 
 	// Check that the closure for this model was found.
 	if (!found) {
-	    p      std::stringstream msg;
+	    plist;      std::stringstream msg;
 	    msg << "ClosureModelFactory failed to build evaluator for key \"" << key 
 		<< "\"\nin model \"" << model_id 
 		<< "\".  Please correct the type or add support to the \nfactory." <<std::endl;

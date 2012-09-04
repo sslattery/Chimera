@@ -3,7 +3,7 @@ INCLUDE(TribitsAddExecutableAndTest)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(ASSEMBLY_EXAMPLE_SOURCES
-  main.cpp
+  TransientPoisson_main.cpp
   )
   
 TRIBITS_ADD_EXECUTABLE_AND_TEST(

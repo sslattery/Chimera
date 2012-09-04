@@ -95,7 +95,7 @@ buildAndRegisterEquationSetEvaluators(
 
 	Teuchos::RCP< PHX::Evaluator<panzer::Traits> > diffusion_op =
 	    Teuchos::rcp(
-		new panzer::Integrator_GradBasisDotVector<EvaluationType,panzer::Traits( plist ) );
+		new panzer::Integrator_GradBasisDotVector<EvaluationType,panzer::Traits>( plist ) );
 
 	field_manager.registerEvaluator<EvaluationType>( diffusion_op );
     }
@@ -120,7 +120,7 @@ buildAndRegisterEquationSetEvaluators(
     // Build the overall residual for the Poisson equation by summing the
     // above residuals.
     {
-	Teuchos::RCP< std::vector<std::string> residuals_to_sum = 
+	Teuchos::RCP<std::vector<std::string> > residuals_to_sum = 
 	    Teuchos::rcp( new std::vector<std::string> );
 
 	if ( this->m_build_transient_support )
