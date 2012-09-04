@@ -1113,8 +1113,8 @@ Here we examine the effectiveness of the MCSA method and compare it to
 traditional deterministic solution methods.  The deterministic methods
 considered are preconditioned Conjugate Gradient (PCG) and preconditioned
 fixed-point (Richardson) iteration (PFIX).  The PCG method uses right-left
-preconditioning with $\ve{M}=\ve{L}\ve{L}^{-1}$, where $\ve{L} = \ve{L}^{T} =
-\sqrt{\ve{M}}$.  Naturally, more powerful preconditioning methods could be
+preconditioning with $\ve{M}=\ve{L}\ve{L}^{T}$, where $\ve{L} = \ve{L}^{T} =
+\sqrt{\diag(\ve{D})}$.  Naturally, more powerful preconditioning methods could be
 used; however, this provides a fair comparison with the preconditioning used
 in the MCSA method.  Different precondioning strategies within MCSA will be
 the focus of a future paper.  The PFIX scheme is used to solve
