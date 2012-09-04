@@ -43,7 +43,6 @@ class ClosureModelFactory : public panzer::ClosureModelFactory<EvaluationType>
 		       const Teuchos::ParameterList& user_data,
 		       const Teuchos::RCP<panzer::GlobalData>& global_data,
 		       PHX::FieldManager<panzer::Traits>& field_manager ) const;
-
 };
 
 } // end namepsace TransientPoisson

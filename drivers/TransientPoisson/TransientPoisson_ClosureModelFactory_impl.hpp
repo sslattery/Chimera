@@ -31,8 +31,8 @@ ClosureModelFactory<EvaluationType>::buildClosureModels(
     PHX::FieldManager<panzer::Traits>& field_manager ) const
 {
     // Setup a vector for the closure evaluators.
-    Teuchos::RCP<std::vector<Teuchos::RCP<PHX::Evaluator<panzer::Traits> > > >  =
-	Teuchos::rcp( 
+    Teuchos::RCP<std::vector<Teuchos::RCP<PHX::Evaluator<panzer::Traits> > > >
+	evaluators = Teuchos::rcp( 
 	    new std::vector<Teuchos::RCP<PHX::Evaluator<panzer::Traits> > > );
 
     // Check that this model id is valid.
@@ -48,7 +48,6 @@ ClosureModelFactory<EvaluationType>::buildClosureModels(
 
     // Loop through the models and build evaluators.
     const Teuchos::ParameterList& my_models = models.sublist( model_id );
-
     for ( Teuchos::ParameterList::ConstIterator model_it = my_models.begin();
 	  model_it != my_models.end(); ++model_it )
     {

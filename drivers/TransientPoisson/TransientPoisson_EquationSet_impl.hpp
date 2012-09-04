@@ -76,7 +76,7 @@ buildAndRegisterEquationSetEvaluators(
 
 	Teuchos::RCP< PHX::Evaluator<panzer::Traits> > transient_op = 
 	    Teuchos::rcp( 
-		new panzer::Integrator_BasisTimesScalar<EvaluationType,panzer::Traits>( transient_op ) );
+		new panzer::Integrator_BasisTimesScalar<EvaluationType,panzer::Traits>( plist ) );
 
 	field_manager.registerEvaluator<EvaluationType>( transient_op );
     }
@@ -95,7 +95,7 @@ buildAndRegisterEquationSetEvaluators(
 
 	Teuchos::RCP< PHX::Evaluator<panzer::Traits> > diffusion_op =
 	    Teuchos::rcp(
-		new panzer::Integrator_GradBasisDotVector<EvaluationType,panzer::Traits( diffusion_op ) );
+		new panzer::Integrator_GradBasisDotVector<EvaluationType,panzer::Traits( plist ) );
 
 	field_manager.registerEvaluator<EvaluationType>( diffusion_op );
     }
@@ -112,23 +112,23 @@ buildAndRegisterEquationSetEvaluators(
 
 	Teuchos::RCP< PHX::Evaluator<panzer::Traits> > source_op =
 	    Teuchos::rcp(
-		new panzer::Integrator_BasisTimesScalar<EvaluationType,panzer::Traits>( source_op ) );
+		new panzer::Integrator_BasisTimesScalar<EvaluationType,panzer::Traits>( plist ) );
 
 	field_manager.registerEvaluator<EvaluationType>( source_op );
     }
 
-    // Build the over residual for the Poisson equation by summing the above
-    // residuals.
+    // Build the overall residual for the Poisson equation by summing the
+    // above residuals.
     {
 	Teuchos::RCP< std::vector<std::string> residuals_to_sum = 
 	    Teuchos::rcp( new std::vector<std::string> );
 
 	if ( this->m_build_transient_support )
 	{
-	    residuals_to_sum.push_back( "RESIDUAL_TEMPERATURE_TRANSIENT_OP" );
+	    residuals_to_sum->push_back( "RESIDUAL_TEMPERATURE_TRANSIENT_OP" );
 	}
-	residuals_to_sum.push_back( "RESIDUAL_TEMPERATURE_DIFFUSION_OP" );
-	residuals_to_sum.push_back( "RESIDUAL_TEMPERATURE_SOURCE_OP" );
+	residuals_to_sum->push_back( "RESIDUAL_TEMPERATURE_DIFFUSION_OP" );
+	residuals_to_sum->push_back( "RESIDUAL_TEMPERATURE_SOURCE_OP" );
 
 	Teuchos::ParameterList plist( "Temperature Residual" );
 	plist.set( "Sum Name", "RESIDUAL_TEMPERATURE" );
@@ -137,7 +137,7 @@ buildAndRegisterEquationSetEvaluators(
 
 	Teuchos::RCP< PHX::Evaluator<panzer::Traits> > residual_op =
 	    Teuchos::rcp(
-		new panzer::Sum<EvaluationType,panzer::Traits>( residual_op ) );
+		new panzer::Sum<EvaluationType,panzer::Traits>( plist ) );
 
 	field_manager.registerEvaluator<EvaluationType>( residual_op );
     }
