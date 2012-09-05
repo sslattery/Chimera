@@ -1,19 +1,22 @@
 //---------------------------------------------------------------------------//
-// \file JacobiPreconditioner.cpp
+// \file Chimera_JacobiPreconditioner.cpp
 // \author Stuart R. Slattery
 // \brief Jacobi preconditioner definition.
 //---------------------------------------------------------------------------//
 
 #include <vector>
 
-#include "JacobiPreconditioner.hpp"
+#include "Chimera_JacobiPreconditioner.hpp"
 
 #include <Epetra_Map.h>
 #include <Epetra_CrsMatrix.h>
 
-namespace HMCSA
+namespace Chimera
+{
+namespace Solvers
 {
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Constructor.
  */
@@ -40,12 +43,14 @@ JacobiPreconditioner::JacobiPreconditioner(
 	new Epetra_CrsMatrix( Copy, map, &entries_per_row[0] ) );
 }
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Destructor.
  */
 JacobiPreconditioner::~JacobiPreconditioner()
 { /* ... */ }
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Do preconditioning on the operator and the right hand side.
  */
@@ -55,6 +60,7 @@ void JacobiPreconditioner::precondition()
     preconditionRHS();
 }
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Do preconditioning on the operator.
  */
@@ -87,6 +93,7 @@ void JacobiPreconditioner::preconditionOperator()
     d_linear_problem->SetOperator( d_M_inv_A.getRawPtr() );
 }
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Do preconditioning on the right hand side.
  */
@@ -110,9 +117,12 @@ void JacobiPreconditioner::preconditionRHS()
     d_linear_problem->SetRHS( d_M_inv_b.getRawPtr() );
 }
 
-} // end namespace HMCSA
+//---------------------------------------------------------------------------//
+
+} // end namespace Solvers
+} // end namespace Chimera
 
 //---------------------------------------------------------------------------//
-// end JacobiPreconditioner.cpp
+// end Chimera_JacobiPreconditioner.cpp
 //---------------------------------------------------------------------------//
 

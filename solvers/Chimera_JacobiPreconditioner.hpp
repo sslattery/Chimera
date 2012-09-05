@@ -1,18 +1,20 @@
 //---------------------------------------------------------------------------//
-// \file JacobiPreconditioner.hpp
+// \file Chimera_JacobiPreconditioner.hpp
 // \author Stuart R. Slattery
 // \brief Jacobi preconditioner declaration.
 //---------------------------------------------------------------------------//
 
-#ifndef HMCSA_JACOBIPRECONDITIONER_HPP
-#define HMCSA_JACOBIPRECONDITIONER_HPP
+#ifndef Chimera_JACOBIPRECONDITIONER_HPP
+#define Chimera_JACOBIPRECONDITIONER_HPP
 
 #include <Teuchos_RCP.hpp>
 
 #include <Epetra_Vector.h>
 #include <Epetra_LinearProblem.h>
 
-namespace HMCSA
+namespace Chimera
+{
+namespace Solvers
 {
 
 class JacobiPreconditioner
@@ -57,12 +59,15 @@ class JacobiPreconditioner
     { return d_M_inv_b; }
 };
 
-} // End namespace HMCSA
+//---------------------------------------------------------------------------//
 
-#endif // end HMCSA_JACOBIPRECONDITIONER_HPP
+} // end namespace Solvers
+} // end namespace Chimera
+
+#endif // end Chimera_JACOBIPRECONDITIONER_HPP
 
 //---------------------------------------------------------------------------//
-// end JacobiPreconditioner.hpp
+// end Chimera_JacobiPreconditioner.hpp
 //---------------------------------------------------------------------------//
 
 

@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------//
-// \file OperatorTools.cpp
+// \file Chimera_OperatorTools.cpp
 // \author Stuart R. Slattery
 // \brief OperatorTools definition.
 //---------------------------------------------------------------------------//
 
-#include "OperatorTools.hpp"
+#include "Chimera_OperatorTools.hpp"
 
 #include <Teuchos_ParameterList.hpp>
 
@@ -18,9 +18,18 @@
 #include "AnasaziBasicOutputManager.hpp"
 #include "AnasaziEpetraAdapter.hpp"
 
-namespace HMCSA
+namespace Chimera
 {
+namespace Solvers
+{
+//---------------------------------------------------------------------------//
+/*!
+ * \brief Constructor.
+ */
+OperatorTools::OperatorTools()
+{ /* ... */ }
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Compute the spectral radius of an operator.
  */
@@ -74,6 +83,7 @@ OperatorTools::spectralRadius( const Teuchos::RCP<Epetra_Operator>& matrix )
     return spectral_radius;
 }
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Compute the stiffness ratio of an operator.
  */
@@ -83,9 +93,12 @@ OperatorTools::stiffnessRatio( const Teuchos::RCP<Epetra_Operator>& matrix )
     return 0.0;
 }
 
-} // end namespace HMCSA
+//---------------------------------------------------------------------------//
+
+} // end namespace Solvers
+} // end namespace Chimera
 
 //---------------------------------------------------------------------------//
-// end OperatorTools.cpp
+// end Chimera_OperatorTools.cpp
 //---------------------------------------------------------------------------//
 

@@ -1,17 +1,20 @@
 //---------------------------------------------------------------------------//
-// \file MCSA.cpp
+// \file Chimera_MCSA.cpp
 // \author Stuart R. Slattery
 // \brief Monte Carlo Synthetic Acceleration solver definition.
 //---------------------------------------------------------------------------//
 
-#include "MCSA.hpp"
-#include "AdjointMC.hpp"
+#include "Chimera_MCSA.hpp"
+#include "Chimera_AdjointMC.hpp"
 
 #include <Epetra_Map.h>
 #include <Epetra_Vector.h>
 
-namespace HMCSA
+namespace Chimera
 {
+namespace Solvers
+{
+//---------------------------------------------------------------------------//
 /*! 
  * \brief Constructor.
  */
@@ -20,20 +23,19 @@ MCSA::MCSA( Teuchos::RCP<Epetra_LinearProblem> &linear_problem )
     , d_num_iters( 0 )
 { /* ... */ }
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Destructor.
  */
 MCSA::~MCSA()
 { /* ... */ }
  
+//---------------------------------------------------------------------------//
 /*!
  * \brief Solve.
  */
-void MCSA::iterate( bool use_adjoint,
-		    const int max_iters,
-		    const double tolerance,
-		    const int num_histories,
-		    const double weight_cutoff )
+void MCSA::iterate( const int max_iters, const double tolerance,
+		    const int num_histories, const double weight_cutoff )
 {
     // Extract the linear problem.
     Epetra_CrsMatrix *A = 
@@ -81,9 +83,12 @@ void MCSA::iterate( bool use_adjoint,
     }
 }
 
-} // end namespace HMCSA
+//---------------------------------------------------------------------------//
+
+} // end namespace Solvers
+} // end namespace Chimera
 
 //---------------------------------------------------------------------------//
-// end MCSA.cpp
+// end Chimera_MCSA.cpp
 //---------------------------------------------------------------------------//
 

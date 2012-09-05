@@ -1,11 +1,11 @@
 //---------------------------------------------------------------------------//
-// \file OperatorTools.hpp
+// \file Chimera_OperatorTools.hpp
 // \author Stuart R. Slattery
 // \brief OperatorTools declaration.
 //---------------------------------------------------------------------------//
 
-#ifndef HMCSA_OPERATORTOOLS_HPP
-#define HMCSA_OPERATORTOOLS_HPP
+#ifndef Chimera_OPERATORTOOLS_HPP
+#define Chimera_OPERATORTOOLS_HPP
 
 #include <vector>
 
@@ -13,25 +13,31 @@
 
 #include <Epetra_Operator.h>
 
-namespace HMCSA
+namespace Chimera
+{
+namespace Solvers
 {
 
-namespace OperatorTools
+class OperatorTools
 {
+  public:
 
-// Compute the spectral radius of an operator.
-double spectralRadius( const Teuchos::RCP<Epetra_Operator>& matrix );
+    // Constructor.
+    OperatorTools();
 
-// Compute the stiffness ratio of the operator.
-double stiffnessRatio( const Teuchos::RCP<Epetra_Operator>& matrix );
+    // Compute the spectral radius of an operator.
+    double static spectralRadius( const Teuchos::RCP<Epetra_Operator>& matrix );
 
-} // end namespace OperatorTools
+    // Compute the stiffness ratio of the operator.
+    double static stiffnessRatio( const Teuchos::RCP<Epetra_Operator>& matrix );
+};
 
-} // end namespace HMCSA
+} // end namespace Solvers
+} // end namespace Chimera
 
-#endif // HMCSA_OPERATORTOOLS_HPP
+#endif // Chimera_OPERATORTOOLS_HPP
 
 //---------------------------------------------------------------------------//
-// end OperatorTools.hpp
+// end Chimera_OperatorTools.hpp
 //---------------------------------------------------------------------------//
 

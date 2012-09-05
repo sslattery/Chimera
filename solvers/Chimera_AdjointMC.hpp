@@ -1,18 +1,20 @@
 //---------------------------------------------------------------------------//
-// \file AdjointMC.hpp
+// \file Chimera_AdjointMC.hpp
 // \author Stuart Slattery
 // \brief Adjoint Monte Carlo solver declaration.
 //---------------------------------------------------------------------------//
 
-#ifndef HMCSA_ADJOINTMC_HPP
-#define HMCSA_ADJOINTMC_HPP
+#ifndef Chimera_ADJOINTMC_HPP
+#define Chimera_ADJOINTMC_HPP
 
 #include <Teuchos_RCP.hpp>
 
 #include <Epetra_CrsMatrix.h>
 #include <Epetra_LinearProblem.h>
 
-namespace HMCSA
+namespace Chimera
+{
+namespace Solvers
 {
 
 class AdjointMC
@@ -58,11 +60,12 @@ class AdjointMC
     Epetra_CrsMatrix buildC();
 };
 
-} // end namespace HMCSA
+} // end namespace Solvers
+} // end namespace Chimera
 
-#endif // end HMCSA_ADJOINTMC_HPP
+#endif // end Chimera_ADJOINTMC_HPP
 
 //---------------------------------------------------------------------------//
-// end AdjointMC.hpp
+// end Chimera_AdjointMC.hpp
 //---------------------------------------------------------------------------//
 

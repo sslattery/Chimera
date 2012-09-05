@@ -27,9 +27,9 @@ TRIBITS_ADD_SHOW_DEPRECATED_WARNINGS_OPTION()
 ## C) Add library, test, and examples.
 ##---------------------------------------------------------------------------##
 
-ADD_SUBDIRECTORY(drivers)
-
 ADD_SUBDIRECTORY(solvers)
+
+ADD_SUBDIRECTORY(drivers)
 
 #TRIBITS_ADD_TEST_DIRECTORIES(test)
 

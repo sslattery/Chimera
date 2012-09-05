@@ -1,18 +1,20 @@
 //---------------------------------------------------------------------------//
-// \file MCSA.hpp
+// \file Chimera_MCSA.hpp
 // \author Stuart R. Slattery
 // \brief Monte Carlo Synthetic Acceleration solver declaration.
 //---------------------------------------------------------------------------//
 
-#ifndef HMCSA_MCSA_HPP
-#define HMCSA_MCSA_HPP
+#ifndef Chimera_MCSA_HPP
+#define Chimera_MCSA_HPP
 
 #include <Teuchos_RCP.hpp>
 
 #include <Epetra_CrsMatrix.h>
 #include <Epetra_LinearProblem.h>
 
-namespace HMCSA
+namespace Chimera
+{
+namespace Solvers
 {
 
 class MCSA
@@ -34,22 +36,22 @@ class MCSA
     ~MCSA();
 
     // Solve.
-    void iterate( bool use_adoint, 
-		  const int max_iters,
-		  const double tolerance,
-		  const int num_histories,
-		  const double weight_cutoff );
+    void iterate( const int max_iters, const double tolerance,
+		  const int num_histories, const double weight_cutoff );
 
     // Get the iteration count from the last solve.
     int getNumIters() const
     { return d_num_iters; }
 };
 
-} // end namespace HMCSA
+//---------------------------------------------------------------------------//
 
-#endif // end HMCSA_MCSA_HPP
+} // end namespace Solvers
+} // end namespace Chimera
+
+#endif // end Chimera_MCSA_HPP
 
 //---------------------------------------------------------------------------//
-// end MCSA.hpp
+// end Chimera_MCSA.hpp
 //---------------------------------------------------------------------------//
 

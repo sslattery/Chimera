@@ -11,6 +11,9 @@
 #include <string>
 #include <set>
 
+#include "Chimera_MCSA.hpp"
+#include "Chimera_JacobiPreconditioner.hpp"
+
 #include "TransientPoisson_EquationSetFactory.hpp"
 #include "TransientPoisson_ClosureModelFactory_TemplateBuilder.hpp"
 #include "TransientPoisson_BCStrategy_Factory.hpp"
@@ -257,18 +260,28 @@ int main( int argc, char * argv[] )
     Teuchos::RCP<panzer::EpetraLinearObjContainer> ep_container =
 	Teuchos::rcp_dynamic_cast<panzer::EpetraLinearObjContainer>( container );
 
-    Epetra_LinearProblem problem( &*ep_container->get_A(),
+    Teuchos::RCP<Epetra_LinearProblem> problem = Teuchos::rcp(
+	new Epetra_LinearProblem( &*ep_container->get_A(),
 				  &*ep_container->get_x(),
-				  &*ep_container->get_f() );
+				  &*ep_container->get_f() ) );
 
-    AztecOO solver(problem);
-    solver.SetAztecOption( AZ_solver, AZ_gmres);
-    solver.SetAztecOption( AZ_precond, AZ_none);
-    solver.SetAztecOption( AZ_kspace, 1000);
-    solver.SetAztecOption( AZ_output, 10);
-    solver.SetAztecOption( AZ_precond, AZ_Jacobi);
+    // AztecOO solver(*problem);
+    // solver.SetAztecOption( AZ_solver, AZ_gmres);
+    // solver.SetAztecOption( AZ_precond, AZ_none);
+    // solver.SetAztecOption( AZ_kspace, 1000);
+    // solver.SetAztecOption( AZ_output, 10);
+    // solver.SetAztecOption( AZ_precond, AZ_Jacobi);
+    // solver.Iterate( 1000, 1.0e-5 );
 
-    solver.Iterate( 1000, 1.0e-5 );
+    Chimera::Solvers::JacobiPreconditioner preconditioner( problem );
+    preconditioner.precondition();
+    
+    Chimera::Solvers::MCSA solver( problem );
+    int max_iters = 1000;
+    double tolerance = 1.0e-8;
+    int num_histories = 50;
+    double weight_cutoff = 1.0e-4;
+    solver.iterate( max_iters, tolerance, num_histories, weight_cutoff );
 
     ep_container->get_x()->Scale( -1.0 );
 

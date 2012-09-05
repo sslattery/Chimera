@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------//
-// \file AdjointMC.cpp
+// \file Chimera_AdjointMC.cpp
 // \author Stuart Slattery
 // \brief Adjoint Monte Carlo solver definition.
 //---------------------------------------------------------------------------//
@@ -11,13 +11,16 @@
 #include <iterator>
 #include <algorithm>
 
-#include "AdjointMC.hpp"
+#include "Chimera_AdjointMC.hpp"
 
 #include <Epetra_Vector.h>
 #include <Epetra_Map.h>
 
-namespace HMCSA
+namespace Chimera
 {
+namespace Solvers
+{
+//---------------------------------------------------------------------------//
 /*!
  * \brief Constructor.
  */
@@ -28,12 +31,14 @@ AdjointMC::AdjointMC( Teuchos::RCP<Epetra_LinearProblem> &linear_problem )
     , d_C( buildC() )
 { /* ... */ }
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Destructor.
  */
 AdjointMC::~AdjointMC()
 { /* ... */ }
 
+//---------------------------------------------------------------------------//
 /*! 
  * \brief Solve.
  */
@@ -165,6 +170,7 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
     x->Scale( 1.0 / num_histories );
 }
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Build the iteration matrix.
  */
@@ -215,6 +221,7 @@ Epetra_CrsMatrix AdjointMC::buildH()
     return H;
 }
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Build the adjoint probability matrix.
  */
@@ -250,6 +257,7 @@ Epetra_CrsMatrix AdjointMC::buildQ()
     return Q;
 }
 
+//---------------------------------------------------------------------------//
 /*!
  * \brief Build the cumulative distribution function.
  */
@@ -283,9 +291,12 @@ Epetra_CrsMatrix AdjointMC::buildC()
     return C;
 }
 
-} // namespace HMCSA
+//---------------------------------------------------------------------------//
+
+} // end namespace Solvers
+} // end namespace Chimera
 
 //---------------------------------------------------------------------------//
-// end AdjointMC.cpp
+// end Chimera_AdjointMC.cpp
 //---------------------------------------------------------------------------//
 
