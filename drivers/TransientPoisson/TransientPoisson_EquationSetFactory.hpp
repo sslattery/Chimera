@@ -59,9 +59,12 @@ class EquationSetFactory : public panzer::EquationSetFactory
 	    TransientPoissonEquationSet )
 
 	// Verify that it was valid.
-	TEUCHOS_TEST_FOR_EXCEPTION( 
-	    found, std::logic_error,
-	    "Failed to find TransientPoisson equation set" );
+        if(!found) 
+	{
+           std::string msg = "Error - the \"Equation Set\" called \"" + ies.name +
+			     "\" is not a valid equation set identifier. Please supply the correct factory.\n";
+	   TEUCHOS_TEST_FOR_EXCEPTION(true, std::logic_error, msg);
+	}
 
 	return eq_set;
     }

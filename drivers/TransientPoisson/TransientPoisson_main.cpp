@@ -201,8 +201,10 @@ int main( int argc, char * argv[] )
 
     Teuchos::ParameterList closure_models( "Closure Models" );
     closure_models.sublist( "solid" ).sublist( "SOURCE_TEMPERATURE" ).set<double>("Value", 0.0 );
-    
+
+    // Set user data.
     Teuchos::ParameterList user_data( "User Data" );
+    user_data.set<double>("Thermal Conductivity", 1.0 );
 
     // Setup the field managers.
     Teuchos::RCP<panzer::FieldManagerBuilder<int,int> > field_manager_builder =

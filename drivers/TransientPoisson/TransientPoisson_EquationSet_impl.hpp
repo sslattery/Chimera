@@ -104,7 +104,7 @@ buildAndRegisterEquationSetEvaluators(
     // by the closure model.
     {
 	Teuchos::ParameterList plist( "Source Residual" );
-	plist.set( "Residual Name", "RESIDUAL_TEMPERATORE_SOURCE_OP" );
+	plist.set( "Residual Name", "RESIDUAL_TEMPERATURE_SOURCE_OP" );
 	plist.set( "Value Name", "SOURCE_TEMPERATURE" );
 	plist.set( "Basis", this->m_basis );
 	plist.set( "IR", this->m_int_rule );
