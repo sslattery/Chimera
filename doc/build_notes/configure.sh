@@ -46,7 +46,6 @@ cmake \
     -D Panzer_ENABLE_STK:BOOL=ON \
     -D Panzer_ENABLE_SEACASIoss:BOOL=ON \
     -D Panzer_ENABLE_SEACASExodus:BOOL=ON \
-    -D Panzer_ENABLE_EXAMPLES:BOOL=ON \
     -D Trilinos_ENABLE_Chimera:BOOL=ON \
     $EXTRA_ARGS \
     /home/stuart/software/Trilinos

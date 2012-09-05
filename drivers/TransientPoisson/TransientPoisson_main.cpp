@@ -92,7 +92,7 @@ int main( int argc, char * argv[] )
 	
 	// Build the input equation set and block.
 	panzer::InputEquationSet input_equations;
-	input_equations.name = "Poisson";
+	input_equations.name = "TransientPoisson";
 	input_equations.basis = "Q1";
 	input_equations.integration_order = 2;
 	input_equations.model_id = "solid";
