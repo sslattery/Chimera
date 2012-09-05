@@ -49,7 +49,7 @@
 #include <Panzer_STK_SquareQuadMeshFactory.hpp>
 #include <Panzer_STK_WorksetFactory.hpp>
 #include <Panzer_STKConnManager.hpp>
-#include "Panzer_STK_SetupUtilities.hpp"
+#include <Panzer_STK_SetupUtilities.hpp>
 #include <Panzer_STK_Utilities.hpp>
 #include <Panzer_STK_Version.hpp>
 
@@ -241,11 +241,13 @@ int main( int argc, char * argv[] )
 	lin_obj_factory->buildLinearObjContainer();
     lin_obj_factory->initializeGhostedContainer( panzer::LinearObjContainer::X |
 						 panzer::LinearObjContainer::F |
-						 panzer::LinearObjContainer::Mat,
+						 panzer::LinearObjContainer::Mat |
+						 panzer::LinearObjContainer::DxDt,
 						 *ghost_container );
     lin_obj_factory->initializeContainer( panzer::LinearObjContainer::X |
 					  panzer::LinearObjContainer::F |
-					  panzer::LinearObjContainer::Mat,
+					  panzer::LinearObjContainer::Mat |
+					  panzer::LinearObjContainer::DxDt,
 					  *container );
     ghost_container->initialize();
     container->initialize();
@@ -256,7 +258,7 @@ int main( int argc, char * argv[] )
     input.beta = 1;
     assembly_engine.getAsObject<panzer::Traits::Jacobian>()->evaluate( input );
 
-    // Solve the linear problem.
+    // Solve the linear problem with MCSA.
     Teuchos::RCP<panzer::EpetraLinearObjContainer> ep_container =
 	Teuchos::rcp_dynamic_cast<panzer::EpetraLinearObjContainer>( container );
 
@@ -264,14 +266,6 @@ int main( int argc, char * argv[] )
 	new Epetra_LinearProblem( &*ep_container->get_A(),
 				  &*ep_container->get_x(),
 				  &*ep_container->get_f() ) );
-
-    // AztecOO solver(*problem);
-    // solver.SetAztecOption( AZ_solver, AZ_gmres);
-    // solver.SetAztecOption( AZ_precond, AZ_none);
-    // solver.SetAztecOption( AZ_kspace, 1000);
-    // solver.SetAztecOption( AZ_output, 10);
-    // solver.SetAztecOption( AZ_precond, AZ_Jacobi);
-    // solver.Iterate( 1000, 1.0e-5 );
 
     Chimera::Solvers::JacobiPreconditioner preconditioner( problem );
     preconditioner.precondition();
