@@ -1,5 +1,8 @@
 SET(LIB_REQUIRED_DEP_PACKAGES
-  Teuchos 
+  Teuchos
+  Epetra
+  AztecOO
+  Anasazi
   Panzer
 )
 
