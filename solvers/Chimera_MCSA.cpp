@@ -81,6 +81,9 @@ void MCSA::iterate( const int max_iters, const double tolerance,
 	residual.NormInf( &residual_norm );
 	++d_num_iters;
     }
+
+    std::cout << "MCSA Iterations: " << d_num_iters << std::endl;
+    std::cout << "Residual: " << residual_norm << std::endl;
 }
 
 //---------------------------------------------------------------------------//
