@@ -205,7 +205,7 @@ int main( int argc, char * argv[] )
     Teuchos::ParameterList user_data( "User Data" );
 
     // Setup the field managers.
-    Teuchos::RCP<panzer::FieldManagerBuilder<int,int> field_manager_builder =
+    Teuchos::RCP<panzer::FieldManagerBuilder<int,int> > field_manager_builder =
 	Teuchos::rcp( new panzer::FieldManagerBuilder<int,int> );
     field_manager_builder->setupVolumeFieldManagers( *workset_container,
 						     physics_blocks,
@@ -234,14 +234,14 @@ int main( int argc, char * argv[] )
 	lin_obj_factory->buildGhostedLinearObjContainer();
     Teuchos::RCP<panzer::LinearObjContainer> container =
 	lin_obj_factory->buildLinearObjContainer();
-    lin_obj_factory->intializeGhostedContainer( panzer::LinearObjContainer::X |
-						panzer::LinearObjContainer::F |
-						panzer::LinearObjContainer::Mat,
-						*ghost_container );
-    lin_obj_factory->intializeContainer( panzer::LinearObjContainer::X |
-					 panzer::LinearObjContainer::F |
-					 panzer::LinearObjContainer::Mat,
-					 *container );
+    lin_obj_factory->initializeGhostedContainer( panzer::LinearObjContainer::X |
+						 panzer::LinearObjContainer::F |
+						 panzer::LinearObjContainer::Mat,
+						 *ghost_container );
+    lin_obj_factory->initializeContainer( panzer::LinearObjContainer::X |
+					  panzer::LinearObjContainer::F |
+					  panzer::LinearObjContainer::Mat,
+					  *container );
     ghost_container->initialize();
     container->initialize();
 
@@ -253,7 +253,7 @@ int main( int argc, char * argv[] )
 
     // Solve the linear problem.
     Teuchos::RCP<panzer::EpetraLinearObjContainer> ep_container =
-	Teuchos:::rcp_dynamic_cast<panzer::EpetraLinearObjContainer>( container );
+	Teuchos::rcp_dynamic_cast<panzer::EpetraLinearObjContainer>( container );
 
     Epetra_LinearProblem problem( &*ep_container->get_A(),
 				  &*ep_container->get_x(),
@@ -274,13 +274,13 @@ int main( int argc, char * argv[] )
     lin_obj_factory->globalToGhostContainer( 
 	*container, *ghost_container,
 	panzer::EpetraLinearObjContainer::X | 
-	paner::EpetraLinearObjContainer::DxDt );
+	panzer::EpetraLinearObjContainer::DxDt );
 
     Teuchos::RCP<panzer::EpetraLinearObjContainer> ep_ghost_container =
 	Teuchos::rcp_dynamic_cast<panzer::EpetraLinearObjContainer>( ghost_container );
     panzer_stk::write_solution_data( 
-	*Teuchos::rcp_dynamic_cast<panzer::DOFManager<int.int> >( dof_manager ),
-	*mesh, *ep_ghost_container, *ep_ghost_container->get_x() );
+	*Teuchos::rcp_dynamic_cast<panzer::DOFManager<int,int> >( dof_manager ),
+	*mesh, *ep_ghost_container->get_x() );
     mesh->writeToExodus( "transient_poisson.exo" );
 
     // Complete.

@@ -89,7 +89,7 @@ ClosureModelFactory<EvaluationType>::buildClosureModels(
 
 	// Check that the closure for this model was found.
 	if (!found) {
-	    plist;      std::stringstream msg;
+	    std::stringstream msg;
 	    msg << "ClosureModelFactory failed to build evaluator for key \"" << key 
 		<< "\"\nin model \"" << model_id 
 		<< "\".  Please correct the type or add support to the \nfactory." <<std::endl;
