@@ -38,7 +38,7 @@ cmake \
     -D Trilinos_ENABLE_Stratimikos:BOOL=ON \
     -D Trilinos_ENABLE_STK:BOOL=ON \
     -D STK_ENABLE_SEACASIoss:BOOL=ON \
-    -D Panzer_ENABLE_EXPLICIT_TEMPLATE_INSTANTIATION:BOOL=ON \
+    -D Panzer_ENABLE_EXPLICIT_INSTANTIATION:BOOL=ON \
     -D Panzer_ENABLE_Stratimikos:BOOL=ON \
     -D Panzer_ENABLE_Piro:BOOL=ON \
     -D Panzer_ENABLE_NOX:BOOL=ON \
