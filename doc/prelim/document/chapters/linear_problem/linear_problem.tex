@@ -84,8 +84,8 @@ range is supplied by the \textit{stiffness ratio}:
 \end{equation}
 Those problems that have a wide range of scales in their independent
 variables, which will then be reflected in the operator, will then
-have a large stiffness ratio. We will define such problems as
-\textit{stiff}.
+have a large stiffness ratio. We will define such problems with large
+stiffness ratios as \textit{stiff}.
 
 General to both matrices and vectors, \textit{norms} are a mechanism
 for collapsing objects of many elements to a single value. Per
@@ -243,19 +243,20 @@ Eq~(\ref{eq:linear_k_iter_norm3}).
 
 \subsection{Projection Methods}
 \label{subsec:projection_methods}
-The most common iterative methods used in scientific computing today
-for sparse systems are of a broad class known as \textit{projection
+Among the most common iterative methods used in scientific computing
+today for sparse systems are a broad class known as \textit{projection
   methods}. These methods not only provide access to more powerful
 means of reaching a solution, but also a powerful means of
 encapsulating the majority of common iterative methods including the
-stationary methods just discussed. All projection methods are built
-around a core framework where the solution to
-Eq~(\ref{eq:linear_problem}) is extracted from a \textit{search
-  subspace} $\mathcal{K}$ and bound by the constraint subspace
-$\mathcal{L}$ that will vary in definition depending on the iterative
-method selected. We build the approximate solution $\tilde{\ve{x}}$ by
-starting with an initial guess $\ve{x}_0$ and extracting a correction
-$\boldsymbol{\delta}$ from $\mathcal{K}$ such that:
+stationary methods just discussed in a common mathematical
+framework. All projection methods are built around a core structure
+where the solution to Eq~(\ref{eq:linear_problem}) is extracted from a
+\textit{search subspace} $\mathcal{K}$ and bound by a
+\textit{constraint subspace} $\mathcal{L}$ that will vary in
+definition depending on the iterative method selected. We build the
+approximate solution $\tilde{\ve{x}}$ by starting with an initial
+guess $\ve{x}_0$ and extracting a correction $\boldsymbol{\delta}$
+from $\mathcal{K}$ such that:
 \begin{equation}
   \tilde{\ve{x}} = \ve{x}_0 +
   \boldsymbol{\delta},\ \boldsymbol{\delta} \in \mathcal{K}\:.
@@ -268,27 +269,86 @@ $\tilde{\ve{r}}$, be orthogonal to $\mathcal{L}$:
   \mathcal{L}\:.
   \label{eq:linear_projection_constraint}
 \end{equation}
+
 We can generate a more physical and geometric-based understanding of
 these constraints by writing the new residual as $\tilde{\ve{r}} =
 \ve{r}_0 - \ve{A}\boldsymbol{\delta}$ and again asserting the residual
-must be orthogonal to $\mathcal{L}$. This situation is geometrically
-presented in Figure~\ref{fig:projection_constraint}.
+must be orthogonal to $\mathcal{L}$. If $\tilde{\ve{r}}$ is to be
+orthogonal to $\mathcal{L}$, then $\ve{A}\boldsymbol{\delta}$ must be
+the projection of $\ve{r}_0$ onto the subspace $\mathcal{L}$ that
+eliminates the components of the residual that exist in
+$\mathcal{L}$. This situation is geometrically presented in
+Figure~\ref{fig:linear_projection_constraint}.
+
 \begin{figure}[htpb!]
   \begin{center}
     \scalebox{1.75}{
       \input{chapters/linear_problem/orthogonal_residual.pdftex_t} }
   \end{center}
-  \caption{ Orthogonality of the correction residual with respect to
-    $\mathcal{L}$.}
-  \label{fig:projection_constraint}
+  \caption{Orthogonality constraint of the new residual with respect
+    to $\mathcal{L}$.}
+  \label{fig:linear_projection_constraint}
 \end{figure}
 
+From Figure~\ref{fig:linear_projection_constraint} we then note that
+the following geometric condition must hold:
+\begin{equation}
+  ||\tilde{\ve{r}}||_2 \leq ||\ve{r}_0||_2,\ \forall \ve{r}_0 \in
+  \mathbb{C}^N\:,
+  \label{eq:linear_min_res}
+\end{equation}
+meaning that the residual of the system will always be
+\textit{minimized} with respect to the constraints.
 
-\subsubsection{The Krylov Subspace}
-\label{subsubsec:krylov_subspace}
+Given this minimization condition for the residual, we can form the
+outline of an iterative projection method. Consider a matrix $\ve{V}$
+to form a basis of $\mathcal{K}$ and a matrix $\ve{W}$ to form a basis
+of $\mathcal{L}$. As $\boldsymbol{\delta} \in \mathcal{K}$ by
+definition in Eq~(\ref{eq:linear_projection_step}), then
+$\boldsymbol{\delta}$ can instead be rewritten as:
+\begin{equation}
+  \boldsymbol{\delta} = \ve{V}\ve{y},\ \forall \ve{y} \in \mathbb{C}^N:\,
+  \label{eq:linear_delta_projection}
+\end{equation}
+where $\ve{V}$ \textit{projects} $\ve{y}$ onto $\mathcal{K}$. From the
+orthogonality constraint in Eq~(\ref{eq:linear_projection_constraint})
+it then follows that:
+\begin{equation}
+  \ve{y} = (\ve{W}^T\ve{A}\ve{V})^{-1}\ve{W}^T\ve{r}_0\:,
+  \label{eq:linear_constraint_projection}
+\end{equation}
+where here the projection onto $\mathcal{K}$ is constrained by the
+projection onto $\mathcal{L}$. Knowing this, we can then outline the
+following iteration scheme for a projection method:
+\begin{subequations}
+  \begin{gather}
+    \ve{r}^k = \ve{b} - \ve{A}\ve{x}^k\:,\\  
+    \ve{y} = (\ve{W}^T\ve{A}\ve{V})^{-1}\ve{W}^T\ve{r}_0\:,\\
+    \ve{x}^{k+1} = \ve{x}^k + \ve{V}\ve{y}\:,
+  \end{gather}
+  \label{eq:linear_projection_iteration}
+\end{subequations}
+where $\ve{V}$ and $\ve{W}$ are generated from the definitions of
+$\mathcal{K}$ and $\mathcal{L}$ which are defined prior to each
+iteration.
+
+From an iteration standpoint, as we choose $\boldsymbol{\delta}$ from
+$\mathcal{K}$ and constrain it with $\mathcal{L}$, each iteration
+performs a projection that systematically anihilates the components of
+the residual that exists in $\mathcal{L}$. This then means that if our
+convergence criteria for an iterative method is bound the residual of
+the system, then Eq~(\ref{eq:linear_min_res}) tells us that each
+projection step gaurantees us that the new residual will never be
+worse than that of the previous step and will typically move us
+towards convergence. Depending on the qualities of the system in
+Eq~(\ref{eq:linear_problem}), the selection of the subspaces
+$\mathcal{K}$ and $\mathcal{L}$ can serve to both gaurantee
+convergence and optimize the rate at which the residual is decreased.
 
 \subsubsection{GMRES}
 \label{subsubsec:gmres}
+Among the most common projection methods used in practice are class
+known as \textit{Krylov subspace methods}.
 
 \subsection{Stochastic Methods}
 \label{subsec:stochastic_methods}
