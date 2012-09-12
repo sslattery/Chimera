@@ -191,17 +191,17 @@ general, we will define methods in the form of
 Eq~(\ref{eq:linear_iterative_method}) as \textit{stationary
   methods}. Given this, we can then generate a few statements
 regarding the convergence of such stationary methods. Defining
-$\boldsymbol{\delta}^k = \ve{u}^k - \ve{u}$ as the solution error at the
+$\ve{e}^k = \ve{u}^k - \ve{u}$ as the solution error at the
 $k^{th}$ iterate, we can subtract Eq~(\ref{eq:linear_split_equation2})
 from Eq~(\ref{eq:linear_iterative_method}) to arrive at an error form
 of the linear problem:
 \begin{equation}
-  \boldsymbol{\delta}^{k+1} = \ve{H}\boldsymbol{\delta}^k\:. 
+  \ve{e}^{k+1} = \ve{H}\ve{e}^k\:. 
   \label{eq:linear_iterative_error}
 \end{equation}
 Our error after $k$ iterations is then:
 \begin{equation}
-  \boldsymbol{\delta}^{k} = \ve{H}^k\boldsymbol{\delta}^0\:. 
+  \ve{e}^{k} = \ve{H}^k\ve{e}^0\:. 
   \label{eq:linear_k_iter_error}
 \end{equation}
 In other words, successive application of the iteration matrix is the
@@ -211,29 +211,29 @@ developed in \S~(\ref{sec:linear_preliminaries}). By assuming $\ve{H}$
 is diagonalizable (although we may generalize this with the Jordan
 canonical form of $H$ \citep{saad_2003}), we then have:
 \begin{equation}
-  \boldsymbol{\delta}^{k} =
-  \ve{R}\boldsymbol{\Lambda}^k\ve{R}^{-1}\boldsymbol{\delta}^0\:,
+  \ve{e}^{k} =
+  \ve{R}\boldsymbol{\Lambda}^k\ve{R}^{-1}\ve{e}^0\:,
   \label{eq:linear_k_iter_error_diag}
 \end{equation}
 where $\boldsymbol{\Lambda}$ contains the Eigenvalues of $\ve{H}$ on
 its diagonal and the columns of $\ve{R}$ contain the Eigenvectors of
 $\ve{H}$. Computing the 2-norm of the above form then gives:
 \begin{equation}
-  ||\boldsymbol{\delta}^{k}||_2 \leq ||\boldsymbol{\Lambda}^k||_2\ 
-  ||\ve{R}||_2\ ||\ve{R}^{-1}||_2\ ||\boldsymbol{\delta}^0||_2\:,
+  ||\ve{e}^{k}||_2 \leq ||\boldsymbol{\Lambda}^k||_2\ 
+  ||\ve{R}||_2\ ||\ve{R}^{-1}||_2\ ||\ve{e}^0||_2\:,
   \label{eq:linear_k_iter_norm1}
 \end{equation}
 which gives:
 \begin{equation}
-  ||\boldsymbol{\delta}^{k}||_2 \leq \rho(\ve{H})^k \kappa(\ve{R})
-  ||\boldsymbol{\delta}^0||_2\:.
+  ||\ve{e}^{k}||_2 \leq \rho(\ve{H})^k \kappa(\ve{R})
+  ||\ve{e}^0||_2\:.
   \label{eq:linear_k_iter_norm2}
 \end{equation}
 For iteration matrices where the Eigenvectors are orthogonal,
 $\kappa(\ve{R})=0$ and the error bound reduces to:
 \begin{equation}
-  ||\boldsymbol{\delta}^{k}||_2 \leq \rho(\ve{H})^k
-  ||\boldsymbol{\delta}^0||_2\:.
+  ||\ve{e}^{k}||_2 \leq \rho(\ve{H})^k
+  ||\ve{e}^0||_2\:.
   \label{eq:linear_k_iter_norm3}
 \end{equation}
 We can now resrtict $\ve{H}$ by asserting that $\rho(\ve{H}) < 1$
@@ -243,6 +243,46 @@ Eq~(\ref{eq:linear_k_iter_norm3}).
 
 \subsection{Projection Methods}
 \label{subsec:projection_methods}
+The most common iterative methods used in scientific computing today
+for sparse systems are of a broad class known as \textit{projection
+  methods}. These methods not only provide access to more powerful
+means of reaching a solution, but also a powerful means of
+encapsulating the majority of common iterative methods including the
+stationary methods just discussed. All projection methods are built
+around a core framework where the solution to
+Eq~(\ref{eq:linear_problem}) is extracted from a \textit{search
+  subspace} $\mathcal{K}$ and bound by the constraint subspace
+$\mathcal{L}$ that will vary in definition depending on the iterative
+method selected. We build the approximate solution $\tilde{\ve{x}}$ by
+starting with an initial guess $\ve{x}_0$ and extracting a correction
+$\boldsymbol{\delta}$ from $\mathcal{K}$ such that:
+\begin{equation}
+  \tilde{\ve{x}} = \ve{x}_0 +
+  \boldsymbol{\delta},\ \boldsymbol{\delta} \in \mathcal{K}\:.
+  \label{eq:linear_projection_step}
+\end{equation}
+We bound this correction by asserting that the new residual,
+$\tilde{\ve{r}}$, be orthogonal to $\mathcal{L}$:
+\begin{equation}
+  \langle \tilde{\ve{r}},\ve{w} \rangle = 0,\ \forall w \in
+  \mathcal{L}\:.
+  \label{eq:linear_projection_constraint}
+\end{equation}
+We can generate a more physical and geometric-based understanding of
+these constraints by writing the new residual as $\tilde{\ve{r}} =
+\ve{r}_0 - \ve{A}\boldsymbol{\delta}$ and again asserting the residual
+must be orthogonal to $\mathcal{L}$. This situation is geometrically
+presented in Figure~\ref{fig:projection_constraint}.
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{1.75}{
+      \input{chapters/linear_problem/orthogonal_residual.pdftex_t} }
+  \end{center}
+  \caption{ Orthogonality of the correction residual with respect to
+    $\mathcal{L}$.}
+  \label{fig:projection_constraint}
+\end{figure}
+
 
 \subsubsection{The Krylov Subspace}
 \label{subsubsec:krylov_subspace}
