@@ -9,13 +9,13 @@ all: jcomp2012.tex 3D_mesh_segment.pdf mesh_cell.pdf
 	$(PDFTEX) jcomp2012
 	$(PDFTEX) jcomp2012
 
-mesh_cell.pdf: mesh_cell.fig 
-	fig2dev -L pdftex -p mesh_cell.pdf -m 0.4 mesh_cell.fig mesh_cell.pdf
-	fig2dev -L pdftex_t -p mesh_cell.pdf -m 0.4 mesh_cell.fig mesh_cell.pdftex_t
+#mesh_cell.pdf: mesh_cell.fig 
+#fig2dev -L pdftex -p mesh_cell.pdf -m 0.4 mesh_cell.fig mesh_cell.pdf
+#fig2dev -L pdftex_t -p mesh_cell.pdf -m 0.4 mesh_cell.fig mesh_cell.tex
 
-3D_mesh_segment.pdf: 3D_mesh_segment.fig 
-	fig2dev -L pdftex -p 3D_mesh_segment.pdf -m 0.4 3D_mesh_segment.fig 3D_mesh_segment.pdf
-	fig2dev -L pdftex_t -p 3D_mesh_segment.pdf -m 0.4 3D_mesh_segment.fig 3D_mesh_segment.pdftex_t
+#3D_mesh_segment.pdf: 3D_mesh_segment.fig 
+#fig2dev -L pdftex -p 3D_mesh_segment.pdf -m 0.4 3D_mesh_segment.fig 3D_mesh_segment.pdf
+#fig2dev -L pdftex_t -p 3D_mesh_segment.pdf -m 0.4 3D_mesh_segment.fig 3D_mesh_segment.tex
 
 clean:
 	-rm -f *~
@@ -28,8 +28,6 @@ clean:
 	-rm -f *.out
 	-rm -f *.toc *.lof *.lot
 	-rm -f *.bak
-	-rm -f 3D_mesh_segment.pdf 3D_mesh_segment.pdftex_t
-	-rm -f mesh_cell.pdf 3D_mesh_cell.pdftex_t
 	-rm -f TAGS
 
 realclean: clean

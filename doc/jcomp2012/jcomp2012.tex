@@ -702,7 +702,7 @@ Fig.~\ref{fig:cell} gives
 \end{equation}
 and $V_{ijk} = \Delta_i\Delta_j\Delta_k$.
 \begin{figure}[h!]
-  \centerline{ \input{mesh_cell.pdftex_t}}
+  \centerline{ \includegraphics[clip]{mesh_cell.pdf} }
   \caption{Orthogonal 3D mesh cell.}
   \label{fig:cell}
 \end{figure}
@@ -1102,7 +1102,7 @@ the 3D Cartesian mesh considered in this work, the maximum number of non-zero
 entries in columns of the iteration matrix is 6, generating a sparse system.
 Cells along the problem boundary can have fewer than six entries.
 \begin{figure}[h!]
-  \centerline{ \input{3D_mesh_segment.pdftex_t}}
+  \centerline{ \includegraphics[clip]{3D_mesh_segment.pdf}}
   \caption{3D mesh-segment.  The particle's current cell (in blue) is
     connected to 6 adjacent cells.  The cell numbers are plotted
     alongside the mesh such that the blue cell has index 7, the high
@@ -1299,7 +1299,7 @@ of $\sn{1}{-8}$.
 
 \begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=5in,clip]{edit_points}
+    \includegraphics[width=5in,clip]{edit_points.pdf}
   \end{center}
   \caption{(a) Edit points and (b) time-evolution of the temperature at each
     point.  All points are centered in the $z$-axis.}
