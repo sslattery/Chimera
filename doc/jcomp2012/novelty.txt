@@ -1,0 +1,12 @@
+This work demonstrates a new iterative method for solving sparse linear
+systems.  It expands on the sequential Monte Carlo method developed by Halton
+to provide a fast and efficient linear solver that uses residual Monte Carlo
+to accelerate fixed-point iterations.  We show that this solver is competitive
+with preconditioned Conjugate Gradient when solving time-dependent, 3D
+diffusion equations.
+
+The novelty of the method is that Monte Carlo can be used to achieve
+equivalent convergence as purely deterministic methods when solving linear
+systems.  Additionally, this scheme is not constrained by symmetry
+constraints.  Thus, we propose that this technique could perform very well on
+non-symmetric, sparse systems that are traditionally solved using GMRES.
