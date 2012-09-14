@@ -367,7 +367,7 @@ operators over which these methods are valid. This choice of
 constraint subspace also then gives us the result via
 Eq~(\ref{eq:linear_projection_constraint}) that the residual is
 minimized for all $\boldsymbol{\delta} \in \mathcal{K}$, forming the
-basis for the \textit{generalized minimum Residual method} (GMRES)
+basis for the \textit{generalized minimum residual method} (GMRES)
 \citep{saad_1986}.
 
 Choosing GMRES as our model Krylov method, we are first tasked with
@@ -405,14 +405,102 @@ directions (and therefore less than optimal). From an implementation
 perspective, because the operator is not required to be formed, GMRES
 is significantly more flexible in its usage in that there are many
 instances where various processes serve to provide the action of that
-operator (e.g. radiation transport sweeps) that may not be amenable to
-its construction.
+operator (e.g. radiation transport sweeps \citep{evans_2010}) that may
+not be amenable to its construction.
 
 \subsection{Stochastic Methods}
 \label{subsec:stochastic_methods}
+An alternative approach to approximate matrix inversion is to employ
+Monte Carlo methods that sample a distribution with an expectation
+value equivalent to that of the inverted operator. Such methods have
+been in existence for decades with the earliest reference noted here
+an enjoyable 1950 manuscript by Forsythe and Leibler
+\citep{forsythe_1950}. In their outline, Forsythe and Liebler in fact
+credit the creation of this technique to J. Von Neumann and S.M. Ulam
+some years earlier than its publication. Hammersley and Handscomb's
+1964 monograph \citep{hammersley_1964} presents additional detail on
+this topic using a collection of references from the 1950's and early
+1960's.
+
+We begin our discussion of stochastic methods using these texts by
+seeking a solution to Eq~(\ref{eq:linear_problem}). For a given linear
+operator $\ve{A}$, we can define the following operator:
+\begin{equation}
+  \ve{H} = \ve{I} - \ve{A}\:.
+  \label{eq:linear_mc_iteration_matrix}
+\end{equation}
+We can then form an alternative representation for $\ve{A}^{-1}$ by
+generating the \textit{Neumann series}:
+\begin{equation}
+  \ve{A}^{-1} = (\ve{I}-\ve{H})^{-1} = \sum_{k=0}^{\infty} \ve{H}^k\:,
+  \label{eq:neumann_series}
+\end{equation}
+which will converge if the spectral radius of $\ve{H}$ is less than
+1. If we then apply this inverse sum to the right hand side of
+Eq~(\ref{eq:linear_problem}) we acquire the solution to the linear
+problem:
+\begin{equation}
+  \ve{A}^{-1}\ve{b} = \sum_{k=0}^{\infty} \ve{H}^k\ve{b} = \ve{x}\:.
+  \label{eq:neumann_solution}
+\end{equation}
+An approximation of this summation will therefore lead to an
+approximation of the solution. If we expand the summation with a
+succession of matrix-vector multiply operations, we arrive at an
+alternative perspective of this summation by considering its $i^{th}$
+component:
+\begin{equation}
+  x_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}h_{i,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}b_{i_k}\:,
+  \label{eq:expanded_neumann_solution}
+\end{equation}
+which can interpreted as a series of transitions between states
+$i_{m-1}$ and $i_{m}$ in $\ve{H}$. We can generate these transitions
+through Monte Carlo random walks by assigning them both a probability
+and weight. Knowing this, we then form the \textit{Neumann-Ulam
+  decomposition} of \ve{H}:
+\begin{equation}
+  \ve{H} = \ve{P} \circ \ve{W}\:,
+  \label{eq:neumann_ulam_decomposition}
+\end{equation}
+where $\circ$ denotes the Schur product operation\footnote{The Schur
+  product $\ve{A} = \ve{B} \circ \ve{C}$ is defined element-wise as
+  $a_{ij} = b_{ij} c_{ij}$.}, $\ve{P}$ denotes the transition
+probability matrix, and $\ve{W}$ denotes the transition weight
+matrix. The formulation of $\ve{P}$ and $\ve{W}$ will be dependent on
+whether we choose a direct or adjoint Monte Carlo sequence to estimate
+the state transitions in Eq~(\ref{eq:expanded_neumann_solution}).
 
 \subsubsection{Direct Method}
 \label{subsubsec:direct_mc}
+In the context of matrix inversion, a direct method resembles an
+adjoint Monte Carlo method in the reactor physics community where the
+solution state is sampled and the source terms that contribute to it
+assembled. To achieve this, we build the direct Neumann-Ulam
+decomposition by first choosing a probability matrix that is a column
+scaling of $\ve{H}$ such that its components are:
+\begin{equation}
+  p_{ij} = \frac{|h_{ij}|}{\sum_j |h_{ij}|}\:.
+  \label{eq:direct_probability}
+\end{equation}
+From this, we then see that the probability of transitioning from a
+state $i$ to a state $j$ is implicitly linked to the original operator
+$\ve{A}$ in that those terms with large values, and therefore make the
+greatest contribution to the numerical solution, will be sampled with
+a higher probability than smaller terms. In addition, the column
+scaling provides a normalization over the state to which we are
+transitioning such that $\sum_j p_{ij} = 1$, meaning that we sample
+the probabilities over the columns of the matrix. The components of
+the weight matrix are then defined by
+Eq~(\ref{eq:neumann_ulam_decomposition}) as:
+\begin{equation}
+  w_{ij} = \frac{h_{ij}}{p_{ij}}\:.
+  \label{eq:direct_weight}
+\end{equation}
+It should be noted here that if $\ve{A}$ is sparse, then $\ve{H}$,
+$\ve{P}$, and $\ve{W}$ must be sparse as well by definition.
+
+Using these matrices, we can then form the expectation value of the
+solution.
 
 \subsubsection{Adjoint Method}
 \label{subsubsec:adjoint_mc}
