@@ -462,12 +462,13 @@ and weight. Knowing this, we then form the \textit{Neumann-Ulam
   \ve{H} = \ve{P} \circ \ve{W}\:,
   \label{eq:neumann_ulam_decomposition}
 \end{equation}
-where $\circ$ denotes the Schur product operation, $\ve{P}$ denotes
-the transition probability matrix, and $\ve{W}$ denotes the transition
-weight matrix. The formulation of $\ve{P}$ and $\ve{W}$ will be
-dependent on whether we choose a direct or adjoint Monte Carlo
-sequence to estimate the state transitions in
-Eq~(\ref{eq:expanded_neumann_solution}).
+where $\circ$ denotes the Schur product operation\footnote{The Schur
+  product $\ve{A} = \ve{B} \circ \ve{C}$ is defined element-wise as
+  $a_{ij} = b_{ij} c_{ij}$.}, $\ve{P}$ denotes the transition
+probability matrix, and $\ve{W}$ denotes the transition weight
+matrix. The formulation of $\ve{P}$ and $\ve{W}$ will be dependent on
+whether we choose a direct or adjoint Monte Carlo sequence to estimate
+the state transitions in Eq~(\ref{eq:expanded_neumann_solution}).
 
 \subsubsection{Direct Method}
 \label{subsubsec:direct_mc}
@@ -499,7 +500,7 @@ It should be noted here that if $\ve{A}$ is sparse, then $\ve{H}$,
 $\ve{P}$, and $\ve{W}$ must be sparse as well by definition.
 
 Using these matrices, we can then form the expectation value of the
-solution. 
+solution.
 
 \subsubsection{Adjoint Method}
 \label{subsubsec:adjoint_mc}
