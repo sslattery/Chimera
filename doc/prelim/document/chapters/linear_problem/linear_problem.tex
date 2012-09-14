@@ -66,10 +66,10 @@ determinant yields a characteristic polynomial in terms of $\lambda$
 with roots that form the set of Eigenvalues, $\sigma(\ve{A})$. Each
 component of $\sigma(\ve{A})$ can then be used to solve
 Eq~(\ref{eq:eigenvalue_problem_2}) for a particular permutation of
-$\ve{x}$. The set of all permutations for the \textit{Eigenvectors} of
-$\ve{A}$. A quantity of particular interest that is computatable from
-the eigenvalues of a matrix is the \textit{spectral radius},
-$\rho(\ve{A})$ defined by Saad \citep{saad_2003} as:
+$\ve{x}$. The set of all permutations form the \textit{Eigenvectors}
+of $\ve{A}$. A quantity of particular interest that is computatable
+from the eigenvalues of a matrix $\ve{A}$ is the \textit{spectral
+  radius}, $\rho(\ve{A})$, defined by Saad \citep{saad_2003} as:
 \begin{equation}
   \rho(\ve{A}) = \max_{\lambda \in \sigma(\ve{A})} |\lambda| \:.
   \label{eq:spectral_radius}
@@ -113,7 +113,7 @@ constant that is equivalent to $||\ve{A}||$:
 \end{equation}
 where the minimum value of $C$ that satisfies
 Eq~(\ref{eq:matrix_norm_inequality}) is equivalent to $||\ve{A}||$
-that is valid $\forall \ve{x} \in \mathbb{R}^N$. The general
+and is valid $\forall \ve{x} \in \mathbb{R}^N$. The general
 definition in Eq~(\ref{eq:matrix_norm_inequality}) can be expanded in
 simple terms for common norms including the infinity norm:
 \begin{equation}
@@ -145,18 +145,19 @@ condition number will be generated. We define such matrices as
 The discretization of partial differential equations (\textit{PDEs})
 through common methods such as finite differences
 \citep{leveque_2007}, finite volumes \citep{leveque_2002}, and finite
-elements \citep{zienkiewicz_1977} ultimately generate matrix problems
+elements \citep{zienkiewicz_1977} ultimately generates matrix problems
 as in Eq~(\ref{eq:linear_problem}).  In addition, these matrices are
 typically sparse, meaning that the vast majority of their constituent
 elements are zero. This sparsity is due to the fact that the influence
 of a particular grid element only expands as far as a few of its
-nearest neighbors depending on the order of discretization used, and
+nearest neighbors depending on the order of discretization used and
 therefore coupling among variables in a particular discrete equation
 in the system leads to a few non-zero entries. Because of the natural
 occurrence of sparse matrices in common numerical methods many
 iterative techniques have been developed to solve such systems. We
-discuss here conventional stationary and projection methods to provide
-background and then give detail on a stochastic class of methods.
+discuss here conventional stationary and projection methods for
+solving sparse systems to provide background and then give detail on a
+stochastic class of methods.
 
 \subsection{Stationary Methods}
 \label{subsec:stationary_methods}
@@ -208,8 +209,9 @@ In other words, successive application of the iteration matrix is the
 mechanism driving down the error in a stationary method. We can then
 place restrictions on the iteration matrix by using the tools
 developed in \S~(\ref{sec:linear_preliminaries}). By assuming $\ve{H}$
-is diagonalizable (although we may generalize this with the Jordan
-canonical form of $H$ \citep{saad_2003}, we then have:
+is diagonalizable\footnote{We may generalize this to
+  non-diagonalizable matrices with the Jordan canonical form of
+  $\ve{H}$.} \citep{saad_2003}, we then have:
 \begin{equation}
   \ve{e}^{k} =
   \ve{R}\boldsymbol{\Lambda}^k\ve{R}^{-1}\ve{e}^0\:,
@@ -230,7 +232,7 @@ which gives:
   \label{eq:linear_k_iter_norm2}
 \end{equation}
 For iteration matrices where the Eigenvectors are orthogonal,
-$\kappa(\ve{R})=0$ and the error bound reduces to:
+$\kappa(\ve{R})=1$ and the error bound reduces to:
 \begin{equation}
   ||\ve{e}^{k}||_2 \leq \rho(\ve{H})^k
   ||\ve{e}^0||_2\:.
@@ -244,11 +246,11 @@ Eq~(\ref{eq:linear_k_iter_norm3}).
 \subsection{Projection Methods}
 \label{subsec:projection_methods}
 Among the most common iterative methods used in scientific computing
-today for sparse systems are a broad class known as \textit{projection
-  methods}. These methods not only provide access to more powerful
-means of reaching a solution, but also a powerful means of
-encapsulating the majority of common iterative methods including the
-stationary methods just discussed in a common mathematical
+today for sparse systems are of a broad class known as
+\textit{projection methods}. These methods not only provide access to
+more powerful means of reaching a solution, but also a powerful means
+of encapsulating the majority of common iterative methods including
+the stationary methods just discussed in a common mathematical
 framework. All projection methods are built around a core structure
 where the solution to Eq~(\ref{eq:linear_problem}) is extracted from a
 \textit{search subspace} $\mathcal{K}$ and bound by a
@@ -336,8 +338,8 @@ From an iteration standpoint, as we choose $\boldsymbol{\delta}$ from
 $\mathcal{K}$ and constrain it with $\mathcal{L}$, each iteration
 performs a projection that systematically anihilates the components of
 the residual that exists in $\mathcal{L}$. This then means that if our
-convergence criteria for an iterative method is bound the residual of
-the system, then Eq~(\ref{eq:linear_min_res}) tells us that each
+convergence criteria for an iterative method is bound to the residual
+of the system, then Eq~(\ref{eq:linear_min_res}) tells us that each
 projection step gaurantees us that the norm of the new residual will
 never be worse than that of the previous step and will typically move
 us towards convergence. Depending on the qualities of the system in
@@ -391,22 +393,22 @@ GMRES method may be formulated. We note here several properties of
 this formulation and how they may facilitate or hinder the solution of
 large-scale, sparse linear problems, also noting that these properties
 are common among many Krylov methods. First, from a memory perspective
-GMRES is efficient from the standpoint that the operator $\ve{A}$ need
-not be explicitly stored. Rather, only the ability to compute the
-action of that operator on a vector of valid size is
-required. However, these savings in memory are balanced by the fact
-that the long recurrence relations used in the Arnoldi procedure
-require all vectors that span the Krylov space to be stored. If the
-size of these vectors becomes prohibitive, the Arnoldi procedure can
-be restarted at the cost of losing information in the
-orthogonalization process, creating the potentitial to generate new
-search directions that are not orthogonal to all previous search
-directions (and therefore less than optimal). From an implementation
-perspective, because the operator is not required to be formed, GMRES
-is significantly more flexible in its usage in that there are many
-instances where various processes serve to provide the action of that
-operator (e.g. radiation transport sweeps \citep{evans_2010}) that may
-not be amenable to its construction.
+GMRES is efficient in that the operator $\ve{A}$ need not be
+explicitly stored. Rather, only the ability to compute the action of
+that operator on a vector of valid size is required. However, these
+savings in memory are balanced by the fact that the long recurrence
+relations used in the Arnoldi procedure require all vectors that span
+the Krylov space to be stored. If the size of these vectors becomes
+prohibitive, the Arnoldi procedure can be restarted at the cost of
+losing information in the orthogonalization process, creating the
+potentitial to generate new search directions that are not orthogonal
+to all previous search directions (and therefore less than
+optimal). From an implementation perspective, because the operator is
+not required to be formed, GMRES is significantly more flexible in its
+usage in that there are many instances where various processes serve
+to provide the action of that operator (e.g. radiation transport
+sweeps \citep{evans_2010}) that may not be amenable to its
+construction.
 
 \subsection{Stochastic Methods}
 \label{subsec:stochastic_methods}
@@ -414,7 +416,7 @@ An alternative approach to approximate matrix inversion is to employ
 Monte Carlo methods that sample a distribution with an expectation
 value equivalent to that of the inverted operator. Such methods have
 been in existence for decades with the earliest reference noted here
-an enjoyable 1950 manuscript by Forsythe and Leibler
+an enjoyable manuscript published in 1950 by Forsythe and Leibler
 \citep{forsythe_1950}. In their outline, Forsythe and Liebler in fact
 credit the creation of this technique to J. Von Neumann and S.M. Ulam
 some years earlier than its publication. Hammersley and Handscomb's
@@ -424,7 +426,8 @@ this topic using a collection of references from the 1950's and early
 
 We begin our discussion of stochastic methods using these texts by
 seeking a solution to Eq~(\ref{eq:linear_problem}). For a given linear
-operator $\ve{A}$, we can define the following operator:
+operator $\ve{A}$, we can split it in the same manner as
+Eq~(\ref{eq:linear_split_equation2}) to define the following operator:
 \begin{equation}
   \ve{H} = \ve{I} - \ve{A}\:.
   \label{eq:linear_mc_iteration_matrix}
@@ -453,16 +456,22 @@ component:
   \sum_{i_k}^{N}h_{i,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}b_{i_k}\:,
   \label{eq:expanded_neumann_solution}
 \end{equation}
-which can interpreted as a series of transitions between states
-$i_{m-1}$ and $i_{m}$ in $\ve{H}$. We can generate these transitions
-through Monte Carlo random walks by assigning them both a probability
-and weight. Knowing this, we then form the \textit{Neumann-Ulam
-  decomposition} of \ve{H}:
+which can interpreted as a series of transitions between states,
+\begin{equation}
+ \nu = i \rightarrow i_1 \rightarrow \cdots \rightarrow i_{k-1}
+ \rightarrow i_{k}\:,
+  \label{eq:mc_walk_permutation}
+\end{equation}
+in $\ve{H}$ where $\nu$ is a particular sequence permutation. We can
+generate these sequences of transitions through Monte Carlo random
+walks by assigning them both a probability and weight. As a
+reinterpretation of the iteration matrix, we then form the
+\textit{Neumann-Ulam decomposition} of \ve{H}:
 \begin{equation}
   \ve{H} = \ve{P} \circ \ve{W}\:,
   \label{eq:neumann_ulam_decomposition}
 \end{equation}
-where $\circ$ denotes the Schur product operation\footnote{The Schur
+where $\circ$ denotes the Hadamard product operation\footnote{The Hadamard
   product $\ve{A} = \ve{B} \circ \ve{C}$ is defined element-wise as
   $a_{ij} = b_{ij} c_{ij}$.}, $\ve{P}$ denotes the transition
 probability matrix, and $\ve{W}$ denotes the transition weight
@@ -475,19 +484,19 @@ the state transitions in Eq~(\ref{eq:expanded_neumann_solution}).
 In the context of matrix inversion, a direct method resembles an
 adjoint Monte Carlo method in the reactor physics community where the
 solution state is sampled and the source terms that contribute to it
-assembled. To achieve this, we build the direct Neumann-Ulam
-decomposition by first choosing a probability matrix that is a column
-scaling of $\ve{H}$ such that its components are:
+are assembled. To achieve this, we build the direct method
+Neumann-Ulam decomposition by first choosing a probability matrix that
+is a column scaling of $\ve{H}$ such that its components are:
 \begin{equation}
   p_{ij} = \frac{|h_{ij}|}{\sum_j |h_{ij}|}\:.
   \label{eq:direct_probability}
 \end{equation}
 From this, we then see that the probability of transitioning from a
 state $i$ to a state $j$ is implicitly linked to the original operator
-$\ve{A}$ in that those terms with large values, and therefore make the
-greatest contribution to the numerical solution, will be sampled with
-a higher probability than smaller terms. In addition, the column
-scaling provides a normalization over the state to which we are
+$\ve{A}$ in that those terms with large values, and therefore those
+that make the greatest contribution to the numerical solution, will be
+sampled with a higher probability than smaller terms. In addition, the
+column scaling provides a normalization over the state to which we are
 transitioning such that $\sum_j p_{ij} = 1$, meaning that we sample
 the probabilities over the columns of the matrix. The components of
 the weight matrix are then defined by
@@ -497,10 +506,134 @@ Eq~(\ref{eq:neumann_ulam_decomposition}) as:
   \label{eq:direct_weight}
 \end{equation}
 It should be noted here that if $\ve{A}$ is sparse, then $\ve{H}$,
-$\ve{P}$, and $\ve{W}$ must be sparse as well by definition.
+$\ve{P}$, and $\ve{W}$ must be sparse as well by
+definition. Additionally, we only compute $\ve{P}$ and $\ve{W}$ from
+the non-zero elements of $\ve{H}$ as those components that are zero
+will not participate in the random walk. Furthermore, it prevents an
+infinite weight from being generated in Eq~(\ref{eq:direct_weight}).
 
 Using these matrices, we can then form the expectation value of the
-solution.
+direct solution. For a given random walk permutation $\nu$ with $k$
+events, we define the weight of that permutation to be:
+\begin{equation}
+  W_{m} = \sum_{m=0}^k w_{i,i_1} w_{i_1,i_2} \cdots w_{i_{m-1},i_m}\:,
+  \label{eq:direct_permutation_weight}
+\end{equation}
+such that the weight of each transition event contributes to the
+total. The contribution to the solution from a particular random walk
+permutation is then:
+\begin{equation}
+  X_{\nu}(i_0 = i) = \sum_{m=0}^k W_{m} b_{i_m}\:,
+  \label{eq:direct_permutation_contribution}
+\end{equation}
+where $X_{\nu}(i_0 = i)$ signifies that the solution state in which we
+are tallying defines state $i$.  We can interpret this precisely as
+before in that during the random walk we collect the source in the
+states that are visited and apply them to the solution tally. We then
+define the probability that a particular random walk permuation of $k$
+events will occur:
+\begin{equation}
+  P_{\nu} = p_{i,i_1} p_{i_1,i_2} \cdots p_{i_{k-1},i_k}\:.
+  \label{eq:direct_permutation_probability}
+\end{equation}
+Finally, we define the expectation value of $X$ to be the collection
+of all random walk permutations and their probabilities:
+\begin{equation}
+  E\{X(i_0 = i)\} = \sum_{\nu} P_{\nu} X_{p\nu}\:,
+  \label{eq:direct_expectation_value}
+\end{equation}
+which, if expanded, directly recovers the exact solution:
+\begin{multline}
+  E\{X(i_0 = i)\}\\
+  =\sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
+  p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
+  w_{i,i_1}w_{i_1,i_2}\ldots w_{i_{k-1},i_k} b_{i_k}\\ = x_i\:,
+  \label{eq:direct_expectation_expansion}
+\end{multline}
+therefore providing an unbiased Monte Carlo estimator. 
+
+We can compute the variance of the estimator through traditional
+methods by defining the variance, $\sigma_i$, for each component in
+the solution:
+\begin{equation}
+  {\sigma_i}^2 = E\{X(i_0 = i) - (\ve{A}^{-1}\ve{b})_i\}^2 = E\{X(i_0
+  = i)^2\} - x_i^2\:,
+  \label{eq:direct_variance_1}
+\end{equation}
+where the vector exponentials are computed element-wise. Inserting
+Eq~(\ref{eq:direct_expectation_value}) gives:
+\begin{equation}
+  \sigma_i^2 = \sum_{\nu} P_{\nu} X_{\nu}^2 - x_i^2\:,
+  \label{eq:direct_variance_2}
+\end{equation}
+and applying Eq~(\ref{eq:direct_permutation_contribution}):
+\begin{equation}
+  \sigma_i^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 b_{i_m}^2 -
+  x_i^2\:.
+  \label{eq:direct_variance_3}
+\end{equation}
+Finally, expanding the transition probabilities yields:
+\begin{equation}
+  \sigma_i^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N} p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
+  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k} b_{i_m} - x_i^2\:.
+  \label{eq:direct_variance_4}
+\end{equation}
+Using this defintion for the variance, we can arrive at a more natural
+reason for enforcing $\rho(\ve{H}) < 1$. Per the Hadamard product, we can
+concatenate the summation in Eq~(\ref{eq:direct_variance_4}):
+\begin{equation}
+  (\ve{P} \circ \ve{W} \circ \ve{W})^k =
+  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
+  p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
+  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k}\:.
+  \label{eq:double_weighted_decomposition}
+\end{equation}
+If we assign $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$ as in
+Eq~(\ref{eq:neumann_ulam_decomposition}), we then have a new
+formulation for the variance:
+\begin{equation}
+  \sigma^2_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}g_{i,i_1}g_{i_1,i_2}\ldots g_{i_{k-1},i_k} b_{i_k}^2 -
+  x_i^2\:,
+\end{equation}
+which contains the general Neumann series for $\ve{G}$,
+\begin{equation}
+  \ve{T} = \sum_{k=0}^{\infty} \ve{G}^k\:,
+  \label{eq:variance_neumann_series}
+\end{equation}
+where $\ve{T} = (\ve{I}-\ve{G})^{-1}$. We can then insert $T$ back
+into the variance formulation:
+\begin{equation}
+  \sigma^2_i = (\ve{T}\ve{b})_i - x_i^2
+  \label{eq:direct_variance_5}
+\end{equation}
+We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
+contains an additional Hadamard product with the weight matrix. The
+Hadamard product has the property that:
+\begin{equation}
+  |\ve{H} \circ \ve{W}| \geq |\ve{H}|\ |\ve{W}|\:,
+  \label{eq:hadamard_inequality}
+\end{equation}
+meaning that $\rho(\ve{G}) \geq \rho(\ve{H})$. Using these relations
+to analyze Eq~(\ref{eq:direct_variance_5}), we see that if
+$\rho(\ve{H}) > 1$, then the sum in
+Eq~(\ref{eq:variance_neumann_series}) will not converge and an
+infinite variance will arise as the elements of $\ve{T}$ become
+infinite. Therefore, we must restrict $\ve{H}$ with $\rho(\ve{H}) < 1$
+so that our expectation values for the solution may have a finite
+variance.
+
+As we seek only approximate solutions, we need only to perform a
+minimal number of random walks in order to generate an approximation
+for $\ve{x}$. Furthermore, we also need conditions by which we may
+terminate a random walk. We do this by noticing that the factors added
+to Eq~(\ref{eq:direct_permutation_weight}) will become diminishingly
+small due to their definition in Eq~(\ref{eq:direct_weight}) such that
+their contributions to the solution estimate will become
+negligble. Therefore, we choose terminate a random walk sequence with
+a \textit{weight cutoff}, $W_c$, that is enforced when $W_m < W_c$ for
+a particular random walk permutation.
 
 \subsubsection{Adjoint Method}
 \label{subsubsec:adjoint_mc}
@@ -508,8 +641,8 @@ solution.
 \subsubsection{Sequential Monte Carlo}
 \label{subsusbsec:sequential_mc}
 
-\subsection{Monte Carlo Synthetic-Acceleration}
-\label{subsec:mcsa}
+\subsubsection{Monte Carlo Synthetic-Acceleration}
+\label{subsubsec:mcsa}
 
 \section{Preconditioning the Linear System}
 \label{sec:linear_preconditioning}
