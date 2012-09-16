@@ -825,6 +825,44 @@ outer MCSA iterations also have the following stopping criteria:
 \end{equation}
 where $\epsilon$ is a user-defined parameter.
 
-\section{Preconditioning the Linear System}
-\label{sec:linear_preconditioning}
-
+\subsubsection{Preconditioning Stochastic Methods}
+\label{subsubsec:stochastic_preconditioning}
+In most cases, at least a minimal amount of \textit{preconditioning}
+of the linear system will be required in order to use the class of
+stochastic methods described. Although these methods have no symmetry
+requirements for convergence, they do require that the spectral radius
+of the iteration matrix be less than one. To achieve this, a Jacobi
+precondtioner, a form of left preconditioning, is used such that the
+preconditioning matrix $\ve{D}$ is:
+\begin{equation}
+  \ve{M} = diag(\ve{A})\:,
+  \label{eq:jacobi_preconditioner}
+\end{equation}
+such that its application means we are instead solving the following
+linear system:
+\begin{equation}
+  \ve{M}^{-1}\ve{A}\ve{x} = \ve{M}^{-1}\ve{b}\:.
+  \label{eq:jacobi_precond_linear_problem}
+\end{equation}
+Next, we can apply MCSA to solve
+Eq~(\ref{eq:jacobi_precond_linear_problem}): 
+\begin{subequations}
+  \begin{gather}
+    \ve{x}^{k+1/2} = (\ve{I} - \ve{M}^{-1}\ve{A})\ve{x}^k +
+    \ve{M}^{-1}\ve{b}\:,\\ \ve{r}^{k+1/2} = \ve{M}^{-1}\ve{b} -
+    \ve{M}^{-1}\ve{A}\ve{x}^{k+1/2}\:,\\ \ve{M}^{-1}\ve{A}\delta\ve{x}^{k+1/2}
+    = \ve{r}^{k+1/2}\:,\\ \ve{x}^{k+1} = \ve{x}^{k+1/2} + \delta
+    \ve{x}^{k+1/2}\:.
+    \label{eq:jacobi_preconditioned_mcsa}
+  \end{gather}
+\end{subequations}
+Choosing Jacobi preconditioning with MCSA is advantageous for several
+reasons. First, $\rho(\ve{I} - \ve{M}^{-1}\ve{A}) < 1$ is true for
+all $\ve{A}$ and is easy to formulate as the inversion of $\ve{M}$ is
+trivial. Second, because the adjoint Monte Carlo method used within MCSA to
+compute the correction operates on a linear problem with the
+preconditioned operator, then $\ve{H}$ in the adjoint solver will have
+a zero term in each of its diagonal elements, thereby eliminating
+all in-state transitions during the random walk sequence. Because of
+this, Jacobi preconditioning should always be performed, regardless of
+any other preconditioning that is applied to the system.
