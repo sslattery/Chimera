@@ -45,5 +45,30 @@ as natural convection and driven cavity problems).
 \subsection{Globalization Methods}
 \label{subsec:globalization_methods}
 
-\section{Preconditioning the Nonlinear System}
-\label{sec:nonlinear_preconditioning}
+\section{The FANM Method}
+\label{sec:fanm}
+In this section we will devise the FANM method. Based on the
+background in the previous section, we first need to motivate the
+development of this work by pointing out some of the issues with
+conventional methods. This includes JFNK coarseness and either
+prohibitively large Krylov subspaces or a loss of orthogonality
+information in the subspace due to restarts. We can than point out
+some of the attractive qualities of the FANM method. Much of this will
+rely on advanced concepts including automatic differentiation and
+on-the-fly residual and Jacobian generation from nonlinear function
+evaluations. In addition, we will want to show that the Newton method
+will converge using MCSA as the linear solver. I suspect I will have
+some preliminary results for a serial implementation here as I already
+have a serial MCSA implemented. Finally, we will want to design the
+model problems that we will test FANM with. These should be problems
+that have already been worked up in the literature with benchmark-type
+solutions.
+
+\subsection{Automatic Differentiation}
+\label{sec:automatic_differentiation}
+
+\subsection{Residual and Jacobian Generation}
+\label{sec:fanm_generation}
+
+\subsection{Jacobian Storage vs. Subspace Storage and Restarts}
+\label{sec:fanm_storage}

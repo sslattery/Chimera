@@ -866,3 +866,49 @@ a zero term in each of its diagonal elements, thereby eliminating
 all in-state transitions during the random walk sequence. Because of
 this, Jacobi preconditioning should always be performed, regardless of
 any other preconditioning that is applied to the system.
+
+\section{Parallel Methods for Solving Sparse Linear Systems}
+\label{sec:parallel_krylov_methods}
+Modern parallel implementations of Krylov methods on distributed
+memory architectures rely heavily on capabilities provided by general
+linear algebra frameworks. This arises from the fact that Krylov
+methods require only a handful of operations in their
+implementation. Per Saad's text \citep{saad_2003}, these operations
+are preconditioning, matrix-vector multiplications, vector updates,
+and dot products. For the last three items, linear algebra libraries
+such as PETSc \citep{petsc_2012} and Trilinos \citep{trilinos_2005}
+provide efficient parallel implementations for these
+operations. Depending on the type of preconditioning used, efficient
+parallel implementations may also be available for those
+operations. In all cases, a series of scatter/gather operations are
+required such that global communication operations must
+occur. Therefore, the performance of such operations is bound to the
+implementation. However, asymptotically perfomance should be the same
+across all implementations.
+
+\section{Parallelization of the MCSA Algorithm}
+\label{section:parallel_mcsa}
+For the prelim, I suspect that I will not have a parallel MCSA
+algorithm up and running as I will be focusing on generating the code
+base needed to build the physics operators and tools for linear and
+nonlinear systems analysis. Therefore, here we should focus on
+motivating a parallel scheme for this work. We should start by first
+looking at current parallel methods for solving linear systems using
+the conventional techniques from the previous chapter. It must be
+clearly pointed out that for the new hardware coming online, these
+methods (or at least their current implementations) will be lacking in
+scalability and the potential for resiliency, and therefore a parallel
+MCSA is attractive, even if it ultimately does not show performance
+gains from a wall time perspective.
+
+Once we have done this, MSOD will need to be defined. The literature
+is actually quite lacking here even for reactor physics problems as
+this is really bleeding edge. Therefore, I should strive here to more
+rigorously define this methodology in terms of solving general linear
+systems. Furthermore, we should discuss the aspects of being able to
+vary the overlap such that we can generate a spectrum between complete
+domain decomposition and complete domain replication. Finally, the
+beginnings of the algorithm should be sketched out.
+
+\subsection{Multiple-Set Overlapping-Domain Decomposition}
+\label{subsec:msod}
