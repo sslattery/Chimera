@@ -11,7 +11,7 @@ chap_fanm = chapters/fanm
 chap_chm = chapters/chimera_codebase
 chap_prop = chapters/research_proposal
 
-all: orthogonal_residual.pdf partitioned_matrix.pdf
+all: orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
@@ -26,6 +26,10 @@ orthogonal_residual.pdf: $(chap_lp)/orthogonal_residual.fig
 partitioned_matrix.pdf: $(chap_lp)/partitioned_matrix.fig
 	fig2dev -L pdftex -p $(chap_lp)/partitioned_matrix.pdf -m 0.4 $(chap_lp)/partitioned_matrix.fig $(chap_lp)/partitioned_matrix.pdf
 	fig2dev -L pdftex_t -p $(chap_lp)/partitioned_matrix.pdf -m 0.4 $(chap_lp)/partitioned_matrix.fig $(chap_lp)/partitioned_matrix.pdftex_t
+
+matvec_proc_1.pdf: $(chap_lp)/matvec_proc_1.fig
+	fig2dev -L pdftex -p $(chap_lp)/matvec_proc_1.pdf -m 0.4 $(chap_lp)/matvec_proc_1.fig $(chap_lp)/matvec_proc_1.pdf
+	fig2dev -L pdftex_t -p $(chap_lp)/matvec_proc_1.pdf -m 0.4 $(chap_lp)/matvec_proc_1.fig $(chap_lp)/matvec_proc_1.pdftex_t
 
 clean:
 	-rm -f *~

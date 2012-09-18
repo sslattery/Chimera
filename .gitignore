@@ -9,4 +9,6 @@
 *.idx
 *.lof
 *.lot
+*.loa
 *.toc
+*.bak
