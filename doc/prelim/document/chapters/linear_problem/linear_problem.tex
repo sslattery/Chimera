@@ -15,7 +15,10 @@ of course be the stochastic solver definitions, also providing me a
 place to include some of my work in this area. Finally,
 preconditioning is important for this work, MCSA requires it and
 Newton-Krylov methods almost always need some type of
-preconditioning. Therefore, we must also discuss these aspects.
+preconditioning. Therefore, we must also discuss these
+aspects.\footnote{The contents of this chapter, particularly those
+  sections relating to projection methods, are heavily based on Saad's
+  text \citep{saad_2003}.}
 
 \section{Preliminaries}
 \label{sec:linear_preliminaries}
@@ -386,29 +389,49 @@ recurrence relations as \textit{long recurrence relations}. Those
 orthogonal projection procedures that have a dimensionality less than
 $m$ will be refferred to as \textit{short recurrence relations}.  Once
 $\ve{V}_m$ is found, per the constraint subspace definition it then
-follows that its basis is defined as $\ve{W}_m = \ve{A} \ve{V}_m$. 
+follows that its basis is defined as $\ve{W}_m = \ve{A}
+\ve{V}_m$. Knowing the projections onto the search and constraint
+subspaces, the GMRES iteration may be formulated as follows:
+\begin{algorithm}[htpb!]
+  \caption{GMRES Iteration}
+  \label{alg:gmres}
+  \begin{algorithmic}
+    \State $\ve{r}_0 := \ve{b}-\ve{A}\ve{x}_0$
+    \State $\beta := ||\ve{r}_0||_2$
+    \State $\ve{v}_1 := \ve{r}_0 / \beta$
+    \Comment{Create the orthonormal basis for the Krylov subspace}
+    \For{$j = 1, 2, \cdots, m$}
+    \State $h_{ij} \leftarrow \langle w_j,v_j \rangle$
+    \State $w_j \leftarrow w_j - h_{ij}v_i$
+    \EndFor
+    \State $h_{j+1,j} \leftarrow ||w_j||_2$
+    \State $v_{j+1} \leftarrow w_j / h_{j+1,j}$
+    \Comment{Apply the orthogonality constraints}
+    \State $\ve{y}_m \leftarrow argmin_y ||\beta \ve{e}_1 - \ve{H}_m\
+    \ve{y}||_2 $
+    \State $\ve{x}_m \leftarrow \ve{x}_0 + \ve{V_m} \ve{y}_m$
+  \end{algorithmic}
+\end{algorithm}
 
-Knowing the projections onto the search and constraint subspaces, the
-GMRES method may be formulated. We note here several properties of
-this formulation and how they may facilitate or hinder the solution of
-large-scale, sparse linear problems, also noting that these properties
-are common among many Krylov methods. First, from a memory perspective
-GMRES is efficient in that the operator $\ve{A}$ need not be
-explicitly stored. Rather, only the ability to compute the action of
-that operator on a vector of valid size is required. However, these
-savings in memory are balanced by the fact that the long recurrence
-relations used in the Arnoldi procedure require all vectors that span
-the Krylov space to be stored. If the size of these vectors becomes
-prohibitive, the Arnoldi procedure can be restarted at the cost of
-losing information in the orthogonalization process, creating the
-potentitial to generate new search directions that are not orthogonal
-to all previous search directions (and therefore less than
-optimal). From an implementation perspective, because the operator is
-not required to be formed, GMRES is significantly more flexible in its
-usage in that there are many instances where various processes serve
-to provide the action of that operator (e.g. radiation transport
-sweeps \citep{evans_2010}) that may not be amenable to its
-construction.
+We note here several properties of this formulation and how they may
+facilitate or hinder the solution of large-scale, sparse linear
+problems, also noting that these properties are common among many
+Krylov methods. First, from a memory perspective GMRES is efficient in
+that the operator $\ve{A}$ need not be explicitly stored. Rather, only
+the ability to compute the action of that operator on a vector of
+valid size is required. However, these savings in memory are balanced
+by the fact that the long recurrence relations used in the Arnoldi
+procedure require all vectors that span the Krylov space to be
+stored. If the size of these vectors becomes prohibitive, the Arnoldi
+procedure can be restarted at the cost of losing information in the
+orthogonalization process, creating the potentitial to generate new
+search directions that are not orthogonal to all previous search
+directions (and therefore less than optimal). From an implementation
+perspective, because the operator is not required to be formed, GMRES
+is significantly more flexible in its usage in that there are many
+instances where various processes serve to provide the action of that
+operator (e.g. radiation transport sweeps \citep{evans_2010}) that may
+not be amenable to its construction.
 
 \subsection{Stochastic Methods}
 \label{subsec:stochastic_methods}
@@ -684,7 +707,7 @@ state. Note here that the estimator in
 Eq~(\ref{eq:adjoint_permutation_contribution}) does not have a
 dependency on the source state as in
 Eq~(\ref{eq:adjoint_permutation_contribution}), providing a remedy for
-the situation in the direct method where we much start a random walk
+the situation in the direct method where we must start a random walk
 in each source state for every permutation such that we may compute a
 contribution for that state. In the adjoint method, we instead tally
 in all states and those of lesser importance will not be visited as
@@ -715,6 +738,17 @@ method, we utilize a \textit{relative weight cutoff}:
 where $W_c$ is defined as in the direct method. The adjoint random
 walk will then be terminated after $m$ steps if $W_m < W_f$ as tally
 contributions become increasingly small.
+
+Given these ideas, we can then generate an algorithm for implementing
+the adjoint method:
+\begin{algorithm}[htpb!]
+  \caption{Adjoint Monte Carlo}
+  \label{alg:adjoint_mc}
+  \begin{algorithmic}
+    \State $\ve{r}_0 := \ve{b}-\ve{A}\ve{x}_0$
+  \end{algorithmic}
+\end{algorithm}
+
 
 \subsubsection{Sequential Monte Carlo}
 \label{subsusbsec:sequential_mc}
@@ -869,22 +903,23 @@ any other preconditioning that is applied to the system.
 
 \section{Parallel Methods for Solving Sparse Linear Systems}
 \label{sec:parallel_krylov_methods}
-Modern parallel implementations of Krylov methods on distributed
-memory architectures rely heavily on capabilities provided by general
-linear algebra frameworks. This arises from the fact that Krylov
-methods require only a handful of operations in their
-implementation. Per Saad's text \citep{saad_2003}, these operations
-are preconditioning, matrix-vector multiplications, vector updates,
-and dot products. For the last three items, linear algebra libraries
-such as PETSc \citep{petsc_2012} and Trilinos \citep{trilinos_2005}
-provide efficient parallel implementations for these
-operations. Depending on the type of preconditioning used, efficient
-parallel implementations may also be available for those
-operations. In all cases, a series of scatter/gather operations are
-required such that global communication operations must
-occur. Therefore, the performance of such operations is bound to the
-implementation. However, asymptotically perfomance should be the same
-across all implementations.
+Modern parallel implementations of methods on distributed memory
+architectures rely heavily on capabilities provided by general linear
+algebra frameworks. For methods like GMRES, this arises from the fact
+that Krylov methods require only a handful of operation types in their
+implementation that can be efficiently programmed on these
+architectures. Per Saad's text \citep{saad_2003} and as noted in
+Algorithm~\ref{alg:gmres}, these operations are preconditioning,
+matrix-vector multiplications, vector updates, and inner products. For
+the last three items, linear algebra libraries such as PETSc
+\citep{petsc_2012} and Trilinos \citep{trilinos_2005} provide
+efficient parallel implementations for these operations. Depending on
+the type of preconditioning used, efficient parallel implementations
+may also be available for those operations. In all cases, a series of
+scatter/gather operations are required such that global communication
+operations must occur. Although the relative performance of such
+operations is bound to the implementation, asymptotically perfomance
+should be the same across all implementations.
 
 \section{Parallelization of the MCSA Algorithm}
 \label{section:parallel_mcsa}
