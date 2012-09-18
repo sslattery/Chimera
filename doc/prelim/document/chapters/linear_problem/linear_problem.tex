@@ -414,7 +414,9 @@ perspective, because the operator is not required to be formed, GMRES
 is significantly more flexible in its usage in that there are many
 instances where various processes serve to provide the action of that
 operator (e.g. radiation transport sweeps \citep{evans_2010}) that
-normally may not be amenable to its full construction.
+normally may not be amenable to its full construction. In addition,
+the minimization problem is a straight-forward least-squares problem
+where $\ve{H}$ is an upper-Hessenberg matrix.
 
 \subsection{Parallel Projection Methods}
 \label{subsec:parallel_krylov_methods}
@@ -451,7 +453,11 @@ these objects are partitioned in such a way that the parallel
 formulation of the operator and vectors in
 Eq~(\ref{eq:linear_problem}) will be such that each parallel process
 contains only a subset of the global problem and that subset forms a
-local set of complete equations.
+local set of complete equations. The form of this partitioning is
+problem dependent and often has a geometric or graph-based aspect to
+its construction in order to optimize communication
+patterns. Libraries such as Zoltan \citep{zoltan_2007}, provide an
+implementations of such algorithms.
 
 \subsubsection{Parallel Vector Update}
 \label{subsubsec:parallel_vec_update}
@@ -501,7 +507,7 @@ the infinity norm operation:
 \begin{subequations}
   \begin{gather}
     ||x||_{\infty,l} = \max_n \ve{y}[n],\ \forall n \in [1,N_l]\:\\
-    ||x||_{\infty,g} = \max_p ||x||_{\infty,g}\:.
+    ||x||_{\infty,g} = \max_p ||x||_{\infty,l}\:.
   \end{gather}
   \label{eq:parallel_infinity_norm}
 \end{subequations}
@@ -512,17 +518,34 @@ distributed to all processes.
 
 \subsubsection{Parallel Matrix-Vector Multiplications}
 \label{subsubsec:parallel_mat_vec_mutliply}
-We finally consider matrix-vector multiplication operations by
-considering sparse matrices in a compressed storage format. For these
-operations, considerably more communications will be required given
+We finally consider parallel matrix-vector multiplication operations
+using sparse matrices in a compressed storage format. For these
+operations, more complex communication patterns will be required given
 that the entire global vector is required in order to compute a single
-element of the product vector.
+element of the local product vector. Fortunately, the vast majority of
+the global vector components will be multiplied by zero due to the
+sparse matrix and therefore much of the vector can be
+neglected. Instead we only require data from a handful of other
+processes.
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{1.5}{
+      \input{chapters/linear_problem/partitioned_matrix.pdftex_t} }
+  \end{center}
+  \caption{Partitioned linear problem.}
+  \label{fig:partitioned_linear_problem}
+\end{figure}
 
 \subsubsection{Parallel Perfomance Implications for Projection Methods}
 \label{subsubsec:projection_method_performance}
 For very large distributed machines, global reduction operations
 required at several levels of Krylov algorithms stand to reduce
-scalablitity and perfomance.
+scalablitity and perfomance. Furthermore, communication between
+adjacent domains may also cause a bottleneck as the number of domains
+used in simulation grows. The end result is that global data must be
+collected and communicated. For scaling improvement, we seek a
+reduction in these types of operations.
 
 \section{Stochastic Methods}
 \label{sec:stochastic_methods}

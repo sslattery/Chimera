@@ -11,7 +11,7 @@ chap_fanm = chapters/fanm
 chap_chm = chapters/chimera_codebase
 chap_prop = chapters/research_proposal
 
-all: orthogonal_residual.pdf
+all: orthogonal_residual.pdf partitioned_matrix.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
@@ -22,6 +22,10 @@ all: orthogonal_residual.pdf
 orthogonal_residual.pdf: $(chap_lp)/orthogonal_residual.fig
 	fig2dev -L pdftex -p $(chap_lp)/orthogonal_residual.pdf -m 0.4 $(chap_lp)/orthogonal_residual.fig $(chap_lp)/orthogonal_residual.pdf
 	fig2dev -L pdftex_t -p $(chap_lp)/orthogonal_residual.pdf -m 0.4 $(chap_lp)/orthogonal_residual.fig $(chap_lp)/orthogonal_residual.pdftex_t
+
+partitioned_matrix.pdf: $(chap_lp)/partitioned_matrix.fig
+	fig2dev -L pdftex -p $(chap_lp)/partitioned_matrix.pdf -m 0.4 $(chap_lp)/partitioned_matrix.fig $(chap_lp)/partitioned_matrix.pdf
+	fig2dev -L pdftex_t -p $(chap_lp)/partitioned_matrix.pdf -m 0.4 $(chap_lp)/partitioned_matrix.fig $(chap_lp)/partitioned_matrix.pdftex_t
 
 clean:
 	-rm -f *~
@@ -34,7 +38,7 @@ clean:
 	-rm -f *.out
 	-rm -f *.toc *.lof *.lot
 	-rm -f *.bak
-	-rm -f $(chap_lp)/orthogonal_residual.pdf $(chap_lp)/orthogonal_residual.pdftex_t
+	-rm -f $(chap_lp)/*.pdf $(chap_lp)/*.pdftex_t $(chap_lp)/*.bak
 	-rm -f TAGS
 
 realclean: clean
