@@ -105,6 +105,33 @@
 	year = {2005}
 },
 
+@article{ji_reusing_2012,
+	title = {Reusing Random Walks in Monte Carlo Methods for Linear Systems},
+	volume = {9},
+	issn = {1877-0509},
+	shorttitle = {Proceedings of the International Conference on Computational Science, {ICCS} 2012},
+	url = {http://www.sciencedirect.com/science/article/pii/S1877050912001627},
+	doi = {10.1016/j.procs.2012.04.041},
+	abstract = {In this paper, we present an approach of reusing random walks in Monte Carlo methods for linear systems. The fundamental idea is, during the Monte Carlo sampling process, the random walks generated to estimate one unknown element can also be effectively reused to estimate the other unknowns in the solution vector. As a result, when the random walks are reused, a single random walk can contribute samples for estimations of multiple unknowns in the solution simultaneously while ensuring that the samples for the same unknown element are statistically independent. Consequently, the total number of random walk transition steps needed for estimating the overall solution vector is reduced, which improves the performance of the Monte Carlo algorithm. We apply this approach to the Monte Carlo algorithm in two linear algebra applications, including solving a system of linear equations and approximating the inversion of a matrix. Our computational results show that compared to the conventional implementations of Monte Carlo algorithms for linear systems without random walk reusing, our approach can significantly improve the performance of Monte Carlo sampling process by reducing the overall number of transition steps in random walks to obtain the entire solution within desired precision.},
+	number = {0},
+	urldate = {2012-09-19},
+	journal = {Procedia Computer Science},
+	author = {Ji, Hao and Li, Yaohang},
+	year = {2012},
+	keywords = {Inverse Matrix, Linear System, {MONTE} Carlo method, Random Walk},
+	pages = {383--392},
+	file = {ji_2012.pdf:/home/stuart/Documents/library/zotero/ji_2012.pdf:application/pdf;ScienceDirect Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/AC639VTK/Ji and Li - 2012 - Reusing Random Walks in Monte Carlo Methods for Li.pdf:application/pdf;ScienceDirect Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/W3BKBDBT/S1877050912001627.html:text/html}
+},
+
+@article{evans_monte_2012,
+	title = {A Monte Carlo Synthetic-Acceleration Method for Solving the Thermal Radiation Diffusion Equation},
+	volume = {Submitted},
+	journal = {Journal of Computational Physics},
+	author = {Evans, Thomas and Mosher, Scott and Slattery, Stuart},
+	year = {2012},
+	file = {jcomp2012.pdf:/home/stuart/software/Trilinos/Chimera/doc/jcomp2012/jcomp2012.pdf:application/pdf}
+},
+
 @article{devine_zoltan_2002,
 	title = {Zoltan data management services for parallel dynamic applications},
 	volume = {4},
@@ -306,10 +333,10 @@
 	file = {Automatic Differentiation of C++ Codes for Large-Scale Scientific Computing - Springer:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/MREG8H28/11758549_73.html:text/html;bgp_iccs2006.pdf:/home/stuart/Documents/library/zotero/bgp_iccs2006.pdf:application/pdf}
 },
 
-@article{j.c._wagner**_s.w._mosher_t.m._evans_d.e._peplow_and_j.a._turner_hybrid_2010,
+@article{wagner_hybrid_2010,
 	title = {Hybrid and Parallel Domain-Decomposition Methods Development to Enable Monte Carlo for Reactor Analyses},
 	journal = {Joint International Conference on Supercomputing in Nuclear Applications and Monte Carlo},
-	author = {{{J.C.} {WAGNER},** {S.W.} {MOSHER}, {T.M.} {EVANS}, {D.E.} {PEPLOW}, and {J.A.} {TURNER}}},
+	author = {Wagner, {JC} and Mosher, Scott and Evans, Thomas and Peplow, Doug and Turner, John},
 	year = {2010},
 	file = {wagner_2011.pdf:/home/stuart/Documents/library/zotero/wagner_2011.pdf:application/pdf}
 },
@@ -538,13 +565,13 @@
 	file = {devahl_1983.pdf:/home/stuart/Documents/library/zotero/devahl_1983.pdf:application/pdf;Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/6UWT235T/De Vahl Davis - 1983 - Natural convection of air in a square cavity A be.pdf:application/pdf;Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/NTV28EKT/ezproxyiaa.html:text/html}
 },
 
-@article{t.m._evans__t.j._urbatsch_h._lichtenstein_j.e._morel_residual_2003,
+@article{evans_residual_2003,
 	title = {A residual Monte Carlo method for discrete thermal radiative diffusion},
 	volume = {189},
 	abstract = {Residual Monte Carlo methods reduce statistical error at a rate of {exp(−bN)}, where b is a positive constant and N is the number of particle histories. Contrast this convergence rate with , which is the rate of statistical error reduction for conventional Monte Carlo methods. Thus, residual Monte Carlo methods hold great promise for increased efficiency relative to conventional Monte Carlo methods. Previous research has shown that the application of residual Monte Carlo methods to the solution of continuum equations, such as the radiation transport equation, is problematic for all but the simplest of cases. However, the residual method readily applies to discrete systems as long as those systems are monotone, i.e., they produce positive solutions given positive sources. We develop a residual Monte Carlo method for solving a discrete {1D} non-linear thermal radiative equilibrium diffusion equation, and we compare its performance with that of the discrete conventional Monte Carlo method upon which it is based. We find that the residual method provides efficiency gains of many orders of magnitude. Part of the residual gain is due to the fact that we begin each timestep with an initial guess equal to the solution from the previous timestep. Moreover, fully consistent non-linear solutions can be obtained in a reasonable amount of time because of the effective lack of statistical noise. We conclude that the residual approach has great potential and that further research into such methods should be pursued for more general discrete and continuum systems.},
 	number = {2},
 	journal = {Journal of Computational Physics},
-	author = {{T.M.} Evans, , {T.J.} Urbatsch, H. Lichtenstein, {J.E.} Morel},
+	author = {Evans, Thomas and Urbatsch, Todd and Lichtenstein, H and Morel},
 	month = aug,
 	year = {2003},
 	pages = {539--556},
@@ -639,6 +666,24 @@
 	file = {Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/BBNZ3B7J/Gartling - 1990 - A test problem for outflow boundary conditions—flo.pdf:application/pdf;gartling_1990.pdf:/home/stuart/Documents/library/zotero/gartling_1990.pdf:application/pdf;Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/9WDI72XS/ezproxyiaa.html:text/html}
 },
 
+@article{dimov_new_1998,
+	title = {A new iterative Monte Carlo approach for inverse matrix problem},
+	volume = {92},
+	issn = {0377-0427},
+	url = {http://www.sciencedirect.com/science/article/pii/S0377042798000430},
+	doi = {10.1016/S0377-0427(98)00043-0},
+	abstract = {A new approach of iterative Monte Carlo algorithms for the well-known inverse matrix problem is presented and studied. The algorithms are based on a special techniques of iteration parameter choice, which allows to control the convergence of the algorithm for any column (row) of the matrix using different relaxation parameters. The choice of these parameters is controlled by a posteriori criteria for every Monte Carlo iteration. The presented Monte Carlo algorithms are implemented on a {SUN} Sparkstation. Numerical tests are performed for matrices of moderate in order to show how work the algorithms. The algorithms under consideration are well parallelized.},
+	number = {1},
+	urldate = {2012-09-19},
+	journal = {Journal of Computational and Applied Mathematics},
+	author = {Dimov, {I.T.} and Dimov, {T.T.} and Gurov, {T.V.}},
+	month = may,
+	year = {1998},
+	keywords = {Inverse matrix problem, iterative methods, Markov chain, Monte Carlo algorithms},
+	pages = {15--35},
+	file = {dimov_1998.pdf:/home/stuart/Documents/library/zotero/dimov_1998.pdf:application/pdf;ScienceDirect Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/M2PFHNH2/Dimov et al. - 1998 - A new iterative Monte Carlo approach for inverse m.pdf:application/pdf;ScienceDirect Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/XRRQ6EPD/S0377042798000430.html:text/html}
+},
+
 @article{mchugh_fully_1994,
 	title = {Fully coupled finite volume solutions of the incompressible {Navier–Stokes} and energy equations using an inexact Newton method},
 	volume = {19},
@@ -717,6 +762,18 @@
 	keywords = {Algorithm complexity, Collision estimator, Linear systems, Monte Carlo method},
 	pages = {5--18},
 	file = {danilov_2000.pdf:/home/stuart/Documents/library/zotero/danilov_2000.pdf:application/pdf}
+},
+
+@article{wasow_note_1952,
+	title = {A note on the inversion of matrices by random walks},
+	volume = {6},
+	number = {38},
+	journal = {Mathematical Tables and Other Aids to Computation},
+	author = {Wasow, {W.R.}},
+	month = apr,
+	year = {1952},
+	pages = {78--81},
+	file = {wasow_1952.pdf:/home/stuart/Documents/library/zotero/wasow_1952.pdf:application/pdf}
 },
 
 @article{evans_development_2006,

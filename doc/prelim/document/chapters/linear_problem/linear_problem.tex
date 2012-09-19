@@ -527,15 +527,17 @@ distributed to all processes.
 \subsubsection{Parallel Matrix-Vector Multiplications}
 \label{subsubsec:parallel_mat_vec_mutliply}
 We finally consider parallel matrix-vector multiplication operations
-using sparse matrices in a compressed storage format. For these
-operations, more complex communication patterns will be required given
-that the entire global vector is required in order to compute a single
-element of the local product vector. Fortunately, the vast majority of
-the global vector components will be multiplied by zero due to the
-sparsity of the matrix and therefore much of the vector can be
-neglected. Instead we only require data from a handful of other
-processes that can be acquired through asynchronous/synchronous
-communications. Consider the sparse matrix-vector multiply in
+using sparse matrices in a compressed storage format by considering
+Saad's outline as well as the more formal work of Tuminaro
+\citep{tuminaro_parallel_1998}. For these operations, more complex
+communication patterns will be required given that the entire global
+vector is required in order to compute a single element of the local
+product vector. Fortunately, the vast majority of the global vector
+components will be multiplied by zero due to the sparsity of the
+matrix and therefore much of the vector can be neglected. Instead we
+only require data from a handful of other processes that can be
+acquired through asynchronous/synchronous communications. Consider the
+sparse matrix-vector multiply in
 Figure~\ref{fig:partitioned_matvec_multiply} that is partitioned on 3
 processors.
 \begin{figure}[htpb!]
@@ -605,10 +607,14 @@ statements about parallel perfomance and implications for operation on
 machines of increasing size.  For very large distributed machines,
 global reduction operations required at several levels of Krylov
 algorithms stand to reduce scalablitity and perfomance. Furthermore,
-communication between adjacent domains may also cause a bottleneck as
-the number of domains used in simulation grows. The end result is that
-global data must be collected and communicated. For scaling
-improvement, we seek a reduction in these types of operations.
+communication between adjacent domains in matrix-vector multiply
+operations may also cause a bottleneck as the number of domains used
+in simulation grows. The end result is that global data must be
+collected and communicated. For scaling improvement, we seek a
+reduction in these types of operations. In addition, these issues
+become more prominent as the Krylov iterations progress, causing the
+Krylov subspace to grow and the total number of operations need to
+orthogonalize that subspace to increase.
 
 \section{Stochastic Methods}
 \label{sec:stochastic_methods}
@@ -619,10 +625,11 @@ been in existence for decades with the earliest reference noted here
 an enjoyable manuscript published in 1950 by Forsythe and Leibler
 \citep{forsythe_matrix_1950}. In their outline, Forsythe and Liebler
 in fact credit the creation of this technique to J. Von Neumann and
-S.M. Ulam some years earlier than its publication. Hammersley and
-Handscomb's 1964 monograph \citep{hammersley_monte_1964} presents
-additional detail on this topic using a collection of references from
-the 1950's and early 1960's.
+S.M. Ulam some years earlier than its publication. In 1952 Wasow
+provided a more formal explanation of Von Neumann and Ulam's method
+\citep{wasow_note_1952} and Hammersley and Handscomb's 1964 monograph
+\citep{hammersley_monte_1964} presents additional detail on this topic
+using a collection of references from the 1950's and early 1960's.
 
 We begin our discussion of stochastic methods using these texts by
 seeking a solution to Eq~(\ref{eq:linear_problem}). For a given linear
@@ -662,22 +669,26 @@ which can interpreted as a series of transitions between states,
  \rightarrow i_{k}\:,
   \label{eq:mc_walk_permutation}
 \end{equation}
-in $\ve{H}$ where $\nu$ is a particular sequence permutation. We can
-generate these sequences of transitions through Monte Carlo random
-walks by assigning them both a probability and weight. As a
-reinterpretation of the iteration matrix, we then form the
-\textit{Neumann-Ulam decomposition} of \ve{H}:
+in $\ve{H}$ where $\nu$ is a particular random walk sequence
+permutation. We can generate these sequences of transitions through
+Monte Carlo random walks by assigning them both a probability and
+weight. As a reinterpretation of the iteration matrix, we then form
+the \textit{Neumann-Ulam decomposition} of \ve{H}:
 \begin{equation}
   \ve{H} = \ve{P} \circ \ve{W}\:,
   \label{eq:neumann_ulam_decomposition}
 \end{equation}
-where $\circ$ denotes the Hadamard product operation\footnote{The Hadamard
-  product $\ve{A} = \ve{B} \circ \ve{C}$ is defined element-wise as
-  $a_{ij} = b_{ij} c_{ij}$.}, $\ve{P}$ denotes the transition
-probability matrix, and $\ve{W}$ denotes the transition weight
-matrix. The formulation of $\ve{P}$ and $\ve{W}$ will be dependent on
-whether we choose a direct or adjoint Monte Carlo sequence to estimate
-the state transitions in Eq~(\ref{eq:expanded_neumann_solution}).
+where $\circ$ denotes the Hadamard product operation\footnote{The
+  Hadamard product $\ve{A} = \ve{B} \circ \ve{C}$ is defined
+  element-wise as $a_{ij} = b_{ij} c_{ij}$.}, $\ve{P}$ denotes the
+transition probability matrix, and $\ve{W}$ denotes the transition
+weight matrix. This decomposition, a generalization of Dimov's work
+\citep{dimov_new_1998}, is an extension of the original Neumann-Ulam
+scheme in that now a weight cutoff can be used to terminate a random
+walk sequence. The formulation of $\ve{P}$ and $\ve{W}$ will be
+dependent on whether we choose a direct or adjoint Monte Carlo
+sequence to estimate the state transitions in
+Eq~(\ref{eq:expanded_neumann_solution}).
 
 \subsection{Direct Method}
 \label{subsec:direct_mc}
@@ -685,8 +696,9 @@ In the context of matrix inversion, a direct method resembles an
 adjoint Monte Carlo method in the reactor physics community where the
 solution state is sampled and the source terms that contribute to it
 are assembled. To achieve this, we build the direct method
-Neumann-Ulam decomposition by first choosing a probability matrix that
-is a row scaling of $\ve{H}$ such that its components are:
+Neumann-Ulam decomposition per Dimov's approach by first choosing a
+probability matrix that is a row scaling of $\ve{H}$ such that its
+components are:
 \begin{equation}
   p_{ij} = \frac{|h_{ij}|}{\sum_j |h_{ij}|}\:.
   \label{eq:direct_probability}
@@ -936,7 +948,7 @@ rates \citep{halton_sequential_1962} and further refined his work some
 years later \citep{halton_sequential_1994}. Applications of his work
 by the transport community have confirmed convergence rates on the
 order of of $exp(-N)$
-\citep{t.m._evans__t.j._urbatsch_h._lichtenstein_j.e._morel_residual_2003}. In
+\citep{evans_residual_2003}. In
 much the same way as projection methods, Halton's method, sequential
 Monte Carlo, utilizes the adjoint Monte Carlo solver as a means of
 driving down the residual vector. He proposed the following iterative
