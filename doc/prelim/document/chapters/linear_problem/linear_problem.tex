@@ -2,8 +2,9 @@
 \label{ch:linear_problem}
 The discretization of partial differential equations (\textit{PDEs})
 through common methods such as finite differences
-\citep{leveque_2007}, finite volumes \citep{leveque_2002}, and finite
-elements \citep{zienkiewicz_1977} ultimately generates sets of coupled
+\citep{leveque_finite_2007}, finite volumes
+\citep{leveque_finite_2002}, and finite elements
+\citep{zienkiewicz_finite_2005} ultimately generates sets of coupled
 equations in the form of matrix problems.  In addition, these matrices
 are typically sparse, meaning that the vast majority of their
 constituent elements are zero. This sparsity is due to the fact that
@@ -20,7 +21,7 @@ of conventional methods are discussed and a novel proposal for the
 parallelization of stochastic methods presented.\footnote{The contents
   of this chapter, particularly those sections relating to projection
   methods and matrix analysis, are heavily based on Saad's text
-  \citep{saad_2003}.}
+  \citep{saad_iterative_2003}.}
 
 \section{Preliminaries}
 \label{sec:linear_preliminaries}
@@ -74,7 +75,8 @@ Eq~(\ref{eq:eigenvalue_problem_2}) for a particular permutation of
 $\ve{x}$. The set of all permutations form the \textit{Eigenvectors}
 of $\ve{A}$. A quantity of particular interest that is computatable
 from the eigenvalues of a matrix $\ve{A}$ is the \textit{spectral
-  radius}, $\rho(\ve{A})$, defined by Saad \citep{saad_2003} as:
+  radius}, $\rho(\ve{A})$, defined by Saad \citep{saad_iterative_2003}
+as:
 \begin{equation}
   \rho(\ve{A}) = \max_{\lambda \in \sigma(\ve{A})} |\lambda| \:.
   \label{eq:spectral_radius}
@@ -94,7 +96,7 @@ stiffness ratios as \textit{stiff}.
 
 General to both matrices and vectors, \textit{norms} are a mechanism
 for collapsing objects of many elements to a single value. Per
-LeVeque's text \citep{leveque_2007}, the q-norm of a vector is defined
+LeVeque's text \citep{leveque_finite_2007}, the q-norm of a vector is defined
 as:
 \begin{equation}
   ||\ve{v}||_q = \Bigg[ \sum_{i=1}^N |v_i|^q \Bigg]^{1/q},\ \ve{v} \in
@@ -197,7 +199,7 @@ place restrictions on the iteration matrix by using the tools
 developed in \S~(\ref{sec:linear_preliminaries}). By assuming $\ve{H}$
 is diagonalizable\footnote{We may generalize this to
   non-diagonalizable matrices with the Jordan canonical form of
-  $\ve{H}$.} \citep{saad_2003}, we then have:
+  $\ve{H}$.} \citep{saad_iterative_2003}, we then have:
 \begin{equation}
   \ve{e}^{k} =
   \ve{R}\boldsymbol{\Lambda}^k\ve{R}^{-1}\ve{e}^0\:,
@@ -358,7 +360,7 @@ constraint subspace also then gives us the result via
 Eq~(\ref{eq:linear_projection_constraint}) that the residual is
 minimized for all $\boldsymbol{\delta} \in \mathcal{K}$, forming the
 basis for the \textit{generalized minimum residual method} (GMRES)
-\citep{saad_1986}.
+\citep{saad_gmres:_1986}.
 
 Choosing GMRES as our model Krylov method, we are first tasked with
 finding a projector onto the subspace. We seek an orthonormal basis
@@ -415,10 +417,10 @@ directions (and therefore less than optimal). From an implementation
 perspective, because the operator is not required to be formed, GMRES
 is significantly more flexible in its usage in that there are many
 instances where various processes serve to provide the action of that
-operator (e.g. radiation transport sweeps \citep{evans_2010}) that
-normally may not be amenable to its full construction. In addition,
-the minimization problem is a straight-forward least-squares problem
-where $\ve{H}$ is an upper-Hessenberg matrix.
+operator (e.g. radiation transport sweeps \citep{evans_denovo:_2010})
+that normally may not be amenable to its full construction. In
+addition, the minimization problem is a straight-forward least-squares
+problem where $\ve{H}$ is an upper-Hessenberg matrix.
 
 \subsection{Parallel Projection Methods}
 \label{subsec:parallel_krylov_methods}
@@ -427,39 +429,43 @@ memory architectures rely heavily on capabilities provided by general
 linear algebra frameworks. For methods like GMRES, this arises from
 the fact that Krylov methods require only a handful of operation types
 in their implementation that can be efficiently programmed on these
-architectures. Per Saad's text \citep{saad_2003} and as noted in
-Algorithm~\ref{alg:gmres}, these operations are preconditioning,
-matrix-vector multiplications, vector updates, and inner products. For
-the last three items, linear algebra libraries such as PETSc
-\citep{petsc_2012} and Trilinos \citep{trilinos_2005} provide
-efficient parallel implementations for these operations. Depending on
-the type of preconditioning used, efficient parallel implementations
-may also be available for those operations. In all cases, a series of
-scatter/gather operations are required such that global communication
-operations must occur. Although the relative performance of such
-operations is bound to the implementation, asymptotically perfomance
-should be the same across all implementations. 
+architectures. Per Saad's text \citep{saad_iterative_2003} and as
+noted in Algorithm~\ref{alg:gmres}, these operations are
+preconditioning, matrix-vector multiplications, vector updates, and
+inner products. For the last three items, linear algebra libraries
+such as PETSc \citep{gropp_scalable_1993} and Trilinos
+\citep{heroux_overview_2005} provide efficient parallel
+implementations for these operations. Depending on the type of
+preconditioning used, efficient parallel implementations may also be
+available for those operations. Due to their prevalence in modern
+numerical methods, parallel formulations these operations have
+warranted intense study \citep{tuminaro_parallel_1998}. In all cases, a series
+of scatter/gather operations are required such that global
+communication operations must occur. Although the relative performance
+of such operations is bound to the implementation, asymptotically
+perfomance should be the same across all implementations.
 
 We will look at the three primary parallel matrix/vector operations as
 preconditioning is not an immediate requirement for implementing the
 algorithms. Furthermore, variants are available that reduce the number
-of global communications required (consider \cite{sosonkina_1998} as
-an example of reducing global operation counts using a different
-orthogonalization procedure than Arnoldi), however, we will only
-consider the basic algorithms here as this handful operations can be
-generalized to fit more complicated algorithms. In all of these cases,
-we assume a general matrix/vector formulation that is distributed in
-parallel such that both local and global knowledge of their
-decomposition is available on request. Furthermore, it is assumed that
-these objects are partitioned in such a way that the parallel
-formulation of the operator and vectors in
-Eq~(\ref{eq:linear_problem}) will be such that each parallel process
-contains only a subset of the global problem and that subset forms a
-local set of complete equations. The form of this partitioning is
-problem dependent and often has a geometric or graph-based aspect to
-its construction in order to optimize communication
-patterns. Libraries such as Zoltan \citep{zoltan_2007}, provide an
-implementations of such algorithms.
+of global communications required (consider
+\cite{sosonkina_scalable_1998} as an example of reducing global
+operation counts using a different orthogonalization procedure than
+Arnoldi), however, we will only consider the basic algorithms here as
+this handful operations can be generalized to fit more complicated
+algorithms. In all of these cases, we assume a general matrix/vector
+formulation that is distributed in parallel such that both local and
+global knowledge of their decomposition is available on
+request. Furthermore, it is assumed that these objects are partitioned
+in such a way that the parallel formulation of the operator and
+vectors in Eq~(\ref{eq:linear_problem}) will be such that each
+parallel process contains only a subset of the global problem and that
+subset forms a local set of complete equations. The form of this
+partitioning is problem dependent and often has a geometric or
+graph-based aspect to its construction in order to optimize
+communication patterns. Libraries such as Zoltan
+\citep{devine_zoltan_2002}, provide an implementations of such
+algorithms.
 
 \subsubsection{Parallel Vector Update}
 \label{subsubsec:parallel_vec_update}
@@ -528,7 +534,8 @@ element of the local product vector. Fortunately, the vast majority of
 the global vector components will be multiplied by zero due to the
 sparsity of the matrix and therefore much of the vector can be
 neglected. Instead we only require data from a handful of other
-processes. Consider the sparse matrix-vector multiply in
+processes that can be acquired through asynchronous/synchronous
+communications. Consider the sparse matrix-vector multiply in
 Figure~\ref{fig:partitioned_matvec_multiply} that is partitioned on 3
 processors.
 \begin{figure}[htpb!]
@@ -536,9 +543,10 @@ processors.
     \scalebox{1.5}{
       \input{chapters/linear_problem/partitioned_matrix.pdftex_t} }
   \end{center}
-  \caption{\textbf{Sparse matrix-vector multiply operation partitioned
-      on 3 processors.}\textit{Each process owns a set of equations
-      that correlates to its physical domain.}}
+  \caption{\textbf{Sparse matrix-vector multiply $\ve{A}\ve{x}=\ve{y}$
+      operation partitioned on 3 processors.} \textit{Each process
+      owns a set of equations that correlates to its physical
+      domain.}}
   \label{fig:partitioned_matvec_multiply}
 \end{figure}
 Each process owns a set of equations that correlate to the physical
@@ -609,12 +617,12 @@ Monte Carlo methods that sample a distribution with an expectation
 value equivalent to that of the inverted operator. Such methods have
 been in existence for decades with the earliest reference noted here
 an enjoyable manuscript published in 1950 by Forsythe and Leibler
-\citep{forsythe_1950}. In their outline, Forsythe and Liebler in fact
-credit the creation of this technique to J. Von Neumann and S.M. Ulam
-some years earlier than its publication. Hammersley and Handscomb's
-1964 monograph \citep{hammersley_1964} presents additional detail on
-this topic using a collection of references from the 1950's and early
-1960's.
+\citep{forsythe_matrix_1950}. In their outline, Forsythe and Liebler
+in fact credit the creation of this technique to J. Von Neumann and
+S.M. Ulam some years earlier than its publication. Hammersley and
+Handscomb's 1964 monograph \citep{hammersley_monte_1964} presents
+additional detail on this topic using a collection of references from
+the 1950's and early 1960's.
 
 We begin our discussion of stochastic methods using these texts by
 seeking a solution to Eq~(\ref{eq:linear_problem}). For a given linear
@@ -924,14 +932,15 @@ The direct and adjoint methods described are limited by a convergence
 rate of $1/\sqrt{N}$ by the Central Limit Theorem where $N$ is the
 number of random walk permutations. In 1962, Halton presented a
 residual Monte Carlo method that moves towards exponential convergence
-rates \citep{halton_1962} and further refined his work some years
-later \citep{halton_1994}. Applications of his work by the transport
-community have confirmed convergence rates on the order of of
-$exp(-N)$ \citep{evans_2003}. In much the same way as projection
-methods, Halton's method, sequential Monte Carlo, utilizes the adjoint
-Monte Carlo solver as a means of driving down the residual vector. He
-proposed the following iterative scheme as a solution to
-Eq~(\ref{eq:linear_problem})\:
+rates \citep{halton_sequential_1962} and further refined his work some
+years later \citep{halton_sequential_1994}. Applications of his work
+by the transport community have confirmed convergence rates on the
+order of of $exp(-N)$
+\citep{t.m._evans__t.j._urbatsch_h._lichtenstein_j.e._morel_residual_2003}. In
+much the same way as projection methods, Halton's method, sequential
+Monte Carlo, utilizes the adjoint Monte Carlo solver as a means of
+driving down the residual vector. He proposed the following iterative
+scheme as a solution to Eq~(\ref{eq:linear_problem})\:
 \begin{subequations}
   \begin{gather}
     \ve{r}^k = \ve{b} - \ve{A}\ve{x}^k\:,\\  
@@ -959,10 +968,10 @@ Halton's method is still characterized by poor performance.
 \label{subsec:mcsa}
 Using the ideas of Halton, Evans and Mosher recently developed a Monte
 Carlo solution that was not prohibited severely by the quality of the
-initial guess for the system \citep{evans_2009}. Their approach was
-instead to use residual Monte Carlo as a synthetic acceleration for a
-stationary method. To derive this method, we begin by splitting the
-operator in Eq~(\ref{eq:linear_problem}) 
+initial guess for the system \citep{evans_monte_2009}. Their approach
+was instead to use residual Monte Carlo as a synthetic acceleration
+for a stationary method. To derive this method, we begin by splitting
+the operator in Eq~(\ref{eq:linear_problem})
 \begin{equation}
   \ve{x} = (\ve{I} - \ve{A})\ve{x} + \ve{b}\:.
   \label{eq:linear_split}

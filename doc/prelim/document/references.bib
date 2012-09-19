@@ -1,597 +1,753 @@
-%------------------------------------- A ------------------------------------%
 
-@article{anasazi_2009,
-author = "C.G. Baker and U.L. Hetmaniuk and R.B. Lehoucq and
-                  H.K. Thornquist",
-title = "Anasazi software for the numerical solution of large-scale
-                  eigenvalue problems",
-year = "2009",
-journal = "ACM Transactions of Mathematical Software",
-volume = "36",
-issue = "3"
+@inproceedings{kogge_using_2011,
+	address = {New York, {NY}, {USA}},
+	series = {{SC} '11},
+	title = {Using the {TOP500} to trace and project technology and architecture trends},
+	isbn = {978-1-4503-0771-0},
+	url = {http://doi.acm.org/10.1145/2063384.2063421},
+	doi = {10.1145/2063384.2063421},
+	abstract = {The {TOP500} is a treasure trove of information on the leading edge of high performance computing. It was used in the 2008 {DARPA} Exascale technology report to isolate out the effects of architecture and technology on high performance computing, and lay the groundwork to project how current systems might mature through the coming years. Two particular classes of architectures were identified: "heavy-weight" (based on high end commodity microprocessors) and "lightweight," (primarily {BlueGene} variants), and projections made on performance, concurrency, memory capacity, and power. This paper updates those projections, and adds a third class of "heterogeneous" architectures (leveraging the emerging class of {GPU-like} chips) to the mix.},
+	urldate = {2012-09-19},
+	booktitle = {Proceedings of 2011 International Conference for High Performance Computing, Networking, Storage and Analysis},
+	publisher = {{ACM}},
+	author = {Kogge, Peter M. and Dysart, Timothy J.},
+	year = {2011},
+	keywords = {exascale, heterogeneous systems, system projections, {TOP500}},
+	pages = {28:1–28:11},
+	file = {kogge_2011.pdf:/home/stuart/Documents/library/zotero/kogge_2011.pdf:application/pdf}
+},
+
+@article{pernice_nitsol:_1998,
+	title = {{NITSOL:} A Newton Iterative Solver for Nonlinear Systems},
+	volume = {19},
+	issn = {1064-8275, 1095-7197},
+	shorttitle = {{NITSOL}},
+	url = {http://epubs.siam.org.ezproxy.library.wisc.edu/doi/abs/10.1137/S1064827596303843},
+	doi = {10.1137/S1064827596303843},
+	number = {1},
+	urldate = {2012-09-19},
+	journal = {{SIAM} Journal on Scientific Computing},
+	author = {Pernice, Michael and Walker, Homer F.},
+	month = jan,
+	year = {1998},
+	pages = {302--318},
+	file = {pernice_1998.pdf:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/ISUURTM2/pernice_1998.pdf:application/pdf;Remote Access Log In - UW-Madison Libraries:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/P3AT6UXZ/ezproxyiaa.html:text/html}
+},
+
+@article{notz_graph-based_2010,
+	title = {Graph-based software design for managing complexity and enabling concurrency in multiphysics {PDE} software},
+	volume = {40},
+	journal = {{ACM} Trans. Math. Softw.},
+	author = {Notz, {P.K.} and Pawlowski},
+	year = {2010},
+	pages = {1--24},
+	file = {notz_2010.pdf:/home/stuart/Documents/library/zotero/notz_2010.pdf:application/pdf}
+},
+
+@article{saad_gmres:_1986,
+	title = {{GMRES:} A Generalized Minimal Residual Algorithm for Solving Nonsymmetric Linear Systems},
+	volume = {7},
+	issn = {0196-5204},
+	shorttitle = {{GMRES}},
+	url = {http://epubs.siam.org.ezproxy.library.wisc.edu/doi/abs/10.1137/0907058},
+	doi = {10.1137/0907058},
+	number = {3},
+	urldate = {2012-09-19},
+	journal = {{SIAM} Journal on Scientific and Statistical Computing},
+	author = {Saad, Youcef and Schultz, Martin H.},
+	month = jul,
+	year = {1986},
+	pages = {856--869},
+	file = {Remote Access Log In - UW-Madison Libraries:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/IUETXDNB/ezproxyiaa.html:text/html;saad_1986.pdf:/home/stuart/Documents/library/zotero/saad_1986.pdf:application/pdf}
+},
+
+@article{cai_nonlinearly_2002,
+	title = {Nonlinearly Preconditioned Inexact Newton Algorithms},
+	volume = {24},
+	issn = {1064-8275, 1095-7197},
+	url = {http://epubs.siam.org.ezproxy.library.wisc.edu/doi/abs/10.1137/S106482750037620X},
+	doi = {10.1137/S106482750037620X},
+	number = {1},
+	urldate = {2012-09-19},
+	journal = {{SIAM} Journal on Scientific Computing},
+	author = {Cai, Xiao-Chuan and Keyes, David E.},
+	month = jan,
+	year = {2002},
+	pages = {183--200},
+	file = {Cai_Keyes_2002..pdf:/home/stuart/Documents/library/zotero/Cai_Keyes_2002..pdf:application/pdf;Remote Access Log In - UW-Madison Libraries:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/4T84P8UX/ezproxyiaa.html:text/html}
+},
+
+@article{halton_sequential_2006,
+	title = {Sequential Monte Carlo Techniques for Solving Non-Linear Systems},
+	volume = {12},
+	issn = {09299629},
+	lccn = {21029250},
+	doi = {10.1163/156939606777488879},
+	abstract = {Given a system of m equations F(x) = 0 (where m is large and x is an unknown m-vector), we seek to apply sequential Monte Carlo {[SMC]} methods to find solutions efficiently. This paper follows up on a previous paper by the same author, in which consideration was limited to linear systems of the form Ax = a (where, again, m is large, A is a known (m×m) matrix, a is a known m-vector, and x is an unknown m-vector). It was shown there that effective techniques could reduce computation times dramatically (speed-up factors of 550 to 26,000 were obtained in sample calculations). The methods presented here rely on the use of Newtonian linearization, combined with the {SMC} methods previously described. Incidentally, the optimization of these {SMC} methods is discussed here and should clarify the parametrization of the {SMC} techniques so as to yield the highest efficiency. {[ABSTRACT} {FROM} {AUTHOR]}},
+	number = {2},
+	journal = {Monte Carlo Methods \& Applications},
+	author = {Halton, John H.},
+	month = apr,
+	year = {2006},
+	keywords = {{EQUATIONS}, {MATHEMATICAL} models, {MONTE} Carlo method, {NEWTON-Raphson} method, {NUMERICAL} analysis},
+	pages = {113--141},
+	file = {halton_2006.pdf:/home/stuart/Documents/library/zotero/halton_2006.pdf:application/pdf}
+},
+
+@book{zienkiewicz_finite_2005,
+	edition = {6},
+	title = {The Finite Element Method: Its Basis and Fundamentals, Sixth Edition},
+	isbn = {0750663200},
+	shorttitle = {The Finite Element Method},
+	publisher = {Butterworth-Heinemann},
+	author = {Zienkiewicz, O. C. and Taylor, R. L. and Zhu, J. Z.},
+	month = may,
+	year = {2005}
+},
+
+@article{devine_zoltan_2002,
+	title = {Zoltan data management services for parallel dynamic applications},
+	volume = {4},
+	issn = {1521-9615},
+	doi = {10.1109/5992.988653},
+	abstract = {The Zoltan library is a collection of data management services for parallel, unstructured, adaptive, and dynamic applications that is available as open-source software. It simplifies the load-balancing, data movement, unstructured-communication, and memory usage difficulties that arise in dynamic applications such as adaptive finite-element methods, particle methods, and crash simulations. Zoltan's data-structure-neutral design also lets a wide range of applications use it without imposing restrictions on application data structures. Its object-based interface provides a simple and inexpensive way for application developers to use the library and researchers to make new capabilities available under a common interface},
+	number = {2},
+	journal = {Computing in Science Engineering},
+	author = {Devine, K. and Boman, E. and Heaphy, R. and Hendrickson, B. and Vaughan, C.},
+	month = apr,
+	year = {2002},
+	keywords = {adaptive applications, adaptive finite element methods, crash simulations, data management services, data movement, Load balancing, memory usage, object-based interface, open source software, parallel algorithms, parallel dynamic applications, particle methods, resource allocation, software libraries, storage management, unstructured applications, unstructured communication, Zoltan library},
+	pages = {90 --96},
+	file = {IEEE Xplore Abstract Record:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/XBF89S8T/ezproxyiaa.html:text/html;zoltan_2002.pdf:/home/stuart/Documents/library/zotero/zoltan_2002.pdf:application/pdf}
+},
+
+@article{evans_denovo:_2010,
+	title = {Denovo: A New Three-Dimensional Parallel Discrete Ordinates Code in {SCALE}},
+	volume = {171},
+	abstract = {Denovo is a new, three-dimensional, discrete ordinates {(SN)} transport code that uses state-of-the-art solution methods to obtain accurate solutions to the Boltzmann transport equation. Denovo uses the Koch-Baker-Alcouffe parallel sweep algorithm to obtain high parallel efficiency on O(100) processors on {XYZ} orthogonal meshes. As opposed to traditional {SN} codes that use source iteration, Denovo uses nonstationary Krylov methods to solve the within-group equations. Krylov methods are far more efficient than stationary schemes. Additionally, classic acceleration schemes (diffusion synthetic acceleration) do not suffer stability problems when used as a preconditioner to a Krylov solver. Denovo's generic programming framework allows multiple spatial discretization schemes and solution methodologies. Denovo currently provides diamond-difference, theta-weighted diamond-difference, linear-discontinuous finite element, trilinear-discontinuous finite element, and step characteristics spatial differencing schemes. Also, users have the option of running traditional source iteration instead of Krylov iteration. Multigroup upscatter problems can be solved using Gauss-Seidel iteration with transport, two-grid acceleration. A parallel first-collision source is also available. Denovo solutions to the Kobayashi benchmarks are in excellent agreement with published results. Parallel performance shows excellent weak scaling up to 20000 cores and good scaling up to 40000 cores.},
+	number = {2},
+	journal = {Nuclear Technology},
+	author = {Evans, Thomas and Stafford, Alissa and Slaybaugh, Rachel and Clarno, Kevin},
+	month = aug,
+	year = {2010},
+	pages = {171--200},
+	file = {evans_2010.pdf:/home/stuart/Documents/library/zotero/evans_2010.pdf:application/pdf}
+},
+
+@article{evans_monte_2009,
+	title = {A Monte Carlo synthetic acceleration method for the non-linear, time-dependent diffusion equation},
+	journal = {American Nuclear Society - International Conference on Mathematics, Computational Methods and Reactor Physics 2009},
+	author = {Evans, Thomas and Mosher, Scott},
+	year = {2009},
+	file = {evans_2009.pdf:/home/stuart/Documents/library/zotero/evans_2009.pdf:application/pdf}
+},
+
+@article{gaston_parallel_2009,
+	title = {Parallel multiphysics algorithms and software for computational nuclear engineering},
+	volume = {180},
+	issn = {1742-6596},
+	url = {http://iopscience.iop.org/1742-6596/180/1/012012},
+	doi = {10.1088/1742-6596/180/1/012012},
+	urldate = {2012-09-19},
+	journal = {Journal of Physics: Conference Series},
+	author = {Gaston, D and Hansen, G and Kadioglu, S and Knoll, D A and Newman, C and Park, H and Permann, C and Taitano, W},
+	month = jul,
+	year = {2009},
+	pages = {012012},
+	file = {gaston_2009.pdf:/home/stuart/Documents/library/zotero/gaston_2009.pdf:application/pdf;IOP Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/93MEPKGD/Gaston et al. - 2009 - Parallel multiphysics algorithms and software for .pdf:application/pdf}
+},
+
+@article{dembo_inexact_1982,
+	title = {Inexact Newton Methods},
+	volume = {19},
+	issn = {0036-1429, 1095-7170},
+	url = {http://epubs.siam.org.ezproxy.library.wisc.edu/doi/abs/10.1137/0719025},
+	doi = {10.1137/0719025},
+	number = {2},
+	urldate = {2012-09-19},
+	journal = {{SIAM} Journal on Numerical Analysis},
+	author = {Dembo, Ron S. and Eisenstat, Stanley C. and Steihaug, Trond},
+	month = apr,
+	year = {1982},
+	pages = {400--408},
+	file = {dembo_1982.pdf:/home/stuart/Documents/library/zotero/dembo_1982.pdf:application/pdf;Remote Access Log In - UW-Madison Libraries:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/S77QUMZQ/ezproxyiaa.html:text/html}
+},
+
+@book{trefethen_numerical_1997,
+	title = {Numerical Linear Algebra},
+	isbn = {0898713617},
+	publisher = {{SIAM:} Society for Industrial and Applied Mathematics},
+	author = {Trefethen, Lloyd N. and {III}, David Bau},
+	month = jun,
+	year = {1997}
+},
+
+@article{evans_enhanced_2007,
+	title = {Enhanced algorithm efficiency for phase change convection using a multigrid preconditioner with a {SIMPLE} smoother},
+	volume = {223},
+	issn = {0021-9991},
+	url = {http://www.sciencedirect.com/science/article/pii/S0021999106004281},
+	doi = {10.1016/j.jcp.2006.09.003},
+	abstract = {This note extends previous work that used the pressure correction method {SIMPLE} as a preconditioner to solve two-dimensional unsteady phase change problems. Here we examine the impact of using {SIMPLE} as a smoother to multigrid for such problems.},
+	number = {1},
+	journal = {Journal of Computational Physics},
+	author = {Evans, Katherine J. and Knoll, {D.A.} and Pernice, Michael},
+	month = apr,
+	year = {2007},
+	keywords = {Geometric multigrid, {Newton–Krylov}, Phase change convection, {SIMPLE} smoother},
+	pages = {121--126},
+	file = {evans_2007.pdf:/home/stuart/Documents/library/zotero/evans_2007.pdf:application/pdf}
+},
+
+@article{tuminaro_parallel_1998,
+	title = {Parallel sparse matrix vector multiply software for matrices with data locality},
+	volume = {10},
+	copyright = {Copyright © 1998 John Wiley \& Sons, Ltd.},
+	issn = {1096-9128},
+	url = {http://onlinelibrary.wiley.com.ezproxy.library.wisc.edu/doi/10.1002/(SICI)1096-9128(199803)10:3<229::AID-CPE296>3.0.CO;2-I/abstract},
+	doi = {10.1002/(SICI)1096-9128(199803)10:3<229::AID-CPE296>3.0.CO;2-I},
+	abstract = {In this paper we describe general software utilities for performing unstructured sparse matrix–vector multiplications on distributed-memory message-passing computers. The matrix–vector multiply comprises an important kernel in the solution of large sparse linear systems by iterative methods. Our focus is to present the data structures and communication parameters required by these utilities for general sparse unstructured matrices with data locality. These types of matrices are commonly produced by finite difference and finite element approximations to systems of partial differential equations. In this discussion we also present representative examples and timings which demonstrate the utility and performance of the software. © 1998 John Wiley \& Sons, Ltd.},
+	language = {en},
+	number = {3},
+	urldate = {2012-09-19},
+	journal = {Concurrency: Practice and Experience},
+	author = {Tuminaro, Ray S. and Shadid, John N. and Hutchinson, Scott A.},
+	year = {1998},
+	pages = {229–247},
+	file = {Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/CT9T563C/ezproxyiaa.html:text/html;tuminaro_1998.pdf:/home/stuart/Documents/library/zotero/tuminaro_1998.pdf:application/pdf}
+},
+
+@inproceedings{sosonkina_scalable_1998,
+	title = {Scalable parallel implementations of the {GMRES} algorithm via Householder reflections},
+	doi = {10.1109/ICPP.1998.708511},
+	abstract = {Applications involving large sparse nonsymmetric linear systems encourage parallel implementations of robust iterative solution methods, such as {GMRES(k).} One variation of {GMRES(k)} is to adapt the restart value k for any given problem and use Householder reflections in the orthogonalization phase to achieve high accuracy. The Householder transformations can be performed without global communications and modified to use an arbitrary row distribution of the coefficient matrix. The effect of this modification on the {GMRES(k)} performance is discussed here. This paper compares the abilities of various parallel {GMRES(k)} implementations to maintain fixed efficiency with increase in problem size and number of processors},
+	booktitle = {1998 International Conference on Parallel Processing, 1998. Proceedings},
+	author = {Sosonkina, M. and Allison, {D.C.S.} and Watson, {L.T.}},
+	month = aug,
+	year = {1998},
+	keywords = {arbitrary row distribution, coefficient matrix, {GMRES} algorithm, {GMRES(k)}, Householder transformations, iterative methods, large sparse nonsymmetric linear systems, parallel algorithms, parallel implementations, robust iterative solution methods, scalable parallel implementations},
+	pages = {396 --404},
+	file = {IEEE Xplore Abstract Record:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/JUIUJ4IX/ezproxyiaa.html:text/html;IEEE Xplore Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/XAV5BTT9/Sosonkina et al. - 1998 - Scalable parallel implementations of the GMRES alg.pdf:application/pdf;sosonkina_1998.pdf:/home/stuart/Documents/library/zotero/sosonkina_1998.pdf:application/pdf}
+},
+
+@article{knoll_newton-krylov_1995,
+	title = {Newton-Krylov methods applied to a system of convection-diffusion-reaction equations},
+	volume = {88},
+	issn = {0010-4655},
+	url = {http://www.sciencedirect.com/science/article/pii/001046559500062K},
+	doi = {10.1016/0010-4655(95)00062-K},
+	abstract = {We study the application of Newton-Krylov methods for the steady-state solution of the tokamak edge plasma fluid equations. This highly nonlinear system of two-dimensional convection-diffusion-reaction partial differential equations describes the boundary layer of a tokamak fusion reactor. These equations are characterized by multiple time and spatial scales. We use Newton's method to linearize the nonlinear system of equations resulting from the implicit, finite volume discretization of the governing partial differential equations. The resulting linear systems are neither symmetric nor positive definite, and are poorly conditioned. A variety of preconditioned Krylov iterative techniques are employed to solve these linear systems, and we investigate both standard and matrix-free implementations. A number of pseudo-transient continuation methods are investigated to increase the radius of convergence. While this system of equations describes a specific application, the general algorithm should benefit other applications requiring the solution of general reacting flow type equations.},
+	number = {2–3},
+	urldate = {2012-09-19},
+	journal = {Computer Physics Communications},
+	author = {Knoll, {D.A.} and {McHugh}, {P.R.}},
+	month = aug,
+	year = {1995},
+	pages = {141--160},
+	file = {knoll_1995.pdf:/home/stuart/Documents/library/zotero/knoll_1995.pdf:application/pdf;ScienceDirect Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/G34S5ZZ5/ezproxyiaa.html:text/html}
+},
+
+@article{halton_retrospective_1970,
+	title = {A Retrospective and Prospective Survey of the Monte Carlo Method},
+	volume = {12},
+	issn = {0036-1445, 1095-7200},
+	url = {http://epubs.siam.org.ezproxy.library.wisc.edu/doi/abs/10.1137/1012001},
+	doi = {10.1137/1012001},
+	number = {1},
+	urldate = {2012-09-19},
+	journal = {{SIAM} Review},
+	author = {Halton, John H.},
+	month = jan,
+	year = {1970},
+	pages = {1--63},
+	file = {halton_1970.pdf:/home/stuart/Documents/library/zotero/halton_1970.pdf:application/pdf;Remote Access Log In - UW-Madison Libraries:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/3RHC7X36/ezproxyiaa.html:text/html}
+},
+
+@book{leveque_finite_2007,
+	title = {Finite Difference Methods for Ordinary and Partial Differential Equations: Steady-State and Time-Dependent Problems},
+	isbn = {0898716292},
+	shorttitle = {Finite Difference Methods for Ordinary and Partial Differential Equations},
+	publisher = {{SIAM}, Society for Industrial and Applied Mathematics},
+	author = {{LeVeque}, Randall},
+	month = jul,
+	year = {2007},
+	file = {LeVeque2007.pdf:/home/stuart/Documents/books/Math/LeVeque2007/LeVeque2007.pdf:application/pdf}
+},
+
+@article{eisenstat_choosing_1996,
+	title = {Choosing the Forcing Terms in an Inexact Newton Method},
+	volume = {17},
+	issn = {1064-8275, 1095-7197},
+	url = {http://epubs.siam.org.ezproxy.library.wisc.edu/doi/abs/10.1137/0917003},
+	doi = {10.1137/0917003},
+	number = {1},
+	urldate = {2012-09-19},
+	journal = {{SIAM} Journal on Scientific Computing},
+	author = {Eisenstat, Stanley C. and Walker, Homer F.},
+	month = jan,
+	year = {1996},
+	pages = {16--32},
+	file = {eisenstat_1996.pdf:/home/stuart/Documents/library/zotero/eisenstat_1996.pdf:application/pdf;Remote Access Log In - UW-Madison Libraries:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/344H5FNU/ezproxyiaa.html:text/html}
+},
+
+@incollection{hutchison_automatic_2006,
+	address = {Berlin, Heidelberg},
+	title = {Automatic Differentiation of C++ Codes for Large-Scale Scientific Computing},
+	volume = {3994},
+	isbn = {978-3-540-34385-1, 978-3-540-34386-8},
+	url = {http://link.springer.com/chapter/10.1007/11758549_73},
+	urldate = {2012-09-19},
+	booktitle = {Computational Science – {ICCS} 2006},
+	publisher = {Springer Berlin Heidelberg},
+	author = {Bartlett, Roscoe A. and Gay, David M. and Phipps, Eric T.},
+	editor = {Hutchison, David and Kanade, Takeo and Kittler, Josef and Kleinberg, Jon M. and Mattern, Friedemann and Mitchell, John C. and Naor, Moni and Nierstrasz, Oscar and Pandu Rangan, C. and Steffen, Bernhard and Sudan, Madhu and Terzopoulos, Demetri and Tygar, Dough and Vardi, Moshe Y. and Weikum, Gerhard and Alexandrov, Vassil N. and Albada, Geert Dick and Sloot, Peter M. A. and Dongarra, Jack},
+	year = {2006},
+	pages = {525--532},
+	file = {Automatic Differentiation of C++ Codes for Large-Scale Scientific Computing - Springer:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/MREG8H28/11758549_73.html:text/html;bgp_iccs2006.pdf:/home/stuart/Documents/library/zotero/bgp_iccs2006.pdf:application/pdf}
+},
+
+@article{j.c._wagner**_s.w._mosher_t.m._evans_d.e._peplow_and_j.a._turner_hybrid_2010,
+	title = {Hybrid and Parallel Domain-Decomposition Methods Development to Enable Monte Carlo for Reactor Analyses},
+	journal = {Joint International Conference on Supercomputing in Nuclear Applications and Monte Carlo},
+	author = {{{J.C.} {WAGNER},** {S.W.} {MOSHER}, {T.M.} {EVANS}, {D.E.} {PEPLOW}, and {J.A.} {TURNER}}},
+	year = {2010},
+	file = {wagner_2011.pdf:/home/stuart/Documents/library/zotero/wagner_2011.pdf:application/pdf}
+},
+
+@article{siegel_effect_2012,
+	title = {The effect of load imbalances on the performance of Monte Carlo algorithms in {LWR} analysis},
+	issn = {0021-9991},
+	url = {http://www.sciencedirect.com/science/article/pii/S0021999112003191?v=s5},
+	doi = {10.1016/j.jcp.2012.06.012},
+	abstract = {A model is developed to predict the impact of particle load imbalances on the performance of domain-decomposed Monte Carlo neutron transport algorithms. Expressions for upper bound performance ”penalties” are derived in terms of simple machine characteristics, material characterizations and initial particle distributions. The hope is that these relations can be used to evaluate tradeoffs among different memory decomposition strategies in next generation Monte Carlo codes, and perhaps as a metric for triggering particle redistribution in production codes.},
+	number = {0},
+	urldate = {2012-09-19},
+	journal = {Journal of Computational Physics},
+	author = {Siegel, {A.R.} and Smith, K. and Romano, {P.K.} and Forget, B. and Felker, K.},
+	year = {2012},
+	keywords = {Load balancing, Monte Carlo, Neutron transport, Reactor analysis},
+	file = {ScienceDirect Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/JI4CVZXN/ezproxyiaa.html:text/html;seigel_2012.pdf:/home/stuart/Documents/library/zotero/seigel_2012.pdf:application/pdf}
+},
+
+@book{kelley_iterative_1987,
+	edition = {1},
+	title = {Iterative Methods for Linear and Nonlinear Equations},
+	isbn = {0898713528},
+	publisher = {Society for Industrial and Applied Mathematics},
+	author = {Kelley, C. T.},
+	month = jan,
+	year = {1987},
+	file = {Kelley1995.pdf:/home/stuart/Documents/books/Math/Kelley1995.pdf:application/pdf}
+},
+
+@article{forsythe_matrix_1950,
+	title = {Matrix Inversion by a Monte Carlo Method},
+	volume = {4},
+	copyright = {Copyright © 1950 American Mathematical Society},
+	issn = {0891-6837},
+	url = {http://www.jstor.org/stable/2002508},
+	doi = {10.2307/2002508},
+	number = {31},
+	urldate = {2012-09-19},
+	journal = {Mathematical Tables and Other Aids to Computation},
+	author = {Forsythe, George E. and Leibler, Richard A.},
+	month = jul,
+	year = {1950},
+	note = {{ArticleType:} research-article / Full publication date: Jul., 1950 / Copyright © 1950 American Mathematical Society},
+	pages = {127--129},
+	file = {forsythe_1950.pdf:/home/stuart/Documents/library/zotero/forsythe_1950.pdf:application/pdf;JSTOR Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/KMAKHHCT/Forsythe and Leibler - 1950 - Matrix Inversion by a Monte Carlo Method.pdf:application/pdf}
+},
+
+@article{halton_sequential_1994,
+	title = {Sequential Monte Carlo Techniques for the the Solution of Linear Systems},
+	volume = {9},
+	journal = {Journal of Scientific Computing},
+	author = {Halton, J. H.},
+	year = {1994},
+	pages = {213--257},
+	file = {halton_1994.pdf:/home/stuart/Documents/library/zotero/halton_1994.pdf:application/pdf}
+},
+
+@article{halton_sequential_1962,
+	title = {Sequential Monte Carlo},
+	volume = {58},
+	doi = {10.1017/S0305004100036227},
+	abstract = {This paper defines the concept of sequential Monte Carlo and outlines the principal modes of approach which may be expected to yield useful sequential processes. Three workable sequential processes, derived from a non-sequential method of J. von Neumann and S. M. Ulam for solving systems of linear algebraic equations, are described and analysed in detail.},
+	number = {01},
+	journal = {Mathematical Proceedings of the Cambridge Philosophical Society},
+	author = {Halton, J. H.},
+	year = {1962},
+	pages = {57--78},
+	file = {Cambridge Journals Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/CKXPZCWB/displayAbstract.html:text/html}
+},
+
+@article{ghia_high-re_1982,
+	title = {High-Re solutions for incompressible flow using the Navier-Stokes equations and a multigrid method},
+	volume = {48},
+	issn = {0021-9991},
+	url = {http://www.sciencedirect.com/science/article/pii/0021999182900584},
+	doi = {10.1016/0021-9991(82)90058-4},
+	abstract = {The vorticity-stream function formulation of the two-dimensional incompressible Navier-Stokes equations is used to study the effectiveness of the coupled strongly implicit multigrid {(CSI-MG)} method in the determination of high-Re fine-mesh flow solutions. The driven flow in a square cavity is used as the model problem. Solutions are obtained for configurations with Reynolds number as high as 10,000 and meshes consisting of as many as 257 × 257 points. For Re = 1000, the (129 × 129) grid solution required 1.5 minutes of {CPU} time on the {AMDAHL} 470 V/6 computer. Because of the appearance of one or more secondary vortices in the flow field, uniform mesh refinement was preferred to the use of one-dimensional grid-clustering coordinate transformations.},
+	number = {3},
+	urldate = {2012-09-19},
+	journal = {Journal of Computational Physics},
+	author = {Ghia, U and Ghia, {K.N} and Shin, {C.T}},
+	month = dec,
+	year = {1982},
+	pages = {387--411},
+	file = {ghia_1982.pdf:/home/stuart/Documents/library/zotero/ghia_1982.pdf:application/pdf;ScienceDirect Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/XTHM6T84/ezproxyiaa.html:text/html}
+},
+
+@article{saad_flexible_1993,
+	title = {A Flexible Inner-Outer Preconditioned {GMRES} Algorithm},
+	volume = {14},
+	copyright = {{[Copyright]} © 1993 Society for Industrial and Applied Mathematics},
+	issn = {10648275},
+	url = {http://search.proquest.com.ezproxy.library.wisc.edu/docview/921658905/abstract?accountid=465},
+	doi = {http://dx.doi.org.ezproxy.library.wisc.edu/10.1137/0914028},
+	abstract = {A variant of the {GMRES} algorithm is presented that allows changes in the preconditioning at every step. There are many possible applications of the new algorithm, some of which are briefly discussed. In particular, a result of the flexibility of the new variant is that any iterative method can be used as a preconditioner. For example, the standard {GMRES} algorithm itself can be used as a preconditioner, as can {CGNR} (or {CGNE)}, the conjugate gradient method applied to the normal equations. However, the more appealing utilization of the method is in conjunction with relaxation techniques, possibly multilevel techniques. The possibility of changing preconditioners may be exploited to develop efficient iterative methods and to enhance robustness. A few numerical experiments are reported to illustrate this fact.},
+	language = {English},
+	number = {2},
+	urldate = {2012-09-19},
+	journal = {{SIAM} Journal on Scientific Computing},
+	author = {Saad, Youcef},
+	month = mar,
+	year = {1993},
+	keywords = {Mathematics},
+	pages = {9},
+	file = {Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/9S3HG9GG/Saad - 1993 - A Flexible Inner-Outer Preconditioned GMRES Algori.pdf:application/pdf;Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/T22NB3DC/ezproxyiaa.html:text/html}
+},
+
+@article{pawlowski_globalization_2006,
+	title = {Globalization Techniques for {Newton–Krylov} Methods and Applications to the Fully Coupled Solution of the {Navier–Stokes} Equations},
+	volume = {48},
+	issn = {0036-1445, 1095-7200},
+	url = {http://epubs.siam.org.ezproxy.library.wisc.edu/doi/abs/10.1137/S0036144504443511},
+	doi = {10.1137/S0036144504443511},
+	number = {4},
+	urldate = {2012-09-19},
+	journal = {{SIAM} Review},
+	author = {Pawlowski, Roger P. and Shadid, John N. and Simonis, Joseph P. and Walker, Homer F.},
+	month = jan,
+	year = {2006},
+	pages = {700--721},
+	file = {pawlowski_2006.pdf:/home/stuart/Documents/library/zotero/pawlowski_2006.pdf:application/pdf;Remote Access Log In - UW-Madison Libraries:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/PJBGGS5M/ezproxyiaa.html:text/html}
+},
+
+@book{leveque_finite_2002,
+	edition = {1},
+	title = {Finite Volume Methods for Hyperbolic Problems},
+	isbn = {0521009243},
+	publisher = {Cambridge University Press},
+	author = {{LeVeque}, Randall J.},
+	month = aug,
+	year = {2002}
+},
+
+@article{rief_touching_1999,
+	title = {Touching on a zero-variance scheme in solving linear equations by random walk processes},
+	volume = {5},
+	issn = {09299629},
+	lccn = {5119024},
+	abstract = {Presents a study which demonstrated how the gradients constitute the essential information to determine an estimate of the inverse of a transition matrix describing a random walk problem. Technique in mapping a system of linear equations onto a different random walk problem; Approximation made with the use of the random walk scheme; Differential operator sampling.},
+	number = {2},
+	journal = {Monte Carlo Methods \& Applications},
+	author = {Rief, H.},
+	month = apr,
+	year = {1999},
+	keywords = {{ESTIMATION} theory, {RANDOM} walks {(Mathematics)}},
+	pages = {135},
+	file = {rief_1999.pdf:/home/stuart/Documents/library/zotero/rief_1999.pdf:application/pdf}
+},
+
+@article{shadid_comparison_1994,
+	title = {A Comparison of Preconditioned Nonsymmetric Krylov Methods on a Large-Scale {MIMD} Machine},
+	volume = {15},
+	issn = {1064-8275, 1095-7197},
+	url = {http://epubs.siam.org.ezproxy.library.wisc.edu/doi/abs/10.1137/0915030},
+	doi = {10.1137/0915030},
+	number = {2},
+	urldate = {2012-09-19},
+	journal = {{SIAM} Journal on Scientific Computing},
+	author = {Shadid, John N. and Tuminaro, Ray S.},
+	month = mar,
+	year = {1994},
+	pages = {440--459},
+	file = {Remote Access Log In - UW-Madison Libraries:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/5S3TGMEC/ezproxyiaa.html:text/html;shadid_1994.pdf:/home/stuart/Documents/library/zotero/shadid_1994.pdf:application/pdf}
+},
+
+@article{godoy_parallel_2012,
+	title = {Parallel Jacobian-free Newton Krylov solution of the discrete ordinates method with flux limiters for {3D} radiative transfer},
+	volume = {231},
+	issn = {0021-9991},
+	url = {http://www.sciencedirect.com/science/article/pii/S0021999112000897},
+	doi = {10.1016/j.jcp.2012.02.010},
+	number = {11},
+	journal = {Journal of Computational Physics},
+	author = {Godoy, William F. and Liu, Xu},
+	month = jun,
+	year = {2012},
+	keywords = {Collimated radiation, Discrete ordinates method {(DOM)} {SN}, Electromagnetic radiation, Flux limiters, General Minimal Residual {(GMRES)}, {Gram–Schmidt}, Householder, Jacobian free {Newton–Krylov} {(JFNK)}, Parallel {MPI}, Radiative transfer equation {(RTE)}, Threads, {TVD}},
+	pages = {4257--4278},
+	file = {Godoy_2012.pdf:/home/stuart/Documents/library/zotero/Godoy_2012.pdf:application/pdf}
+},
+
+@book{saad_iterative_2003,
+	title = {Iterative Methods for Sparse Linear Systems},
+	isbn = {9780898715347},
+	abstract = {Tremendous progress has been made in the scientific and engineering disciplines regarding the use of iterative methods for linear systems. The size and complexity of linear and nonlinear systems arising in typical applications has grown, meaning that using direct solvers for the three-dimensional models of these problems is no longer effective. At the same time, parallel computing, becoming less expensive and standardized, has penetrated these application areas. Iterative methods are easier than direct solvers to implement on parallel computers but require approaches and solution algorithms that are different from classical methods. This second edition gives an in-depth, up-to-date view of practical algorithms for solving large-scale linear systems of equations, including a wide range of the best methods available today. A new chapter on multigrid techniques has been added, whilst material throughout has been updated, removed or shortened. Numerous exercises have been added, as well as an updated and expanded bibliography.},
+	language = {en},
+	publisher = {{SIAM}},
+	author = {Saad, Yousef},
+	month = apr,
+	year = {2003},
+	keywords = {Mathematics / Applied, Mathematics / Calculus, Mathematics / Mathematical Analysis},
+	file = {Saad_2003.pdf:/home/stuart/Documents/books/Math/Saad_2003.pdf:application/pdf}
+},
+
+@inproceedings{gropp_scalable_1993,
+	title = {Scalable, extensible, and portable numerical libraries},
+	doi = {10.1109/SPLC.1993.365579},
+	abstract = {Designing a scalable and portable numerical library requires consideration of many factors, including choice of parallel communication technology, data structures, and user interfaces. The {PETSc} library {(Portable} Extensible Tools for Scientific computing) makes use of modern software technology to provide a flexible and portable implementation. This paper discusses the use of a meta-communication layer (allowing the user to choose different transport layers such as {MPI}, p4, pvm, or vendor-specific libraries) for portability, an aggressive data-structure-neutral implementation that minimizes dependence on particular data structures (even vectors), permitting the library to adapt to the user rather than the other way around, and the separation of implementation language from user-interface language. Examples are presented},
+	booktitle = {Scalable Parallel Libraries Conference, 1993., Proceedings of the},
+	author = {Gropp, W. and Smith, B.},
+	month = oct,
+	year = {1993},
+	keywords = {aggressive data-structure-neutral implementation, data structures, implementation language, meta-communication layer, parallel communication technology, {PETSc} library, Portable Extensible Tools for Scientific computing, portable numerical libraries, software portability, software technology, user-interface language, user interfaces},
+	pages = {87 --93},
+	file = {gropp_1994.pdf:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/NTQC23NG/gropp_1994.pdf:application/pdf;IEEE Xplore Abstract Record:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/THX5TS5R/ezproxyiaa.html:text/html}
+},
+
+@article{de_vahl_davis_natural_1983,
+	title = {Natural convection of air in a square cavity: A bench mark numerical solution},
+	volume = {3},
+	copyright = {Copyright © 1983 John Wiley \& Sons, Ltd},
+	issn = {1097-0363},
+	shorttitle = {Natural convection of air in a square cavity},
+	url = {http://onlinelibrary.wiley.com.ezproxy.library.wisc.edu/doi/10.1002/fld.1650030305/abstract},
+	doi = {10.1002/fld.1650030305},
+	abstract = {Details are given of the computational method used to obtain an accurate solution of the equations describing two-dimensional natural convection in a square cavity with differentially heated side walls. Second-order, central difference approximations were used. Mesh refnement and extrapolation led to solutions for {103⩽Ra⩽10} 6 which are believed to be accurate to better than 1 per cent at the highest Rayleigh number and down to one-tenth of that at the lowest value.},
+	language = {en},
+	number = {3},
+	urldate = {2012-09-19},
+	journal = {International Journal for Numerical Methods in Fluids},
+	author = {De Vahl Davis, G.},
+	year = {1983},
+	keywords = {Bench Mark Solution, Natural Convection, Numerical Methods, Square Cavity},
+	pages = {249–264},
+	file = {devahl_1983.pdf:/home/stuart/Documents/library/zotero/devahl_1983.pdf:application/pdf;Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/6UWT235T/De Vahl Davis - 1983 - Natural convection of air in a square cavity A be.pdf:application/pdf;Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/NTV28EKT/ezproxyiaa.html:text/html}
+},
+
+@article{t.m._evans__t.j._urbatsch_h._lichtenstein_j.e._morel_residual_2003,
+	title = {A residual Monte Carlo method for discrete thermal radiative diffusion},
+	volume = {189},
+	abstract = {Residual Monte Carlo methods reduce statistical error at a rate of {exp(−bN)}, where b is a positive constant and N is the number of particle histories. Contrast this convergence rate with , which is the rate of statistical error reduction for conventional Monte Carlo methods. Thus, residual Monte Carlo methods hold great promise for increased efficiency relative to conventional Monte Carlo methods. Previous research has shown that the application of residual Monte Carlo methods to the solution of continuum equations, such as the radiation transport equation, is problematic for all but the simplest of cases. However, the residual method readily applies to discrete systems as long as those systems are monotone, i.e., they produce positive solutions given positive sources. We develop a residual Monte Carlo method for solving a discrete {1D} non-linear thermal radiative equilibrium diffusion equation, and we compare its performance with that of the discrete conventional Monte Carlo method upon which it is based. We find that the residual method provides efficiency gains of many orders of magnitude. Part of the residual gain is due to the fact that we begin each timestep with an initial guess equal to the solution from the previous timestep. Moreover, fully consistent non-linear solutions can be obtained in a reasonable amount of time because of the effective lack of statistical noise. We conclude that the residual approach has great potential and that further research into such methods should be pursued for more general discrete and continuum systems.},
+	number = {2},
+	journal = {Journal of Computational Physics},
+	author = {{T.M.} Evans, , {T.J.} Urbatsch, H. Lichtenstein, {J.E.} Morel},
+	month = aug,
+	year = {2003},
+	pages = {539--556},
+	file = {evans_2003.pdf:/home/stuart/Documents/library/zotero/evans_2003.pdf:application/pdf}
+},
+
+@article{knoll_jacobian-free_2004,
+	title = {Jacobian-free {Newton–Krylov} methods: a survey of approaches and applications},
+	volume = {193},
+	issn = {0021-9991},
+	url = {http://www.sciencedirect.com/science/article/pii/S0021999103004340},
+	doi = {10.1016/j.jcp.2003.08.010},
+	number = {2},
+	journal = {Journal of Computational Physics},
+	author = {Knoll, {D.A.} and Keyes, {D.E.}},
+	month = jan,
+	year = {2004},
+	pages = {357--397},
+	file = {Knoll_Keyes_JCP_2004.pdf:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/3XD34IKC/Knoll_Keyes_JCP_2004.pdf:application/pdf}
+},
+
+@article{gropp_high-performance_2001,
+	title = {High-performance parallel implicit {CFD}},
+	volume = {27},
+	issn = {0167-8191},
+	url = {http://www.sciencedirect.com/science/article/pii/S0167819100000752},
+	doi = {10.1016/S0167-8191(00)00075-2},
+	number = {4},
+	journal = {Parallel computing in aerospace},
+	author = {Gropp, William D and Kaushik, Dinesh K and Keyes, David E and Smith, Barry F},
+	month = mar,
+	year = {2001},
+	keywords = {Computational fluid dynamics, High-performance computing, Parallel implicit solvers, Unstructured grids},
+	pages = {337--362},
+	file = {gropp_2001.pdf:/home/stuart/Documents/library/zotero/gropp_2001.pdf:application/pdf}
+},
+
+@article{heroux_overview_2005,
+	title = {An overview of the Trilinos project},
+	volume = {31},
+	issn = {0098-3500},
+	url = {http://doi.acm.org/10.1145/1089014.1089021},
+	doi = {10.1145/1089014.1089021},
+	abstract = {The Trilinos Project is an effort to facilitate the design, development, integration, and ongoing support of mathematical software libraries within an object-oriented framework for the solution of large-scale, complex multiphysics engineering and scientific problems. Trilinos addresses two fundamental issues of developing software for these problems: (i) providing a streamlined process and set of tools for development of new algorithmic implementations and (ii) promoting interoperability of independently developed {software.Trilinos} uses a two-level software structure designed around collections of packages. A Trilinos package is an integral unit usually developed by a small team of experts in a particular algorithms area such as algebraic preconditioners, nonlinear solvers, etc. Packages exist underneath the Trilinos top level, which provides a common look-and-feel, including configuration, documentation, licensing, and bug-{tracking.Here} we present the overall Trilinos design, describing our use of abstract interfaces and default concrete implementations. We discuss the services that Trilinos provides to a prospective package and how these services are used by various packages. We also illustrate how packages can be combined to rapidly develop new algorithms. Finally, we discuss how Trilinos facilitates high-quality software engineering practices that are increasingly required from simulation software.},
+	number = {3},
+	urldate = {2012-09-19},
+	journal = {{ACM} Trans. Math. Softw.},
+	author = {Heroux, Michael A. and Bartlett, Roscoe A. and Howle, Vicki E. and Hoekstra, Robert J. and Hu, Jonathan J. and Kolda, Tamara G. and Lehoucq, Richard B. and Long, Kevin R. and Pawlowski, Roger P. and Phipps, Eric T. and Salinger, Andrew G. and Thornquist, Heidi K. and Tuminaro, Ray S. and Willenbring, James M. and Williams, Alan and Stanley, Kendall S.},
+	month = sep,
+	year = {2005},
+	keywords = {interfaces, Software framework, Software Quality Engineering},
+	pages = {397–423},
+	file = {heroux_2005.pdf:/home/stuart/Documents/library/zotero/heroux_2005.pdf:application/pdf}
+},
+
+@book{lewis_computational_1993,
+	title = {Computational Methods of Neutron Transport},
+	isbn = {0471092452},
+	publisher = {Wiley-Interscience},
+	author = {Lewis, E. E.},
+	editor = {Miller, W. F. , Jr},
+	month = jan,
+	year = {1993}
+},
+
+@book{hammersley_monte_1964,
+	title = {Monte Carlo Methods},
+	isbn = {9780416523409},
+	language = {en},
+	publisher = {Methuen},
+	author = {Hammersley, John Michael and Handscomb, David Christopher},
+	year = {1964},
+	keywords = {{MONTE} Carlo method, Probabilities}
+},
+
+@article{gartling_test_1990,
+	title = {A test problem for outflow boundary conditions—flow over a backward-facing step},
+	volume = {11},
+	copyright = {Copyright © 1990 John Wiley \& Sons, Ltd},
+	issn = {1097-0363},
+	url = {http://onlinelibrary.wiley.com.ezproxy.library.wisc.edu/doi/10.1002/fld.1650110704/abstract},
+	doi = {10.1002/fld.1650110704},
+	abstract = {A numerical solution for steady incompressible flow over a two-dimensional backward-facing step is developed using a Galerkin-based finite element method. The Reynolds number for the simulations is 800. Computations are performed on an extended channel length to minimize the effect of the outflow boundary on the upstream recirculation zones. A thorough mesh refinement study is performed to validate the results. Extensive profile data at several channel locations are provided to allow future testing and evaluation of outflow boundary conditions.},
+	language = {en},
+	number = {7},
+	urldate = {2012-09-19},
+	journal = {International Journal for Numerical Methods in Fluids},
+	author = {Gartling, David K.},
+	year = {1990},
+	keywords = {Backward-facing step, Finite element, {Navier–Stokes}, Outflow boundary conditions},
+	pages = {953–967},
+	file = {Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/BBNZ3B7J/Gartling - 1990 - A test problem for outflow boundary conditions—flo.pdf:application/pdf;gartling_1990.pdf:/home/stuart/Documents/library/zotero/gartling_1990.pdf:application/pdf;Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/9WDI72XS/ezproxyiaa.html:text/html}
+},
+
+@article{mchugh_fully_1994,
+	title = {Fully coupled finite volume solutions of the incompressible {Navier–Stokes} and energy equations using an inexact Newton method},
+	volume = {19},
+	copyright = {Copyright © 1994 John Wiley \& Sons, Ltd},
+	issn = {1097-0363},
+	url = {http://onlinelibrary.wiley.com.ezproxy.library.wisc.edu/doi/10.1002/fld.1650190506/abstract},
+	doi = {10.1002/fld.1650190506},
+	abstract = {An inexact Newton method is used to solve the steady, incompressible {Navier–Stokes} and energy equation. Finite volume differencing is employed on a staggered grid using the power law scheme of Patankar. Natural convection in an enclosed cavity is studied as the model problem. Two conjugate-gradient -like algorithms based upon the Lanczos biorthogonalization procedure are used to solve the linear systems arising on each Newton iteration. The first conjugate-gradient-like algorithm is the transpose-free quasi-minimal residual algorithm {(TFQMR)} and the second is the conjugate gradients squared algorithm {(CGS).} Incomplete lower-upper {(ILU)} factorization of the Jacobian matrix is used as a right preconditioner. The performance of the Newton- {TFQMR} algorithm is studied with regard to different choices for the {TFQMR} convergence criteria and the amount of fill-in allowed in the {ILU} factorization. Performance data are compared with results using the Newton-{CGS} algorithm and previous results using {LINPACK} banded Gaussian elimination (direct-Newton). The inexact Newton algorithms were found to be {CPU} competetive with the direct-Newton algorithm for the model problem considered. Among the inexact Newton algorithms, Newton-{CGS} outperformed Newton- {TFQMR} with regard to {CPU} time but was less robust because of the sometimes erratic {CGS} convergence behaviour.},
+	language = {en},
+	number = {5},
+	urldate = {2012-09-19},
+	journal = {International Journal for Numerical Methods in Fluids},
+	author = {{McHugh}, Paul R. and Knoll, Dana A.},
+	year = {1994},
+	keywords = {Conjugate gradient, Incompressible {Navier–Stokes}, Newton's method},
+	pages = {439–455},
+	file = {Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/HFFEJBMH/McHugh and Knoll - 1994 - Fully coupled finite volume solutions of the incom.pdf:application/pdf;Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/4JCQ8UJT/ezproxyiaa.html:text/html}
+},
+
+@article{shadid_inexact_1997,
+	title = {An Inexact Newton Method for Fully Coupled Solution of the {Navier–Stokes} Equations with Heat and Mass Transport},
+	volume = {137},
+	issn = {0021-9991},
+	url = {http://www.sciencedirect.com/science/article/pii/S0021999197957983},
+	doi = {10.1006/jcph.1997.5798},
+	abstract = {The solution of the governing steady transport equations for momentum, heat and mass transfer in flowing fluids can be very difficult. These difficulties arise from the nonlinear, coupled, nonsymmetric nature of the system of algebraic equations that results from spatial discretization of the {PDEs.} In this manuscript we focus on evaluating a proposed nonlinear solution method based on an inexact Newton method with backtracking. In this context we use a particular spatial discretization based on a pressure stabilized Petrov-Galerkin finite element formulation of the low Mach number {Navier–Stokes} equations with heat and mass transport. Our discussion considers computational efficiency, robustness and some implementation issues related to the proposed nonlinear solution scheme. Computational results are presented for several challenging {CFD} benchmark problems as well as two large scale {3D} flow simulations.},
+	number = {1},
+	urldate = {2012-09-19},
+	journal = {Journal of Computational Physics},
+	author = {Shadid, John N. and Tuminaro, Ray S. and Walker, Homer F.},
+	month = oct,
+	year = {1997},
+	pages = {155--185},
+	file = {ScienceDirect Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/3T2Q8TG6/ezproxyiaa.html:text/html;shadid_1997.pdf:/home/stuart/Documents/library/zotero/shadid_1997.pdf:application/pdf}
+},
+
+@article{baker_anasazi_2009,
+	title = {Anasazi software for the numerical solution of large-scale eigenvalue problems},
+	volume = {36},
+	issn = {0098-3500},
+	url = {http://doi.acm.org/10.1145/1527286.1527287},
+	doi = {10.1145/1527286.1527287},
+	abstract = {Anasazi is a package within the Trilinos software project that provides a framework for the iterative, numerical solution of large-scale eigenvalue problems. Anasazi is written in {ANSI} C++ and exploits modern software paradigms to enable the research and development of eigensolver algorithms. Furthermore, Anasazi provides implementations for some of the most recent eigensolver methods. The purpose of our article is to describe the design and development of the Anasazi framework. A performance comparison of Anasazi and the popular {FORTRAN} 77 code {ARPACK} is given.},
+	number = {3},
+	urldate = {2012-09-19},
+	journal = {{ACM} Trans. Math. Softw.},
+	author = {Baker, C. G. and Hetmaniuk, U. L. and Lehoucq, R. B. and Thornquist, H. K.},
+	month = jul,
+	year = {2009},
+	keywords = {Eigenvalue problems, generic programming, large-scale scientific computing, numerical algorithms, object-oriented programming},
+	pages = {13:1–13:23},
+	file = {baker_2009.pdf:/home/stuart/Documents/library/zotero/baker_2009.pdf:application/pdf}
+},
+
+@book{pletcher_computational_1997,
+	edition = {2},
+	title = {Computational Fluid Mechanics and Heat Transfer, Second Edition},
+	isbn = {{156032046X}},
+	publisher = {Taylor \& Francis},
+	author = {Pletcher, Richard H. and Tannehill, John C. and Anderson, Dale},
+	month = apr,
+	year = {1997}
+},
+
+@article{danilov_asymptotic_2000,
+	title = {Asymptotic complexity of Monte Carlo methods for solving linear systems},
+	volume = {85},
+	issn = {0378-3758},
+	url = {http://www.sciencedirect.com/science/article/pii/S0378375899000609},
+	doi = {10.1016/S0378-3758(99)00060-9},
+	number = {1–2},
+	journal = {Journal of Statistical Planning and Inference},
+	author = {Danilov, {D.L.} and Ermakov, {S.M.} and Halton, {J.H.}},
+	month = apr,
+	year = {2000},
+	keywords = {Algorithm complexity, Collision estimator, Linear systems, Monte Carlo method},
+	pages = {5--18},
+	file = {danilov_2000.pdf:/home/stuart/Documents/library/zotero/danilov_2000.pdf:application/pdf}
+},
+
+@article{evans_development_2006,
+	title = {Development of a 2-D algorithm to simulate convection and phase transition efficiently},
+	volume = {219},
+	issn = {0021-9991},
+	url = {http://www.sciencedirect.com/science/article/pii/S0021999106001690},
+	doi = {10.1016/j.jcp.2006.03.025},
+	abstract = {We develop a Jacobian-Free {Newton–Krylov} {(JFNK)} method for the solution of a two-dimensional convection phase change model using the incompressible {Navier–Stokes} equation set and enthalpy as the energy conservation variable. The {SIMPLE} algorithm acts as a physics-based preconditioner to {JFNK.} This combined algorithm is compared to solutions using {SIMPLE} as the main solver. Algorithm performance is assessed for two benchmark problems of phase change convection of a pure material, one melting and one freezing. The {JFNK-SIMPLE} method is shown to be more efficient per time step and more robust at larger time steps. Overall {CPU} savings of more than an order of magnitude are realized.},
+	number = {1},
+	journal = {Journal of Computational Physics},
+	author = {Evans, Katherine J. and Knoll, {D.A.} and Pernice, Michael},
+	month = nov,
+	year = {2006},
+	keywords = {{Newton–Krylov}, Phase change convection, {SIMPLE} preconditioner},
+	pages = {404--417},
+	file = {evans_2006.pdf:/home/stuart/Documents/library/zotero/evans_2006.pdf:application/pdf}
+},
+
+@article{nachtigal_how_1992,
+	title = {How Fast are Nonsymmetric Matrix Iterations?},
+	volume = {13},
+	issn = {0895-4798, 1095-7162},
+	url = {http://epubs.siam.org/action/showAbstract?page=778&volume=13&issue=3&journalCode=sjmael},
+	doi = {10.1137/0613049},
+	number = {3},
+	urldate = {2012-09-19},
+	journal = {{SIAM} Journal on Matrix Analysis and Applications},
+	author = {Nachtigal, Noël M. and Reddy, Satish C. and Trefethen, Lloyd N.},
+	month = jul,
+	year = {1992},
+	pages = {778--795},
+	file = {How Fast are Nonsymmetric Matrix Iterations? : SIAM Journal on Matrix Analysis and Applications: Vol. 13, No. 3 (Society for Industrial and Applied Mathematics):/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/TITDARW3/showAbstract.html:text/html;nachtigal_1992.pdf:/home/stuart/Documents/library/zotero/nachtigal_1992.pdf:application/pdf}
 }
-
-@article{aztecoo_2007,
-author = "M.A. Heroux",
-title = "AztecOO User Guide",
-year = "2007",
-journal = "Sandia National Laboratories",
-number = "SAND2004-3796"
-}
-
-%------------------------------------- B ------------------------------------%
-
-@article{bartlett_2006,
-  Author =       {Roscoe A. Bartlett and David M. Gay and Eric T. Phipps},
-  Title =        {Automatic Differentiation of {C}++ Codes for Large-Scale
-                  Scientific Computing},
-  Journal =      {International Conference on Computation Science},
-  Pages =        {525-532},
-  year =         {2006}
-}
-
-%------------------------------------- C ------------------------------------%
-
-@article{cai_2002,
-  author =       {Cai, X.C. and Keyes, D.E.},
-  title =        {Nonlinearly Preconditioned Inexact {N}ewton Algorithms},
-  journal =      {SIAM Journal of Scientific Computing},
-  year =         2002,
-  volume =       24,
-  number =       1,
-  pages =        {183-200}
-}
-
-@article{conlin_2011,
-  author =       {J.L. Conlin and J.P. Holloway},
-  title =        {{M}onte {C}arlo Application of {A}rnoldi's Method for
-                  Acceleration of Eigenvalue and Fission Source Convergence},
-  journal =      {Nuclear Science and Engineering},
-  year =         2011,
-  volume =       169,
-  pages =        {168--177}
-}
-
-%------------------------------------- D ------------------------------------%
-
-@article{davis_1983,
-  author =       {De Vahl Davis, G.},
-  title =        {Natural Convection of Air in a Square Cavity: A
-                  Bench Mark Numerical Solution},
-  journal =      {International Journal for Numerical Methods in Fluids},
-  year =         1983,
-  volume =       3,
-  pages =        {249--264}
-}
-
-@techreport{darpa-exascale_2008,
-  author =       {P. Kogge and others},
-  title =        {ExaScale Computing Study: Technology Challenges in Achieving
-                  Exascale Systems Peter Kogge, Editor and Study Lead},
-  year =         {2008}
-}
-
-@article{dembo_1982,
-  author =       {Dembo, R.S. and Eisenstat, S.C. and Steihaug, T.},
-  title =        {Inexact {N}ewton Methods},
-  journal =      {SIAM Journal on Numerical Analysis},
-  year =         1982,
-  volume =       19,
-  number =       2,
-  pages =        {400--408}
-}
-
-%------------------------------------- E ------------------------------------%
-
-@article{eisenstat_1996,
-  author = "Eisenstat, S.C. and Walker, H.F.",
-  title = "Choosing the Forcing Terms in an Inexact {N}ewton Method",
-  year = "1996",
-  journal = "SIAM Journal of Scientific Computing",
-  number = "1",
-  volume = "17",
-  pages = "16--32"
-}
-
-@article{epetra_2009,
-author = "M.A. Heroux",
-title = "Epetra Performance Optimization Guide",
-year = "2009",
-journal = "Sandia National Laboratories",
-number = "SAND2005-1668"
-}
-
-@article{evans_2003,
-  Author =       {Evans, T.M. and Urbatsch, T.J. and Lichtenstein, H. and
-                  Morel, J.E.},
-  Journal =      {Journal of Computational Physics},
-  Pages =        {539--556},
-  Title =        {A residual {M}onte {C}arlo method for discrete thermal
-                  radiative diffusion},
-  Volume =       {189},
-  Year =         {2003}
-}
-
-@article{evans_2006,
-  author =       {Evans, Katherine J and Knoll, D A and Pernice, Michael},
-  title =        {{Development of a 2-D algorithm to simulate convection and
-                  phase transition efficiently}},
-  journal =      {Journal of Computational Physics},
-  year =         {2006},
-  volume =       {219},
-  number =       {1},
-  pages =        {404--417},
-  month =        nov
-}
-
-@article{evans_2007,
-  author =       {Evans, Katherine J and Knoll, D A and Pernice, Michael},
-  title =        {{Enhanced algorithm efficiency for phase change convection
-                  using a multigrid preconditioner with a SIMPLE smoother}},
-  journal =      {Journal of Computational Physics},
-  year =         {2007},
-  volume =       {223},
-  number =       {1},
-  pages =        {121--126},
-  month =        apr
-}
-
-@InProceedings{evans_2009,
-  author =       {T.M. Evans and S.W. Mosher},
-  title =        {A {M}onte {C}arlo Synthetic Acceleration Method for the
-                  Non-Linear, Time-Dependent Diffusion Equation},
-  booktitle =    {International Conference on Mathematics, Computational
-                  Methods, and Reactor Physics},
-  year =         2009,
-  number =       {ISBN: 978-0-89448-069-0},
-  publisher =    {ANS}
-}
-
-@InProceedings{evans_2009_2,
-  author =       {T.M. Evans},
-  title =        {Software Quality Engineering by Parts},
-  booktitle =    {IEEE NSS/MIC},
-  year =         2009,
-  month =        {Oct},
-  organization = {IEEE}
-}
-
-@article{evans_2010,
-    author = "T. Evans and A. Stafford and R. Slaybaugh and  K. Clarno",
-    title = "Denovo: a new three-dimensional parallel discrete ordinates code in SCALE",
-    journal = "Nuclear Technology",
-    year = "2010",
-    volume = "171",
-    pages = "171-200"
-}
-
-@article{evans_2012,
-    author = "T. Evans and S. Mosher and S. Slattery",
-    title = "A {M}onte {C}arlo Synthetic-Acceleration Method for Solving the Thermal Radiation Diffusion Equation",
-    journal = "Journal of Computational Physics",
-    year = "2012",
-    volume = "Submitted for Review"
-}
-
-%------------------------------------- F ------------------------------------%
-
-@article{forsythe_1950,
-  author =       {G.E. Forsythe and R.A. Leibler},
-  title =        {Matrix Inversion by a {M}onte {C}arlo Method},
-  journal =      {MTAC},
-  year =         1950,
-  volume =       4,
-  pages =        {127--129}
-}
-
-%------------------------------------- G ------------------------------------%
-
-@article{gartling_1990,
-Author = "Gartling, D.K.",
-Title = "A Test Problem for Outflow Boundary Conditions - Flow Over a
-                  Backward-Facing Step",
-Journal = "International Journal for Numerical Methods in Fluids",
-Year = "1990",
-volume = "11",
-pages = "953-967"
-}
-
-@article{gaston_2009,
-Author = "D. Gaston and G. Hansen and S. Kadioglu and D. Knoll and
-                  C. Newman and H. Park and C. Permann and
-                  W. Taitano",
-Title = "Parallel multiphysics algorithms and software for
-                  computational nuclear engineering",
-Journal = "Journal of Computational Physics: Conference Series",
-Year = "2009",
-volume = "180",
-}
-
-@article{ghia_1982,
-Author = "Ghia, U. and Ghia, K.N. and Shin, C.T.",
-Title = "High-{RE} Solutions for Incompressible Flow Using the
-                  {N}avier-{S}tokes Equations and a Multigrid Method",
-Journal = "Journal of Computational Physics",
-Year = "1982",
-volume = "48",
-pages = "387-411"
-}
-
-@article{gropp_2001,
-Author = "Gropp, W.D. and Kaushik, D.K. and Keyes, D.E. and Smith, B.F.",
-Title = "High-Performace Parallel Implicit CFD",
-Journal = "Parallel Computing",
-Year = "2001",
-volume = "27",
-pages = "337-362"
-}
-
-%------------------------------------- H ------------------------------------%
-
-@article{halton_1962,
-  Author =       {Halton, J.H.},
-  Journal =      {Proc. Camb. Phil. Soc.},
-  Pages =        {57---78},
-  Title =        {Sequential {M}onte {C}arlo},
-  Volume =       {58},
-  Year =         {1962}
-}
-
-@article{halton_1994,
-  Author =       {Halton, J.H.},
-  Journal =      {Journal of Scientific Computing},
-  Pages =        {213--257},
-  Title =        {Sequential {M}onte {C}arlo Techniques for the Solution of
-                  Linear Systems},
-  Volume =       {9},
-  Year =         {1994}
-}
-
-@book{hammersley_1964,
-  Author =       {Hammersley, J.M. and Handscomb, D.C.},
-  Publisher =    {Spottiswoode, Ballantyne, and Co.},
-  Title =        {{M}onte {C}arlo Methods},
-  Year =         {1964}
-}
-
-@article{hughes_1986,
-  Author =       {Hughes, T.J.R. and Franca, L.P. and Balestra, M.},
-  Journal =      {Computer Methods in Applied Mechanics and Engineering},
-  Pages =        {85-99},
-  Title =        {A New Finite Element Formulation for Computation
-                  Fluid Dynamics: {V}. Circumventing the
-                  {B}abuska-{B}rezzi Condition: A stable
-                  {P}etrov-{G}alerkin formulation of the {S}tokes
-                  Problem Accommodating Equal-Order Interpolations},
-  Volume =       {59},
-  Year =         {1986}
-}
-
-%------------------------------------- I ------------------------------------%
-
-@TechReport{ifpack_2005,
-  author      =  {M. Sala and M. Heroux},
-  title       =  {Robust Algebraic Preconditioners with {IFPACK} 3.0},
-  institution =  {Sandia National Laboratories},
-  year        =  {2005},
-  number      =  {SAND-0662},
-}
-
-%------------------------------------- J ------------------------------------%
-
-%------------------------------------- K ------------------------------------%
-
-@book{kelley_1995,
-  Address =      {Philadelphia, PA},
-  Author =       {Kelley, C.T.},
-  Title =        {Iterative Methods for Linear and Nonlinear Equations},
-  Year =         {1995}
-}
-
-@book{kniberg_2010,
-  author =       {Kniberg, H and Skarin, M},
-  title =        {{Kanban and Scrum}},
-  publisher =    {InfoQ},
-  year =         {2010},
-  month =        mar
-}
-
-@article{knoll_1995,
-  author =       {Knoll, D.A. and McHugh, P.R.},
-  title =        {{N}ewton-{K}rylov methods applied to a system of
-                  convection-diffusion-reaction equations},
-  journal =      {Computer Physics Communications},
-  year =         1995,
-  volume =       88,
-  pages =        {141-160}
-}
-
-@article{knoll_2004,
-  author =       {Knoll, D A and Keyes, D.E.},
-  title =        {{J}acobian-{F}ree {N}ewton-{K}rylov methods: a
-                  survey of approaches and applications}},
-  journal =      {Journal of Computational Physics},
-  year =         2004,
-  volume =       193,
-  pages =        {357--397}
-}
-
-%------------------------------------- L ------------------------------------%
-
-@article{larsen_1980,
-  author =       {Larsen, E W and Pomraning, G.C.},
-  title =        {{Asymptotic Analysis of Nonlinear {M}arshak Waves}},
-  journal =      {SIAM Journal on Applied Mathematics},
-  year =         {1980},
-  volume =       {39},
-  number =       {2},
-  pages =        {201--212}
-}
-
-@book{leveque_2002,
-author = "R.J. LeVeque",
-title = "Finite Volume Methods for Hyperbolic Problems",
-year = "2002",
-publisher = "Cambridge University Press"
-}
-
-@book{leveque_2007,
-author = "R.J. LeVeque",
-title = "Finite Difference Methods for Ordinary and Partial
-                  Differential Equations",
-year = "2007",
-publisher = "Society for Industrial and Applied Mathematics"
-}
-
-@book{lewis_1993,
-Author = "E.E. Lewis and W.F. Miller",
-Title = "Computational Methods of Neutron Transport",
-Year = "1993",
-publisher = "American Nuclear Society"
-}
-
-%------------------------------------- M ------------------------------------%
-
-@article{mchugh_1994,
-  Author =       {McHugh, P.R. and Knoll, D.A},
-  Journal =      {International Journal for Numerical Methods in Fluids},
-  Pages =        {439--455},
-  Title =        {Fully Coupled Finite Volume Solutions of the
-                  Incompressible {N}avier-{S}tokes and Energy Equations
-                  Using an Inexact {N}ewton Method},
-  Volume =       {19},
-  Year =         {1994}
-}
-
-@article{morel_1996,
-  Author =       {Morel, J.E. and Wareing, Todd A. and Smith, Kenneth},
-  Folder =       {Transport Group MOREL 1},
-  Journal =      {Journal of Computational Physics},
-  Pages =        {445--462},
-  Title =        {A Linear-Discontinuous Spatial Differencing Scheme for
-                  {$S_n$} Radiative Transfer Calculations},
-  Volume =       {128},
-  Year =         {1996}
-}
-
-%------------------------------------- N ------------------------------------%
-
-@article{nachtigal_1992,
-  author =       {Nachtigal, N.M. and Reddy, S.C. and Trefethen, L.N.},
-  title =        {How Fast are Nonsymmetric Matrix Iterations?},
-  journal =      {SIAM Journal of Matrix Analysis Applications},
-  year =         {1992},
-  volume =       {13},
-  number =       {3},
-  pages =        {778--795}
-}
-
-@article{notz_2010,
-  author =       {Notz, P K and Pawlowski, R P and Sutherland, J C},
-  title =        {{Graph-based software design for managing complexity and
-                  enabling concurrency in multiphysics {PDE} software}},
-  journal =      {ACM Transactions on Mathematical Software},
-  year =         {2010},
-  volume =       {40},
-  pages =        {1--24}
-}
-
-%------------------------------------- O ------------------------------------%
-
-%------------------------------------- P ------------------------------------%
-
-@article{pawlowski_2006,
-  author =       {Pawlowski, R.P. and Shadid, J.N. and Simonis,
-                  J.P. and Walker, H.F.},
-  title =        {Globalization Techniques for {N}ewton-{K}rylov Methods
-                  and Applications to the Fully Coupled Solution of
-                  the {N}avier-{S}tokes Equations},
-  journal =      {SIAM Review},
-  year =         {2006},
-  volume =       {48},
-  number =       {4},
-  pages =        {700--712}
-}
-
-@techreport{pawlowski_2008,
-  author =       {Pawlowski, R and Phipps, E and Notz, P},
-  title =        {{Phalanx}},
-  year =         {2008}
-}
-
-@article{pernice_2001,
-  author =       {Pernice, M and Tocci, M D},
-  title =        {{A Multigrid-Preconditioned {N}ewton-{K}rylov Method for the
-                  Incompressible {N}avier-{S}tokes Equations}},
-  journal =      {SIAM Journal of Scientific Computing},
-  year =         {2001},
-  volume =       {23},
-  pages =        {398--418},
-  month =        jul
-}
-
-@TechReport{petsc_2012,
-Author = "Satish Balay and Jed Brown and and Kris Buschelman and
-                  Victor Eijkhout and William D.  Gropp and Dinesh
-                  Kaushik and Matthew G. Knepley and Lois Curfman
-                  McInnes and Barry F. Smith and Hong Zhang",
-Title = "{PETS}c Users Manual",
-Number = "ANL-95/11 - Revision 3.3",
-Institution = "Argonne National Laboratory",
-Year = "2012"
-}
-
-%------------------------------------- Q ------------------------------------%
-
-%------------------------------------- R ------------------------------------%
-
-%------------------------------------- S ------------------------------------%
-
-@article{saad_1986,
-  author =       {Saad, Y. and Schultz, M.H},
-  title =        {A Generalized Minimal Residual Algorithm for Solving
-                  Nonsymmetric Linear Systems},
-  journal =      {SIAM Journal on Scientific and Statistical Computing},
-  year =         1986,
-  volume =       7,
-  number =       14,
-  pages =        {856-869}
-}
-
-@article{saad_1993,
-  author =       {Y. Saad},
-  title =        {A flexible inner-outer preconditioned {GMRES} algorithm},
-  journal =      {SIAM Journal on Scientific Computing},
-  year =         1993,
-  volume =       14,
-  pages =        {461--469}
-}
-
-@book{saad_2003,
-Author = {Yousef Saad},
-Title = {Iterative Methods for Sparse Linear Systems},
-Year = {2003},
-Publisher = {Society for Industrial and Applied Mathematics}
-}
-
-@article{shadid_1994,
-  author =       {Shadid, J.N. and Tuminaro, R.S.},
-  title =        {A Comparison of Preconditioned Nonsymetric {K}rylov
-                  Methods on a Large-Scale {MIMD} Machine},
-  journal =      {SIAM Journal of Scientific Computing},
-  year =         {1994},
-  volume =       {15},
-  number =       {2},
-  pages =        {440--459}
-}
-
-@article{shadid_1997,
-  author =       {Shadid, J.N. and Tuminaro, R.S. and Walker, H.F.},
-  title =        {An Inexact {N}ewton Method for Fully Coupled Solution
-                  of the {N}avier-{S}tokes Equations with Heat and Mass
-                  Transport},
-  journal =      {Journal of Computational Physics},
-  year =         {1997},
-  volume =       {137},
-  pages =        {155--185}
-}
-
-@INPROCEEDINGS{sosonkina_1998,
-author={Sosonkina, M. and Allison, D.C.S. and Watson, L.T.},
-booktitle={Parallel Processing, 1998. Proceedings. 1998 International
-                  Conference on}, title={Scalable parallel
-                  implementations of the GMRES algorithm via
-                  Householder reflections},
-year={1998},
-month={aug},
-volume={},
-number={},
-pages={396 -404},
-doi={10.1109/ICPP.1998.708511},
-ISSN={0190-3918}
-}
-
-%------------------------------------- T ------------------------------------%
-
-@book{tannehill_1997,
-Author = {John C. Tannehill and Dale A. Anderson and Richard
-                  H. Pletcher},
-Title = {Computational Fluid Mechanics and Heat Transfer},
-Year = {1997},
-Publisher = {Taylor and Francis}
-}
-
-@book{trefethen_1997,
-  Address =      {Philadelphia, PA},
-  Author =       {Trefethen, L.N. and Bau, III, D.},
-  Publisher =    {SIAM},
-  Title =        {Numerical Linear Algebra},
-  Year =         {1997}
-}
-
-@article{trilinos_2005,
-author = {Michael A. Heroux and Roscoe A. Bartlett and Vicki E. Howle
-                  and Robert J. Hoekstra and Jonathan J. Hu and Tamara
-                  G. Kolda and Richard B. Lehoucq and Kevin R. Long
-                  and Roger P. Pawlowski and Eric T. Phipps and Andrew
-                  G. Salinger and Heidi K. Thornquist and Ray
-                  S. Tuminaro and James M. Willenbring and Alan
-                  Williams and Kendall S. Stanley},
-title = {An overview of the {T}rilinos project},
-journal = {ACM Transactions of Mathematical Software},
-volume = {31},
-number = {3},
-year = {2005},
-issn = {0098-3500},
-pages = {397--423},
-doi = {http://doi.acm.org/10.1145/1089014.1089021},
-publisher = {ACM Press},
-address = {New York, NY, USA}
-}
-
-%------------------------------------- U ------------------------------------%
-
-%------------------------------------- V ------------------------------------%
-
-%------------------------------------- W ------------------------------------%
-
-@article{wagner_2011,
-  author =       {Wagner, JC and Mosher, SW and Evans, TM and Peplow, D E and
-                  Turner, J A},
-  title =        {{Hybrid and Parallel Domain-Decomposition Methods
-                  Development to Enable {M}onte {C}arlo for Reactor Analyses}},
-  journal =      {Progress in NUCLEAR SCIENCE and TECHNOLOGY},
-  year =         {2011},
-  volume =       {2},
-  pages =        {815--820}
-}
-
-%------------------------------------- X ------------------------------------%
-
-%------------------------------------- Y ------------------------------------%
-
-%------------------------------------- Z ------------------------------------%
-
-@book{zienkiewicz_1977,
-Author = "Zienkiewicz, O.C.",
-Title = "The Finite Element Method",
-Year = "1977",
-publisher = "McGraw-Hill"
-}
-
-@Manual{zoltan_2007,
-  title         = {{Zoltan 3.0}: Parallel Partitioning, Load Balancing, and
-                   Data-Management Services; User's Guide},
-  author        = {Erik Boman and Karen Devine and
-                   Robert Heaphy and Bruce Hendrickson and
-                   Vitus Leung and Lee Ann Riesen and
-                   Courtenay Vaughan and Umit Catalyurek and
-                   Doruk Bozdag and William Mitchell and James Teresco},
-  organization  = {Sandia National Laboratories},
-  address       = {Albuquerque, NM},
-  year          = {2007},
-  note          = {Tech. Report SAND2007-4748W
-                   \url{http://www.cs.sandia.gov/Zoltan/ug_html/ug.html}}
-}
-
-%----------------------------------------------------------------------------%
