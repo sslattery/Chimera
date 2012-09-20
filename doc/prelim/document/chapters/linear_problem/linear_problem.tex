@@ -1131,7 +1131,7 @@ inner Monte Carlo solver that is generating the correction via the
 adjoint method. The parallel aspects of both these components must be
 considered.
 
-\subsubsection{Multiple-Set Overlapping-Domain Decomposition}
+\subsubsection{Domain Decomposition for Monte Carlo}
 \label{subsubsec:msod}
 As observed in the discussion on parallel Krylov methods, large-scale
 problems will surely have their data partitioned such that each
@@ -1139,10 +1139,24 @@ parllel process owns a subset of the equations in the linear
 system. Given this convention, the adjoint Monte Carlo algorithm must
 perform random walks over a domain that is decomposed and must remain
 decomposed due to memory limitations. This naturally leads us to seek
-parallel algorithms that handle domain decomposition. In 2010, Wagner
-and colleagues developed the \textit{multiple-set overlapping-domain}
-(MSOD) decomposition for parallel Monte Carlo applications for
-full-core reactor analysis \citep{wagner_hybrid_2010}.
+parallel algorithms that handle domain decomposition. In the context
+of radiation transport, Brunner and colleagues provided one of the
+first surveys of algorithms for achieving this
+\citep{brunner_comparison_2006}. In their work they identity two data
+sets that are required to be communicated: the sharing of particles
+that are transported from one domain to another and therefore from one
+processor to another and a global communication that signals if
+particle transport has been completed on all processors. The
+algorithms presented include a fully-locking synchronous scheme, a
+fully-asynchronous pattern, a traditional master/slave scheme, and a
+modified master/slave scheme the implements a binary tree pattern for
+the global reduction type operations needed to communicate between the
+master and slave processes.
+
+In 2010, Wagner and colleagues developed the \textit{multiple-set
+  overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
+applications for full-core reactor analysis
+\citep{wagner_hybrid_2010}.
 
 \subsubsection{Parallel Adjoint Method}
 \label{subsubsec:parallel_adjoint}

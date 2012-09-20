@@ -209,6 +209,21 @@
 	year = {1997}
 },
 
+@incollection{graziani_obtaining_????,
+	address = {{Berlin/Heidelberg}},
+	title = {Obtaining Identical Results on Varying Numbers of Processors in Domain Decomposed Particle Monte Carlo Simulations},
+	volume = {48},
+	isbn = {3-540-28122-3},
+	url = {http://rd.springer.com/chapter/10.1007/3-540-28125-8_19},
+	urldate = {2012-09-20},
+	booktitle = {Computational Methods in Transport},
+	publisher = {Springer-Verlag},
+	author = {Gentile, {N.A.} and Kalos, Malvin and Brunner, Thomas A.},
+	editor = {Graziani, Frank},
+	pages = {423--433},
+	file = {gentile_2005.pdf:/home/stuart/Documents/library/zotero/gentile_2005.pdf:application/pdf;Obtaining Identical Results on Varying Numbers of Processors in Domain Decomposed Particle Monte Carlo Simulations - Springer:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/3XNUKBJB/3-540-28125-8_19.html:text/html}
+},
+
 @article{evans_enhanced_2007,
 	title = {Enhanced algorithm efficiency for phase change convection using a multigrid preconditioner with a {SIMPLE} smoother},
 	volume = {223},
@@ -385,6 +400,17 @@
 	file = {forsythe_1950.pdf:/home/stuart/Documents/library/zotero/forsythe_1950.pdf:application/pdf;JSTOR Full Text PDF:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/KMAKHHCT/Forsythe and Leibler - 1950 - Matrix Inversion by a Monte Carlo Method.pdf:application/pdf}
 },
 
+@article{li_analysis_2003,
+	title = {Analysis of Large-Scale Grid-Based Monte Carlo Applications},
+	volume = {17},
+	number = {4},
+	journal = {The International Journal of High Performance Computing Applications},
+	author = {Li, Yaohang and Mascagni, Michael},
+	year = {2003},
+	pages = {369--382},
+	file = {li_2003.pdf:/home/stuart/Documents/library/zotero/li_2003.pdf:application/pdf}
+},
+
 @article{halton_sequential_1994,
 	title = {Sequential Monte Carlo Techniques for the the Solution of Linear Systems},
 	volume = {9},
@@ -488,6 +514,32 @@
 	year = {2002}
 },
 
+@article{mervin_variance_2012,
+	title = {Variance Estimation in Domain Decomposed Monte Carlo Eigenvalue Calculations},
+	journal = {{PHYSOR} 2012 – Advances in Reactor Physics},
+	author = {Mervin, Brenden and Mosher, {S.W.} and Evans, Thomas and Wagner, John and Maldonado, {GI}},
+	year = {2012},
+	file = {mervin_2012.pdf:/home/stuart/Documents/library/zotero/mervin_2012.pdf:application/pdf}
+},
+
+@article{brunner_comparison_2006,
+	title = {Comparison of four parallel algorithms for domain decomposed implicit Monte Carlo},
+	volume = {212},
+	issn = {0021-9991},
+	url = {http://www.sciencedirect.com/science/article/pii/S0021999105003311},
+	doi = {10.1016/j.jcp.2005.07.009},
+	abstract = {We consider four asynchronous parallel algorithms for Implicit Monte Carlo {(IMC)} thermal radiation transport on spatially decomposed meshes. Two of the algorithms are from the production codes {KULL} from Lawrence Livermore National Laboratory and Milagro from Los Alamos National Laboratory. Improved versions of each of the existing algorithms are also presented. All algorithms were analyzed in an implementation of the {KULL} {IMC} package in {ALEGRA}, a Sandia National Laboratory high energy density physics code. The improved Milagro algorithm performed the best by scaling almost linearly out to 244 processors for well load balanced problems.},
+	number = {2},
+	urldate = {2012-09-20},
+	journal = {Journal of Computational Physics},
+	author = {Brunner, Thomas A. and Urbatsch, Todd J. and Evans, Thomas M. and Gentile, Nicholas A.},
+	month = mar,
+	year = {2006},
+	keywords = {Monte Carlo methods, Parallel computation, Radiative transfer},
+	pages = {527--539},
+	file = {brunner_2006.pdf:/home/stuart/Documents/library/zotero/brunner_2006.pdf:application/pdf;ScienceDirect Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/NAZSRKXN/ezproxyiaa.html:text/html}
+},
+
 @article{rief_touching_1999,
 	title = {Touching on a zero-variance scheme in solving linear equations by random walk processes},
 	volume = {5},
@@ -547,6 +599,24 @@
 	year = {2003},
 	keywords = {Mathematics / Applied, Mathematics / Calculus, Mathematics / Mathematical Analysis},
 	file = {Saad_2003.pdf:/home/stuart/Documents/books/Math/Saad_2003.pdf:application/pdf}
+},
+
+@article{brunner_efficient_2009,
+	title = {An efficient, robust, domain-decomposition algorithm for particle Monte Carlo},
+	volume = {228},
+	issn = {0021-9991},
+	url = {http://www.sciencedirect.com/science/article/pii/S0021999109000965},
+	doi = {10.1016/j.jcp.2009.02.013},
+	abstract = {A previously described algorithm {[T.A.} Brunner, {T.J.} Urbatsch, {T.M.} Evans, {N.A.} Gentile, Comparison of four parallel algorithms for domain decomposed implicit Monte Carlo, Journal of Computational Physics 212 (2) (2006) 527–539] for doing domain decomposed particle Monte Carlo calculations in the context of thermal radiation transport has been improved. It has been extended to support cases where the number of particles in a time step are unknown at the beginning of the time step. This situation arises when various physical processes, such as neutron transport, can generate additional particles during the time step, or when particle splitting is used for variance reduction. Additionally, several race conditions that existed in the previous algorithm and could cause code hangs have been fixed. This new algorithm is believed to be robust against all race conditions. The parallel scalability of the new algorithm remains excellent.},
+	number = {10},
+	urldate = {2012-09-20},
+	journal = {Journal of Computational Physics},
+	author = {Brunner, Thomas A. and Brantley, Patrick S.},
+	month = jun,
+	year = {2009},
+	keywords = {Monte Carlo methods, Neutron transport, Parallel computation, Radiative transfer},
+	pages = {3882--3890},
+	file = {brunner_2009.pdf:/home/stuart/Documents/library/zotero/brunner_2009.pdf:application/pdf;ScienceDirect Snapshot:/home/stuart/.zotero/zotero/yp6a6wb6.default/zotero/storage/QFTA72Q6/ezproxyiaa.html:text/html}
 },
 
 @inproceedings{gropp_scalable_1993,
