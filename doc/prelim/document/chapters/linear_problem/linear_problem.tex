@@ -1139,32 +1139,42 @@ parllel process owns a subset of the equations in the linear
 system. Given this convention, the adjoint Monte Carlo algorithm must
 perform random walks over a domain that is decomposed and must remain
 decomposed due to memory limitations. This naturally leads us to seek
-parallel algorithms that handle domain decomposition. In the context
-of radiation transport, Brunner and colleagues provided a survey of
-algorithms for achieving this as implemented in production implicit
-Monte Carlo codes \citep{brunner_comparison_2006}. In their work they
-identity two data sets that are required to be communicated: the
-sharing of particles that are transported from one domain to another
-and therefore from one processor to another and a global communication
-that signals if particle transport has been completed on all
-processors. The algorithms presented are a fully-locking synchronous
-scheme, a asynchronous-send/synchronous-receive pattern, a traditional
-master/slave scheme, and a modified master/slave scheme the implements
-a binary tree pattern for the global reduction type operations needed
-to communicate between the master and slave processes. They observed
-that the modified master/slave scheme performed best in that global
-communications were implemented more efficiently than those required
-by the asynchronous scheme. Furthermore, none of these schemes handled
-load-imbalanced cases efficiently. Such cases will be common if the
-source sampled in the Monte Carlo random walk is not isotropic and
-evenly distributed throughout the global domain. It was noted that
-efficiencies were improved by increasing the frequency by which
-particle data was communicated between domain-adjacent processors.
-However, this ultimately increases communication costs.
+parallel algorithms that handle domain decomposition. 
 
+In the context of radiation transport, Brunner and colleagues provided
+a survey of algorithms for achieving this as implemented in production
+implicit Monte Carlo codes \citep{brunner_comparison_2006}. In their
+work they identity two data sets that are required to be communicated:
+the sharing of particles that are transported from one domain to
+another and therefore from one processor to another and a global
+communication that signals if particle transport has been completed on
+all processors. The algorithms presented are a fully-locking
+synchronous scheme, a asynchronous-send/synchronous-receive pattern, a
+traditional master/slave scheme, and a modified master/slave scheme
+the implements a binary tree pattern for the global reduction type
+operations needed to communicate between the master and slave
+processes. They observed that the modified master/slave scheme
+performed best in that global communications were implemented more
+efficiently than those required by the asynchronous
+scheme. Furthermore, none of these schemes handled load-imbalanced
+cases efficiently. Such cases will be common if the source sampled in
+the Monte Carlo random walk is not isotropic and evenly distributed
+throughout the global domain. It was noted that efficiencies were
+improved by increasing the frequency by which particle data was
+communicated between domain-adjacent processors.  However, this
+ultimately increases communication costs.
+
+In 2010, Wagner and colleagues developed the \textit{multiple-set
+  overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
+applications for full-core reactor analysis
+\citep{wagner_hybrid_2010}. In their work, a certain amount of overlap
+between domains was used to decrease the number of particles leaving
+the domain.
+
+\subsubsection{Reproducable Domain Decomposed Results}
 The 2006 work of Brunner is notable in that the Monte Carlo codes used
 to implement and test the algorithms adhered to a strict policy of
-generated identical results, indepdent of domain decomposition or
+generating identical results indepdent of domain decomposition or
 domain replication as derived from the work of Gentile and colleagues
 \citep{gentile_obtaining_2005}. In their work, a procedure is given for
 obtaining results reproducable to machine precision for an arbitrary
@@ -1183,17 +1193,37 @@ Figure~\ref{fig:gentile_example}, that illustrates these issues.
       decomposition can create reproducability issues in Monte Carlo.}
     \textit{Both particles A and B start in zone 1 on processor
       1. Particle A moves to zone 2 on processor 2 and scatters back
-      to zone 1 while B scatters in zone 1 and remains there.}}
+      to zone 1 while B scatters in zone 1 and remains there. A1 and
+      A2 denote the track of particle A that is in zone 1 while B1 and
+      B2 denote the track of particle B that is in zone 1.}}
   \label{fig:gentile_example}
 \end{figure}
+In this example, the domain is decomposed on two processors with each
+processor owning one of the two zones. Starting with particle A, it is
+born in zone 1 and is transported to zone 2 where a scattering event
+occurs. Concerning the first reproducability issue, if the same
+sequence of random numbers is not used to compute the trajectory from
+the new scattering event, we cannot expect to achieve the same result
+if the domain were not decomposed. If the numbers are different, the
+scattering event in zone 2 may keep the particle there or even eject
+it from the domain if the sequence were different. The second issue is
+demonstrated by adding another particle B that remains in the
+domain. In this case, an efficient algorithm will transport particle A
+on processor 1 until it leaves zone 1 and then transport particle
+B. Particle A will not renter the domain until it has been
+communicated to processor 2, processor 2 performs the transport, and
+it is communicated back to processor 1. If we are doing a track-length
+tally in zone 1, then we sum the tracks lengths observed in that
+zone. In the single processor, single zone case particle A would be
+transported in its entirety and then particle B transported. This
+would result in a tally sum with the following order of operations:
+$(((A1+A2)+B1)+B2)$. If we were instead to use 2 processors, we would
+instead have the following order: $(((A1+B1)+B2)+A2)$. In the context
+of floating point operations, we cannot expect these to have an
+identical result to machine precesion as round-off approximations will
+differ.
 
 
-In 2010, Wagner and colleagues developed the \textit{multiple-set
-  overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
-applications for full-core reactor analysis
-\citep{wagner_hybrid_2010}. In their work, a certain amount of overlap
-between domains was used to decrease the number of particles leaving
-the domain.
 
 \subsubsection{Parallel Adjoint Method}
 \label{subsubsec:parallel_adjoint}
