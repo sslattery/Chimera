@@ -1140,23 +1140,60 @@ system. Given this convention, the adjoint Monte Carlo algorithm must
 perform random walks over a domain that is decomposed and must remain
 decomposed due to memory limitations. This naturally leads us to seek
 parallel algorithms that handle domain decomposition. In the context
-of radiation transport, Brunner and colleagues provided one of the
-first surveys of algorithms for achieving this
-\citep{brunner_comparison_2006}. In their work they identity two data
-sets that are required to be communicated: the sharing of particles
-that are transported from one domain to another and therefore from one
-processor to another and a global communication that signals if
-particle transport has been completed on all processors. The
-algorithms presented include a fully-locking synchronous scheme, a
-fully-asynchronous pattern, a traditional master/slave scheme, and a
-modified master/slave scheme the implements a binary tree pattern for
-the global reduction type operations needed to communicate between the
-master and slave processes.
+of radiation transport, Brunner and colleagues provided a survey of
+algorithms for achieving this as implemented in production implicit
+Monte Carlo codes \citep{brunner_comparison_2006}. In their work they
+identity two data sets that are required to be communicated: the
+sharing of particles that are transported from one domain to another
+and therefore from one processor to another and a global communication
+that signals if particle transport has been completed on all
+processors. The algorithms presented are a fully-locking synchronous
+scheme, a asynchronous-send/synchronous-receive pattern, a traditional
+master/slave scheme, and a modified master/slave scheme the implements
+a binary tree pattern for the global reduction type operations needed
+to communicate between the master and slave processes. They observed
+that the modified master/slave scheme performed best in that global
+communications were implemented more efficiently than those required
+by the asynchronous scheme. Furthermore, none of these schemes handled
+load-imbalanced cases efficiently. Such cases will be common if the
+source sampled in the Monte Carlo random walk is not isotropic and
+evenly distributed throughout the global domain. It was noted that
+efficiencies were improved by increasing the frequency by which
+particle data was communicated between domain-adjacent processors.
+However, this ultimately increases communication costs.
+
+The 2006 work of Brunner is notable in that the Monte Carlo codes used
+to implement and test the algorithms adhered to a strict policy of
+generated identical results, indepdent of domain decomposition or
+domain replication as derived from the work of Gentile and colleagues
+\citep{gentile_obtaining_2005}. In their work, a procedure is given for
+obtaining results reproducable to machine precision for an arbitrary
+number of processors and domains. Differences can arise from using a 
+different random number sequence in each domain and performing
+a sequence of floating point operations on identical data in a
+different, leading to variations in round-off error and ultimately a
+non-identical answer. They use a simple example, recreated below in
+Figure~\ref{fig:gentile_example}, that illustrates these issues.
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{1.5}{
+      \input{chapters/linear_problem/gentile_example.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Gentile's example illustrating how domain
+      decomposition can create reproducability issues in Monte Carlo.}
+    \textit{Both particles A and B start in zone 1 on processor
+      1. Particle A moves to zone 2 on processor 2 and scatters back
+      to zone 1 while B scatters in zone 1 and remains there.}}
+  \label{fig:gentile_example}
+\end{figure}
+
 
 In 2010, Wagner and colleagues developed the \textit{multiple-set
   overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
 applications for full-core reactor analysis
-\citep{wagner_hybrid_2010}.
+\citep{wagner_hybrid_2010}. In their work, a certain amount of overlap
+between domains was used to decrease the number of particles leaving
+the domain.
 
 \subsubsection{Parallel Adjoint Method}
 \label{subsubsec:parallel_adjoint}
