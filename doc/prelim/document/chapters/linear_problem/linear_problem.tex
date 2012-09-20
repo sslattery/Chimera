@@ -1149,8 +1149,8 @@ the sharing of particles that are transported from one domain to
 another and therefore from one processor to another and a global
 communication that signals if particle transport has been completed on
 all processors. The algorithms presented are a fully-locking
-synchronous scheme, a asynchronous-send/synchronous-receive pattern, a
-traditional master/slave scheme, and a modified master/slave scheme
+synchronous scheme, an asynchronous-send/synchronous-receive pattern,
+a traditional master/slave scheme, and a modified master/slave scheme
 the implements a binary tree pattern for the global reduction type
 operations needed to communicate between the master and slave
 processes. They observed that the modified master/slave scheme
@@ -1161,8 +1161,17 @@ cases efficiently. Such cases will be common if the source sampled in
 the Monte Carlo random walk is not isotropic and evenly distributed
 throughout the global domain. It was noted that efficiencies were
 improved by increasing the frequency by which particle data was
-communicated between domain-adjacent processors.  However, this
-ultimately increases communication costs.
+communicated between domain-adjacent processors. However, this
+ultimately increases communication costs. In 2009, Brunner extended
+his work by using a more load-balanced approach with a fully
+asynchronous communication pattern
+\citep{brunner_efficient_2009}. Although the extended implementation
+allowed was more robust and allowed for scaling to larger numbers of
+processors, performance issues were still noted, with efficiencies
+improvements needed in both the weak and strong scaling cases for
+unbalanced problems. These results led Brunner to conclude that a
+combination of domain decomposition and domain replication could be
+used to solve some of these issues.
 
 In 2010, Wagner and colleagues developed the \textit{multiple-set
   overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
@@ -1174,7 +1183,7 @@ the domain.
 \subsubsection{Reproducable Domain Decomposed Results}
 The 2006 work of Brunner is notable in that the Monte Carlo codes used
 to implement and test the algorithms adhered to a strict policy of
-generating identical results indepdent of domain decomposition or
+generating identical results independent of domain decomposition or
 domain replication as derived from the work of Gentile and colleagues
 \citep{gentile_obtaining_2005}. In their work, a procedure is given for
 obtaining results reproducable to machine precision for an arbitrary
@@ -1221,9 +1230,20 @@ $(((A1+A2)+B1)+B2)$. If we were instead to use 2 processors, we would
 instead have the following order: $(((A1+B1)+B2)+A2)$. In the context
 of floating point operations, we cannot expect these to have an
 identical result to machine precesion as round-off approximations will
-differ.
+differ resulting in non-commutative addition.
 
-
+Their solutions to these problems are elegant in that they require a
+minimal amount of modification to be applied to the Monte Carlo
+algorithm. To solve the first issue, in order to ensure each particle
+maintains an invariant random number sequence that determines its
+behavior regardless of domain decomposition, each particle carries
+with it a random number seed that describes its current state. These
+seeds are derived from the actual geometric location of the particle
+such that it is decomposition invariant. Non-commutative floating
+point operations are solved by instead mapping floating point values
+to 64-bit integer values for which additions will always be
+commutative. Once the operations are complete, these integers are
+mapped back to floating point values.
 
 \subsubsection{Parallel Adjoint Method}
 \label{subsubsec:parallel_adjoint}
