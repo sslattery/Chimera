@@ -5,13 +5,12 @@ PDF    := dvipdf
 
 chap_intro = chapters/introduction
 chap_lp = chapters/linear_problem
-chap_pmcsa = chapters/parallel_mcsa
+chap_pmc = chapters/parallel_mc
 chap_nl = chapters/nonlinear_problem
-chap_fanm = chapters/fanm
 chap_chm = chapters/chimera_codebase
 chap_prop = chapters/research_proposal
 
-all: orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf
+all: orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
@@ -31,9 +30,14 @@ matvec_proc_1.pdf: $(chap_lp)/matvec_proc_1.fig
 	fig2dev -L pdftex -p $(chap_lp)/matvec_proc_1.pdf -m 0.4 $(chap_lp)/matvec_proc_1.fig $(chap_lp)/matvec_proc_1.pdf
 	fig2dev -L pdftex_t -p $(chap_lp)/matvec_proc_1.pdf -m 0.4 $(chap_lp)/matvec_proc_1.fig $(chap_lp)/matvec_proc_1.pdftex_t
 
-gentile_example.pdf: $(chap_lp)/gentile_example.fig
-	fig2dev -L pdftex -p $(chap_lp)/gentile_example.pdf -m 0.4 $(chap_lp)/gentile_example.fig $(chap_lp)/gentile_example.pdf
-	fig2dev -L pdftex_t -p $(chap_lp)/gentile_example.pdf -m 0.4 $(chap_lp)/gentile_example.fig $(chap_lp)/gentile_example.pdftex_t
+# Parallel mc figures
+gentile_example.pdf: $(chap_pmc)/gentile_example.fig
+	fig2dev -L pdftex -p $(chap_pmc)/gentile_example.pdf -m 0.4 $(chap_pmc)/gentile_example.fig $(chap_pmc)/gentile_example.pdf
+	fig2dev -L pdftex_t -p $(chap_pmc)/gentile_example.pdf -m 0.4 $(chap_pmc)/gentile_example.fig $(chap_pmc)/gentile_example.pdftex_t
+
+msod_example.pdf: $(chap_pmc)/msod_example.fig
+	fig2dev -L pdftex -p $(chap_pmc)/msod_example.pdf -m 0.4 $(chap_pmc)/msod_example.fig $(chap_pmc)/msod_example.pdf
+	fig2dev -L pdftex_t -p $(chap_pmc)/msod_example.pdf -m 0.4 $(chap_pmc)/msod_example.fig $(chap_pmc)/msod_example.pdftex_t
 
 clean:
 	-rm -f *~
@@ -47,6 +51,7 @@ clean:
 	-rm -f *.toc *.lof *.lot
 	-rm -f *.bak
 	-rm -f $(chap_lp)/*.pdf $(chap_lp)/*.pdftex_t $(chap_lp)/*.bak
+	-rm -f $(chap_pmc)/*.pdf $(chap_pmc)/*.pdftex_t $(chap_pmc)/*.bak
 	-rm -f TAGS
 
 realclean: clean
