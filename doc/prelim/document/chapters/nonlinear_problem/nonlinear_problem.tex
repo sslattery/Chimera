@@ -1,43 +1,147 @@
 \chapter{Stochastic Solution Methods for Nonlinear Problems}
 \label{ch:nonlinear_problem}
-
-This work will result in a new and novel nonlinear solver, FANM. To
-movitate the development of FANM and thoroughly understand both its
-mathematical properties and its qualities as related to other
-nonlinear methods, we need a full workup of current iterative methods
-for solving nonlinear systems. We should acknowledge operator split
-and linearization methods for dealing with nonlinear systems
-(e.g. think pressure correction strategies for Navier-Stokes) but the
-focus here should be on fully-implicit nonlinear solves that are
-amenable to solving tightly-coupled multiphysics systems in a way that
-is fully consistent.
-
-The key here will be a full understanding of Newton methods (and they
-actually are quite simple compared to some of the linear solver
-methods like subspace methods). It is important to understand how the
-correction is computed from the Jacobian and how we may improve this
-with globalization methods. Although I may not use globalization
-methods in my work, they are important enough in practice that we must
-be sure that a FANM method is not prohibited from using these. Current
-methods, primarily Newton-Krylov methods, will of primary concern here
-as these will serve as the baseline for assessing the qualities of a
-FANM solver. Finally, we will survey applications to model problems in
-the field ( there is a vast amount of literature on fully-implicit
-nonlinear solves for the Navier-Stokes equations) that will give good
-benchmarks to test (such as natural convection and driven cavity
-problems).
+Nonlinear equation sets are a hallmark of multiphysics
+problems. Systems of partial differntial equations such as those that
+describe fluid flow or more general transport processes when
+discretized by conventional methods yield discrete sets of equations
+with nonlinearities present in the variables. Traditionally, such
+systems have been solved by linearizing them such that the
+nonlinearities in the variable are eliminated and more traditional
+linear methods can be used for solutions. Often characterized as
+segregated methods where physics operators are split and their action
+on the system approximated in steps, such methods lack consistency and
+accuracy in resolving the nonlinear component of the solution. In the
+last 30 years, fully consistent nonlinear methods based on Newton's
+method have become more popular and many advances have been made in
+the computational physics field to employ these methods. Currently,
+Krylov methods are used with Newton's method to form a robust solution
+sequence for these types of problems. However, given our goals of
+advancing stochastic solver technology for linear problems, we aim to
+apply them to these fully consistent schemes in order to gauge if some
+improvements can made. We therefore devise a new method using MCSA in
+conjuction with new methods, accomodating the fact that MCSA requires
+an explicitly formed linear operator in its implementation. In
+addition, we will review parallel strategies for a Newton-MCSA method.
 
 \section{Preliminaries}
 \label{sec:nonlinear_preliminaries}
+We formulate the \textit{nonlinear problem} as follows
+\citep{knoll_jacobian-free_2004}:
+\begin{equation}
+  \ve{F}(\ve{u}) = \ve{0}\:,
+  \label{eq:nonlinear_problem}
+\end{equation}
+where $\ve{u}$ is the solution vector and $\ve{F}(\ve{u})$ is the
+function of nonlinear residuals. We write the nonlinear system in this
+form so that when an exact solution for $\ve{u}$ is achieved, all
+residuals evaluate to zero. \textit{Newton's method} is a root finding
+algorithm and therefore we can use it to solve
+Eq~(\ref{eq:nonlinear_problem}) if we interpret the exact solution
+$\ve{u}$ to be the roots of $\ve{F}(\ve{u})$. Newton's method is also
+an iterative scheme, and we can generate this scheme by generating the
+Taylor expansion of the $k+1$ iterate of the nonlinear residuals about
+the $k$ iterate:
+\begin{equation}
+  \ve{F}(\ve{u}^{k+1}) = \ve{F}(\ve{u}^{k}) +
+  \ve{F}'(\ve{u}^{k})(\ve{u}^{k+1}-\ve{u}^{k}) +
+  \frac{\ve{F}''(\ve{u}^{k})}{2}(\ve{u}^{k+1}-\ve{u}^{k})^2 + \cdots
+  \:.
+  \label{eq:newton_derivation_1}
+\end{equation}
+If we ignore the nonlinear terms in the expansion and assert that the
+$k+1$ iterate $\ve{u}^{k+1}$ is that exact solution such that
+$\ve{F}(\ve{u}^{k+1}) = \ve{0}$, then we are left with the following:
+\begin{equation}
+  -\ve{F}(\ve{u}^{k}) =
+  \ve{F}'(\ve{u}^{k})(\ve{u}^{k+1}-\ve{u}^{k})\:.
+  \label{eq:newton_derivation_2}
+\end{equation}
+We note two things in Eq~(\ref{eq:newton_derivation_2}). The first is
+that $\ve{F}'(\ve{u}^{k})$ is in fact the \textit{Jacobian},
+$\ve{J}(\ve{u})$, of the set of nonlinear residuals and is defined
+element-wise as:
+\begin{equation}
+  J_{ij} = \frac{\partial F_i(\ve{u})}{\partial u_j}\:.
+  \label{eq:jacobian_def}
+\end{equation}
+Second, we note that $(\ve{u}^{k+1}-\ve{u}^{k})$ is simply the
+\textit{Newton correction} at the $k$ iterate, $\delta \ve{u}^k$. We
+can then rerarrange Eq~(\ref{eq:newton_derivation_2}) to define the
+Newton iteration scheme for nonlinear problems:
+\begin{subequations}
+  \begin{gather}
+    \ve{J}(\ve{u}) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})\\
+    \ve{u}^{k+1} = \ve{u}^k + \delta \ve{u}^k\:.
+  \end{gather}
+  \label{eq:newton_iteration}
+\end{subequations}
+We then have two distinct steps to perform: the solution of a linear
+system to compute the Newton correction where the Jacobian matrix of
+the nonlinear equation set is the linear operator, and the application
+of the correction to the previous iterate's solution to arrive at the
+next iterate's solution. In the asymptotic lmiit, the iterations of
+Newton's method will converge the nonlinear residual quadratically
+\citep{kelley_iterative_1995}. Convergence criteria is set for
+stopping the iteration sequence based on the nonlinear
+residual. Commonly the following criteria is used:
+\begin{equation}
+  ||\ve{F}(\ve{u}^{k})|| < \epsilon ||\ve{F}(\ve{u}^{0})||\:,
+  \label{eq:newton_stopping_criteria}
+\end{equation}
+where $\epsilon$ is a user defined tolerance parameter. Newton's
+method is \textit{consistent} in that all components of the nonlinear
+functions that describe the physics we are modeling are updated
+simulataneously in the iteration sequence with respect to one
+another. This is in comparison to \textit{inconsistent} strategies,
+such as a pressure correction strategy for solving the Navier-Stokes
+equations \citep{pletcher_computational_1997}, where the components of
+$\ve{u}$ are updated in a staggered fashion depending on the
+particular equations that they are associated with.
 
 \section{Inexact Newton Methods}
 \label{sec:newton_methods}
+Inexact Newton methods arise when the Jacobian operator is not exactly
+inverted, resulting in an inexact Newton correction as initially
+described by Dembo and others \citep{dembo_inexact_1982}. For common
+sparse nonlinear systems, which in turn yield a sparse Jacobian
+matrix, this situation occurs when conventional iterative methods are
+applied.
 
 \subsection{Newton-Krylov Methods}
 \label{subsec:newton_krylov_methods}
+A form of inexact Newton methods, \textit{Newton-Krylov methods} are
+nonlinear iterative methods that use a Krylov subspace method as the
+linear solver for generating the Newton correction. As we investigated
+in Chapter~\ref{chap:linear_problem}, Krylov methods are robust and
+enjoy efficient parallel implementations. Furthermore, their lack of
+explicit dependence on the operator make them easier to implement than
+other methods. 
 
-\subsection{Globalization Methods}
-\label{subsec:globalization_methods}
+In most cases, the Jacobian is difficult to form from the difference
+equations. For simple nonlinear cases such as the Navier Stokes
+equations, the derivatives can be computed and coded, but due to the
+complexity of those derivatives and the resulting difference equations
+this task can be tedious, error prone, and must be repeated for every
+equation set. By recognizing that Krylov methods only need the action
+of the operator on the vector instead of the operator itself, the
+Jacobian can instead be approximated through various numerical methods
+including a difference-based Jacobian-free formulation. Jacobian-Free
+methods, and in particular \textit{Jacobian-Free Newton-Krylov} (JFNK)
+methods \citep{knoll_jacobian-free_2004}, rely on forming the action
+of the Jacobian on a vector as required by the Krylov solver through a
+forward difference scheme. In this case, the action of the Jacobian on
+some vector $\ve{v}$ is given as:
+\begin{equation}
+  \ve{J}(\ve{u})\ve{v} = \frac{\ve{F}(\ve{u} + \epsilon \ve{v}) -
+    \ve{F}(\ve{u})}{\epsilon}\:,
+  \label{eq:jacobian_free_product}
+\end{equation}
+where $\epsilon$ is a small number typically on the order of machine
+precision. Kelley \citep{kelley_iterative_1995} points out a potential
+downfall of this formulation in that if the discretization error in
+$\ve{F}(\ve{u})$ is on the order of the perturbation parameter
+$\epsilon$, then the finite difference error from
+Eq~(\ref{eq:jacobian_free_product}) pollutes the solution.
 
 \section{The FANM Method}
 \label{sec:fanm}
@@ -59,11 +163,14 @@ that have already been worked up in the literature with benchmark-type
 solutions. Parallelism in the context of the linear solvers chapter
 should also be discussed.
 
-\subsection{Automatic Differentiation}
-\label{sec:automatic_differentiation}
+\subsubsection{Automatic Differentiation}
+\label{subsubsec:automatic_differentiation}
 
 \subsection{Residual and Jacobian Generation}
-\label{sec:fanm_generation}
+\label{subsec:fanm_generation}
 
 \subsection{Jacobian Storage vs. Subspace Storage and Restarts}
-\label{sec:fanm_storage}
+\label{subsec:fanm_storage}
+
+\subsection{Parallel FANM Implementation}
+\label{subsec:parallel_fanm}
