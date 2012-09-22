@@ -581,9 +581,9 @@ occurs within a set, limiting communications during the transport
 procedure to a group of $O(100)$ processors, a number that was shown
 to have excellent parallel efficiencies in Brunner's work and
 therefore will scale well in this algorithm. The overlapping domains
-within each set also demonstrated to reduce communication costs. On
-each processor, the source is sampled in the local domain that would
-exist if no overlap was used while tallies can be made over the entire
+within each set also demonstrated reduced communication costs. On each
+processor, the source is sampled in the local domain that would exist
+if no overlap was used while tallies can be made over the entire
 overlapping domain. To demonstrate this, consider the example adapted
 from Mervin's work with Wagner and others in the same area
 \citep{mervin_variance_2012} and presented in
@@ -614,15 +614,15 @@ incurring a large latency cost for a single particle. Finally, with
 particle B we observe that 0.5 domain overlap will still not elminate
 all communications. However, if 1 domain overlap were used, the entire
 geometry shown in Figure~\ref{fig:msod_example} would be contained on
-the source processor and therefore transport all 3 particles without
-communication.
+the source processor and therefore transport of all 3 particles
+without communication would occur.
 
 Wagner and colleagues used this methodology for a 2-dimensional
 calculation of a pressurized water reactor core and varied the domain
 overlap from 0 to 3 domain overlap (a $7 \times 7$ box in the context
 of our example) where a domain constituted a fuel assembly. For the
 fully domain decomposed case, they observed that 76.12\% of all source
-particles leave the domain. At 1.5 domain overlap, that percentage of
+particles leave the domain. At 1.5 domain overlap, the percentage of
 source particles born in the center assembly leaving the processor
 domain dropped to 1.05\% and even further for 0.02\% for the 3 domain
 overlap. Based on these results, this overlap approach, coupled with
@@ -630,6 +630,8 @@ the multiple sets paradigm that will scale for existing parallel
 transport algorithms, provides a scalable Monte Carlo algorithm for
 today's modern machines.
 
+\subsubsection{Load Balancing Concerns}
+\label{subsubsec:mc_load_balancing}
 Although domain decomposition was shown to be efficient in a load
 balanced situation \citep{siegel_analysis_2012}, careful consideration
 must be made for situations where this is not the case. Given the
@@ -641,22 +643,47 @@ and are therefore applicable to the MSOD algorithm
 \citep{procassini_dynamic_2005}. They chose a dynamic balancing scheme
 in which the number of times a particular domain was replicated was
 dependent on the amount of work in that domain (i.e. domains with a
-high particle flux and therefore more particle histories to
-compute). In this variation, domains that require more work will be
-replicated more frequently at reduced particle counts in each
-replication. By doing this, load balance is improved as each domain
-has approximately equal work although each domain may represent a
-different spatial location and have a differing number of histories to
-compute. Furthermore, they noted that as the simulation progressed and
-particles were transported throughout the domain, the amount of
-replication for each domain would vary as particle histories began to
-diffuse, causing some regions to have higher work loads and some to
-have smaller work loads than the initial conditions. Compared to
-Wagner's work where the fission source was distributed relatively
-evenly throughout the domain, fixed source problems (and especially
-those that have a point-like source) like those presented in
-Procassini's work will be more prone to changing load balance
-requirements.
+high particle flux and therefore more particle histories to compute
+require more work). In this variation, domains that require more work
+will be replicated more frequently at reduced particle counts in each
+replication. Consider the example in
+Figure~\ref{fig:procassini_example} adapted from Procassini's work.
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{1.5}{
+      \input{chapters/parallel_mc/procassini_example.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Example illustrating how domain decomposition can
+      create load balance issues in Monte Carlo.}  \textit{A domain is
+      decomposed into 4 zones on 8 processors with a point source in
+      the lower left zone. As the particles diffuse from the source in
+      the random walk sequence as shown in the top row, their tracks
+      populate the entire domain. As given in the bottom row, as the
+      global percentage of particles increases in a zone, that zone's
+      replication count is increased.}}
+  \label{fig:procassini_example}
+\end{figure}
+In this example, a geometry is decomposed into 4 domains on 8
+processors with a point source in the bottom left domain. To begin,
+because the point source is concentrated in one domain, that domain is
+replicated 5 times such the amount of work it has to do per processor
+is roughly balanced with the others. As the particles begin to diffuse
+away from the point source, the amount of replication is adjusted to
+maintain load balance. Near the end of the simulation, the diffusion
+of particles is enough that all domains have equal replication.  By
+doing this, load balance is improved as each domain has approximately
+equal work although each domain may represent a different spatial
+location and have a differing number of histories to
+compute. Furthermore, Procassini and colleagues noted that as the
+simulation progressed and particles were transported throughout the
+domain, the amount of replication for each domain would vary as
+particle histories began to diffuse, causing some regions to have
+higher work loads and some to have smaller work loads than the initial
+conditions. Compared to Wagner's work where the fission source was
+distributed relatively evenly throughout the domain, fixed source
+problems (and especially those that have a point-like source) like
+those presented in Procassini's work will be more prone to changing
+load balance requirements.
 
 \subsubsection{Reproducable Domain Decomposed Results}
 \label{subsubsec:reproducable_mc}
