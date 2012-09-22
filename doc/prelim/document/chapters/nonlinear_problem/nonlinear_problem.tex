@@ -31,16 +31,16 @@ We formulate the \textit{nonlinear problem} as follows
   \ve{F}(\ve{u}) = \ve{0}\:,
   \label{eq:nonlinear_problem}
 \end{equation}
-where $\ve{u}$ is the solution vector and $\ve{F}(\ve{u})$ is the
-function of nonlinear residuals. We write the nonlinear system in this
-form so that when an exact solution for $\ve{u}$ is achieved, all
-residuals evaluate to zero. \textit{Newton's method} is a root finding
-algorithm and therefore we can use it to solve
-Eq~(\ref{eq:nonlinear_problem}) if we interpret the exact solution
-$\ve{u}$ to be the roots of $\ve{F}(\ve{u})$. Newton's method is also
-an iterative scheme, and we can generate this scheme by generating the
-Taylor expansion of the $k+1$ iterate of the nonlinear residuals about
-the $k$ iterate:
+where $\ve{u} \in \mathbb{C}^n$ is the solution vector and
+$\ve{F}:\mathbb{C}^N \rightarrow \mathbb{C}^N$ is the function of
+nonlinear residuals. We write the nonlinear system in this form so
+that when an exact solution for $\ve{u}$ is achieved, all residuals
+evaluate to zero. \textit{Newton's method} is a root finding algorithm
+and therefore we can use it to solve Eq~(\ref{eq:nonlinear_problem})
+if we interpret the exact solution $\ve{u}$ to be the roots of
+$\ve{F}(\ve{u})$. Newton's method is also an iterative scheme, and we
+can generate this scheme by generating the Taylor expansion of the
+$k+1$ iterate of the nonlinear residuals about the $k$ iterate:
 \begin{equation}
   \ve{F}(\ve{u}^{k+1}) = \ve{F}(\ve{u}^{k}) +
   \ve{F}'(\ve{u}^{k})(\ve{u}^{k+1}-\ve{u}^{k}) +
@@ -105,18 +105,31 @@ inverted, resulting in an inexact Newton correction as initially
 described by Dembo and others \citep{dembo_inexact_1982}. For common
 sparse nonlinear systems, which in turn yield a sparse Jacobian
 matrix, this situation occurs when conventional iterative methods are
-applied.
+applied. In their definition, Dembo formulated inexact methods such
+that they are independent of the linear method used to solve for the
+Newton correction and therefore are amenable to use with any linear
+solver.
 
 \subsection{Newton-Krylov Methods}
 \label{subsec:newton_krylov_methods}
 A form of inexact Newton methods, \textit{Newton-Krylov methods} are
 nonlinear iterative methods that use a Krylov subspace method as the
 linear solver for generating the Newton correction. As we investigated
-in Chapter~\ref{chap:linear_problem}, Krylov methods are robust and
+in Chapter~\ref{ch:linear_problem}, Krylov methods are robust and
 enjoy efficient parallel implementations. Furthermore, their lack of
 explicit dependence on the operator make them easier to implement than
-other methods. 
+other methods.
 
+\subsubsection{Choosing a Krylov Method}
+\label{subsubsec:krylov_choice}
+From their numerical studies, McHugh and Knoll found
+that the robustness enjoyed by the long recurrence relations used by
+GMRES for the orthogonalization procedure proved to be a better choice
+for use with Newton's method
+\citep{mchugh_inexact_1993,knoll_newton-krylov_1995}.
+
+\subsubsection{Jacobian-Free Approximation}
+\label{subsubsec:jacobian_free_approximation}
 In most cases, the Jacobian is difficult to form from the difference
 equations. For simple nonlinear cases such as the Navier Stokes
 equations, the derivatives can be computed and coded, but due to the
