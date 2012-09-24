@@ -3,9 +3,9 @@
 Nonlinear equation sets are a common occurence in multiphysics
 problems. Systems of partial differntial equations such as those that
 describe fluid flow or more general transport processes when
-discretized by conventional methods yield discrete sets of equations
-with nonlinearities present in the variables. Traditionally, such
-systems have been solved by linearizing them such that the
+discretized by conventional methods yield discrete sets of stiff
+equations with nonlinearities present in the variables. Traditionally,
+such systems have been solved by linearizing them such that the
 nonlinearities in the variable are eliminated and more traditional
 linear methods can be used for solutions. Often characterized as
 segregated methods where physics operators are split and their action
@@ -13,7 +13,7 @@ on the system approximated in steps, such methods lack consistency and
 accuracy in resolving the nonlinear component of the solution. In the
 last 30 years, fully consistent nonlinear methods based on Newton's
 method have become more popular and many advances have been made in
-the computational physics field to employ these methods. 
+the computational physics field to employ these methods.
 
 Currently, Krylov methods are used with Newton's method to form a
 robust solution sequence for these types of problems. However, given
@@ -23,7 +23,7 @@ order to gauge if some improvements can be made. We therefore devise a
 new method using MCSA in conjuction with new methods, accomodating the
 fact that MCSA requires an explicitly formed linear operator in its
 implementation as compared to Krylov methods. In addition to handling
-this dependency, we will review parallel strategies for a nonlinear
+this dependency, we will construct a parallel strategy for a nonlinear
 MCSA method.
 
 \section{Preliminaries}
@@ -53,7 +53,7 @@ iterate:
   \label{eq:newton_derivation_1}
 \end{equation}
 If we ignore the nonlinear terms in the expansion and assert that at
-the $k+1$ iterate $\ve{u}^{k+1}$ is that exact solution such that
+the $k+1$ iterate $\ve{u}^{k+1}$ is the exact solution such that
 $\ve{F}(\ve{u}^{k+1}) = \ve{0}$, then we are left with the following
 equality:
 \begin{equation}
@@ -161,8 +161,8 @@ correction and we can modify the Krylov solver parameters accordingly
 to accomodate this. In most nonlinear problems, the Jacobian operator
 is generally nonsymmetric and therefore either Krylov methods with
 long recurrence relations that can handle nonsymmetric systems must be
-considered or Newton correction system must be preconditioned such
-that the operator is symmetric and short recurrence relations method
+considered or the Newton correction system must be preconditioned such
+that the operator is symmetric and short recurrence relation methods
 can be potentially be used.
 
 With many Krylov methods available, which to use with the Newton
@@ -173,12 +173,12 @@ numerical studies in 1995, Knoll and McHugh used the set of highly
 nonlinear and stiff convection-diffusion-reaction equations to solve a
 set of tokamak plasma problems with the goal of measuring solver
 performance with Newton's method. They note several tradeoffs in using
-Krylov methods the a Newton solver. The first is that the optimization
-condition that results from the constraints (e.g. the minimization of
-the GMRES residual over the Krylov space) can be relaxed by
-restricting the size of the subspace such that only a fixed number of
-subspace vectors may be maintained, thus reducing memory
-requirements. We can also relax the optimization condition instead
+Krylov methods with the Newton solver. The first is that the
+optimization condition that results from the constraints (e.g. the
+minimization of the GMRES residual over the Krylov space) can be
+relaxed by restricting the size of the subspace such that only a fixed
+number of subspace vectors may be maintained, thus reducing memory
+requirements. We can also relax the optimization condition by instead
 restarting the recurrence relation with a new set of vectors once a
 certain number of vectors have been generated, the optimization
 condition is maintain over that particular set of vectors, however,
@@ -203,7 +203,7 @@ method where the Jacobian operator was explicitly formed using
 difference equations, all methods exhibited roughly equivalent
 iteration count performance for both the inner linear iterations and
 the outer nonlinear iterations in terms of iterations required to
-converge with Bi-CGSTAB typically performing the best for
+converge. Bi-CGSTAB typically performed the best for
 implementations where the Jacobian was explicitly formed and GMRES
 perfoming best for matrix-free implementations. However, upon
 investigating the convergence of the inner iterations, it was observed
@@ -216,19 +216,20 @@ the Krylov solver \citep{knoll_jacobian-free_2004}.
 \subsubsection{Jacobian-Free Approximation}
 \label{subsubsec:jacobian_free_approximation}
 In most cases, the Jacobian is difficult to form from the difference
-equations and costly to evaluate. For simple nonlinear cases such as
-the Navier-Stokes equations, the derivatives can be computed and
-coded, but due to the complexity of those derivatives and the
-resulting difference equations this task can be tedious, error prone,
-and must be repeated for every equation set. Further, in their 1995
-work, Knoll and McHugh also noted that a dominating part of their
-computation time was the evaluation of the difference equations for
-building the Jacobian \citep{knoll_newton-krylov_1995}. By recognizing
-that Krylov methods only need the action of the operator on the vector
-instead of the operator itself, the Jacobian can instead be
-approximated through various numerical methods including a
-difference-based Jacobian-free formulation. Jacobian-Free methods, and
-in particular \textit{Jacobian-Free Newton-Krylov} (JFNK) methods
+equations and costly to evaluate for large equation sets. For simple
+nonlinear cases such as the Navier-Stokes equations, the derivatives
+can be computed and coded, but due to the complexity of those
+derivatives and the resulting difference equations this task can be
+tedious, error prone, and must be repeated for every equation
+set. Further, in their 1995 work, Knoll and McHugh also noted that a
+dominating part of their computation time was the evaluation of the
+difference equations for building the Jacobian
+\citep{knoll_newton-krylov_1995}. By recognizing that Krylov methods
+only need the action of the operator on the vector instead of the
+operator itself, the Jacobian can instead be approximated through
+various numerical methods including a difference-based Jacobian-free
+formulation. Jacobian-Free methods, and in particular
+\textit{Jacobian-Free Newton-Krylov} (JFNK) methods
 \citep{knoll_jacobian-free_2004}, rely on forming the action of the
 Jacobian on a vector as required by the Krylov solver through a
 forward difference scheme. In this case, the action of the Jacobian on
@@ -243,10 +244,38 @@ precision. Kelley \citep{kelley_iterative_1995} points out a potential
 downfall of this formulation in that if the discretization error in
 $\ve{F}(\ve{u})$ is on the order of the perturbation parameter
 $\epsilon$, then the finite difference error from
-Eq~(\ref{eq:jacobian_free_product}) pollutes the solution.
+Eq~(\ref{eq:jacobian_free_product}) pollutes the
+solution. Furthermore, Knoll and McHugh noted that for preconditioning
+purposes, part of the Jacobian must still explicitly be formed
+periodically and that linear solver robustness issues were magnified
+by the matrix-free approach due to the first-order approximation.
 
 \subsubsection{Automatic Differentiation for Jacobian Generation}
 \label{subsubsec:automatic_differentiation}
+If it is acceptable to store the actual Jacobian matrix, other methods
+are available to construct it without requiring hand-coding and
+evaluating derivatives, thus eliminating the associated issues. In
+addition, if any additional equations are added to the system or a
+higher order functional approximation is desired, these derivatives
+must be regenerated and coded. Becoming more prominent in the 1990's,
+\textit{automatic differentation} is a mechanism by which the
+derivatives of a function can be generated automatically by evaluating
+it. Automatic differntiation is built on the concept that all
+functions discretely represented in a computer are ultimately
+represented by elementary mathematical operations. If the chain rule
+is applied to those elementary operations, then the derivative of that
+function can be computed to the order of accuracy of its original
+discretization in a completely automated way.
+
+In their 1994 work, Averick and others compare the qualities of sparse
+Jacobian approximation by differencing as in
+Eq~(\ref{eq:jacobian_free_product}), hand-coded derivatives, and
+automatic differentiation \citep{averick_computing_1994}. If code to
+perform the Jacobian matrix-vector multiply or an equivalent
+approximation as in Eq~(\ref{eq:jacobian_free_product}), then the
+Jacobian matrix can be explicitly formed by applying the code to the
+column vectors of the identity matrix at the cost of $N$ function
+evaluations for $\ve{J}(\ve{u}) \in \mathbb{R}^{N \times N}$.
 
 \section{The FANM Method}
 \label{sec:fanm}
