@@ -13,6 +13,8 @@ provided a more formal explanation of Von Neumann and Ulam's method
 \citep{hammersley_monte_1964} presents additional detail on this topic
 using a collection of references from the 1950's and early 1960's.
 
+\section{Preliminaries}
+\label{sec:mc_preliminaries}
 We begin our discussion of stochastic methods using these texts by
 seeking a solution to Eq~(\ref{eq:linear_problem}). For a given linear
 operator $\ve{A}$, we can using diagonal splitting in the same manner
@@ -225,17 +227,29 @@ We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
 contains an additional Hadamard product with the weight matrix. The
 Hadamard product has the property that:
 \begin{equation}
-  |\ve{H} \circ \ve{W}| \geq |\ve{H}|\ |\ve{W}|\:,
+  |\ve{H} \circ \ve{W}| \geq |\ve{H}|\ |\ve{W}|\:.
   \label{eq:hadamard_inequality}
 \end{equation}
-meaning that $\rho(\ve{G}) \geq \rho(\ve{H})$. Using these relations
-to analyze Eq~(\ref{eq:direct_variance_5}), we see that if
-$\rho(\ve{H}) > 1$, then the sum in
+Using the norm property of the Hadamard product and
+Eq~(\ref{eq:neumann_ulam_decomposition}), we can define the norm of
+$\ve{W}$ as:
+\begin{equation}
+  \frac{|\ve{H}|}{|\ve{P}|} \geq |\ve{W}|\:.
+  \label{eq:weight_norm}
+\end{equation}
+We then have the following inequality for relating $\ve{G}$ and
+$\ve{H}$:
+\begin{equation}
+  |\ve{G}| \geq \frac{|\ve{H}|^2}{|\ve{P}|}
+  \label{eq:variance_norm_inequality}
+\end{equation}
+Using these relations to analyze Eq~(\ref{eq:direct_variance_5}), we
+see that if $\rho(\ve{H}) > 1$, then the sum in
 Eq~(\ref{eq:variance_neumann_series}) will not converge and an
 infinite variance will arise as the elements of $\ve{T}$ become
-infinite. Therefore, we must restrict $\ve{H}$ with $\rho(\ve{H}) < 1$
-so that our expectation values for the solution may have a finite
-variance.
+infinite in Eq~(\ref{eq:direct_variance_5}). Therefore, we must
+restrict $\ve{H}$ with $\rho(\ve{H}) < 1$ so that our expectation
+values for the solution may have a finite variance.
 
 \subsection{Reusing Random Walks}
 \label{subsec:reusing_random_walks}
@@ -254,12 +268,12 @@ particle transport, this adjoint method is equivalent to a traditional
 forward method. To begin, we first form the \textit{adjoint
   Neumann-Ulam decomposition} of $\ve{H}$:
 \begin{equation}
-  \ve{H}^{\dagger} = \ve{P} \circ \ve{W}\:,
+  \ve{H}^{T} = \ve{P} \circ \ve{W}\:,
   \label{eq:adjoint_neumann_ulam}
 \end{equation}
 where now we are forming the decomposition with respect to the
-conjugate transpose of $\ve{H}$\footnote{This is sometimes referred to
-  as the adjoint form of the matrix}. We then follow the same
+transpose of $\ve{H}$\footnote{This is sometimes referred to as the
+  adjoint form for real valued matrices}. We then follow the same
 procedure as the direct method for forming the probability and weight
 matrices in the decomposition. Using the adjoint form, probabilities
 should instead be column-scaled:

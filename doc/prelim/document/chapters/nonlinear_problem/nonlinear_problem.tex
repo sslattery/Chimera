@@ -1,6 +1,6 @@
 \chapter{Stochastic Solution Methods for Nonlinear Problems}
 \label{ch:nonlinear_problem}
-Nonlinear equation sets are a hallmark of multiphysics
+Nonlinear equation sets are a common occurence in multiphysics
 problems. Systems of partial differntial equations such as those that
 describe fluid flow or more general transport processes when
 discretized by conventional methods yield discrete sets of equations
@@ -13,15 +13,18 @@ on the system approximated in steps, such methods lack consistency and
 accuracy in resolving the nonlinear component of the solution. In the
 last 30 years, fully consistent nonlinear methods based on Newton's
 method have become more popular and many advances have been made in
-the computational physics field to employ these methods. Currently,
-Krylov methods are used with Newton's method to form a robust solution
-sequence for these types of problems. However, given our goals of
-advancing stochastic solver technology for linear problems, we aim to
-apply them to these fully consistent schemes in order to gauge if some
-improvements can made. We therefore devise a new method using MCSA in
-conjuction with new methods, accomodating the fact that MCSA requires
-an explicitly formed linear operator in its implementation. In
-addition, we will review parallel strategies for a Newton-MCSA method.
+the computational physics field to employ these methods. 
+
+Currently, Krylov methods are used with Newton's method to form a
+robust solution sequence for these types of problems. However, given
+our goals of advancing stochastic solver technology for linear
+problems, we aim to apply them to these fully consistent schemes in
+order to gauge if some improvements can be made. We therefore devise a
+new method using MCSA in conjuction with new methods, accomodating the
+fact that MCSA requires an explicitly formed linear operator in its
+implementation as compared to Krylov methods. In addition to handling
+this dependency, we will review parallel strategies for a nonlinear
+MCSA method.
 
 \section{Preliminaries}
 \label{sec:nonlinear_preliminaries}
@@ -31,16 +34,17 @@ We formulate the \textit{nonlinear problem} as follows
   \ve{F}(\ve{u}) = \ve{0}\:,
   \label{eq:nonlinear_problem}
 \end{equation}
-where $\ve{u} \in \mathbb{C}^n$ is the solution vector and
-$\ve{F}:\mathbb{C}^N \rightarrow \mathbb{C}^N$ is the function of
+where $\ve{u} \in \mathbb{R}^n$ is the solution vector and
+$\ve{F}:\mathbb{R}^N \rightarrow \mathbb{R}^N$ is the function of
 nonlinear residuals. We write the nonlinear system in this form so
 that when an exact solution for $\ve{u}$ is achieved, all residuals
 evaluate to zero. \textit{Newton's method} is a root finding algorithm
 and therefore we can use it to solve Eq~(\ref{eq:nonlinear_problem})
 if we interpret the exact solution $\ve{u}$ to be the roots of
 $\ve{F}(\ve{u})$. Newton's method is also an iterative scheme, and we
-can generate this scheme by generating the Taylor expansion of the
-$k+1$ iterate of the nonlinear residuals about the $k$ iterate:
+can generate this procedure by building the Taylor expansion of the
+$k+1$ iterate of the nonlinear residuals about the previous $k$
+iterate:
 \begin{equation}
   \ve{F}(\ve{u}^{k+1}) = \ve{F}(\ve{u}^{k}) +
   \ve{F}'(\ve{u}^{k})(\ve{u}^{k+1}-\ve{u}^{k}) +
@@ -48,16 +52,18 @@ $k+1$ iterate of the nonlinear residuals about the $k$ iterate:
   \:.
   \label{eq:newton_derivation_1}
 \end{equation}
-If we ignore the nonlinear terms in the expansion and assert that the
-$k+1$ iterate $\ve{u}^{k+1}$ is that exact solution such that
-$\ve{F}(\ve{u}^{k+1}) = \ve{0}$, then we are left with the following:
+If we ignore the nonlinear terms in the expansion and assert that at
+the $k+1$ iterate $\ve{u}^{k+1}$ is that exact solution such that
+$\ve{F}(\ve{u}^{k+1}) = \ve{0}$, then we are left with the following
+equality:
 \begin{equation}
   -\ve{F}(\ve{u}^{k}) =
   \ve{F}'(\ve{u}^{k})(\ve{u}^{k+1}-\ve{u}^{k})\:.
   \label{eq:newton_derivation_2}
 \end{equation}
-We note two things in Eq~(\ref{eq:newton_derivation_2}). The first is
-that $\ve{F}'(\ve{u}^{k})$ is in fact the \textit{Jacobian},
+We note two things of importance in
+Eq~(\ref{eq:newton_derivation_2}). The first is that
+$\ve{F}'(\ve{u}^{k})$ is in fact the \textit{Jacobian},
 $\ve{J}(\ve{u})$, of the set of nonlinear residuals and is defined
 element-wise as:
 \begin{equation}
@@ -65,9 +71,11 @@ element-wise as:
   \label{eq:jacobian_def}
 \end{equation}
 Second, we note that $(\ve{u}^{k+1}-\ve{u}^{k})$ is simply the
-\textit{Newton correction} at the $k$ iterate, $\delta \ve{u}^k$. We
-can then rerarrange Eq~(\ref{eq:newton_derivation_2}) to define the
-Newton iteration scheme for nonlinear problems:
+solution update from the $k$ iterate to the $k+1$ iterate. We will
+define this update as the \textit{Newton correction} at the $k$
+iterate, $\delta \ve{u}^k$. We can then rerarrange
+Eq~(\ref{eq:newton_derivation_2}) to define the Newton iteration
+scheme for nonlinear problems:
 \begin{subequations}
   \begin{gather}
     \ve{J}(\ve{u}) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})\\
@@ -75,15 +83,16 @@ Newton iteration scheme for nonlinear problems:
   \end{gather}
   \label{eq:newton_iteration}
 \end{subequations}
-We then have two distinct steps to perform: the solution of a linear
-system to compute the Newton correction where the Jacobian matrix of
-the nonlinear equation set is the linear operator, and the application
-of the correction to the previous iterate's solution to arrive at the
-next iterate's solution. In the asymptotic lmiit, the iterations of
-Newton's method will converge the nonlinear residual quadratically
-\citep{kelley_iterative_1995}. Convergence criteria is set for
-stopping the iteration sequence based on the nonlinear
-residual. Commonly the following criteria is used:
+We then have three distinct steps to perform: evaluation of the
+nonlinear residuals using the solution at the $k$ iterate, the
+solution of a linear system to compute the Newton correction where the
+Jacobian matrix of the nonlinear equation set is the linear operator,
+and the application of the correction to the previous iterate's
+solution to arrive at the next iterate's solution. In the asymptotic
+limit, the iterations of Newton's method will converge the nonlinear
+residual quadratically \citep{kelley_iterative_1995}. Convergence
+criteria is set for stopping the iteration sequence based on the
+nonlinear residual. Commonly, the following criteria is used:
 \begin{equation}
   ||\ve{F}(\ve{u}^{k})|| < \epsilon ||\ve{F}(\ve{u}^{0})||\:,
   \label{eq:newton_stopping_criteria}
@@ -115,48 +124,113 @@ iteration to the inner linear iteration such that:
   ||\ve{F}(\ve{u}^k)||\:,
   \label{eq:inexact_newton_forcing}
 \end{equation}
-where $\eta^k$ is defined as the \textit{forcing term} at the $k$
-iterate. Eq~(\ref{eq:inexact_newton_forcing}) then states that the
-residual generated by the linear residual is bound by the nonlinear
-residual and how tightly it is bound is defined by the forcing
-term. This is useful in that we can vary how tightly coupled the
-Newton correction is to the nonlinear iteration by relaxing or
-tightening the convergence properties on the linear iterative
-method. As a result strategies for determining the forcing term can
-vary depending on the problem type \citep{eisenstat_choosing_1996}.
+where $\eta^k \in [0,1)$ is defined as the \textit{forcing term} at
+  the $k$ iterate. Eq~(\ref{eq:inexact_newton_forcing}) then states
+  that the residual generated by the linear solver is bound by the
+  nonlinear residual and how tightly it is bound is defined by the
+  forcing term. This is useful in that we can vary how tightly coupled
+  the convergence of the linear iterations used to generate the Newton
+  correction is to the nonlinear iteration by relaxing or tightening
+  the convergence properties on the linear iterative method. As a
+  result, strategies for determining the forcing term can vary
+  depending on the problem type and can greatly affect the convergence
+  of the method or even prohibit convergence
+  \citep{eisenstat_choosing_1996}. In addition, globalization methods
+  may be used to modify the Newton correction in a more desireable
+  direction such that convergence properties can be improved when the
+  initial guess for $\ve{u}$ is poor
+  \citep{pawlowski_globalization_2006}.
 
 \subsection{Newton-Krylov Methods}
 \label{subsec:newton_krylov_methods}
 A form of inexact Newton methods, \textit{Newton-Krylov methods} are
 nonlinear iterative methods that leverage a Krylov subspace method as
-the linear solver for generating the Newton correction. As we
-investigated in Chapter~\ref{ch:linear_problem}, Krylov methods are
-robust and enjoy efficient parallel implementations. Furthermore,
-their lack of explicit dependence on the operator make them easier to
-implement than other methods.
+the linear solver for generating the Newton correction
+\citep{kelley_iterative_1995}. As we investigated in
+Chapter~\ref{ch:linear_problem}, Krylov methods are robust and enjoy
+efficient parallel implementations on modern
+architectures. Furthermore, their lack of explicit dependence on the
+operator make them easier to implement than other
+methods. Additionally, although many iterations can become memory
+intensive due to the need to store the Krylov subspace for the
+orthogonalization procedure, at each nonlinear iteration this cost is
+reset as the Jacbobian matrix will change due to its dependence on the
+solution vector. This means that for every nonlinear iteration, a
+completely new linear system is formed for generating the Newton
+correction and we can modify the Krylov solver parameters accordingly
+to accomodate this. In most nonlinear problems, the Jacobian operator
+is generally nonsymmetric and therefore either Krylov methods with
+long recurrence relations that can handle nonsymmetric systems must be
+considered or Newton correction system must be preconditioned such
+that the operator is symmetric and short recurrence relations method
+can be potentially be used.
 
 With many Krylov methods available, which to use with the Newton
 method is dependent on many factors including convergence rates and
-memory usage. From their numerical studies, McHugh and Knoll found
-that the robustness enjoyed by the long recurrence relations used by
-GMRES for the orthogonalization procedure proved to be a better choice
-for use with Newton's method
-\citep{mchugh_inexact_1993,knoll_newton-krylov_1995}.
+memory usage. Several studies have been performed to investigate this
+\citep{mchugh_inexact_1993,knoll_newton-krylov_1995}. In their
+numerical studies in 1995, Knoll and McHugh used the set of highly
+nonlinear and stiff convection-diffusion-reaction equations to solve a
+set of tokamak plasma problems with the goal of measuring solver
+performance with Newton's method. They note several tradeoffs in using
+Krylov methods the a Newton solver. The first is that the optimization
+condition that results from the constraints (e.g. the minimization of
+the GMRES residual over the Krylov space) can be relaxed by
+restricting the size of the subspace such that only a fixed number of
+subspace vectors may be maintained, thus reducing memory
+requirements. We can also relax the optimization condition instead
+restarting the recurrence relation with a new set of vectors once a
+certain number of vectors have been generated, the optimization
+condition is maintain over that particular set of vectors, however,
+Knoll and McHugh note that this ultimately slows the convergence rate
+as compared to keeping all vectors as the new set of vectors is not
+necessarily orthogonal to the previous set, and therfore not optimal
+over the entire iteration procedure. The orthogonality condition can
+be relaxed by using a recurrence relation that does not generate a
+strictly orthonormal basis for the Krylov subspace such as the Lanzcos
+biorthogonalization procedure, resulting in memory savings due to the
+shorter Lanzcos recurrence relation.
+
+As a comparison, Knoll and McHugh chose an Arnoldi-based GMRES with a
+fixed vector basis approximately the size of the number of iterations
+required to converge as the long recurrence relation solver and
+conjugate gradients squared (CGS), bi-orthogonalized conjugate
+gradient stabilized (Bi-CGSTAB), and transpose-free quasiminimal
+residual (TFQMR) methdos as Lanzcos-based short recurrence relation
+solvers. All solvers were used to compute the right-preconditioned
+Newton correction system. For standard implementations of Newton's
+method where the Jacobian operator was explicitly formed using
+difference equations, all methods exhibited roughly equivalent
+iteration count performance for both the inner linear iterations and
+the outer nonlinear iterations in terms of iterations required to
+converge with Bi-CGSTAB typically performing the best for
+implementations where the Jacobian was explicitly formed and GMRES
+perfoming best for matrix-free implementations. However, upon
+investigating the convergence of the inner iterations, it was observed
+that the GMRES solver was significantly more robust, always generating
+a monotonically decreasing residual as compared to the Lanzcos-based
+methods which had the tendency to oscillate. Based on these results,
+in all of their future work Knoll and McHugh tended to use GMRES as
+the Krylov solver \citep{knoll_jacobian-free_2004}.
 
 \subsubsection{Jacobian-Free Approximation}
 \label{subsubsec:jacobian_free_approximation}
 In most cases, the Jacobian is difficult to form from the difference
-equations. For simple nonlinear cases such as the Navier Stokes
-equations, the derivatives can be computed and coded, but due to the
-complexity of those derivatives and the resulting difference equations
-this task can be tedious, error prone, and must be repeated for every
-equation set. By recognizing that Krylov methods only need the action
-of the operator on the vector instead of the operator itself, the
-Jacobian can instead be approximated through various numerical methods
-including a difference-based Jacobian-free formulation. Jacobian-Free
-methods, and in particular \textit{Jacobian-Free Newton-Krylov} (JFNK)
-methods \citep{knoll_jacobian-free_2004}, rely on forming the action
-of the Jacobian on a vector as required by the Krylov solver through a
+equations and costly to evaluate. For simple nonlinear cases such as
+the Navier-Stokes equations, the derivatives can be computed and
+coded, but due to the complexity of those derivatives and the
+resulting difference equations this task can be tedious, error prone,
+and must be repeated for every equation set. Further, in their 1995
+work, Knoll and McHugh also noted that a dominating part of their
+computation time was the evaluation of the difference equations for
+building the Jacobian \citep{knoll_newton-krylov_1995}. By recognizing
+that Krylov methods only need the action of the operator on the vector
+instead of the operator itself, the Jacobian can instead be
+approximated through various numerical methods including a
+difference-based Jacobian-free formulation. Jacobian-Free methods, and
+in particular \textit{Jacobian-Free Newton-Krylov} (JFNK) methods
+\citep{knoll_jacobian-free_2004}, rely on forming the action of the
+Jacobian on a vector as required by the Krylov solver through a
 forward difference scheme. In this case, the action of the Jacobian on
 some vector $\ve{v}$ is given as:
 \begin{equation}
@@ -170,6 +244,9 @@ downfall of this formulation in that if the discretization error in
 $\ve{F}(\ve{u})$ is on the order of the perturbation parameter
 $\epsilon$, then the finite difference error from
 Eq~(\ref{eq:jacobian_free_product}) pollutes the solution.
+
+\subsubsection{Automatic Differentiation for Jacobian Generation}
+\label{subsubsec:automatic_differentiation}
 
 \section{The FANM Method}
 \label{sec:fanm}
@@ -190,9 +267,6 @@ model problems that we will test FANM with. These should be problems
 that have already been worked up in the literature with benchmark-type
 solutions. Parallelism in the context of the linear solvers chapter
 should also be discussed.
-
-\subsubsection{Automatic Differentiation}
-\label{subsubsec:automatic_differentiation}
 
 \subsection{Residual and Jacobian Generation}
 \label{subsec:fanm_generation}
