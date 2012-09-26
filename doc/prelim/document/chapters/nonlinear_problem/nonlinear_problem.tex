@@ -221,8 +221,8 @@ nonlinear cases such as the Navier-Stokes equations, the derivatives
 can be computed and coded, but due to the complexity of those
 derivatives and the resulting difference equations this task can be
 tedious, error prone, and must be repeated for every equation
-set. Further, in their 1995 work, Knoll and McHugh also noted that a
-dominating part of their computation time was the evaluation of the
+set. Furthermore, in their 1995 work, Knoll and McHugh also noted that
+a dominating part of their computation time was the evaluation of the
 difference equations for building the Jacobian
 \citep{knoll_newton-krylov_1995}. By recognizing that Krylov methods
 only need the action of the operator on the vector instead of the
@@ -244,11 +244,17 @@ precision. Kelley \citep{kelley_iterative_1995} points out a potential
 downfall of this formulation in that if the discretization error in
 $\ve{F}(\ve{u})$ is on the order of the perturbation parameter
 $\epsilon$, then the finite difference error from
-Eq~(\ref{eq:jacobian_free_product}) pollutes the
-solution. Furthermore, Knoll and McHugh noted that for preconditioning
-purposes, part of the Jacobian must still explicitly be formed
-periodically and that linear solver robustness issues were magnified
-by the matrix-free approach due to the first-order approximation.
+Eq~(\ref{eq:jacobian_free_product}) pollutes the solution. In
+addition, Knoll and McHugh noted that for preconditioning purposes,
+part of the Jacobian must still explicitly be formed periodically and
+that linear solver robustness issues were magnified by the matrix-free
+approach due to the first-order approximation. This formation
+frequency coupled with the numerous evaluations of the Jacobian
+approximation create a situation where after so many nonlinear
+iterations, it becomes cheaper to instead fully form the
+Jacobian. For simple equation sets, this may only take 5-10 Newton
+iterations to reach this point while over 30 may be required for
+larger equations sets and therefore larger Jacobians.
 
 \subsubsection{Automatic Differentiation for Jacobian Generation}
 \label{subsubsec:automatic_differentiation}
@@ -256,52 +262,165 @@ If it is acceptable to store the actual Jacobian matrix, other methods
 are available to construct it without requiring hand-coding and
 evaluating derivatives, thus eliminating the associated issues. In
 addition, if any additional equations are added to the system or a
-higher order functional approximation is desired, these derivatives
-must be regenerated and coded. Becoming more prominent in the 1990's,
-\textit{automatic differentation} is a mechanism by which the
-derivatives of a function can be generated automatically by evaluating
-it. Automatic differntiation is built on the concept that all
-functions discretely represented in a computer are ultimately
-represented by elementary mathematical operations. If the chain rule
-is applied to those elementary operations, then the derivative of that
-function can be computed to the order of accuracy of its original
-discretization in a completely automated way.
+higher order functional approximation is desired, it would be useful
+to avoid regenerating and coding these derivatives. Becoming more
+prominent in the 1990's, \textit{automatic differentiation} is a
+mechanism by which the derivatives of a function can be generated
+automatically by evaluating it. Automatic differntiation is built on
+the concept that all functions discretely represented in a computer
+are ultimately represented by elementary mathematical operations. If
+the chain rule is applied to those elementary operations, then the
+derivatives of those functions can be computed to the order of
+accuracy of their original discretization in a completely automated
+way \citep{averick_computing_1994}.
 
-In their 1994 work, Averick and others compare the qualities of sparse
-Jacobian approximation by differencing as in
-Eq~(\ref{eq:jacobian_free_product}), hand-coded derivatives, and
-automatic differentiation \citep{averick_computing_1994}. If code to
-perform the Jacobian matrix-vector multiply or an equivalent
-approximation as in Eq~(\ref{eq:jacobian_free_product}), then the
-Jacobian matrix can be explicitly formed by applying the code to the
-column vectors of the identity matrix at the cost of $N$ function
-evaluations for $\ve{J}(\ve{u}) \in \mathbb{R}^{N \times N}$.
+The work of Bartlett and others \citep{hutchison_automatic_2006}
+extended initial Fortran-based work in the area of automatic
+differentiation implementations to leverage the parametric type and
+operator overloading features of C++ \citep{stroustrup_c++_1997}. They
+formulate the differentiation problem from an element viewpoint by
+assuming that a global Jacobian can be assembled from local element
+function evaluations of $e_k : \mathbb{R}^{n_k} \rightarrow
+\mathbb{R}^{m_k}$, similar to the finite element assembly procedure
+as:
+\begin{equation}
+  \ve{J}(\ve{u}) = \sum_{i=1}^N \ve{Q}^T_i \ve{J}_k \ve{P}_i\:,
+  \label{eq:fad_global_jacobian}
+\end{equation}
+where $\ve{J}_{k_i} = \partial e_{k_i} / \partial P_i u$ is the
+$k^{th}$ element function Jacobian, $\ve{Q} \in \mathbb{R}^{n_{k_i}
+  \times N}$ is a projector onto the element domain and $\ve{P} \in
+\mathbb{R}^{m_{k_i} \times N}$ a projector onto the element range for
+$\ve{F}(\ve{u}) \in \mathbb{R}^{N \times N}$. The Jacobian matrix for
+each element will therefore have entirely local data in a dense
+structure, eliminating the need for parallel communication and sparse
+techniques during differentiation. Only when all local differentials
+are computed does communication of the Jacobian occur through
+gather/scatter operations in order to properly assembly it. Also of
+benefit is the fact that element-level computations generally consist
+of a smaller number of degrees of freedom, thus reducing memory
+requirements during evaluation as compared to a global formulation of
+the problem. Such a formulation is not limited to finite element
+formulations and is amenable to any scheme where the system is
+globally sparse with degrees of freedom coupled to local domains
+including finite volume representations. The templating capabilities
+of C++ were leveraged with the element-based evaluation and assembly
+scheme as in Eq~(\ref{eq:fad_global_jacobian}) by templating element
+function evaluation code on the evaluation type. If these functions
+are instantiated with standard floating point types then the residual
+is returned. If they are instead instantiated with the
+operator-overloaded automatic differentiation types, both the residual
+and Jacobian are returned.
+
+Of interest to Bartlett, Averick, and the many others that have
+researched automatic differentation are measuring its performance
+relative to hand-coded derivatives and capturing the Jacboian matrix
+from matrix-free approximations. Given their element-based function
+evaluation scheme, Bartlett's work varied the number of degrees of
+freedom per element and compared both the floating point operation
+count and CPU time for both the templated automatic differentiation
+method and hand-coded derivatives for Jacobian evaluations. Although
+they observed a 50\% increase in floating point operations in the
+templated method over the hand-coded method, run times were observed
+to be over 3 times faster for the templated method. They hypothesize
+that this is due to the fact that the element-based formulation of the
+templated method is causing better utilization of cache and therefore
+faster data access. Furthermore, they observed linear scaling behavior
+for automatic differentiation as the number of degrees of freedom per
+element were increased up to a few hundred. Based on these results,
+this type of automatic differentation formulation was deemed
+acceptable for use in large-scale production physics codes.
 
 \section{The FANM Method}
 \label{sec:fanm}
-In this section we will devise the FANM method. Based on the
-background in the previous section, we first need to motivate the
-development of this work by pointing out some of the issues with
-conventional methods. This includes JFNK coarseness and either
-prohibitively large Krylov subspaces or a loss of orthogonality
-information in the subspace due to restarts. We can than point out
-some of the attractive qualities of the FANM method. Much of this will
-rely on advanced concepts including automatic differentiation and
-on-the-fly residual and Jacobian generation from nonlinear function
-evaluations. In addition, we will want to show that the Newton method
-will converge using MCSA as the linear solver. I suspect I will have
-some preliminary results for a serial implementation here as I already
-have a serial MCSA implemented. Finally, we will want to design the
-model problems that we will test FANM with. These should be problems
-that have already been worked up in the literature with benchmark-type
-solutions. Parallelism in the context of the linear solvers chapter
-should also be discussed.
+In production physics codes based on nonlinear equations sets,
+Newton-Krylov methods are the primary means of generating a fully
+consistent solution scheme
+\citep{evans_development_2006,evans_enhanced_2007,gaston_parallel_2009,godoy_parallel_2012}. Typically,
+for large scale simulations these problems are memory limited due to
+the subspaces generated by robust Krylov methods. Often a matrix-free
+approach is chosen to relax memory requirements over directly
+generating the Jacobian matrix. However, as we observed in previous
+sections, these matrix-free methods suffer from poorly scaled problems
+and the first order error introduced by the Jacobian approximation. In
+addition, it was observed that eventually, the savings induced by the
+matrix-free approach is eventually amortized over a number of
+nonlinear iterations where it becomes more efficient computationally
+to instead form the Jacobian.
+
+In Chapter~\ref{ch:stochastic_methods}, we focused our efforts on
+developing and improving Monte Carlo methods for inverting linear
+systems. These methods, when used to accelerate a stationary method in
+MCSA, enjoy a robust implementation and exponential convergence
+rates. Further, the only storage required is that of the full linear
+system including the linear operator so that we may generate
+transition probabilities for the random walk sequence. Although this
+requires more storage to represent the linear system than that of a
+Krylov method where the operator is not required, we do not incur any
+additional storage costs once the iteration sequence
+begins. Furthermore, in the context of nonlinear problems, the
+Jacobian matrix that we are required to generate for the Monte Carlo
+solvers may be generated at will from the nonlinear functions in the
+Newton system using automatic differentation. Not only do we then have
+a simple and automated way to generate the Jacobian, but we also enjoy
+a Jacobian of numerical precision equivalent to that of our function
+evaluations. We therefore propose the \textit{Forward-Automated
+  Newton-MCSA} (FANM) method that utilizes all of the above
+components. We hypothesize that such a method will be competetive with
+Newton-Krylov methods not only from a convergence and timing
+perspective, but also relax scaling requirements of matrix-free
+methods and memory costs of both matrix-free and fully formed Jacobian
+methods to allow the application developer to solve problems of finer
+discretization and higher order functional representations while
+maintaining an robust an efficient parallel implementation.
 
 \subsection{Residual and Jacobian Generation}
 \label{subsec:fanm_generation}
 
 \subsection{Jacobian Storage vs. Subspace Storage and Restarts}
 \label{subsec:fanm_storage}
+To gauge the memory benefits of a FANM method over a Krylov-based
+scheme, we must look at the storage requirements of the Jacobian
+matrix as compared to the Krylov subspace vectors for sparse linear
+problems. Saad's text provides us relations for both of these cases
+\citep{saad_iterative_2003}. Beginning with the Jacobian storage, for
+sparse problems production linear algebra library implementations
+utilize \textit{compressed row storage} to efficiently store the
+non-zero components of a sparse matrix while still allowing for all
+standard parallel matrix computations to be performed. Per
+\S~\ref{sec:parallel_krylov_methods}, recall that efficient parallel
+matrix-vector multiplications rely on processors knowing which other
+processors contain their neighboring matrix and vector
+elements. Typically this information is represented by a graph which
+must be stored along with the matrix elements themselves. To store the
+elements, consider the following sparse matrix:
+\[
+  \ve{A} =
+  \begin{bmatrix}
+    2 & 0 & 8 & 0 & 0 & 0 \\ 
+    4 & 5 & 0 & 1 & 0 & 0 \\ 
+    0 & 2 & 1 & 0 & 1 & 0 \\ 
+    0 & 0 & 3 & 7 & 0 & 2 \\ 
+    0 & 0 & 0 & 4 & 9 & 0 \\
+    0 & 0 & 0 & 0 & 9 & 1 \\
+  \end{bmatrix}\:.
+\]
+The compressed form of \ve{A} would then be:
+\[
+  \begin{array}{lccccccccccccccc}
+    \ve{A}\ values: & 2 & 8 & 4 & 5 & 1 & 2 & 1 & 1 & 3 & 7 & 2 & 4 & 9
+    & 9 & 1 \\ column: & 1 & 3 & 1 & 2 & 4 & 2 & 3 & 5 & 3 & 4 & 6 & 4
+    & 5 & 5 & 6 \\ row\ start: & 3 & 5 & 9 & 12 & 14 & 16 \\
+  \end{array}
+\]
+where the first row contains the non-zero values of the matrix
+$\ve{A}$ starts at, the second row contains the column index of those
+values, and the third row contains the index of the A value and column
+index rows that each matrix row starts at. For this simple example, we
+actually break even by storing 36 elements in the full matrix and 36
+pieces of data in the compressed format. However, for large, sparse
+matrices there is a significant storage savings using the compressed
+format. 
 
 \subsection{Parallel FANM Implementation}
 \label{subsec:parallel_fanm}
