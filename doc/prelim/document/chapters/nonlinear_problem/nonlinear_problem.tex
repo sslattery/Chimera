@@ -374,9 +374,6 @@ methods to allow the application developer to solve problems of finer
 discretization and higher order functional representations while
 maintaining an robust an efficient parallel implementation.
 
-\subsection{Residual and Jacobian Generation}
-\label{subsec:fanm_generation}
-
 \subsection{Jacobian Storage vs. Subspace Storage and Restarts}
 \label{subsec:fanm_storage}
 To gauge the memory benefits of a FANM method over a Krylov-based
@@ -410,17 +407,70 @@ The compressed form of \ve{A} would then be:
   \begin{array}{lccccccccccccccc}
     \ve{A}\ values: & 2 & 8 & 4 & 5 & 1 & 2 & 1 & 1 & 3 & 7 & 2 & 4 & 9
     & 9 & 1 \\ column: & 1 & 3 & 1 & 2 & 4 & 2 & 3 & 5 & 3 & 4 & 6 & 4
-    & 5 & 5 & 6 \\ row\ start: & 3 & 5 & 9 & 12 & 14 & 16 \\
+    & 5 & 5 & 6 \\ row\ start: & 1 & 3 & 6 & 9 & 12 & 14 & 16 \\
   \end{array}
 \]
 where the first row contains the non-zero values of the matrix
 $\ve{A}$ starts at, the second row contains the column index of those
 values, and the third row contains the index of the A value and column
-index rows that each matrix row starts at. For this simple example, we
-actually break even by storing 36 elements in the full matrix and 36
-pieces of data in the compressed format. However, for large, sparse
-matrices there is a significant storage savings using the compressed
-format. 
+index rows that each matrix row starts at ending with the start of the
+next row. For this simple example, we actually break even by storing
+36 elements in the full matrix and 36 pieces of data in the compressed
+format. However, for large, sparse matrices there is a significant
+storage savings using the compressed format.
+
+In his discussion on orthogonalization schemes for Krylov subspaces,
+he provides us with space and time complexities for these
+operations. To find a solution vector $\ve{x} \in \mathbb{R}^{N \times
+  N}$ with $m$ Krylov iterations (and therefore $m+1$ subspace
+vectors) the storage requirement is then $(m+1) N$ for most common
+orthogonalization techniques. Using our simple example above (even
+though we did not see any gains in storage over the full matrix
+representation), if it takes 10 GMRES iterations using Arnoldi
+orthogonalization to converge to a solution, then a total of 66 pieces
+of data are required to be stored instead of 36 for the explicitly
+formed matrix case. For larger sparse matrices, this disparity in
+memory requirements will be even greater, especially for
+ill-conditioned systems that require many GMRES iterations to
+converge.
 
 \subsection{Parallel FANM Implementation}
 \label{subsec:parallel_fanm}
+Like the parallelization of the MCSA method described in
+\S~\ref{sec:parallel_stochastic_methods}, a parallel FANM method
+relies on a basic set of parallel matrix-vector operations as well as
+the global residual and Jacobian assembly procedure described in
+\S~\ref{subsubsec:automatic_differentiation}. Consider the Newton
+iteration scheme in Eq~(\ref{eq:newton_iteration}). We must first
+assemble the linear system in parallel through the element-wise
+function evaluations to generate both the global Jacobian operator and
+the global residual vector on the right hand side. Per Bartlett's
+work, efficient and automated parallel mechanisms are available to do
+this through a sequence of scatter/gather operations. With these tools
+available for residual and Jacobian generation, the remainder of the
+parallel procedure is simple, with the linear Newton correction system
+solved using the parallel MCSA method as previously described and the
+Newton correction applied to the previous iterate's solution through a
+vector update operation.
+
+As Newton methods are formulated independent of the inner linear
+solver generating the Newton corrections, the actual performance of
+the nonlinear iterations using MCSA is expected to be similar to that
+of traditional Newton-Krylov methods. Furthermore, we expect to
+achieve numerically identical answers with a Newton-MCSA method as
+other Newton methods and we should indeed verify this. The parallel
+performance of such a method will inherently be bound to the parallel
+Monte Carlo implementation of the linear solver as the parallel
+operations at the nonlinear iteration level are identical to those
+that you would perform with a Newton-Krylov method. Matrix-free
+formulation will have different parallel performance than these
+methods, and therefore we should compare FANM perfomance to JFNK-based
+schemes. More important than performance in the situation is the
+reduced memory pressure that a FANM implementation provides, as
+discussed in \S~\ref{subsec:fanm_storage}, because a FANM method will
+not generate a subspace in the linear solver and compressed storage
+for sparse matrices are utilized, we expect significant memory savings
+over Newton-Krylov methods. We must measure the memory utilization of
+both of these methods in order to quantify their differences and
+provide additional analysis of the FANM method's merits, or lack
+thereof.
