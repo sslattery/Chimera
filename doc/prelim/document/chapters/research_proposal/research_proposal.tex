@@ -158,14 +158,13 @@ method\footnote{The contents of this section have been taken directly
   from my contributions to \citep{evans_monte_2012}}. The aim of this
 initial work was to determine which of the two Monte Carlo solvers
 provided the best MCSA performance. The MCSA method defined in
-Eq.~(\ref{eq:MCSA-iteration}) uses the adjoint method to estimate the
-error in Eq.~(\ref{eq:MCSA-residual_solve}) instead of the direct
-method outlined in \S~\ref{sec:direct-method}. To demonstrate the
-effectiveness of the adjoint method over the direct method within the
-context of MCSA, we choose the 2D time-dependent Poisson equation as a
-simple model problem:
+Eq.~(\ref{eq:mcsa}) uses the adjoint method to estimate the error
+instead of the direct method outlined in \S~\ref{sec:direct_mc}. To
+demonstrate the effectiveness of the adjoint method over the direct
+method within the context of MCSA, we choose the 2D time-dependent
+Poisson equation as a simple model problem:
 \begin{equation}
-  \frac{\partial \vu}{\partial t} = \nabla^2 \vu\:.
+  \frac{\partial \ve{u}}{\partial t} = \nabla^2 \ve{u}\:.
   \label{eq:poisson_equation}
 \end{equation}
 For all comparisons, a single time step is computed with backwards
@@ -187,7 +186,7 @@ both assuming a grid size of $\Delta$ in both the $i$ and $j$
 directions. For a single time step solution, we then have the
 following sparse linear system to be solved with the MCSA method:
 \begin{equation}
-  \vA \vu^{n+1} = \vu^n\:.
+  \ve{A} \ve{u}^{n+1} = \ve{u}^n\:.
   \label{eq:poisson_eq_lin_sys}
 \end{equation}
 Both the stencils will be used to vary the size and density of the
@@ -211,22 +210,23 @@ Fig.~\ref{fig:poisson_iterations} gives the number of iterations
 needed for each case to converge relative to the problem size.
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=5in,clip]{Adjoint_Direct_CPU_Time.pdf}
-  \caption{\sl CPU Time (s) to converge vs. Problem Size ($N$ for an
-    $N \times N$ square mesh). Both the adjoint and direct solvers are
-    used with the five point and nine point stencils. A significant
-    CPU time speedup is noted with the adjoint method due to the
-    reduced number of random walk events.}
+  \includegraphics[width=5in,clip]{chapters/research_proposal/Adjoint_Direct_CPU_Time.pdf}
+  \caption{\textbf{CPU Time (s) to converge vs. Problem Size ($N$ for
+      an $N \times N$ square mesh).} \textit{Both the adjoint and
+      direct solvers are used with the five point and nine point
+      stencils. A significant CPU time speedup is noted with the
+      adjoint method due to the reduced number of random walk
+      events.}}
   \label{fig:poisson_cpu_time}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=5in,clip]{Adjoint_Direct_Iterations.pdf}
-  \caption{\sl Iterations to converge vs. Problem Size ($N$ for an $N
-    \times N$ square mesh). Both the adjoint and direct solvers are
-    used with the five-point and nine-point stencils. Both methods
-    give similar iteration behavior.}
+  \includegraphics[width=5in,clip]{chapters/research_proposal/Adjoint_Direct_Iterations.pdf}
+  \caption{\textbf{Iterations to converge vs. Problem Size ($N$ for an
+      $N \times N$ square mesh).} \textit{Both the adjoint and direct
+      solvers are used with the five-point and nine-point
+      stencils. Both methods give similar iteration behavior.}}
   \label{fig:poisson_iterations}
 \end{figure}
 
@@ -256,19 +256,20 @@ As an additional comparison, the convergence behavior of MCSA can be
 analyzed using both solvers to detect any performance benefits. To
 assess the convergence properties of MCSA using each solver and
 stencil, the infinity norm of the residual computed in
-Eq.~(\ref{eq:MCSA-residual}) was collected at each iteration for a
-fixed problem size. Figure~\ref{fig:poisson_convergence} gives the
-results of these computations. First, it is worthy to note on the
-semilog plot that we are indeed achieving the expected exponential
-convergence from MCSA. Second, we note that both the direct and
-adjoint methods have approximately equivalent convergence behavior,
-leading to CPU time being the dominating factor in method selection.
+Eq.~(\ref{eq:mcsa}) was collected at each iteration for a fixed
+problem size. Figure~\ref{fig:poisson_convergence} gives the results
+of these computations. First, it is worthy to note on the semilog plot
+that we are indeed achieving the expected exponential convergence from
+MCSA. Second, we note that both the direct and adjoint methods have
+approximately equivalent convergence behavior, leading to CPU time
+being the dominating factor in method selection.
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=5in,clip]{Adjoint_Direct_Convergence.pdf}
-  \caption{\sl Infinity norm of the solution residual vs. iteration
-    number for a problem of fixed size. Both the adjoint and direct
-    solvers are used with the five point and nine point stencils.}
+  \includegraphics[width=5in,clip]{chapters/research_proposal/Adjoint_Direct_Convergence.pdf}
+  \caption{\textbf{Infinity norm of the solution residual
+      vs. iteration number for a problem of fixed size.} \textit{Both
+      the adjoint and direct solvers are used with the five point and
+      nine point stencils.}}
   \label{fig:poisson_convergence}
 \end{figure}
 
