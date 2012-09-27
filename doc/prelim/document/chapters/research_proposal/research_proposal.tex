@@ -275,6 +275,33 @@ being the dominating factor in method selection.
 
 \subsection{MCSA Application to Finite Element Problems}
 \label{subsec:mcsa_finite_element}
+The Epetra-based MCSA implementation has enabled the solution of
+finite element problems leveraging the Panzer finite element assembly
+engine, providing an initial basis for our experimental framework. To
+demonstrate this, consider the 2-dimensional steady-state heat
+equation:
+\begin{equation}
+  \boldsymbol{\nabla} \cdot k \boldsymbol{\nabla} T = Q\:,
+  \label{eq:heat_equation}
+\end{equation}
+where $k$ is the thermal conductivity, $T$ is the temperature, and $Q$
+is the thermal source. We can write the heat equation in weak form
+using Eq~(\ref{eq:fe_weak_form}):
+\begin{equation}
+  \int_{\Omega} \boldsymbol{\nabla}^T \ve{v} k \boldsymbol{\nabla} T
+  d\Omega - \int_{\Omega} \ve{v}Q d\Omega - \int_{\Gamma} \ve{v}
+  \bar{q} d\Gamma - \int_{\Gamma} \ve{v} k \frac{\partial T}{\partial
+    n} d\Gamma= 0\:,
+  \label{eq:weak_heat_equation}
+\end{equation}
+where the boundary conditions have now been incorporated. We can
+interpret the last two integral terms as the contributions from a
+fixed boundary flux source and the flux through the domain
+boundary. This weak formulation can then be directly implemented
+within the finite element assembly engine along with the appropriate
+boundary conditions and source terms. For this example, we choose a
+square Cartesian grid with boundary conditions as shown in
+Figure~\ref{fig:heat_eq_setup}.
 
 \section{Stochastic Methods Verification}
 \label{sec:method_verification}

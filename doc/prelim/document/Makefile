@@ -7,10 +7,9 @@ chap_intro = chapters/introduction
 chap_lp = chapters/linear_problem
 chap_pmc = chapters/parallel_mc
 chap_nl = chapters/nonlinear_problem
-chap_chm = chapters/chimera_codebase
 chap_prop = chapters/research_proposal
 
-all: orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf
+all: orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf heat_eq_setup.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
@@ -42,6 +41,11 @@ msod_example.pdf: $(chap_pmc)/msod_example.fig
 procassini_example.pdf: $(chap_pmc)/procassini_example.fig
 	fig2dev -L pdftex -p $(chap_pmc)/procassini_example.pdf -m 0.4 $(chap_pmc)/procassini_example.fig $(chap_pmc)/procassini_example.pdf
 	fig2dev -L pdftex_t -p $(chap_pmc)/procassini_example.pdf -m 0.4 $(chap_pmc)/procassini_example.fig $(chap_pmc)/procassini_example.pdftex_t
+
+# Research proposal figures
+heat_eq_setup.pdf: $(chap_prop)/heat_eq_setup.fig
+	fig2dev -L pdftex -p $(chap_prop)/heat_eq_setup.pdf -m 0.4 $(chap_prop)/heat_eq_setup.fig $(chap_prop)/heat_eq_setup.pdf
+	fig2dev -L pdftex_t -p $(chap_prop)/heat_eq_setup.pdf -m 0.4 $(chap_prop)/heat_eq_setup.fig $(chap_prop)/heat_eq_setup.pdftex_t
 
 clean:
 	-rm -f *~
