@@ -78,8 +78,8 @@ int main( int argc, char * argv[] )
 	Teuchos::rcp( new Teuchos::ParameterList );
     plist->set( "X Blocks", 1 );
     plist->set( "Y Blocks", 1 );
-    plist->set( "X Elements", 10 );
-    plist->set( "Y Elements", 10 );
+    plist->set( "X Elements", 100 );
+    plist->set( "Y Elements", 100 );
     mesh_factory.setParameterList( plist );
 
     Teuchos::RCP<panzer_stk::STK_Interface> mesh = 
@@ -127,7 +127,39 @@ int main( int argc, char * argv[] )
 	    std::string element_block_id = "eblock-0_0";
 	    std::string dof_name = "TEMPERATURE";
 	    std::string strategy = "Constant";
-	    double value = -5.0;
+	    double value = 0.0;
+	    Teuchos::ParameterList bc_list;
+	    bc_list.set( "Value", value );
+	    panzer::BC bc( bc_id, bc_type, sideset_id, element_block_id,
+			   dof_name, strategy, bc_list );
+	    boundary_conditions.push_back( bc );
+	}
+
+	// Right side boundary condition.
+	{
+	    std::size_t bc_id = 2;
+	    panzer::BCType bc_type = panzer::BCT_Dirichlet;
+	    std::string sideset_id = "right";
+	    std::string element_block_id = "eblock-0_0";
+	    std::string dof_name = "TEMPERATURE";
+	    std::string strategy = "Constant";
+	    double value = 5.0;
+	    Teuchos::ParameterList bc_list;
+	    bc_list.set( "Value", value );
+	    panzer::BC bc( bc_id, bc_type, sideset_id, element_block_id,
+			   dof_name, strategy, bc_list );
+	    boundary_conditions.push_back( bc );
+	}
+
+	// Bottom side boundary condition.
+	{
+	    std::size_t bc_id = 3;
+	    panzer::BCType bc_type = panzer::BCT_Dirichlet;
+	    std::string sideset_id = "bottom";
+	    std::string element_block_id = "eblock-0_0";
+	    std::string dof_name = "TEMPERATURE";
+	    std::string strategy = "Constant";
+	    double value = 0.0;
 	    Teuchos::ParameterList bc_list;
 	    bc_list.set( "Value", value );
 	    panzer::BC bc( bc_id, bc_type, sideset_id, element_block_id,
@@ -188,9 +220,10 @@ int main( int argc, char * argv[] )
 
     panzer::DOFManagerFactory<int,int> global_indexer_factory;
     Teuchos::RCP<panzer::UniqueGlobalIndexer<int,int> > dof_manager =
-	global_indexer_factory.buildUniqueGlobalIndexer( MPI_COMM_WORLD,
-							 physics_blocks,
-							 conn_manager );
+	global_indexer_factory.buildUniqueGlobalIndexer( 
+	    Teuchos::opaqueWrapper(MPI_COMM_WORLD),
+	    physics_blocks,
+	    conn_manager );
 
     // Build the linear algebra object factory.
     Teuchos::RCP<panzer::LinearObjFactory<panzer::Traits> > lin_obj_factory =
@@ -207,7 +240,7 @@ int main( int argc, char * argv[] )
 
     // Set user data.
     Teuchos::ParameterList user_data( "User Data" );
-    user_data.set<double>("Thermal Conductivity", 1.0 );
+    user_data.set<double>("Thermal Conductivity", 2.0 );
 
     // Setup the field managers.
     Teuchos::RCP<panzer::FieldManagerBuilder<int,int> > field_manager_builder =

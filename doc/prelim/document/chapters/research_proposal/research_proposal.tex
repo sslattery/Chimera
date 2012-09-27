@@ -301,7 +301,35 @@ boundary. This weak formulation can then be directly implemented
 within the finite element assembly engine along with the appropriate
 boundary conditions and source terms. For this example, we choose a
 square Cartesian grid with boundary conditions as shown in
-Figure~\ref{fig:heat_eq_setup}.
+Figure~\ref{fig:heat_eq_setup}.  
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{1.5}{
+      \input{chapters/research_proposal/heat_eq_setup.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Problem setup for finite element solution to 2D
+      heat equation.} \textit{Dirichlet conditions are set for the
+      temperature on all 4 boundaries of the Cartesian grid with
+      thermal conductivity set to 2.0. No thermal source was
+      present.}}
+  \label{fig:heat_eq_setup}
+\end{figure}
+A value of 2.0 is used for $k$ with no thermal source and second-order
+basis functions are chosen for the finite element form. This problem
+was solved using Panzer to assemble the finite element system and
+Jacobi preconditioned MCSA as the linear solver with the adjoint
+Neumann-Ulam method as the Monte Carlo solver. The results of this
+calculation are presented in Figure~\ref{fig:heat_eq_solution}.
+\begin{figure}[htpb!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/research_proposal/heat_eq_solution.eps}
+  \caption{\textbf{Finite element solution to the 2D steady-state heat
+      equation using MCSA.} \text{A $100 \times 100$ Cartesian grid
+      was used with Jacobi preconditioning applied to the linear
+      system.}}
+  \label{fig:heat_eq_solution}
+\end{figure}
+
 
 \section{Stochastic Methods Verification}
 \label{sec:method_verification}
