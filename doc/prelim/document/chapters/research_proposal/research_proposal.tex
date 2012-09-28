@@ -569,11 +569,11 @@ different processors, then perhaps transport to adjacent domains can
 be ignored. This will result in a biased estimator for the MCSA
 correction that cannont be reproduced, however, these studies will aim
 to determine if that bias and lack of reproducablity affects the
-numerical results and reproducability of the MCSA method. Furthermore,
-we will use the experimental framework to measure the convergence
-rates for nonsymmetric systems and memory usage of the MCSA algorithm
-and compare them to conventional Krylov methods using the same
-framework.
+numerical results and reproducability of the MCSA method, yielding a
+critical outcome for this work. Furthermore, we will use the
+experimental framework to measure the convergence rates for
+nonsymmetric systems and memory usage of the MCSA algorithm and
+compare them to conventional Krylov methods using the same framework.
 
 \subsection{Parallel Performance and Numerical Accuracy Studies for FANM
   Method}
@@ -591,10 +591,17 @@ a means by which to vary the complexity of the system which we can
 then compare to memory usage. Additionally, with the finite element
 assembly framework we can choose functional discretizations of varying
 accuracy, allowing us to vary the degrees of freedom in the system and
-therefore also vary the memory required.
+therefore also vary the memory required for each problem.
 
 \section{Challenge Problem}
 \label{sec:challenge_problem}
+Our numerical experiments will provide us with a set of metrics giving
+best-performance solver parameters for problems of different types. As
+an additional bonus, these experiments will let us further develop new
+parallel implementations of the stochastic methods in order to improve
+their performance and scalability. With these advancements in hand, we
+look forward towards applying them to large-scale problems in reactor
+physics. 
 
 \section{Conclusion}
 \label{sec:conclusion}
