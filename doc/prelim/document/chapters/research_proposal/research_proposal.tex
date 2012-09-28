@@ -593,15 +593,103 @@ assembly framework we can choose functional discretizations of varying
 accuracy, allowing us to vary the degrees of freedom in the system and
 therefore also vary the memory required for each problem.
 
-\section{Challenge Problem}
+\section{Proposed Challenge Problem}
 \label{sec:challenge_problem}
 Our numerical experiments will provide us with a set of metrics giving
-best-performance solver parameters for problems of different types. As
-an additional bonus, these experiments will let us further develop new
-parallel implementations of the stochastic methods in order to improve
-their performance and scalability. With these advancements in hand, we
-look forward towards applying them to large-scale problems in reactor
-physics. 
+best-performance stochastic solver parameters for problems of
+different types. As an additional bonus, these experiments will let us
+further develop new parallel implementations of the stochastic methods
+in order to improve their performance and scalability. With these
+advancements in hand, we look forward towards applying them to
+large-scale problems in reactor physics. The Consortium for Advanced
+Simulation of Light Water Reactors (CASL) is a Department of Energy
+Modeling and Simulation Hub focused on predictive multiphysics
+modeling of nuclear reactors
+\citep{u.s._depertment_of_energy_casl:_2011}. Their effors are focused
+on enabling nuclear reactor analysis and development using today's
+supercomputing technology to achieve higher power uprates, higher fuel
+burnup, and predictive accident scenario analysis. As a means of
+driving their research and development, CASL has worked with the
+nuclear industry to identify challenge problems of critical importance
+to achieving these goals.
+
+To meet some of the high fidelity modeling requirements of these
+challenge problems, the Drekar multiphysics code is being developed at
+Sandia National Laboratories for fluid flow and conjugate heat
+transfer problems \citep{pawlowski_drekar::cfd_2012}. Drekar is being
+used to analyze complex problems including the grid-to-rod-fretting
+(GTRF) phenomena observed in light water reactor fuel rods. GTRF
+occurs due to the turbulent flow of water through the subchannels of
+the reactor core. This turbulence causes the nuclear fuel pins to
+vibrate and the fuel cladding to wear against structures in the
+reactor, causing localized hot spots and ultimately cladding
+failure. Reducing these instances of failure and understanding how
+they occur through predictive multiple physics simulation of fluid
+flow and heat transfer will permit more robust fuel assembly
+designs. In addition, the turbulence studies that Drekar performs will
+allow for improved flow patterns to be generated in the assembly
+subchannels, allowing for better heat transfer between the nuclear
+fuel and the water, ultimately allowing for a more efficient reactor.
+
+Drekar is a massively parallel physics framework built upon the same
+Panzer library as well as other open-source tools that we are
+leveraging in our own experimental framework. Furthermore, its
+multiphysics formulation utilizes Newton-Krylov methods to generate a
+fully consistent solution scheme for the Navier-Stokes equations with
+various turbulence models for fluid simulation as well as the heat
+conduction problem for simulation in solid materials. Performance
+metrics show scaling to $O(100,000)$ cores on leadership class
+machines with $O(\sn{1}{9})$ degrees of freedom in these
+simulations. Given these features, Drekar will be an excellent
+framework in which we can pose our own challenge problem for the FANM
+and newly parallelized MCSA methods proposed by this research. At the
+time our preliminary numerical experiments are completed for
+characterizing the parallel FANM and MCSA implementations, we propose
+implementing them within the Drekar framework and performing the
+equivalent of its largest GTRF mutliphysics problem to date, most
+likely to be a fuel-assembly sized problem. Doing so will allow us to
+not only implement our new methods in a production physics code and
+apply it to a problem of great interest to the nuclear community, but
+it will also allow us to compare its performance and scaling to the
+Newton-Krylov methods currently leveraged within Drekar. If
+successful, we expect to demonstrate improved computational
+performance from a memory usage and/or an algorithmic scaling
+perspective.
 
 \section{Conclusion}
 \label{sec:conclusion}
+We have proposed the research and development of novel, massively
+parallel stochastic methods for the solution of linear and nonlinear
+problems. These new methods aim to enhance the solution of multiple
+physics problems of great national interest. Current progress has
+shown that these methods can indeed be expanded into a general linear
+algebra framework that permits their application to a broad range of
+problems. Additional analysis has also been completed that begins to
+characterize their performance in different configurations. Leveraging
+this work, we have defined a multiphysics framework based on the
+finite element method and have demonstrated that these stochastic
+methods can be used effectively to solve the linear systems generated
+by these discretizations.
+
+To guide our development of parallel stochastic methods, we have
+devised several classes of numerical experiments using our
+multiphysics framework that will provide insight into their properties
+and performance for linear and nonlinear problems. Furthermore, these
+experiments aim to provide metrics that will give an indication of
+both solver performance for various problem types and the type of
+parallel decomposition required to effectively solve these
+problems. Domain decomposition, domain replication, and their
+combination will be of great interest for the analysis of parallel
+Monte Carlo methods while algorithm scalability and memory usage will
+be of interest for the MCSA and FANM methods that leverage them.
+
+We culminate our research and development with a challenge problem by
+applying these new stochastic methods in the Drekar multiphysics
+code. With Drekar, we look forward to providing a new and robust
+solution method at the production scale. With these tools and a
+leadership class computing platform, we will provide performance
+measurements for the stochastic solvers and compare them to
+conventional methods currently leveraged within Drekar. With the
+potential to improve computational performance in these environments,
+these new methods have the potential to help meet the high fidelty
+modeling and simulation needs of the nuclear community.
