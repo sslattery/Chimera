@@ -9,7 +9,7 @@ chap_pmc = chapters/parallel_mc
 chap_nl = chapters/nonlinear_problem
 chap_prop = chapters/research_proposal
 
-all: orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf heat_eq_setup.pdf
+all: orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf heat_eq_setup.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
@@ -46,6 +46,19 @@ procassini_example.pdf: $(chap_pmc)/procassini_example.fig
 heat_eq_setup.pdf: $(chap_prop)/heat_eq_setup.fig
 	fig2dev -L pdftex -p $(chap_prop)/heat_eq_setup.pdf -m 0.4 $(chap_prop)/heat_eq_setup.fig $(chap_prop)/heat_eq_setup.pdf
 	fig2dev -L pdftex_t -p $(chap_prop)/heat_eq_setup.pdf -m 0.4 $(chap_prop)/heat_eq_setup.fig $(chap_prop)/heat_eq_setup.pdftex_t
+
+natural_convection_cavity.pdf: $(chap_prop)/natural_convection_cavity.fig
+	fig2dev -L pdftex -p $(chap_prop)/natural_convection_cavity.pdf -m 0.4 $(chap_prop)/natural_convection_cavity.fig $(chap_prop)/natural_convection_cavity.pdf
+	fig2dev -L pdftex_t -p $(chap_prop)/natural_convection_cavity.pdf -m 0.4 $(chap_prop)/natural_convection_cavity.fig $(chap_prop)/natural_convection_cavity.pdftex_t
+
+lid_driven_cavity.pdf: $(chap_prop)/lid_driven_cavity.fig
+	fig2dev -L pdftex -p $(chap_prop)/lid_driven_cavity.pdf -m 0.4 $(chap_prop)/lid_driven_cavity.fig $(chap_prop)/lid_driven_cavity.pdf
+	fig2dev -L pdftex_t -p $(chap_prop)/lid_driven_cavity.pdf -m 0.4 $(chap_prop)/lid_driven_cavity.fig $(chap_prop)/lid_driven_cavity.pdftex_t
+
+backward_facing_step.pdf: $(chap_prop)/backward_facing_step.fig
+	fig2dev -L pdftex -p $(chap_prop)/backward_facing_step.pdf -m 0.4 $(chap_prop)/backward_facing_step.fig $(chap_prop)/backward_facing_step.pdf
+	fig2dev -L pdftex_t -p $(chap_prop)/backward_facing_step.pdf -m 0.4 $(chap_prop)/backward_facing_step.fig $(chap_prop)/backward_facing_step.pdftex_t
+
 
 clean:
 	-rm -f *~

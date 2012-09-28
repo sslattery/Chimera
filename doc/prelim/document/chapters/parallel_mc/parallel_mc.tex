@@ -777,49 +777,49 @@ Carlo methods for radiation transport and directly apply it to a
 parallel formulation of our stochastic linear solvers. Direct analogs
 can be derived from these works by noting that the primary difference
 between solving a linear system with Monte Carlo methods and fixed
-source Monte Carlo transport problems is the content of Markov chains
-that are generated. These transitions represeneted by these chains are
-bound by probabilities and weights and are initiated by the sampling
-of a source. In the context of transport problems, those transitions
-represent events such as pariticle scattering and absorbition with
-probabilities that are determined by physical data in the form of
-cross sections. For stochastic matrix inversion, those transitions
-represent moving between the equations of the linear system (and
-therefore the physical domain which they represent) and their
-probabilites are defined by the coefficients of those
+source Monte Carlo transport problems is the content of the Markov
+chains that are generated. These transitions represeneted by these
+chains are bound by probabilities and weights and are initiated by the
+sampling of a source. In the context of transport problems, those
+transitions represent events such as pariticle scattering and
+absorbition with probabilities that are determined by physical data in
+the form of cross sections. For stochastic matrix inversion, those
+transitions represent moving between the equations of the linear
+system (and therefore the physical domain which they represent) and
+their probabilites are defined by the coefficients of those
 equations. Ultimately, we tally the contributions to generate
 expectation values in the desired states as we progress through the
-chains.
+chains. Therefore, parallel methods for Monte Carlo radiation
+transport can be abstracted and we can use those concepts that apply
+to matrix inversion methods as an initial means of developing a
+parallel Neumann-Ulam-type solver. Based on the results observed in
+the last decade of parallel Monte Carlo development, we can generate
+many practical questions that this type of work could answer. 
 
-Therefore, parallel methods for Monte Carlo radiation transport and
-abstract those that apply to matrix inversion methods as an initial
-means of developing a parallel Neumann-Ulam-type solver. Based on the
-results observed in the last decade of parallel Monte Carlo
-development, we can generate many practical questions that this type
-of work could answer. Given a decomposed domain, it is clear that
-domain overlap significantly reduces the amount of communication
-required between adjacent domains as histories move to states that are
-not owned by the local processor. How much domain overlap is suitable
-for matrix inversion problems? Are we memory limited by large problems
-such that only so much overlap is feasible? Are there metrics related
-to the properties of the matrix such that we can provide guidelines
-for selecting the amount of overlap required? Furthermore, as Wagner
-and colleagues observed \citep{wagner_hybrid_2010}, with marginal
-domain overlap for reactor problems, the percentage of histories
-leaving the local domain can easily be reduced to less than 1\%. Evans
-and colleagues in their initial MCSA development typically used only
-50 particle histories in order to compute a correction in an MCSA
+Given a decomposed domain, it is clear that domain overlap
+significantly reduces the amount of communication required between
+adjacent domains as histories move to states that are not owned by the
+local processor. How much domain overlap is suitable for matrix
+inversion problems? Are we memory limited by large problems such that
+only so much overlap is feasible? Are there metrics related to the
+properties of the matrix such that we can provide guidelines for
+selecting the amount of overlap required? Furthermore, as Wagner and
+colleagues observed \citep{wagner_hybrid_2010}, with marginal domain
+overlap for reactor problems, the percentage of histories leaving the
+local domain can easily be reduced to less than 1\%. Evans and
+colleagues in their initial MCSA development typically used only 50
+particle histories in order to compute a correction in an MCSA
 iteration \citep{evans_monte_2012}. Per the Central Limit Theorem,
 that correlates to a statistical uncertainty of 14.1\% in the
-correction yet as compared to convential Krylov solvers, MCSA achieved
-the identical numerical results. If good convergence and numerically
-accurate solutions can be achieved with such a large uncertainty in
-the correction computation, then perhaps with enough domain overlap
-the minimal amount of histories that do transition to non-local states
-can be ignored and thus eliminate all communication in the parallel
-Monte Carlo adjoint solver and create an embarassingly parallel
-method. It will be important to determine if the expectation value
-bias in the MCSA correction generated by this approximation will
+correction, yet as compared to convential Krylov solvers, MCSA
+achieved identical numerical results. If good convergence and
+numerically accurate solutions can be achieved with such a large
+uncertainty in the correction computation, then perhaps with enough
+domain overlap the minimal amount of histories that do transition to
+non-local states can be ignored and thus eliminate all communication
+in the parallel Monte Carlo adjoint solver and create an embarassingly
+parallel method. It will be important to determine if the expectation
+value bias in the MCSA correction generated by this approximation will
 remain within the bounds of the already high statistical uncertainty
 for unbiased estimates, thus providing numerically equivalent results.
 
