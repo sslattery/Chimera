@@ -578,6 +578,20 @@ framework.
 \subsection{Parallel Performance and Numerical Accuracy Studies for FANM
   Method}
 \label{subsec:fanm_studies}
+Aside from resiliency motivations, the primary driver behind the FANM
+method is reduced memory pressure due to the lack of additional
+storage beyond that of the linear system in the MCSA method. The
+nonlinear benchmark problems we have chosen will let us measure this
+memory usage and compare it to conventional Newton-Krylov
+methods. Furthermore, by varying the strength of the nonlinearities in
+those problems (effectively by increasing the amount of convective
+transport in the system), the benchmarks will become more difficult to
+solve and require even more iterations to converge. This will give us
+a means by which to vary the complexity of the system which we can
+then compare to memory usage. Additionally, with the finite element
+assembly framework we can choose functional discretizations of varying
+accuracy, allowing us to vary the degrees of freedom in the system and
+therefore also vary the memory required.
 
 \section{Challenge Problem}
 \label{sec:challenge_problem}
