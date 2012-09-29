@@ -25,13 +25,13 @@ proposes the development of a massively parallel stochastic method for
 linear problems and a novel stochastic method to advance solution
 techniques for nonlinear problems.
 
-We discuss in this chapter our motivation for developing these Monte
-Carlo solvers by providing multiphysics problems of interest to the
-nuclear engineering community. Hardware-based motivations are also
-provided with the impact of forthcoming computing architectures
-considered. In addition, background on the current state of solver
-techniques for multiphysics problems and a brief comparision to the
-proposed methods is provided to further motivate this work.
+We discuss in this chapter motivation for advancing Monte Carlo
+solvers by providing multiphysics problems of interest in nuclear
+reactor analysis. Hardware-based motivations are also provided by
+considering the impact of forthcoming computing architectures. In
+addition, background on the current state solver techniques for
+multiphysics problems and a brief comparision to the proposed methods
+is provided to further motivate this work. 
 
 \section{Physics-Based Motivation}
 \label{sec:physics_motivation}
@@ -119,9 +119,44 @@ As leadership class machines move towards the exascale, new algorithms
 must developed that leverage their strengths and adapt to their
 shortcomings. Basic research is required now to advance methods in
 time for these new machines to become operational with the Department
-of Energy specifically allocating funding for the 2013 fiscal year to
-research resilient solver technologies for exascale facilities
-\citep{u.s._department_of_energy_resilient_2012}. 
+of Energy's Advanced Scientific Computing Reasarch office specifically
+allocating funding for the 2013 fiscal year to research resilient
+solver technologies for exascale facilities
+\citep{u.s._department_of_energy_resilient_2012}. Based on the
+language in this call for proposals, we can identify key issues that a
+set of robust, massively parallel stochastic solvers could provide a
+solution for. As machines begin to operate at hundreds of petaflops
+peak performance and beyond, restrictions on power avaiablity will
+require incredibly high levels of concurrency. Furthermore, this drop
+in power consumption will mean increased pressure on memory as memory
+per node is expected to stagnate while cores per node is expected to
+increase. As the number of cores increases, their clock speed is
+expected to stagnate or even decrease to further reduce power
+consumption and manufacturing costs.
+
+The end result of these hardware changes is that the larger numbers of
+low-powered processors will be prone to both soft failures such as bit
+errors in floating point operations and hard failures where the data
+owned by that processor cannot be recovered. Because these failures
+are predicted to be common, resilient solver technologies are required
+overcome these events. With linear and nonlinear solvers based on
+Monte Carlo techniques, such issues are alleviated by statistical
+arguments. In the case of soft failures, isolated floating point
+errors in Monte carlo simulation are absorbed within tally statistics
+while completely losing hardware during a hard failure is manifested
+as a high variance event where some portion of the Monte Carlo
+histories are lost. These stochastic methods are a paradigm shift from
+current determinstic solver techniques that will suffer greatly from
+the non-deterministic behavior expected from these exascale machines.
+
+In addition to resiliency concerns, the memory restrictions on future
+hardware will hinder modern solvers that derive their robustness from
+using large amounts of memory. Stochastic methods that are formulated
+to use less memory than conventional methods will serve to alleviate
+some of this pressure. In addition, new parallel strategies that may
+be implemented with stochastic methods could offer a new avenue for
+leveraging the expected levels of high concurrency in exascale
+machines.
 
 \section{Research Outline}
 \label{sec:research_outline}
@@ -180,8 +215,8 @@ MCSA method.
 
 The Forward-Automated Newton-MCSA (FANM) method is proposed as new
 nonlinear solution method. The key features of FANM are: full Jacobian
-generation using modern Forward Automated Differencing (FAD) methods
-\citep{bartlett_automatic_2006}, and MCSA as the inner linear
+generation using modern Forward Automated Differentiation (FAD)
+methods \citep{bartlett_automatic_2006}, and MCSA as the inner linear
 solver. This method has several attractive properties. First, the
 first-order approximation to the Jacobian used in JFNK type methods is
 eliminated by generating the Jacobian explicitly with the model
@@ -197,16 +232,27 @@ beyond that of the Jacobian. Finally, using MCSA for the linear solve
 provides its benefits for preconditioning, potential resiliency, and
 parallelism.
 
-This preliminary report oultines the conventional methods used in
-practice for solving linear and nonlinear problems to provide a
-mathematical basis upon which to build new algorithms that aim to
-solve some of the aforementioned issues. These new algorithms will be
-outlined in full with links made to past work and their potential for
-offering improvements to the computational physics community. Progress
-to date will be reported including the development of a new physics
-framework that will serve as a test bed for these new methods that
-leverages a preliminary implementation of the stochastic method. A
-research plan will then be provided that continues the development and
+This preliminary report oultines in Chapter~\ref{ch:linear_problem}
+the conventional methods used in practice for solving linear and
+nonlinear problems to provide a mathematical basis upon which to build
+new algorithms that aim to solve some of the aforementioned
+issues. Parallel schemes for conventional methods are also provided
+for background and understanding of how current methods may or may not
+map to future hardware. In addition some components of their parallel
+implementations may be applied to stochastic methods development. In
+Chapter~\ref{ch:stochastic_methods}, Monte Carlo algorithms for
+solving linear systems and new parallel strategies will be outlined in
+full with links made to past work and their potential for offering
+improvements to the multiphysics analysis community. From these
+stochastic methods, a new nonlinear method is proposed in
+Chapter~\ref{ch:nonlinear_problem} and compared to conventional
+methods for solving nonlinear problems. The research proposal for this
+work is presented in Chapter~\ref{ch:research_proposal} with progress
+to date reported including the development of a new finite
+element-based physics framework that leverages a preliminary general
+implementation of the stochastic method that will serve as a test bed
+for these new methods. An outline of a set of numerical experiments
+will then be provided that continues the development and
 implementation of these new methods and verifies them with benchmark
 solutions, culminating in the analysis of a multiphysics simulation of
-a pressurized water reactor assembly.
+a pressurized water reactor subsystem using a production code system.
