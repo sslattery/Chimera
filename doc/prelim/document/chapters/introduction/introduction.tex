@@ -5,12 +5,11 @@ problems are a primary focus of study. Recent focus on multiple
 physics systems in the nuclear reactor modeling and simulation
 community adds a new level of complexity to common nonlinear systems
 as solution strategies change when they are coupled to other problems
-\citep{u.s._depertment_of_energy_casl:_2011}. Furthermore, a desire
+\citep{u.s._department_of_energy_casl:_2011}. Furthermore, a desire
 for predictive simulations to enhance the safety and performance of
 nuclear systems creates a need for extremely high fidelity
 computations to be performed for these coupled systems as a means to
-capture effects not modeled by coarser methods
-\citep{keyes_prospects_1997}.
+capture effects not modeled by coarser methods.
 
 In order to achieve this high fidelity, state-of-the-art computing
 facilities must be leveraged in a way that is both efficient and
@@ -18,23 +17,30 @@ considerate of hardware-related issues. As scientific computing moves
 towards exascale facilities with machines of $O(1,000,000)$ cores
 already coming online, new algorithms to solve these complex problems
 must be developed to leverage this new hardware
-\citep{kogge_using_2011}. Issues such as resiliency to node failure
-and scaling to large numbers of cores will be pertinent to robust
-algorithms aimed at this new hardware. Considering these issues, this
-thesis proposes the development of a massively parallel stochastic
-method for linear problems and a novel stochastic method to advance
-solution techniques for nonlinear problems.
+\citep{kogge_using_2011}. Issues such as resiliency to node failure,
+limited growth of memory available per node, and scaling to large
+numbers of cores will be pertinent to robust algorithms aimed at this
+new hardware. Considering these issues, this preliminary report
+proposes the development of a massively parallel stochastic method for
+linear problems and a novel stochastic method to advance solution
+techniques for nonlinear problems.
 
-We discuss in this chapter our motivation developing these Monte Carlo
-solvers by providing background on the current state of solver
+We discuss in this chapter our motivation for developing these Monte
+Carlo solvers by providing background on the current state of solver
 techniques for multiphysics problems and the hardware that they
 leverage. In addition, multiphysics problems of interest to the
 nuclear engineering community are provided to further motivate this
-work. We then provide a formal presentation of the multiphysics
-system and the problems that arise from it.
+work. We then provide a formal presentation of the multiphysics system
+and the problems that arise from it.
 
 \section{Motivation}
 \label{sec:motivation}
+
+\subsection{Problems of Interest}
+\label{subsec:problems of interest}
+
+\section{The Multiphysics System}
+\label{sec:multiphysics_system}
 
 \subsection{Multiphysics Methods Advancement}
 \label{subsec:methods_advancement}
@@ -108,12 +114,6 @@ iterations to converge the size of the Krylov subspace will grow
 beyond that of the Jacobian. Finally, using MCSA for the linear solve
 provides its benefits for preconditioning, potential resiliency, and
 parallelism.
-
-\subsection{Problems of Interest}
-\label{subsec:problems of interest}
-
-\section{The Multiphysics System}
-\label{sec:multiphysics_system}
 
 \section{Research Outline}
 \label{sec:research_outline}
