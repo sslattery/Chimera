@@ -9,12 +9,17 @@ chap_pmc = chapters/parallel_mc
 chap_nl = chapters/nonlinear_problem
 chap_prop = chapters/research_proposal
 
-all: orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf heat_eq_setup.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf
+all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf heat_eq_setup.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
 	$(PDFTEX) dissertation
 	$(PDFTEX) dissertation
+
+# Introduction figures
+dnb_example.pdf: $(chap_intro)/dnb_example.fig
+	fig2dev -L pdftex -p $(chap_intro)/dnb_example.pdf -m 0.4 $(chap_intro)/dnb_example.fig $(chap_intro)/dnb_example.pdf
+	fig2dev -L pdftex_t -p $(chap_intro)/dnb_example.pdf -m 0.4 $(chap_intro)/dnb_example.fig $(chap_intro)/dnb_example.pdftex_t
 
 # Linear problem figures
 orthogonal_residual.pdf: $(chap_lp)/orthogonal_residual.fig
@@ -71,8 +76,11 @@ clean:
 	-rm -f *.out
 	-rm -f *.toc *.lof *.lot
 	-rm -f *.bak
+	-rm -f $(chap_intro)/*.pdf $(chap_intro)/*.pdftex_t $(chap_intro)/*.bak
 	-rm -f $(chap_lp)/*.pdf $(chap_lp)/*.pdftex_t $(chap_lp)/*.bak
 	-rm -f $(chap_pmc)/*.pdf $(chap_pmc)/*.pdftex_t $(chap_pmc)/*.bak
+	-rm -f $(chap_nl)/*.pdf $(chap_nl)/*.pdftex_t $(chap_nl)/*.bak
+	-rm -f $(chap_prop)/*.pdf $(chap_prop)/*.pdftex_t $(chap_prop)/*.bak
 	-rm -f TAGS
 
 realclean: clean
