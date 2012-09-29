@@ -144,10 +144,10 @@
   \renewcommand{\chapterheadstart}{}
   \renewcommand{\printchaptername}{}
   \renewcommand{\chapternamenum}{}
-  \renewcommand{\printchapternum}{\parbox{2em}{\MakeLowercase{\Large\scshape\thechapter{}}} }
+  \renewcommand{\printchapternum}{\parbox{2em}{\MakeLowercase{\Huge\scshape\thechapter{}}} }
   \renewcommand{\afterchapternum}{}
   \renewcommand{\printchaptertitle}[1]{%
-  \raggedright\Large\scshape\MakeLowercase{##1}}
+  \raggedright\Huge\scshape\MakeLowercase{##1}}
   \renewcommand{\afterchaptertitle}{%
   \vskip\onelineskip \hrule\vskip\onelineskip}
 }
@@ -161,8 +161,8 @@
  
 \makeevenfoot{deposit}{}{}{}
 \makeoddfoot{deposit}{}{}{}
-\makeevenhead{deposit}{\thepage}{}{}
-\makeoddhead{deposit}{}{}{\thepage}
+\makeevenhead{deposit}{\thepage}{}{\chaptername\ \thechapter.}
+\makeoddhead{deposit}{\thesection. \leftmark}{}{\thepage}
 \makeatother
 
 %%% set up page numbering for chapter pages to satisfy UW requirements
@@ -197,3 +197,17 @@
     \renewcommand{\bibsection}{\@memb@bsec}}{}
 }
 \makeatother
+
+
+%% my additions
+\newcommand\blankpage
+{
+  \newpage
+  \thispagestyle{empty}
+  \mbox{}
+}
+
+\usepackage{titlesec}
+\titlespacing*{\chapter}{0pt}{-50pt}{20pt}
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+

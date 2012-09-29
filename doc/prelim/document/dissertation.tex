@@ -31,7 +31,7 @@
 \author{Stuart~R.~Slattery}
 \department{Engineering Physics}
 
-\date{2012}
+\date{\today}
 
 \begin{document}
 
@@ -54,10 +54,15 @@
 
 %% Now include the tex files for each chapter, like so (I put these in
 %% separate dirs): 
+\blankpage
 \include{chapters/introduction/introduction}
+\blankpage
 \include{chapters/linear_problem/linear_problem}
+\blankpage
 \include{chapters/parallel_mc/parallel_mc}
+\blankpage
 \include{chapters/nonlinear_problem/nonlinear_problem}
+\blankpage
 \include{chapters/research_proposal/research_proposal}
 
 %% etc, etc.
@@ -72,11 +77,13 @@
 %% \input{backmatter/colophon}
 %% \end{colophon}
 
-%% McBride is a very nice style (some version is included in this distribution)
+%% McBride is a very nice style (some version is included in this
+%% distribution)
+\blankpage
 \bibliographystyle{mcbride}
 \bibliography{references}
 
 %% Want an index?  Neither did I.
-%%\printindex
+\printindex
 
 \end{document}
