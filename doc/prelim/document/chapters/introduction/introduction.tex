@@ -26,12 +26,12 @@ linear problems and a novel stochastic method to advance solution
 techniques for nonlinear problems.
 
 We discuss in this chapter our motivation for developing these Monte
-Carlo solvers by providing background on the current state of solver
-techniques for multiphysics problems and the hardware that they
-leverage. In addition, multiphysics problems of interest to the
-nuclear engineering community are provided to further motivate this
-work. We then provide a formal presentation of the multiphysics system
-and the problems that arise from it.
+Carlo solvers by providing multiphysics problems of interest to the
+nuclear engineering community. In addition, background on the current
+state of solver techniques for multiphysics problems and the hardware
+that they leverage is provided to further motivate this work. We then
+provide a formal presentation of the multiphysics system and the
+problems that arise from it.
 
 \section{Motivation}
 \label{sec:motivation}
@@ -91,6 +91,20 @@ schemes instead of fixed-point type iterations between
 physics\footnote{Fixed-point iterations between physics are commonly
   referred to as Picard iterations.}. Furthermore, the space and time
 scales over which these effects occur will also vary greatly.
+
+The computational resources required to solve such problems are
+tremendous. Recent work in modeling the coupled fluid flow and solid
+model heat and mass transfer component of the departure from nucleate
+boiling model above was performed as part of analysis of the
+Department of Energy's Consortium for Advanced Simulation of Light
+Water Reactors (CASL) modeling and simulation hub using the Drekar
+multiphysics code \citep{pawlowski_drekar_2012}. Using Drekar,
+multiphysics simulations have been performed with fully consistent
+methods for the solution of nonlinear systems using meshes of
+$O(\sn{1}{9})$ elements leveraging $O(100,000)$ cores on leadership
+class machines. If we aim to advance multiphysics solution techniques,
+then we are motivated to tackle the solution of complex and general
+nonlinear problems exploiting leadership class levels of parallelism.
 
 \section{The Multiphysics System}
 \label{sec:multiphysics_system}
