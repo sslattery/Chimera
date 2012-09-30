@@ -29,9 +29,9 @@ We discuss in this chapter motivation for advancing Monte Carlo
 solvers by providing multiphysics problems of interest in nuclear
 reactor analysis. Hardware-based motivations are also provided by
 considering the impact of forthcoming computing architectures. In
-addition, background on the current state solver techniques for
-multiphysics problems and a brief comparision to the proposed methods
-is provided to further motivate this work. 
+addition, background on the current solver techniques for multiphysics
+problems and a brief comparision to the proposed methods is provided
+to further motivate this work.
 
 \section{Physics-Based Motivation}
 \label{sec:physics_motivation}
@@ -53,21 +53,21 @@ algorithms and computer architectures, true predictive capability for
 engineered systems can only be achieved through a coupled, multiple
 physics analysis where the effects of feedback between physics are
 modeled. For example, consider the safety analysis of a departure from
-nucleate boiling scenario in the subchannel of a nuclear fuel assembly
-as shown in Figure~\ref{fig:dnb_example}.
+nucleate boiling scenario in the subchannel of a nuclear fuel
+assembly.
 \begin{figure}[htpb!]
   \begin{center}
     \scalebox{1.5}{
       \input{chapters/introduction/dnb_example.pdftex_t} }
   \end{center}
-  \caption{\textbf{Multiphysics analysis of departure from nuclear
-      boiling.} \textit{A neutronics solution is required to compute
-      power generation in the fuel pins, fluid dynamics is required to
-      characterize boiling and fluid temperature and density, heat
-      transfer is required to compute the fuel and cladding
-      temperature, and the nuclear data modified with the temperature
-      and density data. Strong coupling among the variables creates a
-      nonlinearities.}}
+  \caption{\textbf{Multiphysics dependency analysis of departure from
+      nucleate boiling.} \textit{A neutronics solution is required to
+      compute power generation in the fuel pins, fluid dynamics is
+      required to characterize boiling and fluid temperature and
+      density, heat transfer is required to compute the fuel and
+      cladding temperature, and the nuclear data modified with the
+      temperature and density data. Strong coupling among the
+      variables creates strong nonlinearities.}}
   \label{fig:dnb_example}
 \end{figure}
 When this event occurs, heat transfer is greatly reduced between the
@@ -94,12 +94,13 @@ physics\footnote{Fixed-point iterations between physics are commonly
 scales over which these effects occur will also vary greatly.
 
 The computational resources required to solve such problems are
-tremendous. Recent work in modeling the coupled fluid flow and solid
-model heat and mass transfer component of the departure from nucleate
-boiling example above was performed as part of analysis of the
-Department of Energy's Consortium for Advanced Simulation of Light
-Water Reactors (CASL) modeling and simulation hub used the Drekar
-multiphysics code developed at Sandia National Laboratories
+tremendous. Recent work in modeling coupled fluid flow and solid
+material heat and mass transfer in a reactor subsystem, similar to the
+same components of the departure from nucleate boiling example above,
+was performed as part of analysis of the Department of Energy's
+Consortium for Advanced Simulation of Light Water Reactors (CASL)
+modeling and simulation hub using the Drekar multiphysics code
+developed at Sandia National Laboratories
 \citep{pawlowski_drekar_2012}. Using Drekar, multiphysics simulations
 have been performed with fully consistent methods for the solution of
 nonlinear systems using meshes of $O(\sn{1}{9})$ elements leveraging
@@ -107,21 +108,22 @@ $O(100,000)$ cores on leadership class machines. Neutronics components
 to be implemented in CASL for multiphysics analysis, such as the
 Denovo radiation transport code developed at Oak Ridge National
 Laboratory \citep{evans_denovo:_2010}, computes trillions of unknowns
-for full core reactor analysis on $O(\sn{1}{9})$ as well. Given the
-large scale and complexity of these problems, if we aim to advance
-multiphysics solution techniques, then we are motivated to advance the
-solution of complex and general nonlinear problems exploiting
-leadership class levels of parallelism.
+for full core reactor analysis on $O(\sn{1}{9})$ element meshes and
+$O(100,000)$ cores as well. Given the large scale and complexity of
+these problems, if we aim to advance multiphysics solution techniques,
+then we are motivated to advance the solution of complex and general
+nonlinear problems exploiting leadership class levels of parallelism.
 
 \section{Hardware-Based Motivation}
 \label{sec:hardware_motivation}
 As leadership class machines move towards the exascale, new algorithms
 must developed that leverage their strengths and adapt to their
 shortcomings. Basic research is required now to advance methods in
-time for these new machines to become operational with the Department
-of Energy's Advanced Scientific Computing Reasarch office specifically
-allocating funding for the 2013 fiscal year to research resilient
-solver technologies for exascale facilities
+time for these new machines to become operational. Organized work is
+already moving forward in this area with the Department of Energy's
+Advanced Scientific Computing Reasarch office specifically allocating
+funding for the next several years to research resilient solver
+technologies for exascale facilities
 \citep{u.s._department_of_energy_resilient_2012}. Based on the
 language in this call for proposals, we can identify key issues that a
 set of robust, massively parallel stochastic solvers could provide a
@@ -166,8 +168,8 @@ Monte Carlo methods for the solution of transport problems
 (PDE) community has focused on various deterministic methods for
 solutions to linear problems \citep{saad_iterative_2003,
   kelley_iterative_1995}. In between these two areas are a not widely
-known small group of stochastic methods for solving sparse linear
-systems \citep{forsythe_matrix_1950, hammersley_monte_1964,
+known group of stochastic methods for solving sparse linear systems
+\citep{forsythe_matrix_1950, hammersley_monte_1964,
   halton_sequential_1962, halton_sequential_1994}. In recent years,
 these methods have been further developed for transport problems in
 the form of Monte Carlo Synthetic-Acceleration (MCSA)
@@ -238,7 +240,7 @@ nonlinear problems to provide a mathematical basis upon which to build
 new algorithms that aim to solve some of the aforementioned
 issues. Parallel schemes for conventional methods are also provided
 for background and understanding of how current methods may or may not
-map to future hardware. In addition some components of their parallel
+map to future hardware. In addition, some components of their parallel
 implementations may be applied to stochastic methods development. In
 Chapter~\ref{ch:stochastic_methods}, Monte Carlo algorithms for
 solving linear systems and new parallel strategies will be outlined in
