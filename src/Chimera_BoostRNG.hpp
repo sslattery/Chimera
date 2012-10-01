@@ -48,7 +48,7 @@ namespace Chimera
 namespace Solvers
 {
 //---------------------------------------------------------------------------//
-// Specialization for mt19937
+// Specialization for 64 bit mt19937
 //---------------------------------------------------------------------------//
 template<>
 class RNGTraits<boost::mt19937>
@@ -76,7 +76,7 @@ class RNGTraits<boost::mt19937>
 };
 
 //---------------------------------------------------------------------------//
-// Specialization for mt11213b
+// Specialization for 32 bit mt11213b
 //---------------------------------------------------------------------------//
 template<>
 class RNGTraits<boost::mt11213b>
