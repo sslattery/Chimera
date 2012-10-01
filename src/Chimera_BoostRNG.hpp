@@ -41,31 +41,65 @@
 
 #include "Chimera_RNGTraits.hpp"
 
+#include <boost/random/mersenne_twister.hpp>
+
 namespace Chimera
 {
 namespace Solvers
 {
 //---------------------------------------------------------------------------//
+// Specialization for mt19937
+//---------------------------------------------------------------------------//
 template<>
-template<class BoostRNG>
-class RNGTraits<BoostRNG>
+class RNGTraits<boost::mt19937>
 {
-    typedef RNGType        BoostRNG;
-    typedef result_type    BoostRNG::result_type;
+  public:
 
-    static inline result_type generate( const BoostRNG& boost_rng )
+    typedef boost::mt19937                  rng_type;
+    typedef boost::mt19937::result_type     result_type;
+
+    static inline boost::mt19937 create()
+    { return boost::mt19937(); }
+
+    static inline result_type generate( boost::mt19937& boost_rng )
     { return boost_rng(); }
 
-    static inline void reset( const BoostRNG& boost_rng )
-    { boost_rng.reset(); }
-
-    static inline void setSeed( const BoostRNG& boost_rng, const unsigned int seed )
+    static inline void setSeed( boost::mt19937& boost_rng, 
+				const result_type seed )
     { boost_rng.seed( seed ); }
 
-    static inline result_type min( const BoostRNG& boost_rng )
+    static inline result_type min( boost::mt19937& boost_rng )
     { return boost_rng.min(); }
 
-    static inline result_type max( const BoostRNG& boost_rng )
+    static inline result_type max( boost::mt19937& boost_rng )
+    { return boost_rng.max(); }
+};
+
+//---------------------------------------------------------------------------//
+// Specialization for mt11213b
+//---------------------------------------------------------------------------//
+template<>
+class RNGTraits<boost::mt11213b>
+{
+  public:
+
+    typedef boost::mt11213b                 rng_type;
+    typedef boost::mt11213b::result_type    result_type;
+
+    static inline boost::mt11213b create()
+    { return boost::mt11213b(); }
+
+    static inline result_type generate( boost::mt11213b& boost_rng )
+    { return boost_rng(); }
+
+    static inline void setSeed( boost::mt11213b& boost_rng, 
+				const result_type seed )
+    { boost_rng.seed( seed ); }
+
+    static inline result_type min( boost::mt11213b& boost_rng )
+    { return boost_rng.min(); }
+
+    static inline result_type max( boost::mt11213b& boost_rng )
     { return boost_rng.max(); }
 };
 

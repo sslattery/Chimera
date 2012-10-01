@@ -63,7 +63,7 @@ struct UndefinedRNGTraits
   RNGTraits provide access to random number generators.
 */
 //---------------------------------------------------------------------------//
-template<typename RNGType>
+template<class RNGType>
 class RNGTraits
 {
   public:
@@ -73,38 +73,37 @@ class RNGTraits
     typedef RNGType rng_type;
 
     //! Typedef for result type.
-    typedef RNGType::result_type result_type;
+    typedef typename RNGType::result_type result_type;
     //@}
+
+    /*!
+     * \brief Create a random number generator in the base state.
+     */
+    static inline rng_type create()
+    { UndefinedRNGTraits<RNGType>::notDefined(); return 0; }
 
     /*! 
      * \brief Generate a random number.
      */
-    static inline result_type generate( const RNGType& rng )
+    static inline result_type generate( RNGType& rng )
     { UndefinedRNGTraits<RNGType>::notDefined(); return 0; }
-
-    /*!
-     * \brief Reset the state of the random number generator to the default
-     * value.
-     */
-    static inline void reset( const RNGType& rng )
-    { UndefinedRNGTraits<RNGType>::notDefined(); }
 
     /*!
      * \brief Set the current seed of the random number generator.
      */
-    static inline void setSeed( const RNGType& rng, const unsigned int seed )
+    static inline void setSeed( RNGType& rng, const result_type seed )
     { UndefinedRNGTraits<RNGType>::notDefined(); }
 
     /*!
      * \brief Lower bound of random range.
      */
-    static inline result_type min( const RNGType& rng )
+    static inline result_type min( RNGType& rng )
     { UndefinedRNGTraits<RNGType>::notDefined(); return 0; }
 
     /*!
      * \brief Upper bound of random range.
      */
-    static inline result_type max( const RNGType& rng )
+    static inline result_type max( RNGType& rng )
     { UndefinedRNGTraits<RNGType>::notDefined(); return 0; }
 };
 
