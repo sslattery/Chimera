@@ -1,4 +1,4 @@
-\chapter{Stochastic Solution Methods for Linear Problems}
+\chapter{Monte Carlo Solution Methods for Linear Problems}
 \label{ch:stochastic_methods}
 An alternative approach to approximate matrix inversion is to employ
 Monte Carlo methods that sample a distribution with an expectation
@@ -109,8 +109,9 @@ It should be noted here that if $\ve{A}$ is sparse, then $\ve{H}$,
 $\ve{P}$, and $\ve{W}$ must be sparse as well by
 definition. Additionally, we only compute $\ve{P}$ and $\ve{W}$ from
 the non-zero elements of $\ve{H}$ as those components that are zero
-will not participate in the random walk. Furthermore, it prevents an
-infinite weight from being generated in Eq~(\ref{eq:direct_weight}).
+will not participate in the random walk. Doing so prevents an
+infinite weight from being generated in Eq~(\ref{eq:direct_weight})
+and eliminates unnecessary computations.
 
 Using these matrices, we can then form the expectation value of the
 direct solution. For a given random walk permutation $\nu$ with $k$
@@ -156,12 +157,13 @@ therefore providing an unbiased Monte Carlo estimator.
 
 As we seek only approximate solutions, we need only to perform a
 minimal number of random walks in order to generate an approximation
-for $\ve{x}$. Furthermore, we also need conditions by which we may
-terminate a random walk. We do this by noticing that the factors added
-to Eq~(\ref{eq:direct_permutation_weight}) will become diminishingly
-small due to their definition in Eq~(\ref{eq:direct_weight}) such that
-their contributions to the solution estimate will become
-negligble. Therefore, we choose terminate a random walk sequence with
+for $\ve{x}$. If we are only to approximate the solution, we also need
+conditions by which we may terminate a random walk. We do this by
+noticing that the factors added to
+Eq~(\ref{eq:direct_permutation_weight}) will become diminishingly
+small due to their definition in Eq~(\ref{eq:direct_weight}) and
+therefore their contributions to the solution estimate will become
+negligible. Using this, we choose terminate a random walk sequence with
 a \textit{weight cutoff}, $W_c$, that is enforced when $W_m < W_c$ for
 a particular random walk permutation.
 
@@ -178,25 +180,26 @@ the solution:
 where the vector exponentials are computed element-wise. Inserting
 Eq~(\ref{eq:direct_expectation_value}) gives:
 \begin{equation}
-  \sigma_i^2 = \sum_{\nu} P_{\nu} X_{\nu}^2 - x_i^2\:,
+  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} X_{\nu}^2\Big)_i - x_i^2\:,
   \label{eq:direct_variance_2}
 \end{equation}
 and applying Eq~(\ref{eq:direct_permutation_contribution}):
 \begin{equation}
-  \sigma_i^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 b_{i_m}^2 -
-  x_i^2\:.
+  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2
+  b_{i_m}^2\Big)_i - x_i^2\:.
   \label{eq:direct_variance_3}
 \end{equation}
-Finally, expanding the transition probabilities yields:
+Finally, expanding the transition probabilities yields the variance:
 \begin{equation}
   \sigma_i^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
   \sum_{i_k}^{N} p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
   w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k} b_{i_m} - x_i^2\:.
   \label{eq:direct_variance_4}
 \end{equation}
-Using this defintion for the variance, we can arrive at a more natural
-reason for enforcing $\rho(\ve{H}) < 1$. Per the Hadamard product, we can
-concatenate the summation in Eq~(\ref{eq:direct_variance_4}):
+Using this definition for the variance, we can arrive at a more natural
+reason for enforcing $\rho(\ve{H}) < 1$ for our Monte Carlo method to
+converge. Per the Hadamard product, we can concatenate the summation
+in Eq~(\ref{eq:direct_variance_4}):
 \begin{equation}
   (\ve{P} \circ \ve{W} \circ \ve{W})^k =
   \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
@@ -218,9 +221,9 @@ which contains the general Neumann series for $\ve{G}$,
   \label{eq:variance_neumann_series}
 \end{equation}
 where $\ve{T} = (\ve{I}-\ve{G})^{-1}$. We can then insert $T$ back
-into the variance formulation:
+into the variance formulation for a more concise definition:
 \begin{equation}
-  \sigma^2_i = (\ve{T}\ve{b})_i - x_i^2
+  \sigma^2_i = (\ve{T}\ve{b})_i - x_i^2\:.
   \label{eq:direct_variance_5}
 \end{equation}
 We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
@@ -237,26 +240,54 @@ $\ve{W}$ as:
   \frac{|\ve{H}|}{|\ve{P}|} \geq |\ve{W}|\:.
   \label{eq:weight_norm}
 \end{equation}
-We then have the following inequality for relating $\ve{G}$ and
-$\ve{H}$:
+Choosing the infinity norm of the operator as defined in
+Eq~(\ref{eq:matrix_infinity_norm}), the normalized probability matrix
+will yield a norm of 1 giving the following inequality for relating
+$\ve{G}$ and $\ve{H}$:
 \begin{equation}
-  |\ve{G}| \geq \frac{|\ve{H}|^2}{|\ve{P}|}
+  |\ve{G}| \geq |\ve{H}|^2
   \label{eq:variance_norm_inequality}
 \end{equation}
 Using these relations to analyze Eq~(\ref{eq:direct_variance_5}), we
-see that if $\rho(\ve{H}) > 1$, then the sum in
+see that if $\rho(\ve{G}) > 1$, then the sum in
 Eq~(\ref{eq:variance_neumann_series}) will not converge and an
 infinite variance will arise as the elements of $\ve{T}$ become
-infinite in Eq~(\ref{eq:direct_variance_5}). Therefore, we must
-restrict $\ve{H}$ with $\rho(\ve{H}) < 1$ so that our expectation
-values for the solution may have a finite variance.
+infinite in Eq~(\ref{eq:direct_variance_5}). We must restrict $\ve{G}$
+to alleviate this and therefore restrict $\ve{H}$ due to
+Eq~(\ref{eq:variance_norm_inequality}) with $\rho(\ve{H}) < 1$ so that
+our expectation values for the solution may have a finite variance.
 
 \subsection{Reusing Random Walks}
 \label{subsec:reusing_random_walks}
-Ji recently proposed a variation of the direct method in which the
-random walk permutations in Eq~(\ref{eq:mc_walk_permutation}) can be
-used to contribute to the solution tally in all visited states instead
-of the only starting state \citep{ji_reusing_2012}.
+A downfall of the direct method is that a random walk must be
+initiated in each state of the solution vector in which the solution
+is desired due to the estimator definition in
+Eq~(\ref{eq:direct_expectation_expansion}). Because of this, a
+solution estimate in all states of a linear system may require a
+large number of random walks to be performed. Ji and Li recently
+proposed a variation of the direct method in which the random walk
+permutations in Eq~(\ref{eq:mc_walk_permutation}) can be used to
+contribute to the solution tally in all visited states instead of the
+only starting state \citep{ji_reusing_2012}. By doing this, they
+effectively reduce the number of random walks needed to sample all
+desired states in the system.
+
+Their method is based on the observation that while a random walk
+transitions between states in the system, if every state it visited
+could be considered that starting state, then a series a contributions
+to the solution could be generated by a single sequence of random
+numbers while maintaining statistical independence between the
+samples. To demonstrate this, consider the following random walk
+sequence starting in state 2: $2 \rightarrow 3 \rightarrow 1
+\rightarrow 2 \rightarrow 4 \rightarrow 5$. We can reuse these walks
+be recognizing that we also then have a random walk sequence starting
+in state 3 that can be applied to the state 3 estimator: $3
+\rightarrow 1 \rightarrow 2 \rightarrow 4 \rightarrow 5$. We also have
+the same situation for state 1: $1 \rightarrow 2 \rightarrow 4
+\rightarrow 5$, and all future states. Using this sampling scheme , Ji
+and Li observed 1 to 2 orders of magnitude reduction over the standard
+direct method in the number histories required to achieve a specified
+variance in their test problems.
 
 \section{Adjoint Method}
 \label{sec:adjoint_mc}
@@ -273,7 +304,7 @@ forward method. To begin, we first form the \textit{adjoint
 \end{equation}
 where now we are forming the decomposition with respect to the
 transpose of $\ve{H}$\footnote{This is sometimes referred to as the
-  adjoint form for real valued matrices}. We then follow the same
+  adjoint form for real-valued matrices}. We then follow the same
 procedure as the direct method for forming the probability and weight
 matrices in the decomposition. Using the adjoint form, probabilities
 should instead be column-scaled:
@@ -301,7 +332,7 @@ particular random walk permutation is then:
   \label{eq:adjoint_permutation_contribution}
 \end{equation}
 where the Kronecker delta indicates that the tally contributes only in
-the current state and $b_{i_0}$ is that sampled source starting
+the current state and $b_{i_0}$ is the sampled source starting
 state. Note here that the estimator in
 Eq~(\ref{eq:adjoint_permutation_contribution}) does not have a
 dependency on the source state as in
@@ -338,44 +369,33 @@ where $W_c$ is defined as in the direct method. The adjoint random
 walk will then be terminated after $m$ steps if $W_m < W_f$ as tally
 contributions become increasingly small.
 
-Given these ideas, we can then generate an algorithm for implementing
-the adjoint method:
-\begin{algorithm}[htpb!]
-  \caption{Adjoint Monte Carlo}
-  \label{alg:adjoint_mc}
-  \begin{algorithmic}
-    \State $\ve{r}_0 := \ve{b}-\ve{A}\ve{x}_0$
-  \end{algorithmic}
-\end{algorithm}
-
 \section{Sequential Monte Carlo}
 \label{sec:sequential_mc}
-The direct and adjoint methods described are limited by a convergence
-rate of $1/\sqrt{N}$ by the Central Limit Theorem where $N$ is the
-number of random walk permutations. In 1962, Halton presented a
-residual Monte Carlo method that moves towards exponential convergence
-rates \citep{halton_sequential_1962} and further refined his work some
-years later \citep{halton_sequential_1994}. Applications of his work
-by the transport community have confirmed convergence rates on the
-order of of $exp(-N)$
-\citep{evans_residual_2003}. In
+The direct and adjoint Neumann-Ulam methods described are limited by a
+convergence rate of $1/\sqrt{N}$ by the Central Limit Theorem where
+$N$ is the number of random walk permutations. In 1962, Halton
+presented a residual Monte Carlo method that moves towards exponential
+convergence rates \citep{halton_sequential_1962} and further refined
+his work some years later \citep{halton_sequential_1994}. Applications
+of his work by the transport community have confirmed convergence
+rates on the order of of $exp(-N)$ \citep{evans_residual_2003}. In
 much the same way as projection methods, Halton's method, sequential
 Monte Carlo, utilizes the adjoint Monte Carlo solver as a means of
-driving down the residual vector. He proposed the following iterative
-scheme as a solution to Eq~(\ref{eq:linear_problem})\:
+directly reducing the residual vector. He proposed the following
+iterative scheme as a solution to Eq~(\ref{eq:linear_problem})\:
 \begin{subequations}
   \begin{gather}
     \ve{r}^k = \ve{b} - \ve{A}\ve{x}^k\:,\\  
-    \ve{A}\boldsymbol{\delta}^{k+1} = \ve{r}^{k}\:,\\
-    \ve{x}^{k+1} = \ve{x}^k + \boldsymbol{\delta}^{k+1}\:,
+    \ve{A}\boldsymbol{\delta}^{k} = \ve{r}^{k}\:,\\
+    \ve{x}^{k+1} = \ve{x}^k + \boldsymbol{\delta}^{k}\:,
   \end{gather}
   \label{eq:sequential_monte_carlo}
 \end{subequations}
 where the correction $\boldsymbol{\delta}$ is computed by the adjoint
 Monte Carlo method. The merits of Halton's approach are immediately
 visible in that we have now broken the binding of the convergence rate
-to the Central Limit Thereom. Here, the Monte Carlo solve is used to
-produce a correction from the residual, analagous to using the
+to the Central Limit Thereom. Here, the Monte Carlo solver is used to
+produce a correction from the residual, analogous to using the
 residual to extract a correction from the search subspace in a
 projection method. By doing this, the Monte Carlo error is bound in
 the correction used to update the solution and therefore does not
@@ -390,15 +410,15 @@ characterized by poor performance.
 \section{Monte Carlo Synthetic-Acceleration}
 \label{sec:mcsa}
 Using the ideas of Halton, Evans and Mosher recently developed a Monte
-Carlo solution that was not prohibited severely by the quality of the
-initial guess for the system \citep{evans_monte_2009} and later
+Carlo solution method that was not prohibited severely by the quality
+of the initial guess for the system \citep{evans_monte_2009} and later
 applied it more rigorously as a solution mechanism for the radiation
-diffusion equation \citep{evans_monte_2012}, achieving identical
-numerical results as and marginally better performance than
-conventional Krylov solvers. Their approach was instead to use
-residual Monte Carlo as a synthetic acceleration for a stationary
-method. To derive this method, we begin by splitting the operator in
-Eq~(\ref{eq:linear_problem})
+diffusion equation \citep{evans_monte_2012}. With their new methods,
+they achieved identical numerical results as and marginally better
+performance than conventional Krylov solvers. Their approach was
+instead to use residual Monte Carlo as a synthetic acceleration for a
+stationary method. To derive this method, we begin by splitting the
+operator in Eq~(\ref{eq:linear_problem})
 \begin{equation}
   \ve{x} = (\ve{I} - \ve{A})\ve{x} + \ve{b}\:.
   \label{eq:linear_split}
@@ -440,7 +460,7 @@ iteration if $\ve{A}$ is inverted exactly.
   \label{eq:mcsa_setup_3}
 \end{subequations}
 However, $\ve{A}$ is only approximately inverted by our numerical
-methods and therfore we instead pose an iterative scheme in which the
+methods and therefore we instead pose an iterative scheme in which the
 Monte Carlo solvers are used to invert the operator. The
 \textit{Fixed-Point Monte Carlo Synthetic-Acceleration} (MCSA) method
 is defined as:
@@ -475,14 +495,14 @@ Carlo histories computed in the adjoint solve during each MCSA
 iteration, the weight cutoff for those histories, and the total MCSA
 convergence tolerance as specified by $\epsilon$.
 
-\subsection{Preconditioning Stochastic Methods}
+\subsection{Preconditioning MCSA}
 \label{sec:stochastic_preconditioning}
 In most cases, at least a minimal amount of \textit{preconditioning}
 of the linear system will be required in order to use the class of
 stochastic methods described. Although these methods have no symmetry
 requirements for convergence, they do require that the spectral radius
 of the iteration matrix be less than one. To achieve this, a Jacobi
-precondtioner, a form of left preconditioning, is used such that the
+preconditioner, a form of left preconditioning, is used such that the
 preconditioning matrix $\ve{M}$ is:
 \begin{equation}
   \ve{M} = diag(\ve{A})\:,
@@ -523,7 +543,7 @@ For Monte Carlo methods, and in particular MCSA, to be viable at the
 production scale, scalable parallel implementations are required. In a
 general linear algebra context, this has not yet been
 achieved. Therefore, we will develop and implement parallel algorithms
-for these methods levaraging both the knowledge gained from the
+for these methods leveraging both the knowledge gained from the
 general parallel implementations of Krylov methods and modern parallel
 strategies for Monte Carlo as developed by the reactor physics
 community. In order to formulate a parallel MCSA algorithm, we
@@ -583,29 +603,30 @@ In 2010, Wagner and colleagues developed the \textit{multiple-set
 applications for full-core light water reactor analysis
 \citep{wagner_hybrid_2010}. In their work, an extension of Brunner's,
 their scheme employed the similar parallel algorithms for particle
-transport but a certain amount of overlap between domains was used to
-decrease the number of particles leaving the domain. In addition,
-Wagner utilized a level of replication of the domain such that the
-domain was only decomposed on $O(100)$ processors and if replicated
-$O(1000)$ times achieves simulation on $O(100,000)$ processors, thus
-providing spatial and particle parellelism. Each collection of
-processors that constitutes a representation of the entire domain is
-referred to as a set, and within a set overlap occurs among its
-subdomains. The original motivation was to decompose the domain in a
-way that it remained in a physical cabinet in a large distributed
-machine, thus reducing latency costs during communication. A multiple
-set scheme is also motivated by the fact that communication only
-occurs within a set, limiting communications during the transport
-procedure to a group of $O(100)$ processors, a number that was shown
-to have excellent parallel efficiencies in Brunner's work and
-therefore will scale well in this algorithm. The overlapping domains
-within each set also demonstrated reduced communication costs. On each
-processor, the source is sampled in the local domain that would exist
-if no overlap was used while tallies can be made over the entire
-overlapping domain. To demonstrate this, consider the example adapted
-from Mervin's work with Wagner and others in the same area
-\citep{mervin_variance_2012} and presented in
-Figure~\ref{fig:msod_example}.
+transport but a certain amount of overlap between adjacent domains was
+used to decrease the number of particles leaving the local domain. In
+addition, Wagner utilized a level of replication of the domain such
+that the domain was only decomposed on $O(100)$ processors and if
+replicated $O(1000)$ times achieves simulation on $O(100,000)$
+processors, thus providing spatial and particle parallelism. Each
+collection of processors that constitutes a representation of the
+entire domain is referred to as a set, and within a set overlap occurs
+among its subdomains. The original motivation was to decompose the
+domain in a way that it remained in a physical cabinet in a large
+distributed machine, thus reducing latency costs during
+communication. A multiple set scheme is also motivated by the fact
+that communication only occurs within a set, limiting communications
+during the transport procedure to a group of $O(100)$ processors, a
+number that was shown to have excellent parallel efficiencies in
+Brunner's work and therefore will scale well in this algorithm. The
+overlapping domains within each set also demonstrated reduced
+communication costs. On each processor, the source is sampled in the
+local domain that would exist if no overlap was used while tallies can
+be made over the entire overlapping domain. 
+
+To demonstrate this, consider the example adapted from Mervin's work
+with Wagner and others in the same area \citep{mervin_variance_2012}
+and presented in Figure~\ref{fig:msod_example}.
 \begin{figure}[htpb!]
   \begin{center}
     \scalebox{1.5}{
@@ -617,7 +638,7 @@ Figure~\ref{fig:msod_example}.
       dashed line represents 0.5 domain overlap between domains.}}
   \label{fig:msod_example}
 \end{figure}
-In this example, 3 particle histories are presented eminating from the
+In this example, 3 particle histories are presented emanating from the
 blue region of interest. Starting with particle A, if no domain
 overlap is used then the only the blue domain exists on the starting
 processor. Particle A is then transported through 3 other domains
@@ -629,7 +650,7 @@ particle A transport process. Using 0.5 domain overlap also easily
 eliminates cases such as the represented by the path of particle C. In
 this case, particle C is scattering between two adjacent domains,
 incurring a large latency cost for a single particle. Finally, with
-particle B we observe that 0.5 domain overlap will still not elminate
+particle B we observe that 0.5 domain overlap will still not eliminate
 all communications. However, if 1 domain overlap were used, the entire
 geometry shown in Figure~\ref{fig:msod_example} would be contained on
 the source processor and therefore transport of all 3 particles
@@ -653,7 +674,7 @@ today's modern machines.
 Although domain decomposition was shown to be efficient in a load
 balanced situation \citep{siegel_analysis_2012}, careful consideration
 must be made for situations where this is not the case. Given the
-stochastic nature of the problem and lack of a globally homogoneous
+stochastic nature of the problem and lack of a globally homogeneous
 domain, parallel Monte Carlo simulations are inherently load
 imbalanced. Procassini and others worked to alleviate some of the load
 imbalances that are generated by both particle and spatial parallelism
@@ -669,8 +690,10 @@ simulation progressed and particles were transported throughout the
 domain, the amount of replication for each domain would vary as
 particle histories began to diffuse, causing some regions to have
 higher work loads and some to have smaller work loads than the initial
-conditions. Consider the example in
-Figure~\ref{fig:procassini_example} adapted from Procassini's work.
+conditions. 
+
+Consider the example in Figure~\ref{fig:procassini_example} adapted
+from Procassini's work.
 \begin{figure}[htpb!]
   \begin{center}
     \scalebox{1.5}{
@@ -703,14 +726,14 @@ problems (and especially those that have a point-like source) like
 those presented in Procassini's work will be more prone to changing
 load balance requirements.
 
-\subsubsection{Reproducable Domain Decomposed Results}
-\label{subsubsec:reproducable_mc}
+\subsubsection{Reproducible Domain Decomposed Results}
+\label{subsubsec:reproducible_mc}
 The 2006 work of Brunner is notable in that the Monte Carlo codes used
 to implement and test the algorithms adhered to a strict policy of
 generating identical results independent of domain decomposition or
 domain replication as derived from the work of Gentile and colleagues
 \citep{gentile_obtaining_2005}. In Gentile's work, a procedure is
-given for obtaining results reproducable to machine precision for an
+given for obtaining results reproducible to machine precision for an
 arbitrary number of processors and domains. Differences can arise from
 using a different random number sequence in each domain and performing
 a sequence of floating point operations on identical data in a
@@ -724,7 +747,7 @@ these issues.
       \input{chapters/parallel_mc/gentile_example.pdftex_t} }
   \end{center}
   \caption{\textbf{Gentile's example illustrating how domain
-      decomposition can create reproducability issues in Monte Carlo.}
+      decomposition can create reproducibility issues in Monte Carlo.}
     \textit{Both particles A and B start in zone 1 on processor
       1. Particle A moves to zone 2 on processor 2 and scatters back
       to zone 1 while B scatters in zone 1 and remains there. A1 and
@@ -735,7 +758,7 @@ these issues.
 In this example, the domain is decomposed on two processors with each
 processor owning one of the two zones. Starting with particle A, it is
 born in zone 1 and is transported to zone 2 where a scattering event
-occurs. Concerning the first reproducability issue, if the same
+occurs. Concerning the first reproducibility issue, if the same
 sequence of random numbers is not used to compute the trajectory from
 the new scattering event, we cannot expect to achieve the same result
 if the domain were not decomposed. If the numbers are different, the
@@ -754,17 +777,17 @@ would result in a tally sum with the following order of operations:
 $(((A1+A2)+B1)+B2)$. If we were instead to use 2 processors, we would
 instead have the following order: $(((A1+B1)+B2)+A2)$. In the context
 of floating point operations, we cannot expect these to have an
-identical result to machine precesion as round-off approximations will
+identical result to machine precision as round-off approximations will
 differ resulting in non-commutative addition.
 
-Their solutions to these problems are elegant in that they require a
-minimal amount of modification to be applied to the Monte Carlo
-algorithm. To solve the first issue, in order to ensure each particle
-maintains an invariant random number sequence that determines its
-behavior regardless of domain decomposition, each particle is a random
-number seed that describes its current state upon entering the domain
-of a new processor. These seeds are derived from the actual geometric
-location of the particle such that it is decomposition
+Procassini's solutions to these problems are elegant in that they
+require a minimal amount of modification to be applied to the Monte
+Carlo algorithm. To solve the first issue, in order to ensure each
+particle maintains an invariant random number sequence that determines
+its behavior regardless of domain decomposition, each particle is a
+random number seed that describes its current state upon entering the
+domain of a new processor. These seeds are derived from the actual
+geometric location of the particle such that it is decomposition
 invariant. Non-commutative floating point operations are solved by
 instead mapping floating point values to 64-bit integer values for
 which additions will always be commutative. Once the operations are
@@ -778,15 +801,15 @@ parallel formulation of our stochastic linear solvers. Direct analogs
 can be derived from these works by noting that the primary difference
 between solving a linear system with Monte Carlo methods and fixed
 source Monte Carlo transport problems is the content of the Markov
-chains that are generated. These transitions represeneted by these
-chains are bound by probabilities and weights and are initiated by the
+chains that are generated. The transitions represented by these chains
+are bound by probabilities and weights and are initiated by the
 sampling of a source. In the context of transport problems, those
-transitions represent events such as pariticle scattering and
-absorbition with probabilities that are determined by physical data in
+transitions represent events such as particle scattering and
+absorption with probabilities that are determined by physical data in
 the form of cross sections. For stochastic matrix inversion, those
 transitions represent moving between the equations of the linear
 system (and therefore the physical domain which they represent) and
-their probabilites are defined by the coefficients of those
+their probabilities are defined by the coefficients of those
 equations. Ultimately, we tally the contributions to generate
 expectation values in the desired states as we progress through the
 chains. Therefore, parallel methods for Monte Carlo radiation
@@ -794,7 +817,7 @@ transport can be abstracted and we can use those concepts that apply
 to matrix inversion methods as an initial means of developing a
 parallel Neumann-Ulam-type solver. Based on the results observed in
 the last decade of parallel Monte Carlo development, we can generate
-many practical questions that this type of work could answer. 
+many practical questions that this type of work could answer.
 
 Given a decomposed domain, it is clear that domain overlap
 significantly reduces the amount of communication required between
@@ -811,13 +834,13 @@ colleagues in their initial MCSA development typically used only 50
 particle histories in order to compute a correction in an MCSA
 iteration \citep{evans_monte_2012}. Per the Central Limit Theorem,
 that correlates to a statistical uncertainty of 14.1\% in the
-correction, yet as compared to convential Krylov solvers, MCSA
+correction, yet as compared to conventional Krylov solvers, MCSA
 achieved identical numerical results. If good convergence and
 numerically accurate solutions can be achieved with such a large
 uncertainty in the correction computation, then perhaps with enough
 domain overlap the minimal amount of histories that do transition to
 non-local states can be ignored and thus eliminate all communication
-in the parallel Monte Carlo adjoint solver and create an embarassingly
+in the parallel Monte Carlo adjoint solver and create an embarrassingly
 parallel method. It will be important to determine if the expectation
 value bias in the MCSA correction generated by this approximation will
 remain within the bounds of the already high statistical uncertainty
@@ -825,7 +848,7 @@ for unbiased estimates, thus providing numerically equivalent results.
 
 From a domain replication perspective, this may be difficult to
 achieve with a production scale linear solver. Typically, memory is at
-a premimium and therefore the more distinct domains available in the
+a premium and therefore the more distinct domains available in the
 decomposition, the spatially finer and/or the numerically more
 accurate the discretization that can be implemented. How much
 replication is possible for large problems? How does replication
@@ -871,8 +894,8 @@ leads to a natural comparison with the GMRES algorithm. As both
 solvers are aimed at the same class of problem, we desire a set of
 metrics that will allow us to quantitatively compare the two. Given
 that the Krylov subspace maintained by GMRES can become large, do we
-benifit from a memory standpoint with an MCSA scheme in that no
-subspace is required? Does this benefit outweight the fact that the
+benefit from a memory standpoint with an MCSA scheme in that no
+subspace is required? Does this benefit outweigh the fact that the
 linear operator must be explicitly formed in order to build the
 transition probabilities for the random walk sequence? For
 non-symmetric systems, does MCSA exhibit similar convergence

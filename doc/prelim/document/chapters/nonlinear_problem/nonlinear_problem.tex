@@ -1,11 +1,11 @@
 \chapter{Stochastic Solution Methods for Nonlinear Problems}
 \label{ch:nonlinear_problem}
-Nonlinear equation sets are a common occurence in multiphysics
-problems. Systems of partial differntial equations such as those that
+Nonlinear equation sets are a common occurrence in multiphysics
+problems. Systems of partial differential equations such as those that
 describe fluid flow or more general transport processes when
 discretized by conventional methods yield discrete sets of stiff
 equations with nonlinearities present in the variables. Traditionally,
-such systems have been solved by linearizing them such that the
+such systems have been solved by linearizing them in a form where the
 nonlinearities in the variables are eliminated and more traditional
 linear methods can be used for solutions. Often characterized as
 segregated methods where physics operators are split and their action
@@ -20,7 +20,7 @@ robust solution sequence for these types of problems. However, given
 our goals of advancing stochastic solver technology for linear
 problems, we aim to apply them to these fully consistent schemes in
 order to gauge if some improvements can be made. We therefore devise a
-new method using MCSA in conjuction with new methods, accomodating the
+new method using MCSA in conjunction with new methods, accommodating the
 fact that MCSA requires an explicitly formed linear operator in its
 implementation as compared to Krylov methods. In addition to handling
 this dependency, we will construct a parallel strategy for a nonlinear
@@ -73,7 +73,7 @@ element-wise as:
 Second, we note that $(\ve{u}^{k+1}-\ve{u}^{k})$ is simply the
 solution update from the $k$ iterate to the $k+1$ iterate. We will
 define this update as the \textit{Newton correction} at the $k$
-iterate, $\delta \ve{u}^k$. We can then rerarrange
+iterate, $\delta \ve{u}^k$. To finish, we can then rearrange
 Eq~(\ref{eq:newton_derivation_2}) to define the Newton iteration
 scheme for nonlinear problems:
 \begin{subequations}
@@ -83,7 +83,7 @@ scheme for nonlinear problems:
   \end{gather}
   \label{eq:newton_iteration}
 \end{subequations}
-We then have three distinct steps to perform: evaluation of the
+There are then three distinct steps to perform: evaluation of the
 nonlinear residuals using the solution at the $k$ iterate, the
 solution of a linear system to compute the Newton correction where the
 Jacobian matrix of the nonlinear equation set is the linear operator,
@@ -100,7 +100,7 @@ nonlinear residual. Commonly, the following criteria is used:
 where $\epsilon$ is a user defined tolerance parameter. Newton's
 method is \textit{consistent} in that all components of the nonlinear
 functions that describe the physics we are modeling are updated
-simulataneously in the iteration sequence with respect to one
+simultaneously in the iteration sequence with respect to one
 another. This is in comparison to \textit{inconsistent} strategies,
 such as a pressure correction strategy for solving the Navier-Stokes
 equations \citep{pletcher_computational_1997}, where the components of
@@ -137,7 +137,7 @@ where $\eta^k \in [0,1)$ is defined as the \textit{forcing term} at
   of the method or even prohibit convergence
   \citep{eisenstat_choosing_1996}. In addition, \textit{globalization
     methods} may be used to modify the Newton correction in a more
-  desireable direction such that convergence properties can be
+  desire able direction such that convergence properties can be
   improved when the initial guess for $\ve{u}$ is poor
   \citep{pawlowski_globalization_2006}.
 
@@ -154,13 +154,13 @@ operator make them easier to implement than other
 methods. Additionally, although many iterations can become memory
 intensive due to the need to store the Krylov subspace for the
 orthogonalization procedure, at each nonlinear iteration this cost is
-reset as the Jacbobian matrix will change due to its dependence on the
+reset as the Jacobian matrix will change due to its dependence on the
 solution vector. This means that for every nonlinear iteration, a
 completely new linear system is formed for generating the Newton
 correction and we can modify the Krylov solver parameters accordingly
-to accomodate this. In most nonlinear problems, the Jacobian operator
-is generally nonsymmetric and therefore either Krylov methods with
-long recurrence relations that can handle nonsymmetric systems must be
+to accommodate this. In most nonlinear problems, the Jacobian operator
+is generally non-symmetric and therefore either Krylov methods with
+long recurrence relations that can handle non-symmetric systems must be
 considered or the Newton correction system must be preconditioned such
 that the operator is symmetric and short recurrence relation methods
 can be potentially be used.
@@ -172,7 +172,7 @@ memory usage. Several studies have been performed to investigate this
 numerical studies in 1995, Knoll and McHugh used the set of highly
 nonlinear and stiff convection-diffusion-reaction equations to solve a
 set of tokamak plasma problems with the goal of measuring solver
-performance with Newton's method. They note several tradeoffs in using
+performance with Newton's method. They note several trade offs in using
 Krylov methods with the Newton solver. The first is that the
 optimization condition that results from the constraints (e.g. the
 minimization of the GMRES residual over the Krylov space) can be
@@ -184,7 +184,7 @@ certain number of vectors have been generated. The optimization
 condition is maintain over that particular set of vectors, however,
 Knoll and McHugh note that this ultimately slows the convergence rate
 as compared to keeping all vectors as the new set of vectors is not
-necessarily orthogonal to the previous set, and therfore not optimal
+necessarily orthogonal to the previous set, and therefore not optimal
 over the entire iteration procedure. The orthogonality condition can
 be relaxed by using a recurrence relation that does not generate a
 strictly orthonormal basis for the Krylov subspace such as the Lanzcos
@@ -196,7 +196,7 @@ fixed vector basis approximately the size of the number of iterations
 required to converge as the long recurrence relation solver and
 conjugate gradients squared (CGS), bi-orthogonalized conjugate
 gradient stabilized (Bi-CGSTAB), and transpose-free quasiminimal
-residual (TFQMR) methdos as Lanzcos-based short recurrence relation
+residual (TFQMR) methods as Lanzcos-based short recurrence relation
 solvers. All solvers were used to compute the right-preconditioned
 Newton correction system. For standard implementations of Newton's
 method where the Jacobian operator was explicitly formed using
@@ -205,7 +205,7 @@ iteration count performance for both the inner linear iterations and
 the outer nonlinear iterations in terms of iterations required to
 converge. Bi-CGSTAB typically performed the best for
 implementations where the Jacobian was explicitly formed and GMRES
-perfoming best for matrix-free implementations. However, upon
+performing best for matrix-free implementations. However, upon
 investigating the convergence of the inner iterations, it was observed
 that the GMRES solver was significantly more robust, always generating
 a monotonically decreasing residual as compared to the Lanzcos-based
@@ -228,12 +228,13 @@ difference equations for building the Jacobian
 only need the action of the operator on the vector instead of the
 operator itself, the Jacobian can instead be approximated through
 various numerical methods including a difference-based Jacobian-free
-formulation. Jacobian-Free methods, and in particular
-\textit{Jacobian-Free Newton-Krylov} (JFNK) methods
-\citep{knoll_jacobian-free_2004}, rely on forming the action of the
-Jacobian on a vector as required by the Krylov solver through a
-forward difference scheme. In this case, the action of the Jacobian on
-some vector $\ve{v}$ is given as:
+formulation. 
+
+Jacobian-Free methods, and in particular \textit{Jacobian-Free
+  Newton-Krylov} (JFNK) methods \citep{knoll_jacobian-free_2004}, rely
+on forming the action of the Jacobian on a vector as required by the
+Krylov solver through a forward difference scheme. In this case, the
+action of the Jacobian on some vector $\ve{v}$ is given as:
 \begin{equation}
   \ve{J}(\ve{u})\ve{v} = \frac{\ve{F}(\ve{u} + \epsilon \ve{v}) -
     \ve{F}(\ve{u})}{\epsilon}\:,
@@ -313,8 +314,8 @@ operator-overloaded automatic differentiation types, both the residual
 and Jacobian are returned.
 
 Of interest to Bartlett, Averick, and the many others that have
-researched automatic differentation are measures of its performance
-relative to hand-coded derivatives and capturing the Jacboian matrix
+researched automatic differentiation are measures of its performance
+relative to hand-coded derivatives and capturing the Jacobian matrix
 from matrix-free approximations. Given their element-based function
 evaluation scheme, Bartlett's work varied the number of degrees of
 freedom per element and compared both the floating point operation
@@ -328,7 +329,7 @@ templated method is causing better utilization of cache and therefore
 faster data access. Furthermore, they observed linear scaling behavior
 for automatic differentiation as the number of degrees of freedom per
 element were increased up to a few hundred. Based on these results,
-this type of automatic differentation formulation was deemed
+this type of automatic differentiation formulation was deemed
 acceptable for use in large-scale, production physics codes.
 
 \section{The FANM Method}
@@ -357,22 +358,22 @@ system including the linear operator so that we may generate
 transition probabilities for the random walk sequence. Although this
 requires more storage to represent the linear system than that of a
 Krylov method where the operator is not required, we do not incur any
-additional storage costs once the iteration sequence
-begins. Furthermore, in the context of nonlinear problems, the
-Jacobian matrix that we are required to generate for the Monte Carlo
-solvers may be generated at will from the nonlinear functions in the
-Newton system using automatic differentation. Not only do we then have
-a simple and automated way to generate the Jacobian, but we also enjoy
-a Jacobian of numerical precision equivalent to that of our function
-evaluations. We therefore propose the \textit{Forward-Automated
-  Newton-MCSA} (FANM) method that utilizes all of the above
-components. We hypothesize that such a method will be competetive with
-Newton-Krylov methods not only from a convergence and timing
-perspective, but also relax scaling requirements of matrix-free
-methods and memory costs of both matrix-free and fully formed Jacobian
-methods to allow the application developer to solve problems of finer
-discretization and higher-order functional representations while
-maintaining a robust and efficient parallel implementation.
+additional storage costs once the iteration sequence begins. In the
+context of nonlinear problems, the Jacobian matrix that we are
+required to generate for the Monte Carlo solvers may be generated at
+will from the nonlinear functions in the Newton system using automatic
+differentiation. Not only do we then have a simple and automated way to
+generate the Jacobian, but we also enjoy a Jacobian of numerical
+precision equivalent to that of our function evaluations. We therefore
+propose the \textit{Forward-Automated Newton-MCSA} (FANM) method that
+utilizes all of the above components. We hypothesize that such a
+method will be competitive with Newton-Krylov methods not only from a
+convergence and timing perspective, but also relax scaling
+requirements of matrix-free methods and memory costs of both
+matrix-free and fully formed Jacobian methods to allow the application
+developer to solve problems of finer discretization and higher-order
+functional representations while maintaining a robust and efficient
+parallel implementation.
 
 \subsection{Jacobian Storage vs. Subspace Storage and Restarts}
 \label{subsec:fanm_storage}
@@ -465,7 +466,7 @@ Monte Carlo implementation of the linear solver as the parallel
 operations at the nonlinear iteration level are identical to those
 that you would perform with a Newton-Krylov method. Matrix-free
 formulations will have different parallel performance than these
-methods, and therefore we should compare FANM perfomance to JFNK-based
+methods, and therefore we should compare FANM performance to JFNK-based
 schemes. More important than performance in this situation is the
 reduced memory pressure that a FANM implementation provides, as
 discussed in \S~\ref{subsec:fanm_storage}, because a FANM method will
