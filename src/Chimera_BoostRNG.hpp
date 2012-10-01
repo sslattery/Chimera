@@ -31,81 +31,42 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //---------------------------------------------------------------------------//
-// \file Chimera_RNGTraits.hpp
+// \file Chimera_BoostRNG.hpp
 // \author Stuart R. Slattery
-// \brief Traits definition for random number generators.
+// \brief RNGTraits implementation for Boost Psuedo Random Number Generators.
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_RNGTRAITS_HPP
-#define Chimera_RNGTRAITS_HPP
+#ifndef Chimera_BOOSTRNG_HPP
+#define Chimera_BOOSTRNG_HPP
+
+#include "Chimera_RNGTraits.hpp"
 
 namespace Chimera
 {
 namespace Solvers
 {
 //---------------------------------------------------------------------------//
-/*!
- * \brief Dummy struct. If a type does not create a specialization this will
- * not compile.
- */
-template<typename UndefinedRNGType>
-struct UndefinedRNGTraits
+template<>
+template<class BoostRNG>
+class RNGTraits<BoostRNG>
 {
-    static inline UndefinedRNGType notDefined() 
-    { return UndefinedRNGType::this_type_is_missing_a_specialization(); }
-};
+    typedef RNGType        BoostRNG;
+    typedef result_type    BoostRNG::result_type;
 
-//---------------------------------------------------------------------------//
-/*!
-  \class RNGTraits
-  \brief Random number generator traits definitions.
+    static inline result_type generate( const BoostRNG& boost_rng )
+    { return boost_rng(); }
 
-  RNGTraits provide access to random number generators.
-*/
-//---------------------------------------------------------------------------//
-template<typename RNGType>
-class RNGTraits
-{
-  public:
+    static inline void reset( const BoostRNG& boost_rng )
+    { boost_rng.reset(); }
 
-    //@{
-    //! Typedef for rng type.
-    typedef RNGType rng_type;
+    static inline void setSeed( const BoostRNG& boost_rng, const unsigned int seed )
+    { boost_rng.seed( seed ); }
 
-    //! Typedef for result type.
-    typedef RNGType::result_type result_type;
-    //@}
+    static inline result_type min( const BoostRNG& boost_rng )
+    { return boost_rng.min(); }
 
-    /*! 
-     * \brief Generate a random number.
-     */
-    static inline result_type generate( const RNGType& rng )
-    { UndefinedRNGTraits<RNGType>::notDefined(); return 0; }
-
-    /*!
-     * \brief Reset the state of the random number generator to the default
-     * value.
-     */
-    static inline void reset( const RNGType& rng )
-    { UndefinedRNGTraits<RNGType>::notDefined(); }
-
-    /*!
-     * \brief Set the current seed of the random number generator.
-     */
-    static inline void setSeed( const RNGType& rng, const unsigned int seed )
-    { UndefinedRNGTraits<RNGType>::notDefined(); }
-
-    /*!
-     * \brief Lower bound of random range.
-     */
-    static inline result_type min( const RNGType& rng )
-    { UndefinedRNGTraits<RNGType>::notDefined(); return 0; }
-
-    /*!
-     * \brief Upper bound of random range.
-     */
-    static inline result_type max( const RNGType& rng )
-    { UndefinedRNGTraits<RNGType>::notDefined(); return 0; }
+    static inline result_type max( const BoostRNG& boost_rng )
+    { return boost_rng.max(); }
 };
 
 //---------------------------------------------------------------------------//
@@ -114,9 +75,9 @@ class RNGTraits
 
 } // end namespace Chimera
 
-#endif // end Chimera_RNGTRAITS_HPP
+#endif // end Chimera_BOOSTRNG_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_RNGTraits.hpp
+// end Chimera_BoostRNG.hpp
 //---------------------------------------------------------------------------//
 
