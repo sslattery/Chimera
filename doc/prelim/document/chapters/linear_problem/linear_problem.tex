@@ -5,8 +5,8 @@ through common methods such as finite differences
 \citep{leveque_finite_2007}, finite volumes
 \citep{leveque_finite_2002}, and finite elements
 \citep{zienkiewicz_finite_2005} ultimately generates sets of coupled
-equations in the form of matrix problems.  In addition, these matrices
-are typically sparse, meaning that the vast majority of their
+equations in the form of matrix problems. In many cases, these
+matrices are sparse, meaning that the vast majority of their
 constituent elements are zero. This sparsity is due to the fact that
 the influence of a particular grid element only expands as far as a
 few of its nearest neighbors depending on the order of discretization
@@ -128,7 +128,7 @@ simple terms for common norms including the infinity norm:
 \end{equation}
 and the 2-norm:
 \begin{equation}
-p  ||\ve{A}||_{2} = \sqrt{\rho(\ve{A}^T\ve{A})}\:,
+  ||\ve{A}||_{2} = \sqrt{\rho(\ve{A}^T\ve{A})}\:,
   \label{eq:matrix_2_norm}
 \end{equation}
 where $\rho$ is the spectral radius as defined in
@@ -148,8 +148,8 @@ condition number will be generated. We define such matrices as
 
 \section{Stationary Methods}
 \label{sec:stationary_methods}
-Stationary methods arise from splitting the operator in
-Eq~(\ref{eq:linear_problem})
+Stationary methods for linear systems arise from splitting the
+operator in Eq~(\ref{eq:linear_problem}):
 \begin{equation}
   \ve{A} = \ve{M} - \ve{N}\:,
   \label{eq:split_linear_operator}
@@ -158,7 +158,7 @@ where the choice of $\ve{M}$ and $\ve{N}$ will be dictated by the
 particular method chosen. Using this split definition of the operator
 we can then write:
 \begin{equation}
-  \ve{M}\ve{x} + \ve{N}\ve{x} = \ve{b}\:.
+  \ve{M}\ve{x} - \ve{N}\ve{x} = \ve{b}\:.
   \label{eq:linear_split_equation1}
 \end{equation}
 By rearranging, we can generate a form more useful for analysis:
@@ -446,12 +446,12 @@ perfomance should be the same across all implementations.
 
 We will look at the three primary parallel matrix/vector operations as
 preconditioning is not an immediate requirement for implementing the
-algorithms. Furthermore, variants are available that reduce the number
-of global communications required (consider
+algorithms. We note here that variants are available that reduce the
+number of global communications required (consider
 \cite{sosonkina_scalable_1998} as an example of reducing global
 operation counts using a different orthogonalization procedure than
 Arnoldi), however, we will only consider the basic algorithms here as
-this handful operations can be generalized to fit more complicated
+this handful of operations can be generalized to fit more complicated
 algorithms. In all of these cases, we assume a general matrix/vector
 formulation that is distributed in parallel such that both local and
 global knowledge of their decomposition is available on
@@ -496,8 +496,8 @@ vector.
 Vector product operations are used in several instances during a
 Krylov iteration including vector norm computations and the
 orthogonalization procedure. By definition, the vector product is a
-global operation that effectively collapses two vectors to a single
-value. Therefore, we cannot eliminate all global
+global operation that effectively collapses a set of vectors to a
+single value. Therefore, we cannot eliminate all global
 communications. Instead, vector product operations are formulated as
 \textit{global reduction operations} that are efficiently supported by
 modern message passing libraries. For the dot product of two vectors
