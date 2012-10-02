@@ -72,6 +72,6 @@ clean:
 	-rm -f *.bak
 	-rm -f *.nav
 	-rm -f *.snm
-	-rm -f *.pdf
+	-rm -f prelim_presentation.pdf
 	-rm -f *.pdftex_t
 	-rm -f TAGS
