@@ -39,11 +39,13 @@ TEUCHOS_UNIT_TEST( LinearProblem, linear_problem_test )
     Teuchos::RCP<const Teuchos::Comm<int> > comm = 
 	Teuchos::DefaultComm<int>::getComm();
     int comm_rank = comm->getRank();
+    int comm_size = comm->getSize();
 
     // Setup linear system distribution.
     int local_num_rows = 10;
+    int global_num_rows = local_num_rows*comm_size;
     Teuchos::RCP<const Tpetra::Map<int> > row_map = 
-	Tpetra::createLocalMap<int,int>( local_num_rows, comm );
+	Tpetra::createUniformContigMap<int,int>( global_num_rows, comm );
 
     // Build the identity matrix operator.
     Teuchos::RCP<Tpetra::CrsMatrix<double,int> > A = 
@@ -72,6 +74,7 @@ TEUCHOS_UNIT_TEST( LinearProblem, linear_problem_test )
     B->putScalar( B_val );
 
     // Build the linear problem.
+    comm->barrier();
     Teuchos::RCP<Chimera::LinearProblem<double,int> > linear_problem = 
 	Teuchos::rcp( new Chimera::LinearProblem<double,int>( A, X, B ) );
 
@@ -114,6 +117,7 @@ TEUCHOS_UNIT_TEST( LinearProblem, linear_problem_test )
     }
     
     // Compute the residual.
+    comm->barrier();
     linear_problem->computeResidual();
 
     // Check the residual.

@@ -120,15 +120,15 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
     }
 
     // Setup random number generator.
-    RNGTraits<boost::mt11213b>::rng_type rng = 
+    Teuchos::RCP<boost::mt11213b> rng = 
 	RNGTraits<boost::mt11213b>::create();
 
     // Do random walks for specified number of histories.
     for ( int n = 0; n < num_histories; ++n )
     {
 	// Sample the source to get the initial state.
-	zeta = (double) RNGTraits<boost::mt11213b>::generate(rng) / 
-	       RNGTraits<boost::mt11213b>::max(rng);
+	zeta = (double) RNGTraits<boost::mt11213b>::generate(*rng) / 
+	       RNGTraits<boost::mt11213b>::max(*rng);
 
 	init_state = std::distance( 
 	    b_cdf.begin(),
@@ -151,8 +151,8 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
 	    			      &C_values[0], 
 	    			      &C_indices[0] );
 
-	    zeta = (double) RNGTraits<boost::mt11213b>::generate(rng) / 
-	    	   RNGTraits<boost::mt11213b>::max(rng);
+	    zeta = (double) RNGTraits<boost::mt11213b>::generate(*rng) / 
+	    	   RNGTraits<boost::mt11213b>::max(*rng);
 
 	    new_index = std::distance( 
 	    	C_values.begin(),

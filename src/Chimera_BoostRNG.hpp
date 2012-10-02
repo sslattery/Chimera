@@ -46,7 +46,7 @@
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
-// Specialization for 64 bit mt19937
+// Specialization for 64-bit mt19937
 //---------------------------------------------------------------------------//
 template<>
 class RNGTraits<boost::mt19937>
@@ -56,25 +56,25 @@ class RNGTraits<boost::mt19937>
     typedef boost::mt19937                  rng_type;
     typedef boost::mt19937::result_type     result_type;
 
-    static inline boost::mt19937 create()
-    { return boost::mt19937(); }
+    static inline Teuchos::RCP<rng_type> create()
+    { return Teuchos::rcp( new rng_type() ); }
 
-    static inline result_type generate( boost::mt19937& boost_rng )
+    static inline result_type generate( rng_type& boost_rng )
     { return boost_rng(); }
 
-    static inline void setSeed( boost::mt19937& boost_rng, 
+    static inline void setSeed( rng_type& boost_rng, 
 				const result_type seed )
     { boost_rng.seed( seed ); }
 
-    static inline result_type min( boost::mt19937& boost_rng )
+    static inline result_type min( rng_type& boost_rng )
     { return boost_rng.min(); }
 
-    static inline result_type max( boost::mt19937& boost_rng )
+    static inline result_type max( rng_type& boost_rng )
     { return boost_rng.max(); }
 };
 
 //---------------------------------------------------------------------------//
-// Specialization for 32 bit mt11213b
+// Specialization for 32-bit mt11213b
 //---------------------------------------------------------------------------//
 template<>
 class RNGTraits<boost::mt11213b>
@@ -84,20 +84,20 @@ class RNGTraits<boost::mt11213b>
     typedef boost::mt11213b                 rng_type;
     typedef boost::mt11213b::result_type    result_type;
 
-    static inline boost::mt11213b create()
-    { return boost::mt11213b(); }
+    static inline Teuchos::RCP<rng_type> create()
+    { return Teuchos::rcp( new rng_type() ); }
 
-    static inline result_type generate( boost::mt11213b& boost_rng )
+    static inline result_type generate( rng_type& boost_rng )
     { return boost_rng(); }
 
-    static inline void setSeed( boost::mt11213b& boost_rng, 
+    static inline void setSeed( rng_type& boost_rng, 
 				const result_type seed )
     { boost_rng.seed( seed ); }
 
-    static inline result_type min( boost::mt11213b& boost_rng )
+    static inline result_type min( rng_type& boost_rng )
     { return boost_rng.min(); }
 
-    static inline result_type max( boost::mt11213b& boost_rng )
+    static inline result_type max( rng_type& boost_rng )
     { return boost_rng.max(); }
 };
 

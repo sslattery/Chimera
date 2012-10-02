@@ -39,6 +39,8 @@
 #ifndef Chimera_RNGTRAITS_HPP
 #define Chimera_RNGTRAITS_HPP
 
+#include <Teuchos_RCP.hpp>
+
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
@@ -77,7 +79,7 @@ class RNGTraits
     /*!
      * \brief Create a random number generator in the base state.
      */
-    static inline rng_type create()
+    static inline Teuchos::RCP<rng_type> create()
     { UndefinedRNGTraits<RNGType>::notDefined(); return 0; }
 
     /*! 
