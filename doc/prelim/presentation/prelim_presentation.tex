@@ -80,19 +80,63 @@ Problems}
 \maketitle
 
 %%---------------------------------------------------------------------------%%
-
 \begin{frame}{Introduction}
-
+  \begin{itemize}
+    \item Predictive modeling and simulation capability yields nuclear
+      system designs that are safer and better performing.
+    \item Modern work focused on this task leverages multiple physics
+      simulation (CASL, NEAMS).
+    \item New hardware drives algorithm development (petascale and
+      exascale).
+    \item Monte Carlo methods have the potential to provide great
+      improvements that permit finer simulations and better mapping to
+      future hardware.
+    \item A set of massively parallel Monte Carlo methods is proposed
+      to advance multiple physics simulation on contemporary and
+      future leadership class machines.
+  \end{itemize}
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Physics-Based Motivation}
+  \begin{itemize}
+    \item Predictive nuclear reactor analysis enables tighter design
+      tolerance for improved thermal performance and efficieny, higher
+      fuel burn-up, and high confidence in accident scenario models.
+    \item Neutronics, thermal hydraulics, computational fluid
+      dynamics, and structural mechanics among other physics
+      contribute to these predictive models.
+    \item Couplings are complicated and consistent models yield
+      nonlinearities in the variables through feedback effects.
+    \item  Capturing  these   effects  requires  tremendous  resources
+      with $O(\sn{1}{9})$ element meshes and $O(100,000)+$ cores used
+      in today's simulations.
+  \end{itemize}
+\end{frame}
 
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Physics-Based Motivation: DNB}
+  \begin{figure}[htpb!]
+    \begin{center}
+      \scalebox{1}{ \input{dnb_example.pdftex_t} }
+    \end{center}
+    \caption{\textbf{Multiphysics dependency analysis of departure from
+        nucleate boiling.} \textit{A neutronics solution is required to
+        compute power generation in the fuel pins, fluid dynamics is
+        required to characterize boiling and fluid temperature and
+        density, heat transfer is required to compute the fuel and
+        cladding temperature, and the nuclear data modified with the
+        temperature and density data. Strong coupling among the
+        variables creates strong nonlinearities.}}
+    \label{fig:dnb_example}
+  \end{figure}
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Hardware-Based Motivation}
-
+  \begin{itemize}
+    \item
+  \end{itemize}
 \end{frame}
 
 %%---------------------------------------------------------------------------%%

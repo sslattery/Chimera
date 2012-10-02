@@ -5,7 +5,7 @@ PDF    := dvipdf
 
 all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf heat_eq_setup.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf
 	$(PDFTEX) prelim_presentation
-	$(BIB) prelim_presentation
+#	$(BIB) prelim_presentation
 	$(PDFTEX) prelim_presentation
 	$(PDFTEX) prelim_presentation
 	$(PDFTEX) prelim_presentation
@@ -70,6 +70,8 @@ clean:
 	-rm -f *.out
 	-rm -f *.toc *.lof *.lot
 	-rm -f *.bak
+	-rm -f *.nav
+	-rm -f *.snm
 	-rm -f *.pdf
 	-rm -f *.pdftex_t
 	-rm -f TAGS
