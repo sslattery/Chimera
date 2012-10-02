@@ -78,8 +78,8 @@ int main( int argc, char * argv[] )
 	Teuchos::rcp( new Teuchos::ParameterList );
     plist->set( "X Blocks", 1 );
     plist->set( "Y Blocks", 1 );
-    plist->set( "X Elements", 100 );
-    plist->set( "Y Elements", 100 );
+    plist->set( "X Elements", 30 );
+    plist->set( "Y Elements", 30 );
     mesh_factory.setParameterList( plist );
 
     Teuchos::RCP<panzer_stk::STK_Interface> mesh = 

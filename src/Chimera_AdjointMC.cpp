@@ -36,7 +36,6 @@
 // \brief Adjoint Monte Carlo solver definition.
 //---------------------------------------------------------------------------//
 
-#include <cstdlib>
 #include <cmath>
 #include <cassert>
 #include <vector>
@@ -44,6 +43,7 @@
 #include <algorithm>
 
 #include "Chimera_AdjointMC.hpp"
+#include "Chimera_BoostRNG.hpp"
 
 #include <Epetra_Vector.h>
 #include <Epetra_Map.h>
@@ -119,11 +119,17 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
 	b_cdf[i] /= b_norm;
     }
 
+    // Setup random number generator.
+    RNGTraits<boost::mt11213b>::rng_type rng = 
+	RNGTraits<boost::mt11213b>::create();
+
     // Do random walks for specified number of histories.
     for ( int n = 0; n < num_histories; ++n )
     {
 	// Sample the source to get the initial state.
-	zeta = (double) rand() / RAND_MAX;
+	zeta = (double) RNGTraits<boost::mt11213b>::generate(rng) / 
+	       RNGTraits<boost::mt11213b>::max(rng);
+
 	init_state = std::distance( 
 	    b_cdf.begin(),
 	    std::lower_bound( b_cdf.begin(), b_cdf.end(), zeta ) );
@@ -145,7 +151,9 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
 	    			      &C_values[0], 
 	    			      &C_indices[0] );
 
-	    zeta = (double) rand() / RAND_MAX;
+	    zeta = (double) RNGTraits<boost::mt11213b>::generate(rng) / 
+	    	   RNGTraits<boost::mt11213b>::max(rng);
+
 	    new_index = std::distance( 
 	    	C_values.begin(),
 	    	std::lower_bound( C_values.begin(), 
