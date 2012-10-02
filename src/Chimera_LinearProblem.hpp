@@ -72,39 +72,41 @@ class LinearProblem
 
     // Constructor.
     LinearProblem( const RCP_TpetraCrsMatrix& A, const RCP_TpetraVector& x, 
-		   const RCP_TpetraVector& b )
-	: d_A( A )
-	, d_x( x )
-	, d_b( b )
-    { /* ... */ }
+		   const RCP_TpetraVector& b );
 
     // Destructor.
-    ~LinearProblem()
-    { /* ... */ }
+    ~LinearProblem();
 
-    // Set the operator of the linear problem.
+    //! Set the operator of the linear problem.
     void setOperator( const RCP_TpetraCrsMatrix& A )
     { d_A = A; }
 
-    // Set the solution vector of the linear problem.
+    //! Set the solution vector of the linear problem.
     void setLHS( const RCP_TpetraVector& x )
     { d_x = x; }
 
-    // Set the right-hand sideof the linear problem.
+    //! Set the right-hand sideof the linear problem.
     void setRHS( const RCP_TpetraVector& b )
     { d_b = b; }
 
-    // Get the operator of the linear problem.
+    //! Get the operator of the linear problem.
     RCP_TpetraCrsMatrix getOperator()
     { return d_A; }
 
-    // Get the solution vector of the linear problem.
+    //! Get the solution vector of the linear problem.
     RCP_TpetraVector getLHS()
     { return d_x; }
 
-    // Get the right-hand side of the linear problem.
+    //! Get the right-hand side of the linear problem.
     RCP_TpetraVector getRHS()
     { return d_b; }
+
+    // Compute the residual of the linear problem.
+    void computeResidual();
+
+    //! Get the residual of the linear problem.
+    RCP_TpetraVector getResidual()
+    { return d_r; }
 
   private:
     
@@ -121,9 +123,15 @@ class LinearProblem
     RCP_TpetraVector d_r;
 };
 
+} // end namespace Chimera
+
+//---------------------------------------------------------------------------//
+// Template includes.
 //---------------------------------------------------------------------------//
 
-} // end namespace Chimera
+#include "Chimera_LinearProblem_def.hpp"
+
+//---------------------------------------------------------------------------//
 
 #endif // end Chimera_LINEARPROBLEM_HPP
 

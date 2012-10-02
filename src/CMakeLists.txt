@@ -25,7 +25,8 @@ APPEND_SET(HEADERS
   Chimera_AdjointMC.hpp
   Chimera_BoostRNG.hpp
   Chimera_JacobiPreconditioner.hpp
-  Chimrea_LinearProblem.hpp
+  Chimera_LinearProblem.hpp
+  Chimera_LinearProblem_def.hpp
   Chimera_MCSA.hpp
   Chimera_OperatorTools.hpp
   Chimera_RNGTraits.hpp
