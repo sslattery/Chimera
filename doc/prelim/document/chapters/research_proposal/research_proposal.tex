@@ -10,7 +10,7 @@ will be constructed within a software framework that will permit an
 agile development strategy. In this chapter we describe that
 experimental framework and the progress achieved to date by its
 use. In addition, we will a formulate a plan for verifying the new
-stochastic methods and prepare a set of numerical experiments that
+Monte Carlo methods and prepare a set of numerical experiments that
 will determine some of their properties. Finally, we select a
 large-scale challenge problem designed to potentially demonstrate the
 effectiveness of our new methods in the context of real-world,
@@ -96,7 +96,7 @@ conditions. Per Bartlett's automatic differentiation work and an
 associated parallel linear algebra framework, the equation sets for
 all physics implemented are assembled into the nonlinear system. By
 leveraging the general linear algebra framework, we are able to
-abstract away those concepts in the stochastic solvers implementation
+abstract away those concepts in the Monte Carlo solvers implementation
 and instead focus on an algorithm-oriented approach for the solver
 implementation \citep{musser_algorithm-oriented_1994}.
 
@@ -342,7 +342,7 @@ methods. In addition, extension to nonlinear model problems requires
 only a few small additions to the framework, providing the remainder
 of the tool set we need for our analysis.
 
-\section{Stochastic Methods Verification}
+\section{Monte Carlo Methods Verification}
 \label{sec:method_verification}
 As we perform our numerical experiments, the results from the new
 tools that we are using must be verified against benchmark
