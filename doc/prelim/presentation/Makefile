@@ -72,6 +72,17 @@ clean:
 	-rm -f *.bak
 	-rm -f *.nav
 	-rm -f *.snm
+	-rm -f dnb_example.pdf
+	-rm -f orthogonal_residual.pdf
+	-rm -f partitioned_matrix.pdf
 	-rm -f prelim_presentation.pdf
+	-rm -f matvec_proc_1.pdf
+	-rm -f gentile_example.pdf
+	-rm -f msod_example.pdf
+	-rm -f procassini_example.pdf
+	-rm -f heat_eq_setup.pdf
+	-rm -f natural_convection_cavity.pdf
+	-rm -f lid_driven_cavity.pdf
+	-rm -f backward_facing_step.pdf
 	-rm -f *.pdftex_t
 	-rm -f TAGS
