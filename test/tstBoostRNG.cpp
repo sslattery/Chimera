@@ -34,7 +34,7 @@
 //---------------------------------------------------------------------------//
 TEUCHOS_UNIT_TEST( BoostRNG, boost_mt11213b_test )
 {
-    using namespace Chimera::Solvers;
+    using namespace Chimera;
 
     boost::mt11213b generator_1;
     boost::mt11213b generator_2 = RNGTraits<boost::mt11213b>::create();
@@ -75,7 +75,7 @@ TEUCHOS_UNIT_TEST( BoostRNG, boost_mt11213b_test )
 
 TEUCHOS_UNIT_TEST( BoostRNG, boost_mt19937_test )
 {
-    using namespace Chimera::Solvers;
+    using namespace Chimera;
 
     boost::mt19937 generator_1;
     boost::mt19937 generator_2 = RNGTraits<boost::mt19937>::create();

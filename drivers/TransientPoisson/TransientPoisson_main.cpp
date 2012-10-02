@@ -300,10 +300,10 @@ int main( int argc, char * argv[] )
 				  &*ep_container->get_x(),
 				  &*ep_container->get_f() ) );
 
-    Chimera::Solvers::JacobiPreconditioner preconditioner( problem );
+    Chimera::JacobiPreconditioner preconditioner( problem );
     preconditioner.precondition();
     
-    Chimera::Solvers::MCSA solver( problem );
+    Chimera::MCSA solver( problem );
     int max_iters = 1000;
     double tolerance = 1.0e-8;
     int num_histories = 50;

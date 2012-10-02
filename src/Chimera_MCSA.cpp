@@ -44,8 +44,6 @@
 
 namespace Chimera
 {
-namespace Solvers
-{
 //---------------------------------------------------------------------------//
 /*! 
  * \brief Constructor.
@@ -120,7 +118,6 @@ void MCSA::iterate( const int max_iters, const double tolerance,
 
 //---------------------------------------------------------------------------//
 
-} // end namespace Solvers
 } // end namespace Chimera
 
 //---------------------------------------------------------------------------//

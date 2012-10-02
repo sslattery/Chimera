@@ -31,58 +31,103 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //---------------------------------------------------------------------------//
-// \file Chimera_MCSA.hpp
-// \author Stuart R. Slattery
-// \brief Monte Carlo Synthetic Acceleration solver declaration.
+/*!
+ * \file Chimera_LinearProblem.hpp
+ * \author Stuart Slattery
+ * \brief Linear problem declaration.
+ */
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_MCSA_HPP
-#define Chimera_MCSA_HPP
+#ifndef Chimera_LINEARPROBLEM_HPP
+#define Chimera_LINEARPROBLEM_HPP
 
 #include <Teuchos_RCP.hpp>
 
-#include <Epetra_CrsMatrix.h>
-#include <Epetra_LinearProblem.h>
+#include <Tpetra_CrsMatrix.hpp>
+#include <Tpetra_Vector.hpp>
 
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
-// 
+// \class LinearProblem
+// \brief Linear problem container for Chimera.
 //---------------------------------------------------------------------------//
-class MCSA
+template<class Scalar, class LocalOrdinal=int, class GlobalOrdinal=LocalOrdinal>
+class LinearProblem
 {
-  private:
+  public:
 
-    // Linear problem.
-    Teuchos::RCP<Epetra_LinearProblem> d_linear_problem;
-
-    // Iteration count.
-    int d_num_iters;
+    //@{
+    //! Typedefs.
+    typedef Scalar                                               scalar_type;
+    typedef LocalOrdinal                                         local_ordinal_type;
+    typedef GlobalOrdinal                                        global_ordinal_type;
+    typedef Tpetra::Vector<Scalar,LocalOrdinal,GlobalOrdinal>    TpetraVector;
+    typedef Teuchos::RCP<TpetraVector>                           RCP_TpetraVector;
+    typedef Tpetra::CrsMatrix<Scalar,LocalOrdinal,GlobalOrdinal> TpetraCrsMatrix;
+    typedef Teuchos::RCP<TpetraCrsMatrix>                        RCP_TpetraCrsMatrix;
+    //@}
 
   public:
 
     // Constructor.
-    MCSA( Teuchos::RCP<Epetra_LinearProblem> &linear_problem );
+    LinearProblem( const RCP_TpetraCrsMatrix& A, const RCP_TpetraVector& x, 
+		   const RCP_TpetraVector& b )
+	: d_A( A )
+	, d_x( x )
+	, d_b( b )
+    { /* ... */ }
 
     // Destructor.
-    ~MCSA();
+    ~LinearProblem()
+    { /* ... */ }
 
-    // Solve.
-    void iterate( const int max_iters, const double tolerance,
-		  const int num_histories, const double weight_cutoff );
+    // Set the operator of the linear problem.
+    void setOperator( const RCP_TpetraCrsMatrix& A )
+    { d_A = A; }
 
-    // Get the iteration count from the last solve.
-    int getNumIters() const
-    { return d_num_iters; }
+    // Set the solution vector of the linear problem.
+    void setLHS( const RCP_TpetraVector& x )
+    { d_x = x; }
+
+    // Set the right-hand sideof the linear problem.
+    void setRHS( const RCP_TpetraVector& b )
+    { d_b = b; }
+
+    // Get the operator of the linear problem.
+    RCP_TpetraCrsMatrix getOperator()
+    { return d_A; }
+
+    // Get the solution vector of the linear problem.
+    RCP_TpetraVector getLHS()
+    { return d_x; }
+
+    // Get the right-hand side of the linear problem.
+    RCP_TpetraVector getRHS()
+    { return d_b; }
+
+  private:
+    
+    // Linear operator.
+    RCP_TpetraCrsMatrix d_A;
+
+    // Solution vector.
+    RCP_TpetraVector d_x;
+
+    // Right-hand side.
+    RCP_TpetraVector d_b;
+
+    // Linear system residual.
+    RCP_TpetraVector d_r;
 };
 
 //---------------------------------------------------------------------------//
 
 } // end namespace Chimera
 
-#endif // end Chimera_MCSA_HPP
+#endif // end Chimera_LINEARPROBLEM_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_MCSA.hpp
+// end Chimera_LinearProblem.hpp
 //---------------------------------------------------------------------------//
 

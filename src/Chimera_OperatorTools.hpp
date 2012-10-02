@@ -47,8 +47,6 @@
 
 namespace Chimera
 {
-namespace Solvers
-{
 
 class OperatorTools
 {
@@ -64,7 +62,6 @@ class OperatorTools
     double static stiffnessRatio( const Teuchos::RCP<Epetra_Operator>& matrix );
 };
 
-} // end namespace Solvers
 } // end namespace Chimera
 
 #endif // Chimera_OPERATORTOOLS_HPP

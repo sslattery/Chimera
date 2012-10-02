@@ -36,37 +36,6 @@
 }
 
 %%---------------------------------------------------------------------------%%
-\newcommand{\vA}{\ensuremath{\ve{A}}}
-\newcommand{\vb}{\ensuremath{\ve{b}}}
-\newcommand{\vx}{\ensuremath{\ve{x}}}
-\newcommand{\vr}{\ensuremath{\ve{r}}}
-\newcommand{\vu}{\ensuremath{\ve{u}}}
-\newcommand{\vI}{\ensuremath{\ve{I}}}
-\newcommand{\vH}{\ensuremath{\ve{H}}}
-\newcommand{\vP}{\ensuremath{\ve{P}}}
-
-\newcommand{\Cv}{\ensuremath{C_{v}}}
-\newcommand{\ros}{\ensuremath{\sigma_{\scriptscriptstyle\mathrm{R}}}}
-\newcommand{\bOmega}{\ensuremath{\mathbf{\Omega}}}
-
-\newcommand{\dt}{\ensuremath{\Delta t}}
-\newcommand{\sign}{\ensuremath{\tilde{\sigma}^n}}
-\newcommand{\qn}{\ensuremath{q^n}} \newcommand{\Tn}{\ensuremath{T^n}}
-\newcommand{\Dn}{\ensuremath{D^n}}
-\newcommand{\phin}{\ensuremath{\phi^n}}
-\newcommand{\Di}{\ensuremath{\Delta_i}}
-\newcommand{\Dj}{\ensuremath{\Delta_j}}
-\newcommand{\Dk}{\ensuremath{\Delta_k}}
-
-\newcommand{\sigT}{\ensuremath{\sigma_{T\,ijk}}}
-\newcommand{\sigm}{\ensuremath{\sigma^{-}}}
-\newcommand{\sigp}{\ensuremath{\sigma^{+}}}
-
-\newcommand{\bphi}{\ensuremath{\boldsymbol{\phi}}}
-
-\DeclareMathOperator{\diag}{diag}
-%%---------------------------------------------------------------------------%%
-
 \author{Stuart R. Slattery
   \\ Engineering Physics Department
   \\ University of Wisconsin - Madison
@@ -135,7 +104,17 @@ Problems}
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Hardware-Based Motivation}
   \begin{itemize}
-    \item
+    \item Modern hardware is moving in two directions: lightweight
+      machines and heterogeneous machines characterized by low power
+      and high concurrency.
+    \item High concurrency and low cost units means a higher potential
+      for both soft and hard failures.
+    \item Monte Carlo methods bury soft failures within the variance
+      of the tallies while hard failures are high variance events.
+    \item New machines will also be memory restricted with a continued
+      decrease of memory/FLOPS predicted.
+    \item Compared to conventional methods, we will show that Monte
+      Carlo methods offer a memory savings.
   \end{itemize}
 \end{frame}
 

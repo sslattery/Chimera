@@ -41,8 +41,6 @@
 
 namespace Chimera
 {
-namespace Solvers
-{
 //---------------------------------------------------------------------------//
 /*!
  * \brief Dummy struct. If a type does not create a specialization this will
@@ -108,8 +106,6 @@ class RNGTraits
 };
 
 //---------------------------------------------------------------------------//
-
-} // end namespace Solvers
 
 } // end namespace Chimera
 

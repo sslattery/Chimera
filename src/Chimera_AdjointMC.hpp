@@ -46,8 +46,6 @@
 
 namespace Chimera
 {
-namespace Solvers
-{
 
 class AdjointMC
 {
@@ -92,7 +90,6 @@ class AdjointMC
     Epetra_CrsMatrix buildC();
 };
 
-} // end namespace Solvers
 } // end namespace Chimera
 
 #endif // end Chimera_ADJOINTMC_HPP

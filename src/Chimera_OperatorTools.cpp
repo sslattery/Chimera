@@ -52,8 +52,6 @@
 
 namespace Chimera
 {
-namespace Solvers
-{
 //---------------------------------------------------------------------------//
 /*!
  * \brief Constructor.
@@ -127,7 +125,6 @@ OperatorTools::stiffnessRatio( const Teuchos::RCP<Epetra_Operator>& matrix )
 
 //---------------------------------------------------------------------------//
 
-} // end namespace Solvers
 } // end namespace Chimera
 
 //---------------------------------------------------------------------------//

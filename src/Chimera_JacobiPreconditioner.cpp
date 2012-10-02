@@ -45,9 +45,6 @@
 
 namespace Chimera
 {
-namespace Solvers
-{
-
 //---------------------------------------------------------------------------//
 /*!
  * \brief Constructor.
@@ -151,7 +148,6 @@ void JacobiPreconditioner::preconditionRHS()
 
 //---------------------------------------------------------------------------//
 
-} // end namespace Solvers
 } // end namespace Chimera
 
 //---------------------------------------------------------------------------//

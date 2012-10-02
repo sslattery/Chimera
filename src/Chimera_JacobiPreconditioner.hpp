@@ -46,9 +46,9 @@
 
 namespace Chimera
 {
-namespace Solvers
-{
-
+//---------------------------------------------------------------------------//
+// 
+//---------------------------------------------------------------------------//
 class JacobiPreconditioner
 {
   private:
@@ -93,7 +93,6 @@ class JacobiPreconditioner
 
 //---------------------------------------------------------------------------//
 
-} // end namespace Solvers
 } // end namespace Chimera
 
 #endif // end Chimera_JACOBIPRECONDITIONER_HPP
