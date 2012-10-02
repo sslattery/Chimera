@@ -1,0 +1,198 @@
+\documentclass{beamer}
+\usetheme[white]{Wisconsin}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{color}
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+\usepackage{amsthm} \usepackage{amsmath} \usepackage{tmadd,tmath}
+\usepackage[mathcal]{euscript} \usepackage{color}
+\usepackage{textcomp}
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\lstset{
+  backgroundcolor=\color{lbcolor},
+  tabsize=4,
+  rulecolor=,
+  language=c++,
+  basicstyle=\scriptsize,
+  upquote=true,
+  aboveskip={1.5\baselineskip},
+  columns=fixed,
+  showstringspaces=false,
+  extendedchars=true,
+  breaklines=true,
+  prebreak =
+  \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+  frame=single,
+  showtabs=false,
+  showspaces=false,
+  showstringspaces=false,
+  identifierstyle=\ttfamily,
+  keywordstyle=\color[rgb]{0,0,1},
+  commentstyle=\color[rgb]{0.133,0.545,0.133},
+  stringstyle=\color[rgb]{0.627,0.126,0.941},
+}
+
+%%---------------------------------------------------------------------------%%
+\newcommand{\vA}{\ensuremath{\ve{A}}}
+\newcommand{\vb}{\ensuremath{\ve{b}}}
+\newcommand{\vx}{\ensuremath{\ve{x}}}
+\newcommand{\vr}{\ensuremath{\ve{r}}}
+\newcommand{\vu}{\ensuremath{\ve{u}}}
+\newcommand{\vI}{\ensuremath{\ve{I}}}
+\newcommand{\vH}{\ensuremath{\ve{H}}}
+\newcommand{\vP}{\ensuremath{\ve{P}}}
+
+\newcommand{\Cv}{\ensuremath{C_{v}}}
+\newcommand{\ros}{\ensuremath{\sigma_{\scriptscriptstyle\mathrm{R}}}}
+\newcommand{\bOmega}{\ensuremath{\mathbf{\Omega}}}
+
+\newcommand{\dt}{\ensuremath{\Delta t}}
+\newcommand{\sign}{\ensuremath{\tilde{\sigma}^n}}
+\newcommand{\qn}{\ensuremath{q^n}} \newcommand{\Tn}{\ensuremath{T^n}}
+\newcommand{\Dn}{\ensuremath{D^n}}
+\newcommand{\phin}{\ensuremath{\phi^n}}
+\newcommand{\Di}{\ensuremath{\Delta_i}}
+\newcommand{\Dj}{\ensuremath{\Delta_j}}
+\newcommand{\Dk}{\ensuremath{\Delta_k}}
+
+\newcommand{\sigT}{\ensuremath{\sigma_{T\,ijk}}}
+\newcommand{\sigm}{\ensuremath{\sigma^{-}}}
+\newcommand{\sigp}{\ensuremath{\sigma^{+}}}
+
+\newcommand{\bphi}{\ensuremath{\boldsymbol{\phi}}}
+
+\DeclareMathOperator{\diag}{diag}
+%%---------------------------------------------------------------------------%%
+
+\author{Stuart R. Slattery
+  \\ Engineering Physics Department
+  \\ University of Wisconsin - Madison
+  \\ \href{mailto:sslattery@wisc.edu}{\texttt{sslattery@wisc.edu}}
+}
+
+\date{\today}
+\title{Massively Parallel Monte Carlo Methods for Linear and Nonlinear
+Problems}
+\begin{document}
+\maketitle
+
+%%---------------------------------------------------------------------------%%
+
+\begin{frame}{My Research and Development Activities}
+
+  \begin{itemize}
+  \item Stochastic computational linear algebra.
+  \item Multiphysics methods for reactor physics.
+  \item High performance computing.
+  \item Software Engineering.
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Data Transfer Kit (DTK)}
+
+  DTK is a software component for generating and applying parallel
+  topology map operators based on multiphysics parameters. Some
+  requirements:
+
+  \begin{itemize}
+  \item A component based design not limited to specific mesh or
+    field data structures
+  \item Compatible with both mesh-based and mesh-free physics codes
+  \item Based on load-balanced rendezvous algorithms of a desirable
+    time complexity
+  \item Operate on $O(1,000,000,000)$ element meshes
+  \item Operate on $O(100,000)$ cores
+  \item Integrate readily with current CASL physics components
+  \item Open-source implementation (DTK has a BSD 3-clause license)
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Stochastic Linear and Nonlinear Solvers}
+
+  Ph.D. Research: Massively Parallel Stochastic Methods for Linear and
+  Nonlinear Problems.
+
+  \begin{itemize}
+  \item Moving to exascale facilities requires methods tolerant to
+    both soft and hard errors
+  \item Solver scalability of primary concern
+  \item Difficult to form the Jacobian analytically for block operator
+    problems, Jacobian-free methods are too coarse or do not perform
+    well for poorly scaled problems
+  \item Subspace (e.g. Krylov) methods are memory intensive
+  \item Stochastic solvers are a novel research area that may bear
+    fruit
+  \item We can leverage bleeding-edge Monte Carlo methods in reactor
+    physics for parallelism
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{MCSA and FANM}
+
+  \textbf{Monte Carlo Synthetic Acceleration (MCSA)}: A stochastic
+  solution method for sparse linear problems.
+
+  \begin{subequations}
+    \label{eq:MCSA-iteration}
+    \begin{gather}
+      \vx^{l+1/2} = (\vI - \vA)\vx^l + \vb\:,\\ \vr^{l+1/2} = \vb -
+      \vA\vx^{l+1/2}\:,
+      \label{eq:MCSA-residual}\\     
+      \hat{\vA}\delta\vx^{l+1/2} = \vr^{l+1/2}\:,
+      \label{eq:MCSA-residual_solve}\\ 
+      \vx^{l+1}=\vx^{l+1/2}+\delta\vx^{l+1/2}\:.
+    \end{gather}
+  \end{subequations}
+
+  \textbf{Forward-Automated Newton-MCSA (FANM)}: A stochastic solution
+  method for nonlinear problems
+
+  \begin{itemize}
+  \item Form the Jacobian explicitly with forward automatic
+    differentiation. (No nasty derivatives, no Jacobian
+    approximations, compressed row storage cheaper than the subspace
+    over many iterations)
+  \item Use MCSA as the linear solver. (All the benefits of the
+    stochastic solver)
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{General MCSA Preliminary Results}
+
+  Transient Poisson equation
+
+  \begin{figure}[htpb!]
+    \begin{center}
+      \includegraphics[width=4in]{basic_results.png}
+    \end{center}
+  \end{figure}
+  
+  \begin{itemize}
+  \item MCSA implemented in C++ using Epetra linear algebra
+    framework. General linear algebra implemenation possible with
+    MCSA!
+  \item Competitive and GMRES and Conjugate Gradient solvers.
+  \end{itemize}
+
+  An initial FANM implementation is close and will be based on the
+  Epetra solver. Parallel MCSA will be later in the fall per
+  development of the Chimera code base.
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+
+\end{document}
+
+
