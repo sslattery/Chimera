@@ -14,6 +14,8 @@
 #include "Chimera_MCSA.hpp"
 #include "Chimera_JacobiPreconditioner.hpp"
 #include "Chimera_OperatorTools.hpp"
+#include "Chimera_AdjointMCDev.hpp"
+#include "Chimera_DirectMC.hpp"
 
 #include "TransientPoisson_EquationSetFactory.hpp"
 #include "TransientPoisson_ClosureModelFactory_TemplateBuilder.hpp"
@@ -72,7 +74,7 @@ int main( int argc, char * argv[] )
     Chimera::TransientPoisson::ClosureModelFactory_TemplateBuilder cm_builder;
 
     // Generate the mesh.
-    int mesh_size = 100;
+    int mesh_size = 20;
     int problem_size = mesh_size*mesh_size;
     const std::size_t workset_size = 20;
     panzer_stk::SquareQuadMeshFactory mesh_factory;
@@ -243,7 +245,7 @@ int main( int argc, char * argv[] )
 
     // Set user data.
     Teuchos::ParameterList user_data( "User Data" );
-    user_data.set<double>("Thermal Conductivity", 2.0 );
+    user_data.set<double>("Thermal Conductivity", 0.2 );
 
     // Setup the field managers.
     Teuchos::RCP<panzer::FieldManagerBuilder<int,int> > field_manager_builder =
@@ -294,7 +296,7 @@ int main( int argc, char * argv[] )
     input.beta = 1;
     assembly_engine.getAsObject<panzer::Traits::Jacobian>()->evaluate( input );
 
-    // Solve the linear problem with MCSA.
+    // Solve the linear problem with with the Neumann-Ulam method.
     Teuchos::RCP<panzer::EpetraLinearObjContainer> ep_container =
 	Teuchos::rcp_dynamic_cast<panzer::EpetraLinearObjContainer>( container );
 
@@ -306,33 +308,40 @@ int main( int argc, char * argv[] )
     Chimera::JacobiPreconditioner preconditioner( problem );
     preconditioner.precondition();
 
-    int max_iters = 1;
+    int max_iters = 100000;
     double tolerance = 1.0e-8;
-    int num_histories = 10;
+    int num_histories = 100000;
     double weight_cutoff = 1.0e-4;
     bool line_source = false;
     int source_state = problem_size / 2;
-    bool diagnostics = true;
+    bool history_diagnostics = false;
+    bool iteration_diagnostics = false;
     Teuchos::RCP<Teuchos::ParameterList> solver_plist = 
-	Teuchos::rcp( new Teuchos::ParameterList() );
+    	Teuchos::rcp( new Teuchos::ParameterList() );
     solver_plist->set( "MAX ITERS", max_iters );
     solver_plist->set( "TOLERANCE", tolerance );
     solver_plist->set( "NUM HISTORIES", num_histories );
     solver_plist->set( "WEIGHT CUTOFF", weight_cutoff );
     solver_plist->set( "LINE SOURCE", line_source );
     solver_plist->set( "SOURCE STATE", source_state );
-    solver_plist->set( "DIAGNOSTICS", diagnostics );
-    Chimera::MCSA solver( problem, solver_plist );
-    solver.iterate();
+    solver_plist->set( "HISTORY DIAGNOSTICS", history_diagnostics );
+    solver_plist->set( "ITERATION DIAGNOSTICS", iteration_diagnostics );
+    Chimera::AdjointMC solver( problem, solver_plist );
+    solver.walk();
+
+    // // Aztec solve
+    // AztecOO solver(*problem);
+    // solver.SetAztecOption(AZ_solver,AZ_gmres);
+    // solver.SetAztecOption(AZ_precond,AZ_none);
+    // solver.SetAztecOption(AZ_kspace,1000);
+    // solver.SetAztecOption(AZ_output,10);
+    // solver.Iterate(1000,1e-8);
 
     ep_container->get_x()->Scale( -1.0 );
 
     // Analysis.
-    double jacobian_spectral_radius = 
-	Chimera::OperatorTools::spectralRadius( preconditioner.getOperator() );
     int max_elements_per_row = ep_container->get_A()->GlobalMaxNumEntries();
     std::cout << "Problem size: " << problem_size << std::endl;
-    std::cout << "Operator spectral radius: " << jacobian_spectral_radius << std::endl;
     std::cout << "Max elements in operator row: " << max_elements_per_row << std::endl;
 
     // Generate output.

@@ -31,13 +31,13 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //---------------------------------------------------------------------------//
-// \file Chimera_AdjointMC.hpp
+// \file Chimera DirectMC.hpp
 // \author Stuart Slattery
-// \brief Adjoint Monte Carlo solver declaration.
+// \brief Direct Monte Carlo solver declaration.
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_ADJOINTMC_HPP
-#define Chimera_ADJOINTMC_HPP
+#ifndef Chimera_DIRECTMC_HPP
+#define Chimera_DIRECTMC_HPP
 
 #include "Chimera_BoostRNG.hpp"
 
@@ -50,22 +50,22 @@
 namespace Chimera
 {
 
-class AdjointMC
+class DirectMC
 {
   public:
 
     // Constructor.
-    AdjointMC( Teuchos::RCP<Epetra_LinearProblem> &linear_problem,
-	       Teuchos::RCP<Teuchos::ParameterList> &plist );
+    DirectMC( Teuchos::RCP<Epetra_LinearProblem> &linear_problem,
+	      Teuchos::RCP<Teuchos::ParameterList> &plist );
 
     // Destructor.
-    ~AdjointMC();
+    ~DirectMC();
 
     // Solve.
     void walk();
 
     // Return the iteration matrix.
-    const Teuchos::RCP<Epetra_CrsMatrix>& getH() const
+    Teuchos::RCP<Epetra_CrsMatrix> getH() const
     { return d_H; }
 
   private:
@@ -73,8 +73,8 @@ class AdjointMC
     // Build the iteration matrix.
     Teuchos::RCP<Epetra_CrsMatrix> buildH();
 
-    // Build the adjoint probability matrix.
-    Epetra_CrsMatrix buildQ();
+    // Build the probability matrix.
+    Epetra_CrsMatrix buildP();
 
     // Build the cumulative distribution function.
     Epetra_CrsMatrix buildC();
@@ -93,8 +93,8 @@ class AdjointMC
     // Iteration matrix.
     Teuchos::RCP<Epetra_CrsMatrix> d_H;
 
-    // Adjoint probability matrix.
-    Epetra_CrsMatrix d_Q;
+    // Probability matrix.
+    Epetra_CrsMatrix d_P;
 
     // Cumulative distribution function.
     Epetra_CrsMatrix d_C;
@@ -102,9 +102,9 @@ class AdjointMC
 
 } // end namespace Chimera
 
-#endif // end Chimera_ADJOINTMC_HPP
+#endif // end Chimera_DIRECTMC_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_AdjointMC.hpp
+// end Chimera_DirectMC.hpp
 //---------------------------------------------------------------------------//
 

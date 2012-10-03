@@ -43,7 +43,6 @@
 #include <algorithm>
 
 #include "Chimera_AdjointMCDev.hpp"
-#include "Chimera_BoostRNG.hpp"
 
 #include <Epetra_Vector.h>
 #include <Epetra_Map.h>
@@ -58,6 +57,7 @@ AdjointMC::AdjointMC( Teuchos::RCP<Epetra_LinearProblem> &linear_problem,
 		      Teuchos::RCP<Teuchos::ParameterList> &plist )
     : d_linear_problem( linear_problem )
     , d_plist( plist )
+    , d_rng( RNGTraits<boost::mt11213b>::create() )
     , d_H( buildH() )
     , d_Q( buildQ() )
     , d_C( buildC() )
@@ -86,7 +86,7 @@ void AdjointMC::walk()
     const Epetra_Vector *b = 
 	dynamic_cast<Epetra_Vector*>( d_linear_problem->GetRHS() );
     int N = x->GlobalLength();
-    int n_H = d_H.GlobalMaxNumEntries();
+    int n_H = d_H->GlobalMaxNumEntries();
     int n_Q = d_Q.GlobalMaxNumEntries();
     int n_C = d_C.GlobalMaxNumEntries();
 
@@ -113,34 +113,27 @@ void AdjointMC::walk()
     std::vector<int>::iterator H_it;
 
     // Build source cdf.
-    b_cdf[0] = (*b)[0];
+    b_cdf[0] = std::abs((*b)[0]);
     double b_norm = b_cdf[0];
     for ( int i = 1; i < N; ++i )
     {
-	b_norm += (*b)[i];
-	b_cdf[i] = (*b)[i] + b_cdf[i-1];	
+	b_norm += std::abs((*b)[i]);
+	b_cdf[i] = std::abs((*b)[i]) + b_cdf[i-1];	
     }
     for ( int i = 0; i < N; ++i )
     {
 	b_cdf[i] /= b_norm;
     }
 
-    // Setup random number generator.
-    Teuchos::RCP<boost::mt11213b> rng = 
-	RNGTraits<boost::mt11213b>::create();
-
     // Do random walks for specified number of histories.
     double transitions_per_history = 0.0;
     int max_transitions_in_history = 0;
     int transitions = 0;
-    int history_max_distance = 0;
-    int average_max_distance_from_start = 0;
-    int max_max_distance_from_start = 0;
     for ( int n = 0; n < num_histories; ++n )
     {
 	// Sample the source to get the initial state.
-	zeta = (double) RNGTraits<boost::mt11213b>::generate(*rng) / 
-	       RNGTraits<boost::mt11213b>::max(*rng);
+	zeta = (double) RNGTraits<boost::mt11213b>::generate(*d_rng) / 
+	       RNGTraits<boost::mt11213b>::max(*d_rng);
 
 	// Line source.
 	if ( d_plist->get<bool>("LINE SOURCE") )
@@ -156,13 +149,13 @@ void AdjointMC::walk()
 	}
 
 	// Random walk.
-	weight = b_norm / (*b)[init_state];
-	relative_cutoff = weight_cutoff*weight;
+	weight = std::abs((*b)[init_state]);
+	relative_cutoff = weight_cutoff*std::abs((*b)[init_state]);
 	state = init_state;
 	walk = true;
 	transitions = 0;
 
-	if ( d_plist->get<bool>("DIAGNOSTICS") )
+	if ( d_plist->get<bool>("HISTORY DIAGNOSTICS") )
 	{
 	    std::cout << "NEW PART" << std::endl;
 	}
@@ -170,7 +163,7 @@ void AdjointMC::walk()
 	while ( walk )
 	{
 	    // Update LHS.
-	    (*x)[state] += weight * (*b)[init_state];
+	    (*x)[state] += weight * (*b)[init_state] / num_histories;
 
 	    // Sample the CDF to get the next state.
 	    d_C.ExtractGlobalRowCopy( state, 
@@ -179,8 +172,8 @@ void AdjointMC::walk()
 	    			      &C_values[0], 
 	    			      &C_indices[0] );
 
-	    zeta = (double) RNGTraits<boost::mt11213b>::generate(*rng) / 
-	    	   RNGTraits<boost::mt11213b>::max(*rng);
+	    zeta = (double) RNGTraits<boost::mt11213b>::generate(*d_rng) / 
+	    	   RNGTraits<boost::mt11213b>::max(*d_rng);
 
 	    new_index = std::distance( 
 	    	C_values.begin(),
@@ -196,11 +189,11 @@ void AdjointMC::walk()
 				      &Q_values[0], 
 				      &Q_indices[0] );
 
-	    d_H.ExtractGlobalRowCopy( new_state, 
-				      n_H, 
-				      H_size, 
-				      &H_values[0], 
-				      &H_indices[0] );
+	    d_H->ExtractGlobalRowCopy( new_state, 
+				       n_H, 
+				       H_size, 
+				       &H_values[0], 
+				       &H_indices[0] );
 
 	    Q_it = std::find( Q_indices.begin(),
 			      Q_indices.begin()+Q_size,
@@ -229,7 +222,7 @@ void AdjointMC::walk()
 		walk = false;
 	    }
 
-	    if ( d_plist->get<bool>("DIAGNOSTICS") )
+	    if ( d_plist->get<bool>("HISTORY DIAGNOSTICS") )
 	    {
 		std::cout << state << " " << new_state << " " << init_state << " " 
 			  << weight << " " << relative_cutoff << " " 
@@ -242,35 +235,23 @@ void AdjointMC::walk()
 	    // Update the state.
 	    state = new_state;
 	    ++transitions;
-	    history_max_distance = 
-		std::max( std::abs(init_state-state), history_max_distance );
 	}
 	
 	// Update diagnostics
 	max_transitions_in_history = 
 	    std::max( transitions, max_transitions_in_history );
 	transitions_per_history += transitions;
-	average_max_distance_from_start += history_max_distance;
-	max_max_distance_from_start = std::max( history_max_distance,
-						max_max_distance_from_start );
     }
 
-    // Normalize.
-    x->Scale( 1.0 / num_histories );
     transitions_per_history /= num_histories;
-    average_max_distance_from_start /= num_histories;
 
-    if ( d_plist->get<bool>("DIAGNOSTICS") )
+    if ( d_plist->get<bool>("ITERATION DIAGNOSTICS") )
     {
 	std::cout << "----------------------------------------------" << std::endl;
 	std::cout << "Average transitions per history: " 
 		  << transitions_per_history << std::endl;
 	std::cout << "Max transitions in a history: "
 		  << max_transitions_in_history << std::endl;
-	std::cout << "Average max distance from start: " 
-		  << average_max_distance_from_start << std::endl;
-	std::cout << "Max max distance from start: "
-		  << max_max_distance_from_start << std::endl;
 	std::cout << "----------------------------------------------" << std::endl;
     }
 }
@@ -279,11 +260,12 @@ void AdjointMC::walk()
 /*!
  * \brief Build the iteration matrix.
  */
-Epetra_CrsMatrix AdjointMC::buildH()
+Teuchos::RCP<Epetra_CrsMatrix> AdjointMC::buildH()
 {
     const Epetra_CrsMatrix *A = 
 	dynamic_cast<Epetra_CrsMatrix*>( d_linear_problem->GetMatrix() );
-    Epetra_CrsMatrix H( Copy, A->RowMap(), A->GlobalMaxNumEntries() );
+    Teuchos::RCP<Epetra_CrsMatrix> H = Teuchos::rcp(
+	new Epetra_CrsMatrix( Copy, A->RowMap(), A->GlobalMaxNumEntries() ) );
     int N = A->NumGlobalRows();
     int n_A = A->GlobalMaxNumEntries();
     std::vector<double> A_values( n_A );
@@ -304,25 +286,25 @@ Epetra_CrsMatrix AdjointMC::buildH()
 	    if ( i == A_indices[j] )
 	    {
 		local_H = 1.0 - A_values[j];
-		H.InsertGlobalValues( i, 1, &local_H, &A_indices[j] );
+		H->InsertGlobalValues( i, 1, &local_H, &A_indices[j] );
 		found_diag = true;
 	    }
 	    else
 	    {
 		local_H = -A_values[j];
-		H.InsertGlobalValues( i, 1, &local_H, &A_indices[j] );
+		H->InsertGlobalValues( i, 1, &local_H, &A_indices[j] );
 	    }
 
 	    if ( !found_diag )
 	    {
 		local_H = 1.0;
-		H.InsertGlobalValues( i, 1, &local_H, &i );
+		H->InsertGlobalValues( i, 1, &local_H, &i );
 	    }
 	}
     }
 
-    H.FillComplete();
-    H.OptimizeStorage();
+    H->FillComplete();
+    H->OptimizeStorage();
     return H;
 }
 
@@ -332,12 +314,12 @@ Epetra_CrsMatrix AdjointMC::buildH()
  */
 Epetra_CrsMatrix AdjointMC::buildQ()
 {
-    Epetra_CrsMatrix Q( Copy, d_H.RowMap(), d_H.GlobalMaxNumEntries() );
-    int N = d_H.NumGlobalRows();
-    int n_H = d_H.GlobalMaxNumEntries();
-    Epetra_Map h_col_map = d_H.ColMap();
+    Epetra_CrsMatrix Q( Copy, d_H->RowMap(), d_H->GlobalMaxNumEntries() );
+    int N = d_H->NumGlobalRows();
+    int n_H = d_H->GlobalMaxNumEntries();
+    Epetra_Map h_col_map = d_H->ColMap();
     Epetra_Vector inv_col_sums( h_col_map );
-    d_H.InvColSums( inv_col_sums );
+    d_H->InvColSums( inv_col_sums );
     std::vector<double> H_values( n_H );
     std::vector<int> H_indices( n_H );
     std::vector<int>::iterator H_it;
@@ -345,11 +327,11 @@ Epetra_CrsMatrix AdjointMC::buildQ()
     double local_Q = 0.0;
     for ( int j = 0; j < N; ++j )
     {
-	d_H.ExtractGlobalRowCopy( j,
-				  n_H, 
-				  H_size, 
-				  &H_values[0], 
-				  &H_indices[0] );
+	d_H->ExtractGlobalRowCopy( j,
+				   n_H, 
+				   H_size, 
+				   &H_values[0], 
+				   &H_indices[0] );
 
 	for ( int i = 0; i < H_size; ++i )
 	{
@@ -373,6 +355,7 @@ Epetra_CrsMatrix AdjointMC::buildC()
     int n_Q = d_Q.GlobalMaxNumEntries();
     Epetra_CrsMatrix C( Copy, d_Q.RowMap(), d_Q.GlobalMaxNumEntries() );
     double local_C = 0.0;
+    double row_norm = 0.0;
     std::vector<double> Q_values( n_Q );
     std::vector<int> Q_indices( n_Q );
     int size_Q = 0;
@@ -384,10 +367,16 @@ Epetra_CrsMatrix AdjointMC::buildC()
 				  &Q_values[0], 
 				  &Q_indices[0] );
 
+	row_norm = 0.0;
+	for ( int j = 0; j < size_Q; ++j )
+	{
+	    row_norm += Q_values[j];
+	}	
+
 	local_C = 0.0;
 	for ( int j = 0; j < size_Q; ++j )
 	{
-	    local_C += Q_values[j];
+	    local_C += Q_values[j] / row_norm;
 	    C.InsertGlobalValues( i, 1, &local_C, &Q_indices[j] );
 	}
     }
