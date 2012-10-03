@@ -37,7 +37,7 @@
 //---------------------------------------------------------------------------//
 
 #include "Chimera_MCSA.hpp"
-#include "Chimera_AdjointMC.hpp"
+#include "Chimera_AdjointMCDev.hpp"
 
 #include <Epetra_Map.h>
 #include <Epetra_Vector.h>
