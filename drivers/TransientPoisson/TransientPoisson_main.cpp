@@ -243,7 +243,7 @@ int main( int argc, char * argv[] )
 
     // Set user data.
     Teuchos::ParameterList user_data( "User Data" );
-    user_data.set<double>("Thermal Conductivity", 20.0 );
+    user_data.set<double>("Thermal Conductivity", 2.0 );
 
     // Setup the field managers.
     Teuchos::RCP<panzer::FieldManagerBuilder<int,int> > field_manager_builder =
@@ -305,19 +305,31 @@ int main( int argc, char * argv[] )
 
     Chimera::JacobiPreconditioner preconditioner( problem );
     preconditioner.precondition();
-    
-    Chimera::MCSA solver( problem );
-    int max_iters = 10;
+
+    int max_iters = 1;
     double tolerance = 1.0e-8;
-    int num_histories = 50;
-    double weight_cutoff = 1.0e-2;
-    solver.iterate( max_iters, tolerance, num_histories, weight_cutoff );
+    int num_histories = 10;
+    double weight_cutoff = 1.0e-4;
+    bool line_source = false;
+    int source_state = problem_size / 2;
+    bool diagnostics = true;
+    Teuchos::RCP<Teuchos::ParameterList> solver_plist = 
+	Teuchos::rcp( new Teuchos::ParameterList() );
+    solver_plist->set( "MAX ITERS", max_iters );
+    solver_plist->set( "TOLERANCE", tolerance );
+    solver_plist->set( "NUM HISTORIES", num_histories );
+    solver_plist->set( "WEIGHT CUTOFF", weight_cutoff );
+    solver_plist->set( "LINE SOURCE", line_source );
+    solver_plist->set( "SOURCE STATE", source_state );
+    solver_plist->set( "DIAGNOSTICS", diagnostics );
+    Chimera::MCSA solver( problem, solver_plist );
+    solver.iterate();
 
     ep_container->get_x()->Scale( -1.0 );
 
     // Analysis.
     double jacobian_spectral_radius = 
-	Chimera::OperatorTools::spectralRadius( ep_container->get_A() );
+	Chimera::OperatorTools::spectralRadius( preconditioner.getOperator() );
     int max_elements_per_row = ep_container->get_A()->GlobalMaxNumEntries();
     std::cout << "Problem size: " << problem_size << std::endl;
     std::cout << "Operator spectral radius: " << jacobian_spectral_radius << std::endl;

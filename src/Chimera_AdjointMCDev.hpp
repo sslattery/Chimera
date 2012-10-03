@@ -40,6 +40,7 @@
 #define Chimera_ADJOINTMC_HPP
 
 #include <Teuchos_RCP.hpp>
+#include <Teuchos_ParameterList.hpp>
 
 #include <Epetra_CrsMatrix.h>
 #include <Epetra_LinearProblem.h>
@@ -53,13 +54,13 @@ class AdjointMC
 
     // Constructor.
     AdjointMC( Teuchos::RCP<Epetra_LinearProblem> &linear_problem,
-	       bool history_diagnostics = false );
+	       Teuchos::RCP<Teuchos::ParameterList> &plist );
 
     // Destructor.
     ~AdjointMC();
 
     // Solve.
-    void walk( const int num_histories, const double weight_cutoff );
+    void walk();
 
     // Return the iteration matrix.
     const Epetra_CrsMatrix& getH() const
@@ -81,8 +82,8 @@ class AdjointMC
     // Linear problem.
     Teuchos::RCP<Epetra_LinearProblem> d_linear_problem;
 
-    // History diagnostic switch.
-    bool d_history_diagnostics;
+    // Parameter list.
+    Teuchos::RCP<Teuchos::ParameterList> d_plist;
 
     // Iteration matrix.
     Epetra_CrsMatrix d_H;

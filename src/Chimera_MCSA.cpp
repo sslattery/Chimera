@@ -48,8 +48,10 @@ namespace Chimera
 /*! 
  * \brief Constructor.
  */
-MCSA::MCSA( Teuchos::RCP<Epetra_LinearProblem> &linear_problem )
+MCSA::MCSA( Teuchos::RCP<Epetra_LinearProblem> &linear_problem,
+	    Teuchos::RCP<Teuchos::ParameterList> &plist )
     : d_linear_problem( linear_problem )
+    , d_plist( plist )
     , d_num_iters( 0 )
 { /* ... */ }
 
@@ -64,9 +66,12 @@ MCSA::~MCSA()
 /*!
  * \brief Solve.
  */
-void MCSA::iterate( const int max_iters, const double tolerance,
-		    const int num_histories, const double weight_cutoff )
+void MCSA::iterate()
 {
+    // Get the solver parameters.
+    int max_iters = d_plist->get<int>("MAX ITERS");
+    double tolerance = d_plist->get<double>("TOLERANCE");
+
     // Extract the linear problem.
     Epetra_CrsMatrix *A = 
 	dynamic_cast<Epetra_CrsMatrix*>( d_linear_problem->GetMatrix() );
@@ -81,7 +86,7 @@ void MCSA::iterate( const int max_iters, const double tolerance,
     Epetra_Vector residual( row_map );
     Teuchos::RCP<Epetra_LinearProblem> residual_problem = Teuchos::rcp(
 	new Epetra_LinearProblem( A, &delta_x, &residual ) );
-    AdjointMC mc_solver = AdjointMC( residual_problem );
+    AdjointMC mc_solver = AdjointMC( residual_problem, d_plist );
 
     // Iterate.
     Epetra_CrsMatrix H = mc_solver.getH();
@@ -102,7 +107,7 @@ void MCSA::iterate( const int max_iters, const double tolerance,
 	residual.Update( 1.0, *b, -1.0, temp_vec, 0.0 );
 
 	// Solve for delta_x.
-	mc_solver.walk( num_histories, weight_cutoff );
+	mc_solver.walk();
 
 	// Apply delta_x.
 	x->Update( 1.0, delta_x, 1.0 );

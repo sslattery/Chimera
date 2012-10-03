@@ -42,7 +42,7 @@
 #include <iterator>
 #include <algorithm>
 
-#include "Chimera_AdjointMC.hpp"
+#include "Chimera_AdjointMCDev.hpp"
 #include "Chimera_BoostRNG.hpp"
 
 #include <Epetra_Vector.h>
@@ -55,9 +55,9 @@ namespace Chimera
  * \brief Constructor.
  */
 AdjointMC::AdjointMC( Teuchos::RCP<Epetra_LinearProblem> &linear_problem,
-		      bool history_diagnostics )
+		      Teuchos::RCP<Teuchos::ParameterList> &plist )
     : d_linear_problem( linear_problem )
-    , d_history_diagnostics( history_diagnostics )
+    , d_plist( plist )
     , d_H( buildH() )
     , d_Q( buildQ() )
     , d_C( buildC() )
@@ -74,8 +74,12 @@ AdjointMC::~AdjointMC()
 /*! 
  * \brief Solve.
  */
-void AdjointMC::walk( const int num_histories, const double weight_cutoff )
+void AdjointMC::walk()
 {
+    // Get the solver parameters.
+    int num_histories = d_plist->get<int>("NUM HISTORIES");
+    double weight_cutoff = d_plist->get<double>("WEIGHT CUTOFF");
+
     // Get the LHS and source.
     Epetra_Vector *x = 
 	dynamic_cast<Epetra_Vector*>( d_linear_problem->GetLHS() );
@@ -138,9 +142,18 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
 	zeta = (double) RNGTraits<boost::mt11213b>::generate(*rng) / 
 	       RNGTraits<boost::mt11213b>::max(*rng);
 
-	init_state = std::distance( 
-	    b_cdf.begin(),
-	    std::lower_bound( b_cdf.begin(), b_cdf.end(), zeta ) );
+	// Line source.
+	if ( d_plist->get<bool>("LINE SOURCE") )
+	{
+	    init_state = d_plist->get<int>("SOURCE STATE");
+	}
+	// Right-hand side PDF source.
+	else
+	{
+	    init_state = std::distance( 
+		b_cdf.begin(),
+		std::lower_bound( b_cdf.begin(), b_cdf.end(), zeta ) );
+	}
 
 	// Random walk.
 	weight = b_norm / (*b)[init_state];
@@ -148,6 +161,12 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
 	state = init_state;
 	walk = true;
 	transitions = 0;
+
+	if ( d_plist->get<bool>("DIAGNOSTICS") )
+	{
+	    std::cout << "NEW PART" << std::endl;
+	}
+
 	while ( walk )
 	{
 	    // Update LHS.
@@ -193,7 +212,8 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
 
 	    // Compute new weight.
 	    if ( Q_values[std::distance(Q_indices.begin(),Q_it)] == 0 ||
-		 Q_it == Q_indices.end() )
+		 Q_it == Q_indices.begin()+Q_size ||
+		 H_it == H_indices.begin()+H_size )
 	    {
 		weight = 0.0;
 	    }
@@ -203,9 +223,20 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
 			  Q_values[std::distance(Q_indices.begin(),Q_it)];
 	    }
 
+	    // Check the new weight against the cutoff.
 	    if ( weight < relative_cutoff )
 	    {
 		walk = false;
+	    }
+
+	    if ( d_plist->get<bool>("DIAGNOSTICS") )
+	    {
+		std::cout << state << " " << new_state << " " << init_state << " " 
+			  << weight << " " << relative_cutoff << " " 
+			  << transitions << " " 
+			  << H_values[std::distance(H_indices.begin(),H_it)] << " "  
+			  << Q_values[std::distance(Q_indices.begin(),Q_it)] 
+			  << std::endl;
 	    }
 
 	    // Update the state.
@@ -229,17 +260,19 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
     transitions_per_history /= num_histories;
     average_max_distance_from_start /= num_histories;
 
-    // Output diagnostics.
-    std::cout << "----------------------------------------------" << std::endl;
-    std::cout << "Average transitions per history: " 
-	      << transitions_per_history << std::endl;
-    std::cout << "Max transitions in a history: "
-	      << max_transitions_in_history << std::endl;
-    std::cout << "Average max distance from start: " 
-	      << average_max_distance_from_start << std::endl;
-    std::cout << "Max max distance from start: "
-	      << max_max_distance_from_start << std::endl;
-    std::cout << "----------------------------------------------" << std::endl;
+    if ( d_plist->get<bool>("DIAGNOSTICS") )
+    {
+	std::cout << "----------------------------------------------" << std::endl;
+	std::cout << "Average transitions per history: " 
+		  << transitions_per_history << std::endl;
+	std::cout << "Max transitions in a history: "
+		  << max_transitions_in_history << std::endl;
+	std::cout << "Average max distance from start: " 
+		  << average_max_distance_from_start << std::endl;
+	std::cout << "Max max distance from start: "
+		  << max_max_distance_from_start << std::endl;
+	std::cout << "----------------------------------------------" << std::endl;
+    }
 }
 
 //---------------------------------------------------------------------------//
@@ -307,20 +340,21 @@ Epetra_CrsMatrix AdjointMC::buildQ()
     d_H.InvColSums( inv_col_sums );
     std::vector<double> H_values( n_H );
     std::vector<int> H_indices( n_H );
+    std::vector<int>::iterator H_it;
     int H_size = 0;
     double local_Q = 0.0;
-    for ( int i = 0; i < N; ++i )
+    for ( int j = 0; j < N; ++j )
     {
-	d_H.ExtractGlobalRowCopy( i,
+	d_H.ExtractGlobalRowCopy( j,
 				  n_H, 
 				  H_size, 
 				  &H_values[0], 
 				  &H_indices[0] );
 
-	for ( int j = 0; j < H_size; ++j )
+	for ( int i = 0; i < H_size; ++i )
 	{
-	    local_Q = abs(H_values[j]) * inv_col_sums[i];
-	    Q.InsertGlobalValues( i, 1, &local_Q, &H_indices[j] );
+	    local_Q = std::abs(H_values[i]) * inv_col_sums[i];
+	    Q.InsertGlobalValues( H_indices[i], 1, &local_Q, &j );
 	}
     }
 
