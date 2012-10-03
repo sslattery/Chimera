@@ -13,6 +13,7 @@
 
 #include "Chimera_MCSA.hpp"
 #include "Chimera_JacobiPreconditioner.hpp"
+#include "Chimera_OperatorTools.hpp"
 
 #include "TransientPoisson_EquationSetFactory.hpp"
 #include "TransientPoisson_ClosureModelFactory_TemplateBuilder.hpp"
@@ -71,6 +72,8 @@ int main( int argc, char * argv[] )
     Chimera::TransientPoisson::ClosureModelFactory_TemplateBuilder cm_builder;
 
     // Generate the mesh.
+    int mesh_size = 100;
+    int problem_size = mesh_size*mesh_size;
     const std::size_t workset_size = 20;
     panzer_stk::SquareQuadMeshFactory mesh_factory;
 
@@ -78,8 +81,8 @@ int main( int argc, char * argv[] )
 	Teuchos::rcp( new Teuchos::ParameterList );
     plist->set( "X Blocks", 1 );
     plist->set( "Y Blocks", 1 );
-    plist->set( "X Elements", 30 );
-    plist->set( "Y Elements", 30 );
+    plist->set( "X Elements", mesh_size );
+    plist->set( "Y Elements", mesh_size );
     mesh_factory.setParameterList( plist );
 
     Teuchos::RCP<panzer_stk::STK_Interface> mesh = 
@@ -240,7 +243,7 @@ int main( int argc, char * argv[] )
 
     // Set user data.
     Teuchos::ParameterList user_data( "User Data" );
-    user_data.set<double>("Thermal Conductivity", 2.0 );
+    user_data.set<double>("Thermal Conductivity", 20.0 );
 
     // Setup the field managers.
     Teuchos::RCP<panzer::FieldManagerBuilder<int,int> > field_manager_builder =
@@ -304,13 +307,21 @@ int main( int argc, char * argv[] )
     preconditioner.precondition();
     
     Chimera::MCSA solver( problem );
-    int max_iters = 1000;
+    int max_iters = 10;
     double tolerance = 1.0e-8;
     int num_histories = 50;
-    double weight_cutoff = 1.0e-4;
+    double weight_cutoff = 1.0e-2;
     solver.iterate( max_iters, tolerance, num_histories, weight_cutoff );
 
     ep_container->get_x()->Scale( -1.0 );
+
+    // Analysis.
+    double jacobian_spectral_radius = 
+	Chimera::OperatorTools::spectralRadius( ep_container->get_A() );
+    int max_elements_per_row = ep_container->get_A()->GlobalMaxNumEntries();
+    std::cout << "Problem size: " << problem_size << std::endl;
+    std::cout << "Operator spectral radius: " << jacobian_spectral_radius << std::endl;
+    std::cout << "Max elements in operator row: " << max_elements_per_row << std::endl;
 
     // Generate output.
     lin_obj_factory->globalToGhostContainer( 
