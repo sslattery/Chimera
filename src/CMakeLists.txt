@@ -22,7 +22,7 @@ SET(HEADERS ${HEADERS}
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
-  Chimera_AdjointMC.hpp
+  Chimera_AdjointMCDev.hpp
   Chimera_BoostRNG.hpp
   Chimera_JacobiPreconditioner.hpp
   Chimera_LinearProblem.hpp
@@ -33,7 +33,7 @@ APPEND_SET(HEADERS
   ) 
 
 APPEND_SET(SOURCES
-  Chimera_AdjointMC.cpp
+  Chimera_AdjointMCDev.cpp
   Chimera_JacobiPreconditioner.cpp
   Chimera_MCSA.cpp
   Chimera_OperatorTools.cpp
