@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
     Chimera::TransientPoisson::ClosureModelFactory_TemplateBuilder cm_builder;
 
     // Generate the mesh.
-    int mesh_size = 20;
+    int mesh_size = 100;
     int problem_size = mesh_size*mesh_size;
     const std::size_t workset_size = 20;
     panzer_stk::SquareQuadMeshFactory mesh_factory;
@@ -308,9 +308,9 @@ int main( int argc, char * argv[] )
     Chimera::JacobiPreconditioner preconditioner( problem );
     preconditioner.precondition();
 
-    int max_iters = 100000;
+    int max_iters = 200;
     double tolerance = 1.0e-8;
-    int num_histories = 100000;
+    int num_histories = 200;
     double weight_cutoff = 1.0e-4;
     bool line_source = false;
     int source_state = problem_size / 2;
@@ -326,8 +326,8 @@ int main( int argc, char * argv[] )
     solver_plist->set( "SOURCE STATE", source_state );
     solver_plist->set( "HISTORY DIAGNOSTICS", history_diagnostics );
     solver_plist->set( "ITERATION DIAGNOSTICS", iteration_diagnostics );
-    Chimera::AdjointMC solver( problem, solver_plist );
-    solver.walk();
+    Chimera::MCSA solver( problem, solver_plist );
+    solver.iterate();
 
     // // Aztec solve
     // AztecOO solver(*problem);
