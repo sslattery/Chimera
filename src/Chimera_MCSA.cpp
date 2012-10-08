@@ -117,6 +117,8 @@ void MCSA::iterate()
 	// Update convergence check.
 	residual->NormInf( &residual_norm );
 	++d_num_iters;
+
+	std::cout << d_num_iters << " " << residual_norm << std::endl;
     }
 
     std::cout << "MCSA Iterations: " << d_num_iters << std::endl;

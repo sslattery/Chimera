@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
     Chimera::TransientPoisson::ClosureModelFactory_TemplateBuilder cm_builder;
 
     // Generate the mesh.
-    int mesh_size = 100;
+    int mesh_size = 30;
     int problem_size = mesh_size*mesh_size;
     const std::size_t workset_size = 20;
     panzer_stk::SquareQuadMeshFactory mesh_factory;
@@ -307,15 +307,17 @@ int main( int argc, char * argv[] )
 
     Chimera::JacobiPreconditioner preconditioner( problem );
     preconditioner.precondition();
-
-    int max_iters = 200;
+    std::cout << "SPEC RAD: " 
+	      << Chimera::OperatorTools::spectralRadius( preconditioner.getOperator() )
+	      << std::endl;
+    int max_iters = 10000;
     double tolerance = 1.0e-8;
-    int num_histories = 200;
-    double weight_cutoff = 1.0e-4;
+    int num_histories = 100000;
+    double weight_cutoff = 1.0e-6;
     bool line_source = false;
     int source_state = problem_size / 2;
     bool history_diagnostics = false;
-    bool iteration_diagnostics = false;
+    bool iteration_diagnostics = true;
     Teuchos::RCP<Teuchos::ParameterList> solver_plist = 
     	Teuchos::rcp( new Teuchos::ParameterList() );
     solver_plist->set( "MAX ITERS", max_iters );

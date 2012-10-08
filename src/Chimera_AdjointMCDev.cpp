@@ -129,6 +129,7 @@ void AdjointMC::walk()
     double transitions_per_history = 0.0;
     int max_transitions_in_history = 0;
     int transitions = 0;
+    double weight_sign = 0.0;
     for ( int n = 0; n < num_histories; ++n )
     {
 	// Sample the source to get the initial state.
@@ -149,10 +150,9 @@ void AdjointMC::walk()
 	}
 
 	// Random walk.
-	weight = b_norm / std::abs((*b)[init_state]);
+	weight = b_norm;
 	relative_cutoff = weight_cutoff*weight;
-	// weight = std::abs((*b)[init_state]);
-	// relative_cutoff = weight_cutoff*std::abs((*b)[init_state]);
+	weight_sign = (*b)[init_state] / std::abs( (*b)[init_state] );
 	state = init_state;
 	walk = true;
 	transitions = 0;
@@ -165,7 +165,7 @@ void AdjointMC::walk()
 	while ( walk )
 	{
 	    // Update LHS.
-	    (*x)[state] += (*b)[init_state] * weight / num_histories;
+	    (*x)[state] += weight_sign * weight / num_histories;
 
 	    // Sample the CDF to get the next state.
 	    d_C.ExtractGlobalRowCopy( state, 
