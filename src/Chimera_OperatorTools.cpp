@@ -44,11 +44,11 @@
 #include <Epetra_MultiVector.h>
 
 #include <AnasaziTypes.hpp>
-#include "AnasaziMultiVecTraits.hpp"
-#include "AnasaziBasicEigenproblem.hpp"
-#include "AnasaziBlockKrylovSchurSolMgr.hpp"
-#include "AnasaziBasicOutputManager.hpp"
-#include "AnasaziEpetraAdapter.hpp"
+#include <AnasaziMultiVecTraits.hpp>
+#include <AnasaziBasicEigenproblem.hpp>
+#include <AnasaziBlockKrylovSchurSolMgr.hpp>
+#include <AnasaziBasicOutputManager.hpp>
+#include <AnasaziEpetraAdapter.hpp>
 
 namespace Chimera
 {

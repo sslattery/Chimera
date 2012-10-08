@@ -81,6 +81,10 @@ int main( int argc, char * argv[] )
 
     Teuchos::RCP<Teuchos::ParameterList> plist = 
 	Teuchos::rcp( new Teuchos::ParameterList );
+    plist->set( "X0", 0.0 );
+    plist->set( "Y0", 0.0 );
+    plist->set( "Xf", 1.0 );
+    plist->set( "Yf", 1.0 );
     plist->set( "X Blocks", 1 );
     plist->set( "Y Blocks", 1 );
     plist->set( "X Elements", mesh_size );
@@ -245,7 +249,7 @@ int main( int argc, char * argv[] )
 
     // Set user data.
     Teuchos::ParameterList user_data( "User Data" );
-    user_data.set<double>("Thermal Conductivity", 0.2 );
+    user_data.set<double>("Thermal Conductivity", 2.0 );
 
     // Setup the field managers.
     Teuchos::RCP<panzer::FieldManagerBuilder<int,int> > field_manager_builder =
@@ -307,13 +311,10 @@ int main( int argc, char * argv[] )
 
     Chimera::JacobiPreconditioner preconditioner( problem );
     preconditioner.precondition();
-    std::cout << "SPEC RAD: " 
-	      << Chimera::OperatorTools::spectralRadius( preconditioner.getOperator() )
-	      << std::endl;
     int max_iters = 10000;
     double tolerance = 1.0e-8;
-    int num_histories = 100000;
-    double weight_cutoff = 1.0e-6;
+    int num_histories = 500;
+    double weight_cutoff = 1.0e-4;
     bool line_source = false;
     int source_state = problem_size / 2;
     bool history_diagnostics = false;
@@ -328,6 +329,12 @@ int main( int argc, char * argv[] )
     solver_plist->set( "SOURCE STATE", source_state );
     solver_plist->set( "HISTORY DIAGNOSTICS", history_diagnostics );
     solver_plist->set( "ITERATION DIAGNOSTICS", iteration_diagnostics );
+
+    Chimera::AdjointMC adj( problem, solver_plist );
+    std::cout << "SPEC RAD: " 
+	      << Chimera::OperatorTools::spectralRadius( adj.getH() )
+	      << std::endl;
+
     Chimera::MCSA solver( problem, solver_plist );
     solver.iterate();
 
