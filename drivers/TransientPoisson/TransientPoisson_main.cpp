@@ -14,7 +14,7 @@
 #include "Chimera_MCSA.hpp"
 #include "Chimera_JacobiPreconditioner.hpp"
 #include "Chimera_OperatorTools.hpp"
-#include "Chimera_AdjointMCDev.hpp"
+#include "Chimera_AdjointMC.hpp"
 #include "Chimera_DirectMC.hpp"
 
 #include "TransientPoisson_EquationSetFactory.hpp"
