@@ -42,8 +42,7 @@
 #include <iterator>
 #include <algorithm>
 
-#include "Chimera_AdjointMC.hpp"
-#include "Chimera_BoostRNG.hpp"
+#include "Chimera_AdjointMCDev.hpp"
 
 #include <Epetra_Vector.h>
 #include <Epetra_Map.h>
@@ -54,8 +53,11 @@ namespace Chimera
 /*!
  * \brief Constructor.
  */
-AdjointMC::AdjointMC( Teuchos::RCP<Epetra_LinearProblem> &linear_problem )
+AdjointMC::AdjointMC( Teuchos::RCP<Epetra_LinearProblem> &linear_problem,
+		      Teuchos::RCP<Teuchos::ParameterList> &plist )
     : d_linear_problem( linear_problem )
+    , d_plist( plist )
+    , d_rng( RNGTraits<boost::mt11213b>::create() )
     , d_H( buildH() )
     , d_Q( buildQ() )
     , d_C( buildC() )
@@ -72,15 +74,19 @@ AdjointMC::~AdjointMC()
 /*! 
  * \brief Solve.
  */
-void AdjointMC::walk( const int num_histories, const double weight_cutoff )
+void AdjointMC::walk()
 {
+    // Get the solver parameters.
+    int num_histories = d_plist->get<int>("NUM HISTORIES");
+    double weight_cutoff = d_plist->get<double>("WEIGHT CUTOFF");
+
     // Get the LHS and source.
     Epetra_Vector *x = 
 	dynamic_cast<Epetra_Vector*>( d_linear_problem->GetLHS() );
     const Epetra_Vector *b = 
 	dynamic_cast<Epetra_Vector*>( d_linear_problem->GetRHS() );
     int N = x->GlobalLength();
-    int n_H = d_H.GlobalMaxNumEntries();
+    int n_H = d_H->GlobalMaxNumEntries();
     int n_Q = d_Q.GlobalMaxNumEntries();
     int n_C = d_C.GlobalMaxNumEntries();
 
@@ -107,42 +113,59 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
     std::vector<int>::iterator H_it;
 
     // Build source cdf.
-    b_cdf[0] = (*b)[0];
+    b_cdf[0] = std::abs((*b)[0]);
     double b_norm = b_cdf[0];
     for ( int i = 1; i < N; ++i )
     {
-	b_norm += (*b)[i];
-	b_cdf[i] = (*b)[i] + b_cdf[i-1];	
+	b_norm += std::abs((*b)[i]);
+	b_cdf[i] = std::abs((*b)[i]) + b_cdf[i-1];	
     }
     for ( int i = 0; i < N; ++i )
     {
 	b_cdf[i] /= b_norm;
     }
 
-    // Setup random number generator.
-    Teuchos::RCP<boost::mt11213b> rng = 
-	RNGTraits<boost::mt11213b>::create();
-
     // Do random walks for specified number of histories.
+    double transitions_per_history = 0.0;
+    int max_transitions_in_history = 0;
+    int transitions = 0;
+    double weight_sign = 0.0;
     for ( int n = 0; n < num_histories; ++n )
     {
 	// Sample the source to get the initial state.
-	zeta = (double) RNGTraits<boost::mt11213b>::generate(*rng) / 
-	       RNGTraits<boost::mt11213b>::max(*rng);
+	zeta = (double) RNGTraits<boost::mt11213b>::generate(*d_rng) / 
+	       RNGTraits<boost::mt11213b>::max(*d_rng);
 
-	init_state = std::distance( 
-	    b_cdf.begin(),
-	    std::lower_bound( b_cdf.begin(), b_cdf.end(), zeta ) );
+	// Line source.
+	if ( d_plist->get<bool>("LINE SOURCE") )
+	{
+	    init_state = d_plist->get<int>("SOURCE STATE");
+	}
+	// Right-hand side PDF source.
+	else
+	{
+	    init_state = std::distance( 
+		b_cdf.begin(),
+		std::lower_bound( b_cdf.begin(), b_cdf.end(), zeta ) );
+	}
 
 	// Random walk.
-	weight = b_norm / (*b)[init_state];
+	weight = b_norm;
 	relative_cutoff = weight_cutoff*weight;
+	weight_sign = (*b)[init_state] / std::abs( (*b)[init_state] );
 	state = init_state;
 	walk = true;
+	transitions = 0;
+
+	if ( d_plist->get<bool>("HISTORY DIAGNOSTICS") )
+	{
+	    std::cout << "NEW PART" << std::endl;
+	}
+
 	while ( walk )
 	{
 	    // Update LHS.
-	    (*x)[state] += weight * (*b)[init_state];
+	    (*x)[state] += weight_sign * weight / num_histories;
 
 	    // Sample the CDF to get the next state.
 	    d_C.ExtractGlobalRowCopy( state, 
@@ -151,8 +174,8 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
 	    			      &C_values[0], 
 	    			      &C_indices[0] );
 
-	    zeta = (double) RNGTraits<boost::mt11213b>::generate(*rng) / 
-	    	   RNGTraits<boost::mt11213b>::max(*rng);
+	    zeta = (double) RNGTraits<boost::mt11213b>::generate(*d_rng) / 
+	    	   RNGTraits<boost::mt11213b>::max(*d_rng);
 
 	    new_index = std::distance( 
 	    	C_values.begin(),
@@ -168,11 +191,11 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
 				      &Q_values[0], 
 				      &Q_indices[0] );
 
-	    d_H.ExtractGlobalRowCopy( new_state, 
-				      n_H, 
-				      H_size, 
-				      &H_values[0], 
-				      &H_indices[0] );
+	    d_H->ExtractGlobalRowCopy( new_state, 
+				       n_H, 
+				       H_size, 
+				       &H_values[0], 
+				       &H_indices[0] );
 
 	    Q_it = std::find( Q_indices.begin(),
 			      Q_indices.begin()+Q_size,
@@ -184,7 +207,8 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
 
 	    // Compute new weight.
 	    if ( Q_values[std::distance(Q_indices.begin(),Q_it)] == 0 ||
-		 Q_it == Q_indices.end() )
+		 Q_it == Q_indices.begin()+Q_size ||
+		 H_it == H_indices.begin()+H_size )
 	    {
 		weight = 0.0;
 	    }
@@ -194,29 +218,56 @@ void AdjointMC::walk( const int num_histories, const double weight_cutoff )
 			  Q_values[std::distance(Q_indices.begin(),Q_it)];
 	    }
 
+	    // Check the new weight against the cutoff.
 	    if ( weight < relative_cutoff )
 	    {
 		walk = false;
 	    }
 
+	    if ( d_plist->get<bool>("HISTORY DIAGNOSTICS") )
+	    {
+		std::cout << state << " " << new_state << " " << init_state << " " 
+			  << weight << " " << relative_cutoff << " " 
+			  << transitions << " " 
+			  << H_values[std::distance(H_indices.begin(),H_it)] << " "  
+			  << Q_values[std::distance(Q_indices.begin(),Q_it)] 
+			  << std::endl;
+	    }
+
 	    // Update the state.
 	    state = new_state;
+	    ++transitions;
 	}
+	
+	// Update diagnostics
+	max_transitions_in_history = 
+	    std::max( transitions, max_transitions_in_history );
+	transitions_per_history += transitions;
     }
 
-    // Normalize.
-    x->Scale( 1.0 / num_histories );
+    transitions_per_history /= num_histories;
+
+    if ( d_plist->get<bool>("ITERATION DIAGNOSTICS") )
+    {
+	std::cout << "----------------------------------------------" << std::endl;
+	std::cout << "Average transitions per history: " 
+		  << transitions_per_history << std::endl;
+	std::cout << "Max transitions in a history: "
+		  << max_transitions_in_history << std::endl;
+	std::cout << "----------------------------------------------" << std::endl;
+    }
 }
 
 //---------------------------------------------------------------------------//
 /*!
  * \brief Build the iteration matrix.
  */
-Epetra_CrsMatrix AdjointMC::buildH()
+Teuchos::RCP<Epetra_CrsMatrix> AdjointMC::buildH()
 {
     const Epetra_CrsMatrix *A = 
 	dynamic_cast<Epetra_CrsMatrix*>( d_linear_problem->GetMatrix() );
-    Epetra_CrsMatrix H( Copy, A->RowMap(), A->GlobalMaxNumEntries() );
+    Teuchos::RCP<Epetra_CrsMatrix> H = Teuchos::rcp(
+	new Epetra_CrsMatrix( Copy, A->RowMap(), A->GlobalMaxNumEntries() ) );
     int N = A->NumGlobalRows();
     int n_A = A->GlobalMaxNumEntries();
     std::vector<double> A_values( n_A );
@@ -237,25 +288,25 @@ Epetra_CrsMatrix AdjointMC::buildH()
 	    if ( i == A_indices[j] )
 	    {
 		local_H = 1.0 - A_values[j];
-		H.InsertGlobalValues( i, 1, &local_H, &A_indices[j] );
+		H->InsertGlobalValues( i, 1, &local_H, &A_indices[j] );
 		found_diag = true;
 	    }
 	    else
 	    {
 		local_H = -A_values[j];
-		H.InsertGlobalValues( i, 1, &local_H, &A_indices[j] );
+		H->InsertGlobalValues( i, 1, &local_H, &A_indices[j] );
 	    }
 
 	    if ( !found_diag )
 	    {
 		local_H = 1.0;
-		H.InsertGlobalValues( i, 1, &local_H, &i );
+		H->InsertGlobalValues( i, 1, &local_H, &i );
 	    }
 	}
     }
 
-    H.FillComplete();
-    H.OptimizeStorage();
+    H->FillComplete();
+    H->OptimizeStorage();
     return H;
 }
 
@@ -265,28 +316,40 @@ Epetra_CrsMatrix AdjointMC::buildH()
  */
 Epetra_CrsMatrix AdjointMC::buildQ()
 {
-    Epetra_CrsMatrix Q( Copy, d_H.RowMap(), d_H.GlobalMaxNumEntries() );
-    int N = d_H.NumGlobalRows();
-    int n_H = d_H.GlobalMaxNumEntries();
-    Epetra_Map h_col_map = d_H.ColMap();
-    Epetra_Vector inv_col_sums( h_col_map );
-    d_H.InvColSums( inv_col_sums );
+    Epetra_CrsMatrix Q( Copy, d_H->RowMap(), d_H->GlobalMaxNumEntries() );
+    int N = d_H->NumGlobalRows();
+    int n_H = d_H->GlobalMaxNumEntries();
     std::vector<double> H_values( n_H );
     std::vector<int> H_indices( n_H );
+    std::vector<int>::iterator H_it;
     int H_size = 0;
     double local_Q = 0.0;
+    double row_sum = 0.0;
     for ( int i = 0; i < N; ++i )
     {
-	d_H.ExtractGlobalRowCopy( i,
-				  n_H, 
-				  H_size, 
-				  &H_values[0], 
-				  &H_indices[0] );
+	d_H->ExtractGlobalRowCopy( i,
+				   n_H, 
+				   H_size, 
+				   &H_values[0], 
+				   &H_indices[0] );
+
+	row_sum = 0.0;
+	for ( int j = 0; j < H_size; ++j )
+	{
+	    row_sum += std::abs(H_values[j]);
+	}
 
 	for ( int j = 0; j < H_size; ++j )
 	{
-	    local_Q = abs(H_values[j]) * inv_col_sums[i];
-	    Q.InsertGlobalValues( i, 1, &local_Q, &H_indices[j] );
+	    if ( row_sum > 0.0 )
+	    {
+		local_Q = std::abs(H_values[j]) / row_sum;
+	    }
+	    else
+	    {
+		local_Q = 0.0;
+	    }
+	    Q.InsertGlobalValues( H_indices[j], 1, &local_Q, &i );
 	}
     }
 
