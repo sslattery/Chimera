@@ -52,20 +52,20 @@ namespace Chimera
 // \class LinearProblem
 // \brief Linear problem container for Chimera.
 //---------------------------------------------------------------------------//
-template<class Scalar, class LocalOrdinal=int, class GlobalOrdinal=LocalOrdinal>
+template<class Scalar, class LO=int, class GO=LO>
 class LinearProblem
 {
   public:
 
     //@{
     //! Typedefs.
-    typedef Scalar                                               scalar_type;
-    typedef LocalOrdinal                                         local_ordinal_type;
-    typedef GlobalOrdinal                                        global_ordinal_type;
-    typedef Tpetra::Vector<Scalar,LocalOrdinal,GlobalOrdinal>    TpetraVector;
-    typedef Teuchos::RCP<TpetraVector>                           RCP_TpetraVector;
-    typedef Tpetra::CrsMatrix<Scalar,LocalOrdinal,GlobalOrdinal> TpetraCrsMatrix;
-    typedef Teuchos::RCP<TpetraCrsMatrix>                        RCP_TpetraCrsMatrix;
+    typedef Scalar                                        scalar_type;
+    typedef LO                                            local_ordinal_type;
+    typedef GO                                            global_ordinal_type;
+    typedef Tpetra::Vector<Scalar,LO,GO>                  TpetraVector;
+    typedef Teuchos::RCP<TpetraVector>                    RCP_TpetraVector;
+    typedef Tpetra::CrsMatrix<Scalar,LO,GO>               TpetraCrsMatrix;
+    typedef Teuchos::RCP<TpetraCrsMatrix>                 RCP_TpetraCrsMatrix;
     //@}
 
   public:

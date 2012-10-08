@@ -79,7 +79,7 @@ class RNGTraits
     /*!
      * \brief Create a random number generator in the base state.
      */
-    static inline Teuchos::RCP<rng_type> create()
+    static inline Teuchos::RCP<RNGType> create()
     { UndefinedRNGTraits<RNGType>::notDefined(); return 0; }
 
     /*! 

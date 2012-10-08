@@ -313,7 +313,7 @@ int main( int argc, char * argv[] )
     preconditioner.precondition();
     int max_iters = 10000;
     double tolerance = 1.0e-8;
-    int num_histories = 500;
+    int num_histories = 10000;
     double weight_cutoff = 1.0e-4;
     bool line_source = false;
     int source_state = problem_size / 2;

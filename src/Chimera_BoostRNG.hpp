@@ -31,9 +31,11 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //---------------------------------------------------------------------------//
-// \file Chimera_BoostRNG.hpp
-// \author Stuart R. Slattery
-// \brief RNGTraits implementation for Boost Psuedo Random Number Generators.
+/*!
+ * \file Chimera_BoostRNG.hpp
+ * \author Stuart R. Slattery
+ * \brief RNGTraits implementations for Boost Random Number Generators. 
+ */
 //---------------------------------------------------------------------------//
 
 #ifndef Chimera_BOOSTRNG_HPP
@@ -46,7 +48,7 @@
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
-// Specialization for 64-bit mt19937
+// Specialization for 64-bit mt19937 Mersenne Twister
 //---------------------------------------------------------------------------//
 template<>
 class RNGTraits<boost::mt19937>
@@ -74,7 +76,7 @@ class RNGTraits<boost::mt19937>
 };
 
 //---------------------------------------------------------------------------//
-// Specialization for 32-bit mt11213b
+// Specialization for 32-bit mt11213b Mersenne Twister
 //---------------------------------------------------------------------------//
 template<>
 class RNGTraits<boost::mt11213b>

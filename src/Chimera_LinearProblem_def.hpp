@@ -50,8 +50,8 @@ namespace Chimera
  * \param x The solution vector.
  * \param b The right-hand side.
  */
-template<class Scalar, class LocalOrdinal, class GlobalOrdinal>
-LinearProblem<Scalar,LocalOrdinal,GlobalOrdinal>::LinearProblem( 
+template<class Scalar, class LO, class GO>
+LinearProblem<Scalar,LO,GO>::LinearProblem( 
     const RCP_TpetraCrsMatrix& A, 
     const RCP_TpetraVector& x, 
     const RCP_TpetraVector& b )
@@ -65,16 +65,16 @@ LinearProblem<Scalar,LocalOrdinal,GlobalOrdinal>::LinearProblem(
 /*!
  * \brief Destructor.
  */
-template<class Scalar, class LocalOrdinal, class GlobalOrdinal>
-LinearProblem<Scalar,LocalOrdinal,GlobalOrdinal>::~LinearProblem()
+template<class Scalar, class LO, class GO>
+LinearProblem<Scalar,LO,GO>::~LinearProblem()
 { /* ... */ }
 
 //---------------------------------------------------------------------------//
 /*!
  * \brief Compute the residual of the linear problem r = b - A*x.
  */
-template<class Scalar, class LocalOrdinal, class GlobalOrdinal>
-void LinearProblem<Scalar,LocalOrdinal,GlobalOrdinal>::computeResidual()
+template<class Scalar, class LO, class GO>
+void LinearProblem<Scalar,LO,GO>::computeResidual()
 {
     d_A->apply( *d_x, *d_r );
     d_r->update( 1.0, *d_b, -1.0 );

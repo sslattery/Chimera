@@ -129,6 +129,20 @@ TEUCHOS_UNIT_TEST( LinearProblem, linear_problem_test )
     {
 	TEST_ASSERT( new_R_view[i] == R_val );
     }
+
+    // Compute the residual again.
+    comm->barrier();
+    linear_problem->computeResidual();
+
+    // Check that residual the residual was overwritten and not summed.
+    Teuchos::RCP<Tpetra::Vector<double,int> > renew_R_from_LP = 
+	linear_problem->getResidual();
+    Teuchos::ArrayRCP<const double> renew_R_view = 
+	renew_R_from_LP->get1dView();
+    for ( int i = 0; i < local_num_rows; ++i )
+    {
+	TEST_ASSERT( renew_R_view[i] == R_val );
+    }
 }
 
 //---------------------------------------------------------------------------//
