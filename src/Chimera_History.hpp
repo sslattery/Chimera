@@ -66,7 +66,7 @@ class History
     //@}
 
     // Defaut constructor.
-    explicit History();
+    History();
 
     // Destructor.
     ~History();
