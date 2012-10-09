@@ -71,8 +71,7 @@ class LinearOperatorSplit
     //@}
 
     //! Constructor.
-    LinearOperatorSplit( const RCP_TpetraCrsMatrix& linear_operator )
-	:  b_linear_operator( linear_operator )
+    LinearOperatorSplit()
     { /* ... */ }
 
     //! Destructor.
@@ -80,7 +79,7 @@ class LinearOperatorSplit
     { /* ... */ }
 
     //! Split the operator.
-    virtual split() = 0;
+    virtual void split() = 0;
 
     //! Get the linear operator (A).
     RCP_TpetraCrsMatrix linearOperator()
@@ -91,7 +90,8 @@ class LinearOperatorSplit
     { return b_iteration_matrix; }
 
     //! Apply M^-1 to a vector.
-    virtual void applyInvM( const RCP_TpetraVector& x ) = 0;
+    virtual void 
+    applyInvM( const RCP_TpetraVector& x, RCP_TpetraVector& y ) = 0;
 
   protected:
 
