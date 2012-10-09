@@ -32,112 +32,62 @@
 */
 //---------------------------------------------------------------------------//
 /*!
- * \file Chimera_History.hpp
+ * \file Chimera_StationaryIteration.hpp
  * \author Stuart R. Slattery
- * \brief History class declaration.
+ * \brief StationaryIteration declaration.
  */
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_HISTORY_HPP
-#define Chimera_HISTORY_HPP
+#ifndef Chimera_STATIONARYITERATION_HPP
+#define Chimera_STATIONARYITERATION_HPP
 
-#include "Chimera_RNGTraits.hpp"
+#include "Chimera_LinearProblem.hpp"
+#include "Chimera_LinearOperatorSplit.hpp"
+
+#include <Teuchos_RCP.hpp>
 
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
- * \class History
- * \brief Encapsulation of a random walk history's state.
+ * \class StationaryIteration
+ * \brief Stationary iteration object.
  */
 //---------------------------------------------------------------------------//
-template<class Scalar, class LO, class GO, class RNG>
-class History
+template<class Scalar, class LO, class GO>
+class StationaryIteration
 {
   public:
 
     //@{
     //! Typedefs.
-    typedef Scalar                                    scalar_type;
-    typedef LO                                        local_ordinal_type;
-    typedef GO                                        global_ordinal_type;
-    typedef RNG                                       rng_type;
-    typedef typename RNGTraits<RNG>::result_type      RNGState;
+    typedef Scalar                                  scalar_type;
+    typedef LO                                      local_ordinal_type;
+    typedef GO                                      global_ordinal_type;
+    typedef LinearProblem<Scalar,LO,GO>             LinearProblemType;
+    typedef Teuchos::RCP<LinearProblemType>         RCP_LinearProblem;
+    typedef LinearOperatorSplit<Scalar,LO,GO>       LinearOperatorSplitType;
+    typedef Teuchos::RCP<LinearOperatorSplitType>   RCP_LinearOperatorSplit;
     //@}
 
-    // Defaut constructor.
-    History();
+    //! Constructor.
+    StationaryIteration( const RCP_LinearProblem& linear_problem,
+			 const RCP_LinearOperatorSplit& linear_operator_split );
 
-    // Destructor.
-    ~History();
+    //! Destructor.
+    ~StationaryIteration();
 
-    //! Set the history weight.
-    void setWeight( const Scalar weight )
-    { d_weight = weight; }
-
-    //! Add to the history weight.
-    void addWeight( const Scalar weight )
-    { d_weight += weight; }
-
-    //! Multiply the history weight.
-    void multiplyWeight( const Scalar weight )
-    { d_weight *= weight; }
-
-    //! Set the local history state.
-    void setLocalState( const LO local_state )
-    { d_local_state = local_state; }
-
-    //! Set the global history state.
-    void setGlobalState( const GO global_state )
-    { d_global_state = global_state; }
-
-    //! Set the RNG state.
-    void setRNGState( const RNGState rng_state )
-    { d_rng_state = rng_state; }
-
-    //! Terminate the history.
-    void terminate()
-    { d_active = false; }
-
-    //! Get the history weight.
-    Scalar weight() const
-    { return d_weight; }
-
-    //! Get the local history state.
-    LO LocalState() const
-    { return d_local_state; }
-
-    //! Get the global history state.
-    GO globalState() const 
-    { return d_global_state; }
-
-    //! Get the RNG state.
-    RNGState rngState() const
-    { return d_rng_state; }
-
-    //! Get the active history state.
-    bool active() const
-    { return d_active; }
+    //! Do one stationary iteration.
+    void doOneIteration();
 
   private:
 
-    // History weight.
-    Scalar d_weight;
+    // Linear problem.
+    RCP_LinearProblem d_linear_problem;
 
-    // Local history state.
-    LO d_local_state;
-
-    // Global history state.
-    GO d_global_state;
-
-    // RNG state.
-    RNGState d_rng_state;   
-
-    // Active history state.
-    bool d_active;
+    // Linear operator splitting.
+    RCP_LinearOperatorSplit d_linear_operator_split;
 };
-
-//---------------------------------------------------------------------------//
 
 } // end namespace Chimera
 
@@ -145,13 +95,12 @@ class History
 // Template includes.
 //---------------------------------------------------------------------------//
 
-#include "Chimera_History_def.hpp"
+#include "Chimera_StationaryIteration_def.hpp"
 
 //---------------------------------------------------------------------------//
 
-#endif // end Chimera_HISTORY_HPP
+#endif // end Chimera_STATIONARYITERATION_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_History.hpp
+// end Chimera_StationaryIteration.hpp
 //---------------------------------------------------------------------------//
-

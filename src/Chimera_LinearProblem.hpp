@@ -52,7 +52,7 @@ namespace Chimera
 // \class LinearProblem
 // \brief Linear problem container for Chimera.
 //---------------------------------------------------------------------------//
-template<class Scalar, class LO=int, class GO=LO>
+template<class Scalar, class LO, class GO>
 class LinearProblem
 {
   public:
