@@ -22,19 +22,26 @@ SET(HEADERS ${HEADERS}
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
-  Chimera_AdjointMCDev.hpp
+  Chimera_AdjointMC.hpp
   Chimera_BoostRNG.hpp
   Chimera_DirectMC.hpp
+  Chimera_History.hpp
+  Chimera_History_def.hpp
   Chimera_JacobiPreconditioner.hpp
+  Chimera_JacobiSplit.hpp
+  Chimera_JacobiSplit_def.hpp
+  Chimera_LinearOperatorSplit.hpp
   Chimera_LinearProblem.hpp
   Chimera_LinearProblem_def.hpp
   Chimera_MCSA.hpp
   Chimera_OperatorTools.hpp
   Chimera_RNGTraits.hpp
+  Chimera_StationaryIteration.hpp
+  Chimera_StationaryIteration_def.hpp
   ) 
 
 APPEND_SET(SOURCES
-  Chimera_AdjointMCDev.cpp
+  Chimera_AdjointMC.cpp
   Chimera_DirectMC.cpp
   Chimera_JacobiPreconditioner.cpp
   Chimera_MCSA.cpp

@@ -65,8 +65,8 @@ class JacobiSplit : public LinearOperatorSplit<Scalar,LO,GO>
     typedef LO                                      local_ordinal_type;
     typedef GO                                      global_ordinal_type;
     typedef LinearOperatorSplit<Scalar,LO,GO>       Base;
-    typedef Base::RCP_TpetraCrsMatrix               RCP_TpetraCrsMatrix;
-    typedef Base::RCP_TpetraVector                  RCP_TpetraVector;
+    typedef typename Base::RCP_TpetraCrsMatrix      RCP_TpetraCrsMatrix;
+    typedef typename Base::RCP_TpetraVector         RCP_TpetraVector;
     //@}
 
     // Constructor.

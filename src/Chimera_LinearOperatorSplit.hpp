@@ -89,7 +89,7 @@ class LinearOperatorSplit
     RCP_TpetraCrsMatrix iterationMatrix()
     { return b_iteration_matrix; }
 
-    //! Apply M^-1 to a vector.
+    //! Apply M^-1 to a vector (M^-1 x = y).
     virtual void 
     applyInvM( const RCP_TpetraVector& x, RCP_TpetraVector& y ) = 0;
 

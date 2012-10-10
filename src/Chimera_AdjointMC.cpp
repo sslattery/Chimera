@@ -42,7 +42,7 @@
 #include <iterator>
 #include <algorithm>
 
-#include "Chimera_AdjointMCDev.hpp"
+#include "Chimera_AdjointMC.hpp"
 
 #include <Epetra_Vector.h>
 #include <Epetra_Map.h>

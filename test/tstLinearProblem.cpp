@@ -75,8 +75,8 @@ TEUCHOS_UNIT_TEST( LinearProblem, linear_problem_test )
 
     // Build the linear problem.
     comm->barrier();
-    Teuchos::RCP<Chimera::LinearProblem<double,int> > linear_problem = 
-	Teuchos::rcp( new Chimera::LinearProblem<double,int>( A, X, B ) );
+    Teuchos::RCP<Chimera::LinearProblem<double,int,int> > linear_problem = 
+	Teuchos::rcp( new Chimera::LinearProblem<double,int,int>( A, X, B ) );
 
     // Check the operator.
     Teuchos::RCP<Tpetra::CrsMatrix<double,int> > A_from_LP = 

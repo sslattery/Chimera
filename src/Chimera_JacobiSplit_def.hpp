@@ -72,7 +72,7 @@ JacobiSplit<Scalar,LO,GO>::~JacobiSplit()
  * \brief Split the operator with Jacobi splitting.
  */
 template<class Scalar, class LO, class GO>
-JacobiSplit<Scalar,LO,GO>::split()
+void JacobiSplit<Scalar,LO,GO>::split()
 {
     // Grab the row and column maps from the operator.
     Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map =
@@ -84,12 +84,12 @@ JacobiSplit<Scalar,LO,GO>::split()
     // Build the iteration matrix by extracting the diagonal and scaling by
     // its inverse.
     this->b_iteration_matrix = Teuchos::rcp( 
-	new Tpetra::CrsMatrix( 
+	new Tpetra::CrsMatrix<Scalar,LO,GO>( 
 	    row_map, col_map,
 	    this->b_linear_operator->getGlobalMaxNumRowEntries() ) );
 
-    Teuchos::ArrayView<LO> local_col_indices;
-    Teuchos::ArrayView<Scalar> local_values;
+    Teuchos::ArrayView<const LO> local_col_indices;
+    Teuchos::ArrayView<const Scalar> local_values;
 
     Teuchos::Array<LO> diag_col_index(1,0);
     Teuchos::Array<Scalar> diag_zero(1,0.0);
@@ -111,7 +111,8 @@ JacobiSplit<Scalar,LO,GO>::split()
 	    row_index, diag_col_index(), diag_zero() );
     }
 
-    RCP_TpetraVector diagonal_inv = Tpetra::createVector( row_map );
+    RCP_TpetraVector diagonal_inv = 
+	Tpetra::createVector<Scalar,LO,GO>( row_map );
     this->b_linear_operator->getLocalDiagCopy( *diagonal_inv );
     diagonal_inv->reciprocal( *diagonal_inv );
 
@@ -125,10 +126,14 @@ JacobiSplit<Scalar,LO,GO>::split()
  * \brief Apply M^-1 to a vector (M^-1 x = y).
  */
 template<class Scalar, class LO, class GO>
-JacobiSplit<Scalar,LO,GO>::applyInvM( const RCP_TpetraVector& x,
-				      RCP_TpetraVector& y )
+void JacobiSplit<Scalar,LO,GO>::applyInvM( const RCP_TpetraVector& x,
+					   RCP_TpetraVector& y )
 {
-    RCP_TpetraVector diagonal_inv = Tpetra::createVector( row_map );
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map =
+	this->b_linear_operator->getRowMap();
+
+    RCP_TpetraVector diagonal_inv = 
+	Tpetra::createVector<Scalar,LO,GO>( row_map );
     this->b_linear_operator->getLocalDiagCopy( *diagonal_inv );
     diagonal_inv->reciprocal( *diagonal_inv );
 
