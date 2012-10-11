@@ -32,63 +32,56 @@
 */
 //---------------------------------------------------------------------------//
 /*!
- * \file Chimera_LinearOperatorSplitFactory.hpp
+ * \file Chimera_LinearOperatorSplitFactory_def.hpp
  * \author Stuart Slattery
- * \brief Linear operator split factory declaration.
+ * \brief Linear operator split factory definition.
  */
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_LINEAROPERATORSPLITFACTORY_HPP
-#define Chimera_LINEAROPERATORSPLITFACTORY_HPP
+#ifndef Chimera_LINEAROPERATORSPLITFACTORY_DEF_HPP
+#define Chimera_LINEAROPERATORSPLITFACTORY_DEF_HPP
 
-#include "Chimera_LinearOperatorSplit.hpp"
+#include <string>
 
-#include <Teuchos_RCP.hpp>
-#include <Teuchos_ParameterList.hpp>
-
-#include <Tpetra_CrsMatrix.hpp>
+#include "Chimera_JacobiSplit.hpp"
 
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
- * \class LinerarOperatorSplitFactory
- * \brief Factory for linear operator split implementations.
+ * \brief Creation method.
  */
-//---------------------------------------------------------------------------//
-class LinearOperatorSplitFactory
+template<class Scalar, class LO, class GO>
+static Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> >
+LinearOperatorSplitFactory::create( 
+    const Teuchos::RCP<Teuchos::ParameterList>& plist,
+    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO>& linear_op )
 {
-  public:
+    Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> > linear_op_split;
 
-    //! Constructor.
-    LinearOperatorSplitFactory()
-    { /* ... */ }
+    switch ( plist->get<std::string>("SPLIT TYPE") )
+    {
+	case "JACOBI":
 
-    //! Destructor.
-    ~LinearOperatorSplitFactory()
-    { /* ... */ }
+	    linear_op_split = Teuchos::rcp( 
+		new JacobiSplit<Scalar,LO,GO>( linear_op ) );
 
-    // Factory method.
-    template<class Scalar, class LO, class GO>
-    static Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> >
-    create( const Teuchos::RCP<Teuchos::ParameterList>& plist,
-	    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO>& linear_op );
-};
+	    break;
 
-//---------------------------------------------------------------------------//
-// Template includes.
-//---------------------------------------------------------------------------//
+	default:
 
-#include "Chimera_LinearOperatorFactory_def.hpp"
+	    break;
+    }
+
+    return linear_op_split;
+}
 
 //---------------------------------------------------------------------------//
 
 } // end namepsace Chimera
 
-#endif // end Chimera_LINEAROPERATORSPLITFACTORY_HPP
+#endif // end Chimera_LINEAROPERATORSPLITFACTORY_DEF_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_LinearOperatorSplitFactory.hpp
+// end Chimera_LinearOperatorSplitFactory_def.hpp
 //---------------------------------------------------------------------------//
-
-
