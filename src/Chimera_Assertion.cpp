@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------//
 /*!
- * \file   DTK_Assertion.cpp
+ * \file   Chimera_Assertion.cpp
  * \author Stuart Slattery
  * \brief  Assertions for error handling and Design-by-Contract.
  */
@@ -8,9 +8,9 @@
 
 #include <sstream>
 
-#include "DTK_Assertion.hpp"
+#include "Chimera_Assertion.hpp"
 
-namespace DataTransferKit
+namespace Chimera
 {
 //---------------------------------------------------------------------------//
 // Assertion functions.
@@ -31,7 +31,7 @@ std::string Assertion::generate_output(
     const std::string& cond, const std::string& file, const int line ) const
 {
     std::ostringstream output;
-    output << "DataTransferKit Assertion: " << cond << ", failed in " << file
+    output << "Chimera Assertion: " << cond << ", failed in " << file
 	   << ", line " << line  << "." << std::endl;
     return output.str();
 }
@@ -40,7 +40,7 @@ std::string Assertion::generate_output(
 // Throw functions.
 //---------------------------------------------------------------------------//
 /*!
- * \brief Throw a DataTransferKit::Assertion.
+ * \brief Throw a Chimera::Assertion.
  *
  * \param cond A string containing the assertion condition that failed.
  *
@@ -57,8 +57,8 @@ void throwAssertion( const std::string& cond, const std::string& file,
 
 //---------------------------------------------------------------------------//
 
-} // end namespace DataTransferKit
+} // end namespace Chimera
 
 //---------------------------------------------------------------------------//
-// end DTK_Assertion.cpp
+// end Chimera_Assertion.cpp
 //---------------------------------------------------------------------------//

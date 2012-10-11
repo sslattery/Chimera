@@ -22,6 +22,7 @@ SET(HEADERS ${HEADERS}
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
+  Chimera_Assertion.hpp
   Chimera_BoostRNG.hpp
   Chimera_History.hpp
   Chimera_History_def.hpp
@@ -38,6 +39,7 @@ APPEND_SET(HEADERS
   ) 
 
 APPEND_SET(SOURCES
+  Chimera_Assertion.cpp
   )
 
 #
