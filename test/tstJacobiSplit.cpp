@@ -51,14 +51,14 @@ TEUCHOS_UNIT_TEST( JacobiSplit, jacobi_split_test )
     // Build the linear operator.
     Teuchos::RCP<Tpetra::CrsMatrix<double,int,int> > A = 
 	Tpetra::createCrsMatrix<double,int,int>( row_map, 3 );
+
     Teuchos::Array<int> global_columns(3);
     Teuchos::Array<double> matrix_values(3);
     matrix_values[0] = 1.0;
     matrix_values[1] = 2.0;
     matrix_values[2] = 3.0;
     int gid = 0;
-    std::cout << "HERE" << std::endl;
-    for ( int i = 0; i < local_num_rows; ++i )
+    for ( int i = 1; i < local_num_rows-1; ++i )
     {
 	gid = i + local_num_rows*comm_rank;
 	global_columns[0] = gid-1;
@@ -66,9 +66,46 @@ TEUCHOS_UNIT_TEST( JacobiSplit, jacobi_split_test )
 	global_columns[2] = gid+1;
 	A->insertGlobalValues( gid, global_columns(), matrix_values() );
     }
-    std::cout << "HERE" << std::endl;
+
+    Teuchos::Array<int> edge_global_columns(2);
+    Teuchos::Array<double> edge_matrix_values(2);
+    edge_matrix_values[0] = 2.0;
+    edge_matrix_values[1] = 3.0;
+    gid = local_num_rows*comm_rank;
+    edge_global_columns[0] = gid;
+    edge_global_columns[1] = gid+1;
+    global_columns[0] = gid-1;
+    global_columns[1] = gid;
+    global_columns[2] = gid+1;
+    if ( comm_rank == 0 )
+    {
+	A->insertGlobalValues( gid, edge_global_columns(), edge_matrix_values() );
+    }
+    else
+    {
+	A->insertGlobalValues( gid, global_columns(), matrix_values() );
+    }
+    comm->barrier();
+
+    edge_matrix_values[0] = 1.0;
+    edge_matrix_values[1] = 2.0;
+    gid = local_num_rows - 1 + local_num_rows*comm_rank;
+    edge_global_columns[0] = gid-1;
+    edge_global_columns[1] = gid;
+    global_columns[0] = gid-1;
+    global_columns[1] = gid;
+    global_columns[2] = gid+1;
+    if ( comm_rank == comm_size-1 )
+    {
+	A->insertGlobalValues( gid, edge_global_columns(), edge_matrix_values() );
+    }
+    else
+    {
+	A->insertGlobalValues( gid, global_columns(), matrix_values() );
+    }
+    comm->barrier();
+
     A->fillComplete();
-    std::cout << "HERE" << std::endl;
 
     // Build the Jacobi split.
     Teuchos::RCP<Chimera::LinearOperatorSplit<double,int,int> > a_split =
@@ -83,14 +120,41 @@ TEUCHOS_UNIT_TEST( JacobiSplit, jacobi_split_test )
 	a_split->iterationMatrix();
     Teuchos::ArrayView<const double> row_values;
     Teuchos::ArrayView<const int> col_indices;
-    for ( int i = 0; i < local_num_rows; ++i )
+    for ( int i = 1; i < local_num_rows-1; ++i )
     {
 	iteration_matrix->getLocalRowView( i, col_indices, row_values );
-
 	TEST_ASSERT( row_values[0] == matrix_values[0] / matrix_values[1] );
 	TEST_ASSERT( row_values[1] == 0.0 );
 	TEST_ASSERT( row_values[2] == matrix_values[2] / matrix_values[1] );
     }
+
+    iteration_matrix->getLocalRowView( 0, col_indices, row_values );
+    if ( comm_rank == 0 )
+    {
+	TEST_ASSERT( row_values[0] == 0.0 );
+	TEST_ASSERT( row_values[1] == matrix_values[2] / matrix_values[1] );
+    }
+    else
+    {
+	TEST_ASSERT( row_values[0] == matrix_values[0] / matrix_values[1] );
+	TEST_ASSERT( row_values[1] == 0.0 );
+	TEST_ASSERT( row_values[2] == matrix_values[2] / matrix_values[1] );
+    }
+    comm->barrier();
+
+    iteration_matrix->getLocalRowView( local_num_rows-1, col_indices, row_values );
+    if ( comm_rank == comm_size-1 )
+    {
+	TEST_ASSERT( row_values[0] == matrix_values[0] / matrix_values[1] );
+	TEST_ASSERT( row_values[1] == 0.0 );
+    }
+    else
+    {
+	TEST_ASSERT( row_values[0] == matrix_values[0] / matrix_values[1] );
+	TEST_ASSERT( row_values[1] == 0.0 );
+	TEST_ASSERT( row_values[2] == matrix_values[2] / matrix_values[1] );
+    }
+    comm->barrier();
 
     // Check application to a vector where the product is another vector.
     double X_val = 5.0;

@@ -101,7 +101,7 @@ void JacobiSplit<Scalar,LO,GO>::split()
 	this->b_linear_operator->getLocalRowView( 
 	    row_index, local_col_indices, local_values );
 
-	this->b_iteration_matrix->replaceLocalValues(
+	this->b_iteration_matrix->insertLocalValues(
 	    row_index, local_col_indices, local_values );
 
 	diag_col_index[0] = 
@@ -114,11 +114,12 @@ void JacobiSplit<Scalar,LO,GO>::split()
     RCP_TpetraVector diagonal_inv = 
 	Tpetra::createVector<Scalar,LO,GO>( row_map );
     this->b_linear_operator->getLocalDiagCopy( *diagonal_inv );
+
     diagonal_inv->reciprocal( *diagonal_inv );
 
-    this->b_iteration_matrix->leftScale( *diagonal_inv );
-
     this->b_iteration_matrix->fillComplete();
+
+    this->b_iteration_matrix->leftScale( *diagonal_inv );
 }
 
 //---------------------------------------------------------------------------//
@@ -137,7 +138,7 @@ void JacobiSplit<Scalar,LO,GO>::applyInvM( const RCP_TpetraVector& x,
     this->b_linear_operator->getLocalDiagCopy( *diagonal_inv );
     diagonal_inv->reciprocal( *diagonal_inv );
 
-    y->elementWiseMultiply( 0.0, *diagonal_inv, *x, 1.0 );
+    y->elementWiseMultiply( 1.0, *diagonal_inv, *x, 0.0 );
 }
 
 //---------------------------------------------------------------------------//
