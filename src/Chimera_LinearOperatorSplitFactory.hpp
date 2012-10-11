@@ -72,18 +72,18 @@ class LinearOperatorSplitFactory
     template<class Scalar, class LO, class GO>
     static Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> >
     create( const Teuchos::RCP<Teuchos::ParameterList>& plist,
-	    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO>& linear_op );
+	    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& linear_op );
 };
+
+} // end namepsace Chimera
 
 //---------------------------------------------------------------------------//
 // Template includes.
 //---------------------------------------------------------------------------//
 
-#include "Chimera_LinearOperatorFactory_def.hpp"
+#include "Chimera_LinearOperatorSplitFactory_def.hpp"
 
 //---------------------------------------------------------------------------//
-
-} // end namepsace Chimera
 
 #endif // end Chimera_LINEAROPERATORSPLITFACTORY_HPP
 

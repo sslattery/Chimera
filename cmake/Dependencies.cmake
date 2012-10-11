@@ -1,13 +1,14 @@
 SET(LIB_REQUIRED_DEP_PACKAGES
   Teuchos
-  Epetra
   Tpetra
-  AztecOO
   Anasazi
-  Panzer
 )
 
-SET(LIB_OPTIONAL_DEP_PACKAGES)
+SET(LIB_OPTIONAL_DEP_PACKAGES
+  Epetra
+  AztecOO
+  Panzer
+)
 
 SET(TEST_REQUIRED_DEP_PACKAGES)
 

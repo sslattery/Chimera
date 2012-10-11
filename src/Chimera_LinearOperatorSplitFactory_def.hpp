@@ -52,25 +52,17 @@ namespace Chimera
  * \brief Creation method.
  */
 template<class Scalar, class LO, class GO>
-static Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> >
+Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> >
 LinearOperatorSplitFactory::create( 
     const Teuchos::RCP<Teuchos::ParameterList>& plist,
-    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO>& linear_op )
+    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& linear_op )
 {
     Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> > linear_op_split;
 
-    switch ( plist->get<std::string>("SPLIT TYPE") )
+    if( plist->get<std::string>("SPLIT TYPE") == "JACOBI" )
     {
-	case "JACOBI":
-
-	    linear_op_split = Teuchos::rcp( 
-		new JacobiSplit<Scalar,LO,GO>( linear_op ) );
-
-	    break;
-
-	default:
-
-	    break;
+	linear_op_split = 
+	    Teuchos::rcp( new JacobiSplit<Scalar,LO,GO>( linear_op ) );
     }
 
     return linear_op_split;

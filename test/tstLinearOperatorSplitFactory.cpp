@@ -1,8 +1,8 @@
 //---------------------------------------------------------------------------//
 /*!
- * \file tstJacobiSplit.cpp
+ * \file tstLinearOperatorSplitFactory.cpp
  * \author Stuart R. Slattery
- * \brief Jacobi operator splitting tests.
+ * \brief Linear operator split factory tests.
  */
 //---------------------------------------------------------------------------//
 
@@ -12,10 +12,11 @@
 #include <cstdlib>
 #include <sstream>
 #include <algorithm>
+#include <string>
 #include <cassert>
 
 #include <Chimera_LinearOperatorSplit.hpp>
-#include <Chimera_JacobiSplit.hpp>
+#include <Chimera_LinearOperatorSplitFactory.hpp>
 
 #include <Teuchos_UnitTestHarness.hpp>
 #include <Teuchos_DefaultComm.hpp>
@@ -26,6 +27,7 @@
 #include <Teuchos_OpaqueWrapper.hpp>
 #include <Teuchos_TypeTraits.hpp>
 #include <Teuchos_Tuple.hpp>
+#include <Teuchos_ParameterList.hpp>
 
 #include <Tpetra_Map.hpp>
 #include <Tpetra_CrsMatrix.hpp>
@@ -34,7 +36,7 @@
 //---------------------------------------------------------------------------//
 // Tests
 //---------------------------------------------------------------------------//
-TEUCHOS_UNIT_TEST( JacobiSplit, jacobi_split_test )
+TEUCHOS_UNIT_TEST( LinearOperatorSplitFactory, jacobi_split_test )
 {
     // Setup parallel distribution.
     Teuchos::RCP<const Teuchos::Comm<int> > comm = 
@@ -107,9 +109,13 @@ TEUCHOS_UNIT_TEST( JacobiSplit, jacobi_split_test )
 
     A->fillComplete();
 
-    // Build the Jacobi split.
+    // Build the operator splitting.
+    Teuchos::RCP<Teuchos::ParameterList> plist = 
+	Teuchos::rcp( new Teuchos::ParameterList() );
+    plist->set<std::string>("SPLIT TYPE","JACOBI");
+
     Teuchos::RCP<Chimera::LinearOperatorSplit<double,int,int> > a_split =
-	Teuchos::rcp( new Chimera::JacobiSplit<double,int,int>( A ) );
+	Chimera::LinearOperatorSplitFactory::create( plist, A );
     a_split->split();
 
     // Check the operator.
@@ -182,6 +188,6 @@ TEUCHOS_UNIT_TEST( JacobiSplit, jacobi_split_test )
 }
 
 //---------------------------------------------------------------------------//
-// end tstJacobiSplit.cpp
+// end tstLinearOperatorSplitFactory.cpp
 //---------------------------------------------------------------------------//
 
