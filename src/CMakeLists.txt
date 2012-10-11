@@ -31,6 +31,8 @@ APPEND_SET(HEADERS
   Chimera_JacobiSplit.hpp
   Chimera_JacobiSplit_def.hpp
   Chimera_LinearOperatorSplit.hpp
+  Chimera_LinearOperatorSplitFactory.hpp
+  Chimera_LinearOperatorSplitFactory_def.hpp
   Chimera_LinearProblem.hpp
   Chimera_LinearProblem_def.hpp
   Chimera_MCSA.hpp
