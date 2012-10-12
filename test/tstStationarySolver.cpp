@@ -1,8 +1,8 @@
 //---------------------------------------------------------------------------//
 /*!
- * \file tstStationaryIteration.cpp
+ * \file tstStationarySolver.cpp
  * \author Stuart R. Slattery
- * \brief Stationary iteration tests.
+ * \brief Stationary solver tests.
  */
 //---------------------------------------------------------------------------//
 
@@ -15,7 +15,8 @@
 #include <string>
 #include <cassert>
 
-#include <Chimera_StationaryIteration.hpp>
+#include <Chimera_LinearSolver.hpp>
+#include <Chimera_StationarySolver.hpp>
 #include <Chimera_LinearProblem.hpp>
 #include <Chimera_LinearOperatorSplit.hpp>
 #include <Chimera_LinearOperatorSplitFactory.hpp>
@@ -38,7 +39,7 @@
 //---------------------------------------------------------------------------//
 // Tests
 //---------------------------------------------------------------------------//
-TEUCHOS_UNIT_TEST( StationaryIteration, jacobi_iteration_test )
+TEUCHOS_UNIT_TEST( StationarySolver, jacobi_solve_test )
 {
     // Setup parallel distribution.
     Teuchos::RCP<const Teuchos::Comm<int> > comm = 
@@ -128,36 +129,30 @@ TEUCHOS_UNIT_TEST( StationaryIteration, jacobi_iteration_test )
     Teuchos::RCP<Chimera::LinearProblem<double,int,int> > linear_problem = 
 	Teuchos::rcp( new Chimera::LinearProblem<double,int,int>( A, X, B ) );
 
-    // Build the operator splitting.
-    Teuchos::RCP<Teuchos::ParameterList> plist = 
+    // Build the stationary solver.
+    std::string split_type = "JACOBI";
+    double tolerance = 1.0e-8;
+    int max_iters = 2;
+    Teuchos::RCP<Teuchos::ParameterList> plist =
 	Teuchos::rcp( new Teuchos::ParameterList() );
-    plist->set<std::string>("SPLIT TYPE","JACOBI");
+    plist->set<std::string>("SPLIT TYPE", split_type);
+    plist->set<double>("TOLERANCE", tolerance);
+    plist->set<int>("MAX ITERS", max_iters);
+    Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =
+	Teuchos::rcp( new Chimera::StationarySolver<double,int,int>(
+			  linear_problem, plist ) );
 
-    Teuchos::RCP<Chimera::LinearOperatorSplit<double,int,int> > a_split =
-	Chimera::LinearOperatorSplitFactory::create( plist, A );
-    a_split->split();
+    // Check the solver parameters.
+    TEST_ASSERT( solver->linearProblem() == linear_problem );
+    TEST_ASSERT( solver->tolerance() == tolerance );
+    TEST_ASSERT( solver->maxNumIters() == max_iters );
 
-    // Build the stationary iteration.
-    Teuchos::RCP<Chimera::StationaryIteration<double,int,int> > stationary_it =
-	Teuchos::rcp( new Chimera::StationaryIteration<double,int,int>(
-			  linear_problem, a_split ) );
-
-    // Do one iteration.
-    stationary_it->doOneIteration();
+    // Solve (only 2 iterations).
+    solver->iterate();
 
     // Check the solution vector.
     Teuchos::ArrayRCP<const double> X_view = 
 	linear_problem->getLHS()->get1dView();
-    for ( int i = 0; i < local_num_rows; ++i )
-    {
-    	TEST_ASSERT( X_view[i] == B_val / matrix_values[1] );
-    }
-
-    // Do another iteration.
-    stationary_it->doOneIteration();
-
-    // Check the solution vector again.
-    X_view = linear_problem->getLHS()->get1dView();
     for ( int i = 1; i < local_num_rows-1; ++i )
     {
 	TEST_ASSERT( X_view[i] == 
@@ -190,6 +185,6 @@ TEUCHOS_UNIT_TEST( StationaryIteration, jacobi_iteration_test )
 }
 
 //---------------------------------------------------------------------------//
-// end tstStationaryIteration.cpp
+// end tstStationarySolver.cpp
 //---------------------------------------------------------------------------//
 

@@ -42,6 +42,7 @@
 #define Chimera_LINEARSOLVER_HPP
 
 #include <Chimera_LinearProblem.hpp>
+#include <Chimera_LinearOperatorSplit.hpp>
 
 #include <Teuchos_RCP.hpp>
 
@@ -60,24 +61,26 @@ class LinearSolver
 
     //@{
     //! Typedefs.
-    typedef Scalar                                  scalar_type;
-    typedef LO                                      local_ordinal_type;
-    typedef GO                                      global_ordinal_type;
-    typedef LinearProblem<Scalar,LO,GO>             LinearProblemType;
-    typedef Teuchos::RCP<LinearProblemType>         RCP_LinearProblem;
+    typedef Scalar                                    scalar_type;
+    typedef LO                                        local_ordinal_type;
+    typedef GO                                        global_ordinal_type;
+    typedef LinearProblem<Scalar,LO,GO>               LinearProblemType;
+    typedef Teuchos::RCP<LinearProblemType>           RCP_LinearProblem;
+    typedef LinearOperatorSplit<Scalar,LO,GO>         LinearOperatorSplitType;
+    typedef Teuchos::RCP<LinearOperatorSplitType>     RCP_LinearOperatorSplit;
     //@}
 
     //! Constructor.
     LinearSolver()
+	: b_tolerance( 0.0 )
+	, b_max_num_iters( 0 )
+	, b_num_iters( 0 )
+	, b_is_converged( false )
     { /* ... */ }
 
     //! Destructor.
     virtual ~LinearSolver()
     { /* ... */ }
-
-    //! Set the convergence tolerance
-    void setTolerance( Scalar tolerance )
-    { b_tolerance = tolerance; }
 
     //! Iterate until convergence.
     virtual void iterate() = 0;
@@ -86,24 +89,45 @@ class LinearSolver
     RCP_LinearProblem linearProblem() const
     { return b_linear_problem; }
 
+    //! Get the linear operator split.
+    RCP_LinearOperatorSplit linearOperatorSplit() const
+    { return b_linear_operator_split; }
+
     //! Get the convergence tolerance.
     Scalar tolerance() const
     { return b_tolerance; }
 
+    //! Get the maximum number of allowed iterations.
+    int maxNumIters() const
+    { return b_max_num_iters; }
+
     //! Get the number of iterations needed to converge.
     int numIters() const
     { return b_num_iters; }
+
+    //! Return if the solution is converged.
+    bool isConverged() const
+    { return b_is_converged; }
 
   protected:
 
     // The linear problem.
     RCP_LinearProblem b_linear_problem;
 
+    // Linear operator split.
+    RCP_LinearOperatorSplit b_linear_operator_split;
+
     // Convergence tolerance.
     Scalar b_tolerance;
 
+    // Maximum number of allowed iterations.
+    int b_max_num_iters;
+
     // Number of iterations to converge last solution.
     int b_num_iters;
+
+    // Convergence of last solution.
+    bool b_is_converged;
 };
 
 } // end namespace Chimera
