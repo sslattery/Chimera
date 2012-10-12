@@ -39,30 +39,45 @@
 #ifndef Chimera_OPERATORTOOLS_HPP
 #define Chimera_OPERATORTOOLS_HPP
 
-#include <vector>
-
 #include <Teuchos_RCP.hpp>
 
-#include <Epetra_Operator.h>
+#include <Tpetra_Operator.hpp>
 
 namespace Chimera
 {
-
+//---------------------------------------------------------------------------//
+/*!
+ * \class OperatorTools
+ * \brief A stateless class providing tools for operator analysis.
+ */
+//---------------------------------------------------------------------------//
 class OperatorTools
 {
   public:
 
-    // Constructor.
-    OperatorTools();
+    //! Constructor.
+    OperatorTools()
+    { /* ... */ }
+
+    //! Destructor.
+    ~OperatorTools()
+    { /* ... */ }
 
     // Compute the spectral radius of an operator.
-    double static spectralRadius( const Teuchos::RCP<Epetra_Operator>& matrix );
-
-    // Compute the stiffness ratio of the operator.
-    double static stiffnessRatio( const Teuchos::RCP<Epetra_Operator>& matrix );
+    template<class Scalar,class LO, class GO>
+    double static spectralRadius( 
+	const Teuchos::RCP<Tpetra::Operator<Scalar,LO,GO> >& matrix );
 };
 
 } // end namespace Chimera
+
+//---------------------------------------------------------------------------//
+// Template includes.
+//---------------------------------------------------------------------------//
+
+#include "Chimera_OperatorTools_def.hpp"
+
+//---------------------------------------------------------------------------//
 
 #endif // Chimera_OPERATORTOOLS_HPP
 
