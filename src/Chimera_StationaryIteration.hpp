@@ -46,6 +46,8 @@
 
 #include <Teuchos_RCP.hpp>
 
+#include <Tpetra_Vector.hpp>
+
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
@@ -68,6 +70,8 @@ class StationaryIteration
     typedef Teuchos::RCP<LinearProblemType>         RCP_LinearProblem;
     typedef LinearOperatorSplit<Scalar,LO,GO>       LinearOperatorSplitType;
     typedef Teuchos::RCP<LinearOperatorSplitType>   RCP_LinearOperatorSplit;
+    typedef Tpetra::Vector<Scalar,LO,GO>            TpetraVector;
+    typedef Teuchos::RCP<TpetraVector>              RCP_TpetraVector;
     //@}
 
     //! Constructor.

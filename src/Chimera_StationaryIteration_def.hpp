@@ -74,9 +74,12 @@ void StationaryIteration<Scalar,LO,GO>::doOneIteration()
 	*(d_linear_problem->getLHS()),
 	*(d_linear_problem->getLHS()) );
 
-    d_linear_problem->getLHS()->update( 1.0, 
-					*(d_linear_problem->getRHS()),
-					1.0 );
+    RCP_TpetraVector m_inv_b = Tpetra::createVector<Scalar,LO,GO>( 
+	d_linear_problem->getOperator()->getRowMap() );
+
+    d_linear_operator_split->applyInvM( d_linear_problem->getRHS(), m_inv_b );
+
+    d_linear_problem->getLHS()->update( 1.0, *(m_inv_b), 1.0 );
 }
 
 //---------------------------------------------------------------------------//
