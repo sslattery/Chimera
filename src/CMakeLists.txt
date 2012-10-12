@@ -33,9 +33,13 @@ APPEND_SET(HEADERS
   Chimera_LinearOperatorSplitFactory_def.hpp
   Chimera_LinearProblem.hpp
   Chimera_LinearProblem_def.hpp
+  Chimera_LinearSolver.hpp
+  Chimera_LinearSolverFactory.hpp
   Chimera_RNGTraits.hpp
   Chimera_StationaryIteration.hpp
   Chimera_StationaryIteration_def.hpp
+  Chimera_StationarySolver.hpp
+  Chimera_StationarySolver_def.hpp
   ) 
 
 APPEND_SET(SOURCES
