@@ -34,7 +34,7 @@
 /*!
  * \file Chimera_LinearSolverFactory_def.hpp
  * \author Stuart Slattery
- * \brief Linear operator split factory definition.
+ * \brief Linear solver factory definition.
  */
 //---------------------------------------------------------------------------//
 
