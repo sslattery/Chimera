@@ -32,62 +32,55 @@
 */
 //---------------------------------------------------------------------------//
 /*!
- * \file Chimera_LinearSolverFactory.hpp
+ * \file Chimera_LinearSolverFactory_def.hpp
  * \author Stuart Slattery
- * \brief Linear solver factory declaration.
+ * \brief Linear operator split factory definition.
  */
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_LINEARSOLVERFACTORY_HPP
-#define Chimera_LINEARSOLVERFACTORY_HPP
+#ifndef Chimera_LINEARSOLVERFACTORY_DEF_HPP
+#define Chimera_LINEARSOLVERFACTORY_DEF_HPP
 
-#include "Chimera_LinearSolver.hpp"
-#include "Chimera_LinearProblem.hpp"
+#include <string>
 
-#include <Teuchos_RCP.hpp>
-#include <Teuchos_ParameterList.hpp>
+#include "Chimera_Assertion.hpp"
+#include "Chimera_StationarySolver.hpp"
 
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
- * \class LinerarSolverFactory
- * \brief Factory for linear operator split implementations.
+ * \brief Creation method.
  */
-//---------------------------------------------------------------------------//
-class LinearSolverFactory
+template<class Scalar, class LO, class GO>
+Teuchos::RCP<LinearSolver<Scalar,LO,GO> >
+LinearSolverFactory::create( 
+    const Teuchos::RCP<Teuchos::ParameterList>& plist,
+    const Teuchos::RCP<LinearProblem<Scalar,LO,GO> >& linear_problem )
 {
-  public:
+    testPrecondition( !plist.is_null() );
+    testPrecondition( !linear_problem.is_null() );
 
-    //! Constructor.
-    LinearSolverFactory()
-    { /* ... */ }
+    Teuchos::RCP<LinearSolver<Scalar,LO,GO> > linear_solver;
 
-    //! Destructor.
-    ~LinearSolverFactory()
-    { /* ... */ }
+    if( plist->get<std::string>("SOLVER TYPE") == "STATIONARY" )
+    {
+	linear_solver = 
+	    Teuchos::rcp( new StationarySolver<Scalar,LO,GO>( linear_problem,
+							      plist ) );
+    }
 
-    // Factory method.
-    template<class Scalar, class LO, class GO>
-    static Teuchos::RCP<LinearSolver<Scalar,LO,GO> >
-    create( const Teuchos::RCP<Teuchos::ParameterList>& plist,
-	    const Teuchos::RCP<LinearProblem<Scalar,LO,GO> >& linear_problem );
-};
+    testPostcondition( !linear_solver.is_null() );
+
+    return linear_solver;
+}
+
+//---------------------------------------------------------------------------//
 
 } // end namepsace Chimera
 
-//---------------------------------------------------------------------------//
-// Template includes.
-//---------------------------------------------------------------------------//
-
-#include "Chimera_LinearSolverFactory_def.hpp"
+#endif // end Chimera_LINEARSOLVERFACTORY_DEF_HPP
 
 //---------------------------------------------------------------------------//
-
-#endif // end Chimera_LINEARSOLVERFACTORY_HPP
-
+// end Chimera_LinearSolverFactory_def.hpp
 //---------------------------------------------------------------------------//
-// end Chimera_LinearSolverFactory.hpp
-//---------------------------------------------------------------------------//
-
-

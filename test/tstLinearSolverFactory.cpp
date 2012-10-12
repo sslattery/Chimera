@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------//
 /*!
- * \file tstStationarySolver.cpp
+ * \file tstLinearSolverFactory.cpp
  * \author Stuart R. Slattery
  * \brief Stationary solver tests.
  */
@@ -16,7 +16,7 @@
 #include <cassert>
 
 #include <Chimera_LinearSolver.hpp>
-#include <Chimera_StationarySolver.hpp>
+#include <Chimera_LinearSolverFactory.hpp>
 #include <Chimera_LinearProblem.hpp>
 
 #include <Teuchos_UnitTestHarness.hpp>
@@ -37,7 +37,7 @@
 //---------------------------------------------------------------------------//
 // Tests
 //---------------------------------------------------------------------------//
-TEUCHOS_UNIT_TEST( StationarySolver, jacobi_solve_test )
+TEUCHOS_UNIT_TEST( LinearSolverFactory, linear_solve_test )
 {
     // Setup parallel distribution.
     Teuchos::RCP<const Teuchos::Comm<int> > comm = 
@@ -128,17 +128,16 @@ TEUCHOS_UNIT_TEST( StationarySolver, jacobi_solve_test )
 	Teuchos::rcp( new Chimera::LinearProblem<double,int,int>( A, X, B ) );
 
     // Build the stationary solver.
-    std::string split_type = "JACOBI";
     double tolerance = 1.0e-8;
     int max_iters = 2;
     Teuchos::RCP<Teuchos::ParameterList> plist =
 	Teuchos::rcp( new Teuchos::ParameterList() );
-    plist->set<std::string>("SPLIT TYPE", split_type);
+    plist->set<std::string>("SOLVER TYPE", "STATIONARY");
+    plist->set<std::string>("SPLIT TYPE", "JACOBI");
     plist->set<double>("TOLERANCE", tolerance);
     plist->set<int>("MAX ITERS", max_iters);
     Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =
-	Teuchos::rcp( new Chimera::StationarySolver<double,int,int>(
-			  linear_problem, plist ) );
+	Chimera::LinearSolverFactory::create( plist, linear_problem );
 
     // Check the solver parameters.
     TEST_ASSERT( solver->linearProblem() == linear_problem );
@@ -183,6 +182,6 @@ TEUCHOS_UNIT_TEST( StationarySolver, jacobi_solve_test )
 }
 
 //---------------------------------------------------------------------------//
-// end tstStationarySolver.cpp
+// end tstLinearSolverFactory.cpp
 //---------------------------------------------------------------------------//
 

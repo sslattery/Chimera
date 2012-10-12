@@ -31,6 +31,8 @@ APPEND_SET(HEADERS
   Chimera_LinearOperatorSplit.hpp
   Chimera_LinearOperatorSplitFactory.hpp
   Chimera_LinearOperatorSplitFactory_def.hpp
+  Chimera_LinearSolverFactory.hpp
+  Chimera_LinearSolverFactory_def.hpp
   Chimera_LinearProblem.hpp
   Chimera_LinearProblem_def.hpp
   Chimera_LinearSolver.hpp
