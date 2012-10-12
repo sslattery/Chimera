@@ -43,6 +43,7 @@
 
 #include <string>
 
+#include "Chimera_Assertion.hpp"
 #include "Chimera_JacobiSplit.hpp"
 
 namespace Chimera
@@ -57,6 +58,9 @@ LinearOperatorSplitFactory::create(
     const Teuchos::RCP<Teuchos::ParameterList>& plist,
     const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& linear_op )
 {
+    testPrecondition( !plist.is_null() );
+    testPrecondition( !linear_op.is_null() );
+
     Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> > linear_op_split;
 
     if( plist->get<std::string>("SPLIT TYPE") == "JACOBI" )
@@ -64,6 +68,8 @@ LinearOperatorSplitFactory::create(
 	linear_op_split = 
 	    Teuchos::rcp( new JacobiSplit<Scalar,LO,GO>( linear_op ) );
     }
+
+    testPostcondition( !linear_op_split.is_null() );
 
     return linear_op_split;
 }

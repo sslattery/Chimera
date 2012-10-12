@@ -101,7 +101,7 @@ void throwAssertion( const std::string& cond, const std::string& file,
   conditional. This should be used instead of the standard cassert.
  */
 
-#if HAVE_Chimera_DBC
+#if HAVE_CHIMERA_DBC
 
 #define testPrecondition(c) \
     if (!(c)) Chimera::throwAssertion( #c, __FILE__, __LINE__ )

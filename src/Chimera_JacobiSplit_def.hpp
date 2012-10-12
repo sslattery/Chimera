@@ -41,6 +41,8 @@
 #ifndef Chimera_JACOBISPLIT_DEF_HPP
 #define Chimera_JACOBISPLIT_DEF_HPP
 
+#include "Chimera_Assertion.hpp"
+
 #include <Teuchos_ArrayView.hpp>
 #include <Teuchos_Array.hpp>
 
@@ -56,6 +58,8 @@ template<class Scalar, class LO, class GO>
 JacobiSplit<Scalar,LO,GO>::JacobiSplit(
     const RCP_TpetraCrsMatrix& linear_operator )
 {
+    testPrecondition( !linear_operator.is_null() );
+
     this->b_linear_operator = linear_operator;
 }
 
@@ -120,6 +124,8 @@ void JacobiSplit<Scalar,LO,GO>::split()
     this->b_iteration_matrix->fillComplete();
 
     this->b_iteration_matrix->leftScale( *diagonal_inv );
+
+    testPostcondition( !this->b_iteration_matrix.is_null() );
 }
 
 //---------------------------------------------------------------------------//
@@ -130,6 +136,9 @@ template<class Scalar, class LO, class GO>
 void JacobiSplit<Scalar,LO,GO>::applyInvM( const RCP_TpetraVector& x,
 					   RCP_TpetraVector& y )
 {
+    testPrecondition( !x.is_null() );
+    testPrecondition( !y.is_null() );
+
     Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map =
 	this->b_linear_operator->getRowMap();
 

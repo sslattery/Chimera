@@ -41,6 +41,8 @@
 #ifndef Chimera_LINEARPROBLEM_DEF_HPP
 #define Chimera_LINEARPROBLEM_DEF_HPP
 
+#include "Chimera_Assertion.hpp"
+
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
@@ -59,7 +61,12 @@ LinearProblem<Scalar,LO,GO>::LinearProblem(
     , d_x( x )
     , d_b( b )
     , d_r( Tpetra::createVector<double,int>( d_A->getRowMap() ) )
-{ /* ... */ }
+{
+    testPostcondition( !d_A.is_null() );
+    testPostcondition( !d_x.is_null() );
+    testPostcondition( !d_b.is_null() );
+    testPostcondition( !d_r.is_null() );
+}
 
 //---------------------------------------------------------------------------//
 /*!

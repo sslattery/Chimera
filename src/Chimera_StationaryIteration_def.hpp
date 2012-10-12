@@ -41,6 +41,8 @@
 #ifndef Chimera_STATIONARYITERATION_DEF_HPP
 #define Chimera_STATIONARYITERATION_DEF_HPP
 
+#include "Chimera_Assertion.hpp"
+
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
@@ -53,7 +55,10 @@ StationaryIteration<Scalar,LO,GO>::StationaryIteration(
     const RCP_LinearOperatorSplit& linear_operator_split )
     : d_linear_problem( linear_problem )
     , d_linear_operator_split( linear_operator_split )
-{ /* ... */ }
+{
+    testPostcondition( !d_linear_problem.is_null() );
+    testPostcondition( !d_linear_operator_split.is_null() );
+}
 
 //---------------------------------------------------------------------------//
 /*!

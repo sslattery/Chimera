@@ -64,6 +64,7 @@ StationarySolver<Scalar,LO,GO>::StationarySolver(
     this->b_linear_problem = linear_problem;
     this->b_linear_operator_split = LinearOperatorSplitFactory::create( 
 	plist, linear_problem->getOperator() );
+    this->b_linear_operator_split->split();
     this->b_tolerance = plist->get<Scalar>("TOLERANCE");
     this->b_max_num_iters = plist->get<int>("MAX ITERS");
     this->b_num_iters = 0;
@@ -74,6 +75,7 @@ StationarySolver<Scalar,LO,GO>::StationarySolver(
 			  this->b_linear_problem,
 			  this->b_linear_operator_split ) );
 
+    testPostcondition( !this->b_linear_operator_split.is_null() );
     testPostcondition( !d_stationary_iteration.is_null() );
 }
 
