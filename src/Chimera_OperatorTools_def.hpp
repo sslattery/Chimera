@@ -41,13 +41,14 @@
 
 #include <Teuchos_ParameterList.hpp>
 
+#include <Tpetra_Operator.hpp>
 #include <Tpetra_MultiVector.hpp>
 
 #include <AnasaziTypes.hpp>
 #include <AnasaziBasicEigenproblem.hpp>
 #include <AnasaziBlockKrylovSchurSolMgr.hpp>
 #include <AnasaziBasicOutputManager.hpp>
-#include <AnasaziEpetraAdapter.hpp>
+#include <AnasaziTpetraAdapter.hpp>
 
 namespace Chimera
 {
@@ -57,16 +58,16 @@ namespace Chimera
  */
 template<class Scalar,class LO, class GO>
 Scalar OperatorTools::spectralRadius( 
-    const Teuchos::RCP<Tpetra::Operator<Scalar,LO,GO> >& matrix )
+    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix )
 {
     typedef Tpetra::MultiVector<Scalar,LO,GO> MV;
     typedef Tpetra::Operator<Scalar,LO,GO> OP;
 
     const int nev = 1;
     const int block_size = 1;
-    const int num_blocks = 10;
+    const int num_blocks = 5;
     const int max_restarts = 100;
-    const Scalar tol = 1.0e-4;
+    const Scalar tol = 1.0e-6;
 
     Teuchos::ParameterList krylovschur_params;
     krylovschur_params.set( "Which", "LM" );
@@ -75,13 +76,13 @@ Scalar OperatorTools::spectralRadius(
     krylovschur_params.set( "Maximum Restarts", max_restarts );
     krylovschur_params.set( "Convergence Tolerance", tol );
 
-    Teuchos::RCP<MV > vec = Teuchos::rcp( 
-	new MV(matrix->getRowMap, block_size) );
-    vec->random();
+    Teuchos::RCP<MV> vec = 
+	Teuchos::rcp( new MV(matrix->getRowMap(), block_size) );
+    vec->randomize();
 
     Teuchos::RCP<Anasazi::BasicEigenproblem<Scalar,MV,OP> > eigen_problem =
 	Teuchos::rcp( new Anasazi::BasicEigenproblem<Scalar,MV,OP>(
-			  matrix, vec ) );
+			  Teuchos::rcp_implicit_cast<OP>(matrix), vec ) );
     eigen_problem->setNEV( nev );
     eigen_problem->setProblem();
 
@@ -92,8 +93,8 @@ Scalar OperatorTools::spectralRadius(
     Anasazi::Eigensolution<Scalar,MV > sol = eigen_problem->getSolution();
     std::vector<Anasazi::Value<Scalar> > evals = sol.Evals;
 
-    return pow( evals[0].realpart*evals[0].realpart +
-		evals[0].imagpart*evals[0].imagpart, 0.5 );
+    return std::pow( evals[0].realpart*evals[0].realpart +
+		     evals[0].imagpart*evals[0].imagpart, 0.5 );
 }
 
 //---------------------------------------------------------------------------//
