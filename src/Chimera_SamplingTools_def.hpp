@@ -32,37 +32,52 @@
 */
 //---------------------------------------------------------------------------//
 /*!
- * \file Chimera_History_def.hpp
+ * \file Chimera_SamplingTools_def.hpp
  * \author Stuart R. Slattery
- * \brief History class definition.
+ * \brief Sampling tools definition.
  */
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_HISTORY_DEF_HPP
-#define Chimera_HISTORY_DEF_HPP
+#ifndef Chimera_SAMPLINGTOOLS_DEF_HPP
+#define Chimera_SAMPLINGTOOLS_DEF_HPP
+
+#include "Chimera_RNGTraits.hpp"
 
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
- * \brief Default constructor.
+ * \brief Stratify sample a global defined PDF to get the number of histories
+ * required for each local state.
  */
-template<class Scalar, class LO, class GO, class RNG>
-History<Scalar,LO,GO,RNG>::History()
-    : d_weight( 1.0 )
-    , d_local_state( 0 )
-    , d_global_state( 0 )
-    , d_active( true )
-{ /* ... */ }
+template<class Scalar, class LO, class GO>
+void SamplingTools::stratifySampleGlobalPDF( 
+    const GO global_num_histories,
+    const Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& pdf,
+    Teuchos::ArrayRCP<LO>& local_histories_per_bin )
+{
+
+}
+
+//---------------------------------------------------------------------------//
+/*!
+ * \brief Random sample a local discrete PDF for a new local state index.
+ */
+template<class Scalar, class LO, class RNG>
+LO SamplingTools::sampleLocalDiscretePDF( 
+    const Scalar pdf_sum,
+    const Teuchos::ArrayView<Scalar>& pdf_values,
+    const Teuchos::ArrayView<LO>& pdf_indices,
+    const Teuchos::RCP<RNG>& rng )
+{
+}
 
 //---------------------------------------------------------------------------//
 
 } // end namespace Chimera
 
-#endif // end Chimera_HISTORY_DEF_HPP
+#endif // end Chimera_SAMPLINGTOOLS_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_History_def.hpp
+// end Chimera_SamplingTools.hpp
 //---------------------------------------------------------------------------//
-
-

@@ -55,9 +55,9 @@ TEUCHOS_UNIT_TEST( OperatorTools, spectral_radius_test )
 
     Teuchos::Array<int> global_columns(3);
     Teuchos::Array<double> matrix_values(3);
-    matrix_values[0] = 1.0;
+    matrix_values[0] = -1.0;
     matrix_values[1] = 2.0;
-    matrix_values[2] = 3.0;
+    matrix_values[2] = -1.0;
     int gid = 0;
     for ( int i = 1; i < local_num_rows-1; ++i )
     {
@@ -70,8 +70,8 @@ TEUCHOS_UNIT_TEST( OperatorTools, spectral_radius_test )
 
     Teuchos::Array<int> edge_global_columns(2);
     Teuchos::Array<double> edge_matrix_values(2);
-    edge_matrix_values[0] = 2.0;
-    edge_matrix_values[1] = 3.0;
+    edge_matrix_values[0] = matrix_values[1];
+    edge_matrix_values[1] = matrix_values[2];
     gid = local_num_rows*comm_rank;
     edge_global_columns[0] = gid;
     edge_global_columns[1] = gid+1;
@@ -88,8 +88,8 @@ TEUCHOS_UNIT_TEST( OperatorTools, spectral_radius_test )
     }
     comm->barrier();
 
-    edge_matrix_values[0] = 1.0;
-    edge_matrix_values[1] = 2.0;
+    edge_matrix_values[0] = matrix_values[0];
+    edge_matrix_values[1] = matrix_values[1];
     gid = local_num_rows - 1 + local_num_rows*comm_rank;
     edge_global_columns[0] = gid-1;
     edge_global_columns[1] = gid;
@@ -113,8 +113,7 @@ TEUCHOS_UNIT_TEST( OperatorTools, spectral_radius_test )
 	Teuchos::rcp( new Chimera::JacobiSplit<double,int,int>( A ) );
     a_split->split();
 
-    // Check the spectral radius of the iteration matrix. This should be less
-    // than one as it is equivalent to Jacobi preconditioning the operator.
+    // Check the spectral radius of the iteration matrix.
     double spectral_radius = 
 	Chimera::OperatorTools::spectralRadius( a_split->iterationMatrix() );
     TEST_ASSERT( 0.0 <= spectral_radius );

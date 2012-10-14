@@ -32,115 +32,56 @@
 */
 //---------------------------------------------------------------------------//
 /*!
- * \file Chimera_History.hpp
+ * \file Chimera_SamplingTools.hpp
  * \author Stuart R. Slattery
- * \brief History class declaration.
+ * \brief Sampling tools declaration.
  */
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_HISTORY_HPP
-#define Chimera_HISTORY_HPP
-
-#include "Chimera_RNGTraits.hpp"
+#ifndef Chimera_SAMPLINGTOOLS_HPP
+#define Chimera_SAMPLINGTOOLS_HPP
 
 #include <Teuchos_RCP.hpp>
-#include <Teuchos_SerializationTraits.hpp>
+#include <Teuchos_ArrayRCP.hpp>
+#include <Teuchos_ArrayView.hpp>
+
+#include <Tpetra_Vector.hpp>
 
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
- * \class History
- * \brief Encapsulation of a random walk history's state.
+ * \class SamplingTools.
+ * \brief A stateless class of tools for distribution function sampling.
  */
 //---------------------------------------------------------------------------//
-template<class Scalar, class LO, class GO, class RNG>
-class History
+class SamplingTools
 {
   public:
 
-    //@{
-    //! Typedefs.
-    typedef Scalar                                    scalar_type;
-    typedef LO                                        local_ordinal_type;
-    typedef GO                                        global_ordinal_type;
-    typedef RNG                                       rng_type;
-    typedef Teuchos::RCP<RNG>                         RCP_RNG;
-    //@}
+    //! Constructor.
+    SamplingTools()
+    { /* ... */ }
 
-    // Defaut constructor.
-    History();
+    //! Destructor.
+    ~SamplingTools()
+    { /* ... */ }
 
-    // Destructor.
-    ~History();
+    // Stratify sample a global PDF.
+    template<class Scalar, class LO, class GO>
+    static void stratifySampleGlobalPDF( 
+	const GO global_num_histories,
+	const Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& pdf,
+	Teuchos::ArrayRCP<LO>& local_histories_per_bin );
 
-    //! Set the history weight.
-    void setWeight( const Scalar weight )
-    { d_weight = weight; }
-
-    //! Add to the history weight.
-    void addWeight( const Scalar weight )
-    { d_weight += weight; }
-
-    //! Multiply the history weight.
-    void multiplyWeight( const Scalar weight )
-    { d_weight *= weight; }
-
-    //! Set the local history state.
-    void setLocalState( const LO local_state )
-    { d_local_state = local_state; }
-
-    //! Set the global history state.
-    void setGlobalState( const GO global_state )
-    { d_global_state = global_state; }
-
-    //! Set the RNG.
-    void setRNG( const RCP_RNG rng )
-    { d_rng = rng; }
-
-    //! Terminate the history.
-    void terminate()
-    { d_active = false; }
-
-    //! Get the history weight.
-    Scalar weight() const
-    { return d_weight; }
-
-    //! Get the local history state.
-    LO LocalState() const
-    { return d_local_state; }
-
-    //! Get the global history state.
-    GO globalState() const 
-    { return d_global_state; }
-
-    //! Get the RNG.
-    RCP_RNG rng() const
-    { return d_rng; }
-
-    //! Get the active history state.
-    bool active() const
-    { return d_active; }
-
-  private:
-
-    // History weight.
-    Scalar d_weight;
-
-    // Local history state.
-    LO d_local_state;
-
-    // Global history state.
-    GO d_global_state;
-
-    // RNG.
-    RCP_RNG d_rng;
-
-    // Active history state.
-    bool d_active;
+    // Random sample a local discrete PDF for a new state index.
+    template<class Scalar, class LO, class RNG>
+    static LO sampleLocalDiscretePDF( 
+	const Scalar pdf_sum,
+	const Teuchos::ArrayView<Scalar>& pdf_values,
+	const Teuchos::ArrayView<LO>& pdf_indices,
+	const Teuchos::RCP<RNG>& rng );
 };
-
-//---------------------------------------------------------------------------//
 
 } // end namespace Chimera
 
@@ -148,13 +89,12 @@ class History
 // Template includes.
 //---------------------------------------------------------------------------//
 
-#include "Chimera_History_def.hpp"
+#include "Chimera_SamplingTools_def.hpp"
 
 //---------------------------------------------------------------------------//
 
-#endif // end Chimera_HISTORY_HPP
+#endif // end Chimera_SAMPLINGTOOLS_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_History.hpp
+// end Chimera_SamplingTools.hpp
 //---------------------------------------------------------------------------//
-

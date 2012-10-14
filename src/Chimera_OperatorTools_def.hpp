@@ -39,6 +39,8 @@
 #ifndef Chimera_OPERATORTOOLS_DEF_HPP
 #define Chimera_OPERATORTOOLS_DEF_HPP
 
+#include "Chimera_Assertion.hpp"
+
 #include <Teuchos_ParameterList.hpp>
 
 #include <Tpetra_Operator.hpp>
@@ -92,7 +94,10 @@ Scalar OperatorTools::spectralRadius(
 
     Anasazi::Eigensolution<Scalar,MV > sol = eigen_problem->getSolution();
     std::vector<Anasazi::Value<Scalar> > evals = sol.Evals;
+    Teuchos::RCP<MV> evecs = sol.Evecs;
 
+    testPostcondition( sol.numVecs > 0 );
+    
     return std::pow( evals[0].realpart*evals[0].realpart +
 		     evals[0].imagpart*evals[0].imagpart, 0.5 );
 }
