@@ -69,10 +69,9 @@ class SamplingTools
 
     // Stratify sample a global PDF.
     template<class Scalar, class LO, class GO>
-    static void stratifySampleGlobalPDF( 
+    static Teuchos::ArrayRCP<GO> stratifySampleGlobalPDF( 
 	const GO global_num_histories,
-	const Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& pdf,
-	Teuchos::ArrayRCP<LO>& local_histories_per_bin );
+	const Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& pdf );
 
     // Random sample a local discrete PDF for a new state index.
     template<class Scalar, class LO, class RNG>

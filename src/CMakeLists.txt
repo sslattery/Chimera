@@ -40,6 +40,8 @@ APPEND_SET(HEADERS
   Chimera_OperatorTools.hpp
   Chimera_OperatorTools_def.hpp
   Chimera_RNGTraits.hpp
+  Chimera_SamplingTools.hpp
+  Chimera_SamplingTools_def.hpp
   Chimera_StationaryIteration.hpp
   Chimera_StationaryIteration_def.hpp
   Chimera_StationarySolver.hpp

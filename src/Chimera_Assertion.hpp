@@ -94,7 +94,7 @@ void throwAssertion( const std::string& cond, const std::string& file,
   library input arguments. Note that the bounds-checking functionality used
   within the Chimera is only provided by a debug build.
  
-  In addition, rememberValue is provided to store values used only for DBC
+  In addition, remember is provided to store values used only for DBC
   checks and no other place in executed code.
 
   Separate from the DBC build, testAssertion can be used at any time verify a
@@ -109,14 +109,14 @@ void throwAssertion( const std::string& cond, const std::string& file,
     if (!(c)) Chimera::throwAssertion( #c, __FILE__, __LINE__ )
 #define testInvariant(c) \
     if (!(c)) Chimera::throwAssertion( #c, __FILE__, __LINE__ )
-#define rememberValue(c) c
+#define remember(c) c
 
 #else
 
 #define testPrecondition(c)
 #define testPostcondition(c)
 #define testInvariant(c)
-#define rememberValue(c)
+#define remember(c)
 
 #endif
 

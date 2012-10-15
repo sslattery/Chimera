@@ -47,6 +47,10 @@
 #include "Chimera_RNGTraits.hpp"
 
 #include <Teuchos_as.hpp>
+#include <Teuchos_Comm.hpp>
+#include <Teuchos_CommHelpers.hpp>
+#include <Teuchos_Ptr.hpp>
+#include <Teuchos_ScalarTraits.hpp>
 
 namespace Chimera
 {
@@ -56,20 +60,104 @@ namespace Chimera
  * required for each local state.
  */
 template<class Scalar, class LO, class GO>
-void SamplingTools::stratifySampleGlobalPDF( 
+Teuchos::ArrayRCP<GO> SamplingTools::stratifySampleGlobalPDF( 
     const GO global_num_histories,
-    const Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& pdf,
-    Teuchos::ArrayRCP<LO>& local_histories_per_bin )
+    const Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& pdf )
 {
-    Teuchos::ArrayRCP<Scalar> local_values = pdf->get1dView();
-    typename Teuchos::ScalarTraits<Scalar>::magnitude_type local_sum =
+    Teuchos::ArrayRCP<const Scalar> local_values = pdf->get1dView();
+    typename Teuchos::ScalarTraits<Scalar>::magnitudeType local_sum =
 	std::accumulate( local_values.begin(), local_values.end(), 0.0 );
 
-    typename Teuchos::ScalarTraits<Scalar>::magnitude_type global_sum =
+    typename Teuchos::ScalarTraits<Scalar>::magnitudeType global_sum =
 	pdf->norm1();
 
-    GO local_num_histories = global_num_histories * 
-			     std::floor( local_sum / global_sum );
+    GO local_num_histories = std::floor( global_num_histories * 
+					 local_sum / global_sum );
+
+    // First, stratify sample the global pdf to get the number of histories
+    // each local proc will generate.
+    Teuchos::RCP<const Teuchos::Comm<int> > comm = pdf->getMap()->getComm();
+    GO global_sum_check = 0;
+    Teuchos::reduceAll( *comm, Teuchos::REDUCE_SUM, local_num_histories, 
+			Teuchos::Ptr<GO>(&global_sum_check) );
+    
+    GO global_remainder = global_num_histories - global_sum_check;
+    if ( global_remainder > 0 )
+    {
+	if ( Teuchos::as<GO>(comm->getRank()) < global_remainder )
+	{
+	    ++local_num_histories;
+	}
+    }
+    else if ( global_remainder < 0 )
+    {
+	if ( Teuchos::as<GO>(comm->getRank()) < std::abs(global_remainder) )
+	{
+	    --local_num_histories;
+	}
+    }
+    comm->barrier();
+
+    // Check that we maintained the global number of histories requested.
+    remember( 
+	global_sum_check = 0;
+	Teuchos::reduceAll( *comm, Teuchos::REDUCE_SUM, local_num_histories, 
+			    Teuchos::Ptr<GO>(&global_sum_check) );
+	);
+
+    testPostcondition( global_sum_check == global_num_histories );
+
+    // Second, stratify sample the local pdf to get the number of histories to
+    // be generated in each local state.
+    typename Teuchos::ArrayRCP<GO> bin_histories( local_values.size() );
+    typename Teuchos::ArrayRCP<Scalar>::const_iterator local_values_it;
+    typename Teuchos::ArrayRCP<GO>::iterator bin_histories_it;
+    for ( bin_histories_it = bin_histories.begin(),
+	   local_values_it = local_values.begin();
+	  bin_histories_it != bin_histories.end();
+	  ++bin_histories_it, ++local_values_it )
+    {
+	*bin_histories_it = std::floor( local_num_histories * 
+					(*local_values_it) / local_sum );
+    }
+
+    GO local_histories_sum = std::accumulate( bin_histories.begin(), 
+					      bin_histories.end(), 0.0 );
+    GO local_remainder = local_num_histories - local_histories_sum;
+    GO local_index = 0;
+    for ( bin_histories_it = bin_histories.begin();
+	  bin_histories_it != bin_histories.end();
+	  ++bin_histories_it )
+    {
+	local_index = std::distance( bin_histories.begin(), bin_histories_it );	
+
+	if ( local_remainder > 0 )
+	{
+	    if (  local_index < local_remainder )
+	    {
+		++(*bin_histories_it);
+	    }
+	}
+	else if ( local_remainder < 0 )
+	{
+	    if ( local_index < std::abs(local_remainder) )
+	    {
+		--(*bin_histories_it);
+	    }
+	}
+    }
+
+    // Check that we maintained the local number of histories requested.
+    remember( 
+	local_histories_sum = std::accumulate( bin_histories.begin(), 
+					       bin_histories.end(), 0.0 );
+	);
+
+    testPostcondition( local_histories_sum == local_num_histories );
+    
+    // Return the number of histories to be generated in each local bin of the
+    // PDF.
+    return bin_histories;
 }
 
 //---------------------------------------------------------------------------//

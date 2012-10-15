@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------//
 /*!
- * \file tstBoostRNG.cpp
+ * \file tstSamplingTools.cpp
  * \author Stuart R. Slattery
  * \brief Boost random number generator unit tests.
  */
@@ -16,6 +16,7 @@
 
 #include <Chimera_RNGTraits.hpp>
 #include <Chimera_BoostRNG.hpp>
+#include <Chimera_SamplingTools.hpp>
 
 #include <boost/random/mersenne_twister.hpp>
 
@@ -29,90 +30,91 @@
 #include <Teuchos_TypeTraits.hpp>
 #include <Teuchos_Tuple.hpp>
 
+#include <Tpetra_Vector.hpp>
+
 //---------------------------------------------------------------------------//
 // Tests
 //---------------------------------------------------------------------------//
-TEUCHOS_UNIT_TEST( BoostRNG, boost_mt11213b_test )
+TEUCHOS_UNIT_TEST( SamplingTools, uniform_stratify_sample_test )
 {
     using namespace Chimera;
 
-    boost::mt11213b generator_1;
-    Teuchos::RCP<boost::mt11213b> generator_2 = 
-	RNGTraits<boost::mt11213b>::create();
+    // Setup parallel distribution.
+    Teuchos::RCP<const Teuchos::Comm<int> > comm = 
+	Teuchos::DefaultComm<int>::getComm();
+    int comm_size = comm->getSize();
 
-    TEST_ASSERT( generator_1.min() == 
-		 RNGTraits<boost::mt11213b>::min( *generator_2 ) );
+    // Setup linear operator distribution.
+    int local_num_rows = 10;
+    int global_num_rows = local_num_rows*comm_size;
+    Teuchos::RCP<const Tpetra::Map<int> > row_map = 
+	Tpetra::createUniformContigMap<int,int>( global_num_rows, comm );
 
-    TEST_ASSERT( generator_1.max() == 
-		 RNGTraits<boost::mt11213b>::max( *generator_2 ) );
+    // Build the PDF in parallel.
+    double pdf_val = 1.0;
+    Teuchos::RCP<Tpetra::Vector<double,int> > pdf = 
+	Tpetra::createVector<double,int>( row_map );
+    pdf->putScalar( pdf_val );
 
-    RNGTraits<boost::mt11213b>::result_type first_val_1 = generator_1();
-    RNGTraits<boost::mt11213b>::result_type first_val_2 = 
-	RNGTraits<boost::mt11213b>::generate( *generator_2 );
+    // Stratify sample the PDF.
+    int num_histories = global_num_rows;
+    Teuchos::ArrayRCP<int> histories_per_local_state =
+	SamplingTools::stratifySampleGlobalPDF( num_histories, pdf );
 
-    for ( int i = 0; i < 10000; ++i )
+    // Check the sampling.
+    TEST_ASSERT( histories_per_local_state.size() == local_num_rows );
+
+    Teuchos::ArrayRCP<int>::const_iterator history_it;
+    for ( history_it = histories_per_local_state.begin();
+	  history_it != histories_per_local_state.end();
+	  ++history_it )
     {
-	TEST_ASSERT( generator_1() == 
-		     RNGTraits<boost::mt11213b>::generate( *generator_2 ) );
-    }
-
-    RNGTraits<boost::mt11213b>::result_type new_seed = 184839;
-    generator_1.seed( new_seed );
-    RNGTraits<boost::mt11213b>::setSeed( *generator_2, new_seed );
-
-    RNGTraits<boost::mt11213b>::result_type second_val_1 = generator_1();
-    RNGTraits<boost::mt11213b>::result_type second_val_2 = 
-	RNGTraits<boost::mt11213b>::generate( *generator_2 );
-
-    TEST_ASSERT( first_val_1 != second_val_1 );
-    TEST_ASSERT( first_val_2 != second_val_2 );
-
-    for ( int i = 0; i < 10000; ++i )
-    {
-	TEST_ASSERT( generator_1() == 
-		     RNGTraits<boost::mt11213b>::generate( *generator_2 ) );
+	TEST_ASSERT( *history_it == 1 );
     }
 }
 
-TEUCHOS_UNIT_TEST( BoostRNG, boost_mt19937_test )
+//---------------------------------------------------------------------------//
+TEUCHOS_UNIT_TEST( SamplingTools, nonuniform_stratify_sample_test )
 {
     using namespace Chimera;
 
-    boost::mt19937 generator_1;
-    Teuchos::RCP<boost::mt19937> generator_2 = 
-	RNGTraits<boost::mt19937>::create();
+    // Setup parallel distribution.
+    Teuchos::RCP<const Teuchos::Comm<int> > comm = 
+	Teuchos::DefaultComm<int>::getComm();
+    int comm_rank = comm->getRank();
+    int comm_size = comm->getSize();
 
-    TEST_ASSERT( generator_1.min() == 
-		 RNGTraits<boost::mt19937>::min( *generator_2 ) );
+    // Setup linear operator distribution.
+    int local_num_rows = 10;
+    int global_num_rows = local_num_rows*comm_size;
+    Teuchos::RCP<const Tpetra::Map<int> > row_map = 
+	Tpetra::createUniformContigMap<int,int>( global_num_rows, comm );
 
-    TEST_ASSERT( generator_1.max() == 
-		 RNGTraits<boost::mt19937>::max( *generator_2 ) );
+    // Build the PDF in parallel.
+    double pdf_val = comm_rank + 1.0;
+    Teuchos::RCP<Tpetra::Vector<double,int> > pdf = 
+	Tpetra::createVector<double,int>( row_map );
+    pdf->putScalar( pdf_val );
 
-    RNGTraits<boost::mt19937>::result_type first_val_1 = generator_1();
-    RNGTraits<boost::mt19937>::result_type first_val_2 = 
-	RNGTraits<boost::mt19937>::generate( *generator_2 );
-
-    for ( int i = 0; i < 10000; ++i )
+    // Stratify sample the PDF.
+    int num_histories = 0;
+    for ( int i = 0; i < comm_size; ++i )
     {
-	TEST_ASSERT( generator_1() == 
-		     RNGTraits<boost::mt19937>::generate( *generator_2 ) );
+	num_histories += local_num_rows*(i+1);
     }
 
-    RNGTraits<boost::mt19937>::result_type new_seed = 184839;
-    generator_1.seed( new_seed );
-    RNGTraits<boost::mt19937>::setSeed( *generator_2, new_seed );
+    Teuchos::ArrayRCP<int> histories_per_local_state =
+	SamplingTools::stratifySampleGlobalPDF( num_histories, pdf );
 
-    RNGTraits<boost::mt19937>::result_type second_val_1 = generator_1();
-    RNGTraits<boost::mt19937>::result_type second_val_2 = 
-	RNGTraits<boost::mt19937>::generate( *generator_2 );
+    // Check the sampling.
+    TEST_ASSERT( histories_per_local_state.size() == local_num_rows );
 
-    TEST_ASSERT( first_val_1 != second_val_1 );
-    TEST_ASSERT( first_val_2 != second_val_2 );
-
-    for ( int i = 0; i < 10000; ++i )
+    Teuchos::ArrayRCP<int>::const_iterator history_it;
+    for ( history_it = histories_per_local_state.begin();
+	  history_it != histories_per_local_state.end();
+	  ++history_it )
     {
-	TEST_ASSERT( generator_1() == 
-		     RNGTraits<boost::mt19937>::generate( *generator_2 ) );
+	TEST_ASSERT( *history_it == pdf_val );
     }
 }
 
