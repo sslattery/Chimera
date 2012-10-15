@@ -80,7 +80,7 @@ clean:
 	-rm -f $(chap_lp)/*.pdf $(chap_lp)/*.pdftex_t $(chap_lp)/*.bak
 	-rm -f $(chap_pmc)/*.pdf $(chap_pmc)/*.pdftex_t $(chap_pmc)/*.bak
 	-rm -f $(chap_nl)/*.pdf $(chap_nl)/*.pdftex_t $(chap_nl)/*.bak
-	-rm -f $(chap_prop)/*.pdf $(chap_prop)/*.pdftex_t $(chap_prop)/*.bak
+	-rm -f $(chap_prop)/*.pdftex_t $(chap_prop)/*.bak
 	-rm -f TAGS
 
 realclean: clean
