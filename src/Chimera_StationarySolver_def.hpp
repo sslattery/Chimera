@@ -44,8 +44,8 @@
 #include "Chimera_Assertion.hpp"
 #include "Chimera_LinearOperatorSplitFactory.hpp"
 
-#include <Teuchos_Array.hpp>
 #include <Teuchos_ScalarTraits.hpp>
+#include <Teuchos_as.hpp>
 
 namespace Chimera
 {
@@ -94,27 +94,33 @@ StationarySolver<Scalar,LO,GO>::~StationarySolver()
 template<class Scalar, class LO, class GO>
 void StationarySolver<Scalar,LO,GO>::iterate()
 {
-    Teuchos::Array<Scalar> b_norm(1);
-    this->b_linear_problem->getRHS()->normInf( b_norm() );
-    Scalar convergence_criteria = this->b_tolerance * b_norm[0];
+    typename Teuchos::ScalarTraits<Scalar>::magnitude_type b_norm = 
+	this->b_linear_problem->getRHS()->normInf();
+    typename Teuchos::ScalarTraits<Scalar>::magnitude_type 
+	convergence_criteria = this->b_tolerance * b_norm;
 
-    Teuchos::Array<Scalar> residual_norm(1, 1.0);
+    typename Teuchos::ScalarTraits<Scalar>::magnitude_type 
+	residual_norm = 1.0;
     this->b_num_iters = 0;
     this->b_is_converged = false;
 
-    while ( residual_norm[0] > convergence_criteria &&
+    while ( residual_norm > 
+	    Teuchos::as<typename Teuchos::ScalarTraits<Scalar>::magnitude_type>(
+		convergence_criteria) &&
 	    this->b_num_iters < this->b_max_num_iters )
     {
 	d_stationary_iteration->doOneIteration();
 
 	this->b_linear_problem->computeResidual();
 
-	this->b_linear_problem->getResidual()->normInf( residual_norm() );
+	residual_norm = this->b_linear_problem->getResidual()->normInf();
 
 	++(this->b_num_iters);
     }
 
-    if ( residual_norm[0] <= convergence_criteria )
+    if ( residual_norm <= 
+	 Teuchos::as<typename Teuchos::ScalarTraits<Scalar>::magnitude_type>(
+	     convergence_criteria) )
     {
 	this->b_is_converged = true;
     }

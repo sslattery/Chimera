@@ -41,7 +41,12 @@
 #ifndef Chimera_SAMPLINGTOOLS_DEF_HPP
 #define Chimera_SAMPLINGTOOLS_DEF_HPP
 
+#include <numeric>
+
+#include "Chimera_Assertion.hpp"
 #include "Chimera_RNGTraits.hpp"
+
+#include <Teuchos_as.hpp>
 
 namespace Chimera
 {
@@ -56,7 +61,15 @@ void SamplingTools::stratifySampleGlobalPDF(
     const Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& pdf,
     Teuchos::ArrayRCP<LO>& local_histories_per_bin )
 {
+    Teuchos::ArrayRCP<Scalar> local_values = pdf->get1dView();
+    typename Teuchos::ScalarTraits<Scalar>::magnitude_type local_sum =
+	std::accumulate( local_values.begin(), local_values.end(), 0.0 );
 
+    typename Teuchos::ScalarTraits<Scalar>::magnitude_type global_sum =
+	pdf->norm1();
+
+    GO local_num_histories = global_num_histories * 
+			     std::floor( local_sum / global_sum );
 }
 
 //---------------------------------------------------------------------------//
@@ -70,6 +83,31 @@ LO SamplingTools::sampleLocalDiscretePDF(
     const Teuchos::ArrayView<LO>& pdf_indices,
     const Teuchos::RCP<RNG>& rng )
 {
+    Scalar zeta = pdf_sum * 
+		  ( Teuchos::as<Scalar>(RNGTraits<RNG>::generate(*rng)) /
+		    Teuchos::as<Scalar>(RNGTraits<RNG>::max(*rng)) );
+
+    Scalar cdf = 0.0;
+    LO new_state_index = 0;
+    typename Teuchos::ArrayView<Scalar>::const_iterator value_begin =
+	pdf_values.begin();
+    typename Teuchos::ArrayView<Scalar>::const_iterator value_iterator;
+    for ( value_iterator = pdf_values.begin();
+	  value_iterator != pdf_values.end();
+	  ++value_iterator )
+    {
+	cdf += *value_iterator;
+	if ( zeta <= cdf )
+	{
+	    new_state_index = Teuchos::as<LO>(
+		std::distance( value_begin, value_iterator ) );
+
+	    return pdf_indices[ new_state_index ];
+	}
+    }
+
+    testPostcondition( zeta <= cdf );
+    return 0;
 }
 
 //---------------------------------------------------------------------------//
