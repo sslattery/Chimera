@@ -18,7 +18,7 @@ using a collection of references from the 1950's and early 1960's.
 \label{sec:mc_preliminaries}
 We begin our discussion of Monte Carlo methods using these texts by
 seeking a solution to Eq~(\ref{eq:linear_problem}). For a given linear
-operator $\ve{A}$, we can using diagonal splitting in a similar manner
+operator $\ve{A}$, we can use diagonal splitting in a similar manner
 as the stationary method in Eq~(\ref{eq:linear_split_equation2}) to
 define the following operator\footnote{It should be noted that
   non-diagonal splittings have been recently explored in
@@ -161,17 +161,17 @@ which, if expanded, directly recovers the exact solution:
 \end{equation}
 therefore providing an unbiased Monte Carlo estimator. 
 
-As we seek only approximate solutions, we need only to perform a
-minimal number of random walks in order to generate an approximation
-for $\ve{x}$. If we are only to approximate the solution, we also need
-conditions by which we may terminate a random walk. We do this by
-noticing that the factors added to
+In cases where we seek only approximate solutions, we need only to
+perform a minimal number of random walks in order to generate an
+approximation for $\ve{x}$. If we are only to approximate the
+solution, we also need conditions by which we may terminate a random
+walk. We do this by noticing that the factors added to
 Eq~(\ref{eq:direct_permutation_weight}) will become diminishingly
 small due to their definition in Eq~(\ref{eq:direct_weight}) and
 therefore their contributions to the solution estimate will become
-negligible. Using this, we choose terminate a random walk sequence with
-a \textit{weight cutoff}, $W_c$, that is enforced when $W_m < W_c$ for
-a particular random walk permutation.
+negligible. Using this, we choose terminate a random walk sequence
+with a \textit{weight cutoff}, $W_c$, that is enforced when $W_m <
+W_c$ for a particular random walk permutation.
 
 \subsection{Estimator Variance}
 \label{subsec:estimator_variance}
@@ -560,15 +560,15 @@ Eq~(\ref{eq:jacobi_precond_linear_problem}):
   \end{gather}
 \end{subequations}
 Choosing Jacobi preconditioning with MCSA is advantageous for several
-reasons. First, $\rho(\ve{I} - \ve{M}^{-1}\ve{A}) < 1$ is true for
-all $\ve{A}$ and is easy to formulate as the inversion of $\ve{M}$ is
-trivial. Second, because the adjoint Monte Carlo method used within MCSA to
-compute the correction operates on a linear problem with the
+reasons. First, $\rho(\ve{I} - \ve{M}^{-1}\ve{A}) < 1$ is true for all
+$\ve{A}$ and is easy to formulate because the inversion of $\ve{M}$ is
+trivial. Second, because the adjoint Monte Carlo method used within
+MCSA to compute the correction operates on a linear problem with the
 preconditioned operator, then $\ve{H}$ in the adjoint solver will have
-a zero term in each of its diagonal elements, thereby eliminating
-all in-state transitions during the random walk sequence. Because of
-this, Jacobi preconditioning should always be performed, regardless of
-any other preconditioning that is applied to the system.
+a zero term in each of its diagonal elements, thereby eliminating all
+in-state transitions during the random walk sequence. Because of this,
+Jacobi preconditioning should always be performed, regardless of any
+other preconditioning that is applied to the system.
 
 \section{Parallelization of Stochastic Methods}
 \label{sec:parallel_stochastic_methods}
@@ -614,13 +614,13 @@ performed best in that global communications were implemented more
 efficiently than those required by the asynchronous
 scheme. Furthermore, none of these schemes handled load-imbalanced
 cases efficiently. Such cases will be common if the source sampled in
-the Monte Carlo random walk is not isotropic and evenly distributed
-throughout the global domain. It was noted that efficiencies were
-improved by increasing the frequency by which particle data was
-communicated between domain-adjacent processors. However, this
-ultimately increases communication costs. In 2009, Brunner extended
-his work by using a more load-balanced approach with a fully
-asynchronous communication pattern
+the Monte Carlo random walk is not isotropic and not evenly
+distributed throughout the global domain. It was noted that
+efficiencies were improved by increasing the frequency by which
+particle data was communicated between domain-adjacent
+processors. However, this ultimately increases communication costs. In
+2009, Brunner extended his work by using a more load-balanced approach
+with a fully asynchronous communication pattern
 \citep{brunner_efficient_2009}. Although the extended implementation
 was more robust and allowed for scaling to larger numbers of
 processors, performance issues were still noted with parallel
@@ -648,14 +648,14 @@ among its subdomains. The original motivation was to decompose the
 domain in a way that it remained in a physical cabinet in a large
 distributed machine, thus reducing latency costs during
 communication. A multiple set scheme is also motivated by the fact
-that communication only occurs within a set, limiting communications
-during the transport procedure to a group of $O(100)$ processors, a
-number that was shown to have excellent parallel efficiencies in
-Brunner's work and therefore will scale well in this algorithm. The
-overlapping domains within each set also demonstrated reduced
-communication costs. On each processor, the source is sampled in the
-local domain that would exist if no overlap was used while tallies can
-be made over the entire overlapping domain. 
+that communication during particle transport only occurs within a set,
+limiting communications during the transport procedure to a group of
+$O(100)$ processors, a number that was shown to have excellent
+parallel efficiencies in Brunner's work and therefore will scale well
+in this algorithm. The overlapping domains within each set also
+demonstrated reduced communication costs. On each processor, the
+source is sampled in the local domain that would exist if no overlap
+was used while tallies can be made over the entire overlapping domain.
 
 To demonstrate this, consider the example adapted from Mervin's work
 with Wagner and others in the same area \citep{mervin_variance_2012}
@@ -817,14 +817,15 @@ Procassini's solutions to these problems are elegant in that they
 require a minimal amount of modification to be applied to the Monte
 Carlo algorithm. To solve the first issue, in order to ensure each
 particle maintains an invariant random number sequence that determines
-its behavior regardless of domain decomposition, each particle is a
-random number seed that describes its current state upon entering the
-domain of a new processor. These seeds are derived from the actual
-geometric location of the particle such that it is decomposition
-invariant. Non-commutative floating point operations are solved by
-instead mapping floating point values to 64-bit integer values for
-which additions will always be commutative. Once the operations are
-complete, these integers are mapped back to floating point values.
+its behavior regardless of domain decomposition, each particle is
+assigned a random number seed that describes its current state upon
+entering the domain of a new processor. These seeds are derived from
+the actual geometric location of the particle such that it is
+decomposition invariant. Non-commutative floating point operations are
+overcome by instead mapping floating point values to 64-bit integer
+values for which additions will always be commutative. Once the
+operations are complete, these integers are mapped back to floating
+point values.
 
 \subsection{Parallel Adjoint Method}
 \label{subsec:parallel_adjoint}

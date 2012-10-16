@@ -15,16 +15,22 @@ last 30 years, fully consistent nonlinear methods based on Newton's
 method have become more popular and many advances have been made in
 the computational physics field to employ these methods.
 
-Currently, Krylov methods are used with Newton's method to form a
-robust solution sequence for these types of problems. However, given
-our goals of advancing stochastic solver technology for linear
-problems, we aim to apply them to these fully consistent schemes in
-order to gauge if some improvements can be made. We therefore devise a
-new method using MCSA in conjunction with new methods, accommodating the
-fact that MCSA requires an explicitly formed linear operator in its
-implementation as compared to Krylov methods. In addition to handling
-this dependency, we will construct a parallel strategy for a nonlinear
-MCSA-based method.
+In the context of solving standalone linear systems, Monte Carlo
+methods do not provide significant merit over Krylov methods due to
+the fact that the linear operator must be explicitly formed. For many
+applications, such a requirement is prohibitive and perhaps not even
+feasible to implement. Therefore, a Monte Carlo solver is best suited
+for situations in which not only are Krylov methods applicable, but
+also in which the operator is readily, if not naturally,
+formed. Modern nonlinear methods meet both of these requirements with
+Newton methods used in conjuction with Krylov methods for a robust,
+fully implicit solution strategy. Furthermore, modern techniques exist
+that permit the automatic construction of the linear operator
+generated within a Newton method based on the nonlinear residual
+evaluations, providing all of the components necessary for a Monte
+Carlo solver to provide value. We therefore devise a new nonlinear
+method based on the MCSA algorithm and Newton's method and discuss its
+potential benefits.
 
 \section{Preliminaries}
 \label{sec:nonlinear_preliminaries}
