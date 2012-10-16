@@ -40,15 +40,15 @@ generating the \textit{Neumann series}:
   \label{eq:neumann_series}
 \end{equation}
 which will converge if the spectral radius of $\ve{H}$ is less than
-1. If we then apply this inverse sum to the right hand side of
+1. If we then apply this Neumann series to the right hand side of
 Eq~(\ref{eq:linear_problem}) we acquire the solution to the linear
 problem:
 \begin{equation}
   \ve{A}^{-1}\ve{b} = \sum_{k=0}^{\infty} \ve{H}^k\ve{b} = \ve{x}\:.
   \label{eq:neumann_solution}
 \end{equation}
-An approximation of this summation will therefore lead to an
-approximation of the solution. If we expand the summation with a
+An approximation of this summation by truncation will therefore lead
+to an approximation of the solution. If we expand the summation with a
 succession of matrix-vector multiply operations, we arrive at an
 alternative perspective of this summation by considering its $i^{th}$
 component:
@@ -63,11 +63,11 @@ which can interpreted as a series of transitions between states,
  \rightarrow i_{k}\:,
   \label{eq:mc_walk_permutation}
 \end{equation}
-in $\ve{H}$ where $\nu$ is a particular random walk sequence
-permutation. We can generate these sequences of transitions through
-Monte Carlo random walks by assigning them both a probability and
-weight. As a reinterpretation of the iteration matrix, we then form
-the \textit{Neumann-Ulam decomposition} of \ve{H}:
+in $\ve{H}$ where $\nu$ is interpreted as a particular random walk
+sequence permutation. We can generate these sequences of transitions
+through Monte Carlo random walks by assigning them both a probability
+and weight. As a reinterpretation of the iteration matrix, we then
+form the \textit{Neumann-Ulam decomposition} of \ve{H}:
 \begin{equation}
   \ve{H} = \ve{P} \circ \ve{W}\:,
   \label{eq:neumann_ulam_decomposition}
@@ -79,7 +79,8 @@ transition probability matrix, and $\ve{W}$ denotes the transition
 weight matrix. This decomposition, a generalization of Dimov's work
 \citep{dimov_new_1998}, is an extension of the original Neumann-Ulam
 scheme in that now a weight cutoff can be used to terminate a random
-walk sequence. The formulation of $\ve{P}$ and $\ve{W}$ will be
+walk sequence and therefore truncate the Neumann series it is
+approximating. The formulation of $\ve{P}$ and $\ve{W}$ will be
 dependent on whether we choose a direct or adjoint Monte Carlo
 sequence to estimate the state transitions in
 Eq~(\ref{eq:expanded_neumann_solution}).
@@ -247,9 +248,9 @@ $\ve{W}$ as:
   \label{eq:weight_norm}
 \end{equation}
 Choosing the infinity norm of the operator as defined in
-Eq~(\ref{eq:matrix_infinity_norm}), the normalized probability matrix
-will yield a norm of 1 giving the following inequality for relating
-$\ve{G}$ and $\ve{H}$:
+Eq~(\ref{eq:matrix_infinity_norm}), the row normalized probability
+matrix will yield a norm of 1 giving the following inequality for
+relating $\ve{G}$ and $\ve{H}$:
 \begin{equation}
   |\ve{G}| \geq |\ve{H}|^2
   \label{eq:variance_norm_inequality}
@@ -298,34 +299,40 @@ variance in their test problems.
 \section{Adjoint Method}
 \label{sec:adjoint_mc}
 An alternative formulation for Monte Carlo matrix inversion is the
-adjoint method. We begin with generating the linear system adjoint to
+adjoint method. We begin with defining the linear system adjoint to
+Eq~(\ref{eq:linear_problem}):
+\begin{equation}
+  \ve{A}^T \ve{y} = \ve{d}\:,
+  \label{eq:adjoint_linear_problem}
+\end{equation}
+where $\ve{y}$ and $\ve{d}$ are the adjoint solution and source
+respectively. We can split this equation to mirror
 Eq~(\ref{eq:richardson_split}) by defining the following inner product
 equivalence \citep{spanier_monte_1969}:
 \begin{equation}
   \langle \ve{A}^T \ve{x}, \ve{y} \rangle = \langle \ve{x}, \ve{A}
-  \ve{y} \rangle\:,
+  \ve{y} \rangle\:.
   \label{eq:adjoint_operator_product}
 \end{equation}
-where $\ve{y}$ is the adjoint solution vector. With this statement we
-can then define the \textit{adjoint linear system}:
+With this statement we can then define split equation.:
 \begin{equation}
-  \ve{y} = \ve{H}^T \ve{y} + \ve{d}\:,
+  \ve{y} = \ve{H}^T \ve{y} + \ve{d}\:.
   \label{eq:adjoint_linear_system}
 \end{equation}
-where $\ve{d}$ is the adjoint source. As was required for convergence
-with the direct method using Eq~(\ref{eq:richardson_split}), the
-spectral radius of $\ve{H}$ must remain less than 1 as $\ve{H}^T$
-contains the same eigenvalues and therefore has the same spectral
-radius. From this definition it follows that:
+As was required for convergence with the direct method using
+Eq~(\ref{eq:richardson_split}), the spectral radius of $\ve{H}$ must
+remain less than 1 as $\ve{H}^T$ contains the same eigenvalues and
+therefore has the same spectral radius. From this definition it
+follows that:
 \begin{equation}
   \langle \ve{x}, \ve{d} \rangle = \langle \ve{y}, \ve{b} \rangle\:.
   \label{eq:adjoint_vector_relation}
 \end{equation}
-In this scheme, random walk histories are born in a state generated by
-source sampling and tallies are generated in the states in which the
-random walk currently resides. By comparing the contents of their
-estimators, we can relate $\ve{y}$ and $\ve{d}$ to the direct method
-solution. 
+By comparing the contents of their estimators, we can determine
+$\ve{y}$ and $\ve{d}$ from the direct method. In this scheme,
+random walk histories are born in a state generated by source sampling
+and tallies are generated in the states in which the random walk
+currently resides.
 
 In terms of particle transport, this adjoint method is equivalent to a
 traditional forward method. As a result of using the adjoint system,
@@ -358,8 +365,8 @@ the adjoint method. Given Eq~(\ref{eq:direct_permutation_weight}) as
 the weight generated for a particular random walk permutation as in
 Eq~(\ref{eq:mc_walk_permutation}) and the fact that in the adjoint
 method we are only tallying the solution in the state in which the
-walk currently resides, the contribution to the solution from a
-particular random walk permutation is then:
+walk currently resides, the contribution to the solution in state $i$
+from a particular random walk permutation is then:
 \begin{equation}
   X_{\nu} = \sum_{m=0}^k W_{m} b_{i_0} \delta_{i,i_m}\:,
   \label{eq:adjoint_permutation_contribution}
