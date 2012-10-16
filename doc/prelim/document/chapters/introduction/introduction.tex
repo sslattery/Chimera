@@ -120,7 +120,7 @@ nonlinear problems exploiting leadership class levels of parallelism.
 \section{Hardware-Based Motivation}
 \label{sec:hardware_motivation}
 As leadership class machines move towards the exascale, new algorithms
-must developed that leverage their strengths and adapt to their
+must be developed that leverage their strengths and adapt to their
 shortcomings. Basic research is required now to advance methods in
 time for these new machines to become operational. Organized work is
 already moving forward in this area with the Department of Energy's
@@ -131,20 +131,21 @@ technologies for exascale facilities
 language in this call for proposals, we can identify key issues for
 which a set of robust, massively parallel Monte Carlo solvers could
 provide a solution. As machines begin to operate at hundreds of
-petaflops peak performance and beyond, restrictions on power
-availability will require incredibly high levels of
-concurrency. Furthermore, this drop in power consumption will mean
-increased pressure on memory as memory per node is expected to
-stagnate while cores per node is expected to increase. As the number
-of cores increases, their clock speed is expected to stagnate or even
-decrease to further reduce power consumption and manufacturing costs.
+petaflops peak performance and beyond, trends toward reduced energy
+consumption will require incredibly high levels of concurrency to
+achieve the desired computation rates. Furthermore, this drop in
+power consumption will mean increased pressure on memory as memory per
+node is expected to stagnate while cores per node is expected to
+increase. As the number of cores increases, their clock speed is
+expected to stagnate or even decrease to further reduce power
+consumption and manufacturing costs.
 
 The end result of these hardware changes is that the larger numbers of
 low-powered processors will be prone to both soft failures such as bit
 errors in floating point operations and hard failures where the data
 owned by that processor cannot be recovered. Because these failures
 are predicted to be common, resilient solver technologies are required
-overcome these events. With linear and nonlinear solvers based on
+to overcome these events. With linear and nonlinear solvers based on
 Monte Carlo techniques, such issues are alleviated by statistical
 arguments. In the case of soft failures, isolated floating point
 errors in Monte Carlo simulation are absorbed within tally statistics
