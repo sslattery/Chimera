@@ -47,12 +47,20 @@ namespace Chimera
 /*!
  * \brief Default constructor.
  */
-template<class Scalar, class LO, class GO, class RNG>
-History<Scalar,LO,GO,RNG>::History()
+template<class Scalar, class LO, class GO>
+History<Scalar,LO,GO>::History()
     : d_weight( 1.0 )
     , d_local_state( 0 )
     , d_global_state( 0 )
     , d_active( true )
+{ /* ... */ }
+
+//---------------------------------------------------------------------------//
+/*!
+ * \brief destructor.
+ */
+template<class Scalar, class LO, class GO>
+History<Scalar,LO,GO>::~History()
 { /* ... */ }
 
 //---------------------------------------------------------------------------//
