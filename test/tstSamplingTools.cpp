@@ -84,7 +84,7 @@ TEUCHOS_UNIT_TEST( SamplingTools, nonuniform_stratify_sample_test )
     int comm_rank = comm->getRank();
     int comm_size = comm->getSize();
 
-    // Setup linear operator distribution.
+    // Setup global PDF distribution.
     int local_num_rows = 10;
     int global_num_rows = local_num_rows*comm_size;
     Teuchos::RCP<const Tpetra::Map<int> > row_map = 
@@ -119,9 +119,33 @@ TEUCHOS_UNIT_TEST( SamplingTools, nonuniform_stratify_sample_test )
 }
 
 //---------------------------------------------------------------------------//
-TEUCHOS_UNIT_TEST( SamplingTools, uniform_local_pdf_sample_test )
+TEUCHOS_UNIT_TEST( SamplingTools, local_pdf_sample_test )
 {
+    using namespace Chimera;
 
+    // Setup a random number generator.
+    typedef boost::mt19937 RNG;
+    Teuchos::RCP<RNG> rng = RNGTraits<RNG>::create();
+
+    // Setup local PDF.
+    int pdf_size = 10;
+    Teuchos::Array<double> pdf_values( pdf_size, 0.0 );
+    pdf_values[ pdf_size-1 ] = 1.0;
+    Teuchos::Array<int> pdf_indices( pdf_size );
+    for ( int i = 0; i < pdf_size; ++i )
+    {
+	pdf_indices[i] = i+1;
+    }
+
+    // Sample the local PDF.
+    TEST_ASSERT( pdf_size == SamplingTools::sampleLocalDiscretePDF( 
+		     pdf_values(), pdf_indices(), rng ) );
+
+    // Reset the PDF to a different state and sample again.
+    std::fill( pdf_values.begin(), pdf_values.end(), 0.0 );
+    pdf_values[ pdf_size-3 ] = 1.0;
+    TEST_ASSERT( pdf_size-2 == SamplingTools::sampleLocalDiscretePDF( 
+		     pdf_values(), pdf_indices(), rng ) );
 }
 
 //---------------------------------------------------------------------------//

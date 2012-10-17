@@ -76,7 +76,6 @@ class SamplingTools
     // Random sample a local discrete PDF for a new state index.
     template<class Scalar, class LO, class RNG>
     static LO sampleLocalDiscretePDF( 
-	const Scalar pdf_sum,
 	const Teuchos::ArrayView<Scalar>& pdf_values,
 	const Teuchos::ArrayView<LO>& pdf_indices,
 	const Teuchos::RCP<RNG>& rng );
