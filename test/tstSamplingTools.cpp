@@ -119,6 +119,12 @@ TEUCHOS_UNIT_TEST( SamplingTools, nonuniform_stratify_sample_test )
 }
 
 //---------------------------------------------------------------------------//
+TEUCHOS_UNIT_TEST( SamplingTools, uniform_local_pdf_sample_test )
+{
+
+}
+
+//---------------------------------------------------------------------------//
 // end tstBoostRNG.cpp
 //---------------------------------------------------------------------------//
 
