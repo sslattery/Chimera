@@ -67,6 +67,9 @@ class History
     // Defaut constructor.
     History();
 
+    // State constructor.
+    History( Scalar weight, LO local_state, GO global_state );
+
     // Destructor.
     ~History();
 
@@ -90,10 +93,6 @@ class History
     void setGlobalState( const GO global_state )
     { d_global_state = global_state; }
 
-    //! Terminate the history.
-    void terminate()
-    { d_active = false; }
-
     //! Get the history weight.
     Scalar weight() const
     { return d_weight; }
@@ -106,10 +105,6 @@ class History
     GO globalState() const 
     { return d_global_state; }
 
-    //! Get the active history state.
-    bool active() const
-    { return d_active; }
-
   private:
 
     // History weight.
@@ -120,9 +115,6 @@ class History
 
     // Global history state.
     GO d_global_state;
-
-    // Active history state.
-    bool d_active;
 };
 
 //---------------------------------------------------------------------------//

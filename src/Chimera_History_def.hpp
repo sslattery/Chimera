@@ -52,7 +52,17 @@ History<Scalar,LO,GO>::History()
     : d_weight( 1.0 )
     , d_local_state( 0 )
     , d_global_state( 0 )
-    , d_active( true )
+{ /* ... */ }
+
+//---------------------------------------------------------------------------//
+/*!
+ * \brief State constructor.
+ */
+template<class Scalar, class LO, class GO>
+History<Scalar,LO,GO>::History( Scalar weight, LO local_state, GO global_state )
+    : d_weight( weight )
+    , d_local_state( local_state )
+    , d_global_state( global_state )
 { /* ... */ }
 
 //---------------------------------------------------------------------------//

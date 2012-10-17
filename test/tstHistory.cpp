@@ -34,7 +34,7 @@
 //---------------------------------------------------------------------------//
 // Tests
 //---------------------------------------------------------------------------//
-TEUCHOS_UNIT_TEST( History, history_test )
+TEUCHOS_UNIT_TEST( History, default_constructor_test )
 {
     using namespace Chimera;
 
@@ -50,7 +50,6 @@ TEUCHOS_UNIT_TEST( History, history_test )
     }
 
     History<double,int,int> history;
-    TEST_ASSERT( history.active() );
 
     double total = 2.0;    
     history.setWeight( total );
@@ -79,9 +78,54 @@ TEUCHOS_UNIT_TEST( History, history_test )
     int global_state = 5943;
     history.setGlobalState( global_state );
     TEST_ASSERT( history.globalState() == global_state );
+}
 
-    history.terminate();
-    TEST_ASSERT( !history.active() );
+//---------------------------------------------------------------------------//
+TEUCHOS_UNIT_TEST( History, state_constructor_test )
+{
+    using namespace Chimera;
+
+    Teuchos::RCP<boost::mt19937> rng = RNGTraits<boost::mt19937>::create();
+
+    int num_rand = 10;
+    Teuchos::Array<double> randoms(num_rand);
+    for ( int i = 0; i < num_rand; ++i )
+    {
+	randoms[i] = 
+	    Teuchos::as<double>(RNGTraits<boost::mt19937>::generate(*rng)) /
+	    Teuchos::as<double>(RNGTraits<boost::mt19937>::max(*rng));
+    }
+
+
+
+    double total = 2.0;    
+    int local_state = 2929;
+    int global_state = 5943;
+
+    History<double,int,int> history( total, local_state, global_state );
+    TEST_ASSERT( history.weight() == total );
+
+    for ( int i = 0; i < num_rand; ++i )
+    {
+	history.addWeight( randoms[i] );
+	total += randoms[i];
+	TEST_ASSERT( history.weight() == total );
+    }
+
+    total = 2.0;
+    history.setWeight( total );
+    for ( int i = 0; i < num_rand; ++i )
+    {
+	history.multiplyWeight( randoms[i] );
+	total *= randoms[i];
+	TEST_ASSERT( history.weight() == total );
+    }
+
+    history.setLocalState( local_state );
+    TEST_ASSERT( history.localState() == local_state );
+
+    history.setGlobalState( global_state );
+    TEST_ASSERT( history.globalState() == global_state );
 }
 
 //---------------------------------------------------------------------------//
