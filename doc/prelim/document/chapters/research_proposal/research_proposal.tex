@@ -359,7 +359,10 @@ a rectilinear grid for which analytical solutions are available. As a
 complement to comparison with the analytical solutions, we may also
 check those results against production implementations of Krylov
 solvers. For the nonlinear solvers, we employ a new set of equations
-with readily available benchmark solutions.
+with readily available benchmark solutions. In both cases, we
+verification will be determined by comparing the locations of global
+minima and maxima in the solution as well as comparison of solution
+vector norms with respect to a specified tolerance.
 
 \subsection{FANM Verification}
 \label{subsec:fanm_verification}
@@ -510,7 +513,7 @@ solvers. At the end of Chapter~\ref{ch:stochastic_methods}, we posed
 several research questions related to the parallelization of the
 adjoint Neumann-Ulam method and the MCSA method while in
 Chapter~\ref{ch:nonlinear_problem} we posed questions related to the
-the FANM method. We will generate numerical experiments from these
+FANM method. We will generate numerical experiments from these
 questions by dividing them into 4 categories: domain overlap studies
 for the parallel Neumann-Ulam method, domain replication studies for
 the parallel Neumann-Ulam method, parallel performance and numerical
@@ -532,13 +535,14 @@ system. These measurements will characterize how far from its starting
 state a random walk sequence moves as a function of properties of the
 linear system. Our experimental framework will allow us to fix various
 properties of the system while varying others including the size of
-the linear system, its spectral radius, and other parameters related
-to the Eigenvalues and conditioning of the linear operator. By
-varying the domain overlap and measuring parallel performance with
-respect to these properties, we can develop guidelines for setting the
-overlap with respect to measurable properties of the linear
-operator. In addition, varying the amount of overlap will allow us to
-measure the additional memory costs incurred. 
+the linear system, its spectral radius, its sparsity, its asymmetry,
+and other parameters related to the Eigenvalues, conditioning, and
+structure of the linear operator. By varying the domain overlap and
+measuring parallel performance with respect to these properties, we
+can develop guidelines for setting the overlap with respect to
+measurable properties of the linear operator. In addition, varying the
+amount of overlap will allow us to measure the additional memory costs
+incurred.
 
 \subsection{Domain Replication Studies for the Parallel Neumann-Ulam
   Method}
