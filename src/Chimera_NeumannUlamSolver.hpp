@@ -41,10 +41,10 @@
 #ifndef Chimera_NEUMANNULAMSOLVER_HPP
 #define Chimera_NEUMANNULAMSOLVER_HPP
 
-#include <Teuchos_RCP.hpp>
-
 #include <Chimera_LinearProblem.hpp>
 #include <Chimera_LinearOperatorSplit.hpp>
+
+#include <Teuchos_RCP.hpp>
 
 namespace Chimera
 {
