@@ -96,7 +96,7 @@ HistoryBank<HT> HistoryBuffer<HT>::communicate()
 
     // Redistribute the histories to their destinations.
     Tpetra::Distributor distributor( d_state_map->getComm() );
-    GO num_incoming_histories = 
+    size_type num_incoming_histories = 
 	distributor.createFromSends( destination_procs() );
 
     destination_procs.clear();
