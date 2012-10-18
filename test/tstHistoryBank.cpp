@@ -2,7 +2,7 @@
 /*!
  * \file tstHistoryBank.cpp
  * \author Stuart R. Slattery
- * \brief History tests.
+ * \brief History bank tests.
  */
 //---------------------------------------------------------------------------//
 
