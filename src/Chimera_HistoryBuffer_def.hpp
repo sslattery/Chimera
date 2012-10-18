@@ -43,6 +43,8 @@
 
 #include "Chimera_Assertion.hpp"
 
+#include <Teuchos_ArrayView.hpp>
+
 #include <Tpetra_Distributor.hpp>
 
 namespace Chimera
@@ -94,13 +96,14 @@ HistoryBank<HT> HistoryBuffer<HT>::communicate()
 
     // Redistribute the histories to their destinations.
     Tpetra::Distributor distributor( d_state_map->getComm() );
-    GO num_import_histories = 
+    GO num_incoming_histories = 
 	distributor.createFromSends( destination_procs() );
 
     destination_procs.clear();
 
     Teuchos::Array<HT> incoming_buffer( num_incoming_histories );
-    distributor.doPostsAndWaits( d_buffer(), 1, incoming_buffer() );
+    Teuchos::ArrayView<const HT> outgoing_buffer = d_buffer();
+    distributor.doPostsAndWaits( outgoing_buffer, 1, incoming_buffer() );
 
     // Return a new history bank populated with the incoming buffer.
     return HistoryBank<HT>( incoming_buffer );
