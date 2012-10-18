@@ -32,79 +32,104 @@
 */
 //---------------------------------------------------------------------------//
 /*!
- * \file Chimera_AdjointNeumannUlamSolver.hpp
+ * \file Chimera_HistoryBank.hpp
  * \author Stuart R. Slattery
- * \brief Adjoint Neumann-Ulam solver interface definition.
+ * \brief HistoryBank definition.
  */
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_ADJOINTNEUMANNULAMSOLVER_HPP
-#define Chimera_ADJOINTNEUMANNULAMSOLVER_HPP
+#ifndef Chimera_BANK_HPP
+#define Chimera_BANK_HPP
 
-#include <Chimera_NeumannUlamSolver.hpp>
-#include <Chimera_LinearProblem.hpp>
-#include <Chimera_LinearOperatorSplit.hpp>
+#include "Chimera_Assertion.hpp"
 
-#include <Teuchos_RCP.hpp>
-#include <Teuchos_ParameterList.hpp>
-
-#include <Tpetra_CrsMatrix.hpp>
+#include <Teuchos_Array.hpp>
 
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
- * \class NeumannUlamSolver
- * \brief Interface definition for Neumann-Ulam Monte Carlo solvers.
+ * \class HistoryBank
+ * \brief History bank. 
+ *
+ * This class is a stack using a Teuchos::Array as the underlying data
+ * structure so that we may use it for communication operations.
  */
 //---------------------------------------------------------------------------//
-template<class Scalar, class LO, class GO, class RNG>
-class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
+template<class HT>
+class HistoryBank
 {
   public:
 
     //@{
     //! Typedefs.
-    typedef Scalar                                    scalar_type;
-    typedef LO                                        local_ordinal_type;
-    typedef GO                                        global_ordinal_type;
-    typedef RNG                                       rng_type;
-    typedef NeumannUlamSolver<Scalar,LO,GO,RNG>       Base;
-    typedef typename Base::RCP_LinearProblem          RCP_LinearProblem;
-    typedef typename Base::RCP_LinearOperatorSplit    RCP_LinearOperatorSplit;
-    typedef typename Base::RCP_RNG                    RCP_RNG;
-    typedef Teuchos::RCP<Teuchos::ParameterList>      RCP_ParameterList;
-    typedef Tpetra::CrsMatrix<Scalar,LO,GO>           TpetraCrsMatrix;
-    typedef Teuchos::RCP<TpetraCrsMatrix>             RCP_TpetraCrsMatrix;
+    typedef HT                                             history_type;
+    typedef typename Teuchos::Array<HT>::size_type         size_type;
     //@}
 
     //! Constructor.
-    AdjointNeumannUlamSolver( const RCP_LinearProblem& linear_problem,
-			      const RCP_LinearOperatorSplit& operator_split,
-			      const RCP_RNG& rng,
-			      const RCP_Parameterlist& plist );
+    HistoryBank()
+    { /* ... */ }
 
     //! Destructor.
-    ~AdjointNeumannUlamSolver();
+    ~HistoryBank()
+    { /* ... */ }
 
-    //! Execute a stage of histories with random walks.
-    void walk();
+    //! Set the history stack.
+    void setStack( const Teuchos::Array<HT>& histories ) 
+    { d_histories = history_stack; }
+
+    //! Return if the bank is empty.
+    bool empty () const
+    { return d_histories.empty(); }
+
+    //! Return the number of histories left in the bank.
+    size_type size() const
+    { return d_histories.size(); }
+
+    //! Access the top history in the stack.
+    inline const HT& top() const;
+
+    //! Push history onto the stack.
+    void push( const HT& history )
+    { d_histories.push_back(history); }
+
+    //! Pop a history off of the stack.
+    inline HT pop();
 
   private:
 
-    // Build the probability matrix.
-    void buildProbabilityMatrix();
-
-  private:
-
-    // Probability matrix.
-    RCP_TpetraCrsMatrix d_probability_matrix;
+    // History stack.
+    Teuchos::Array<HT> d_histories;
 };
+
+//---------------------------------------------------------------------------//
+// Inline functions.
+//---------------------------------------------------------------------------//
+template<class HT>
+const HT& HistoryBank<HT>::top() const
+{
+    testPrecondition( !empty() );
+    return d_histories.back();
+}
+
+//---------------------------------------------------------------------------//
+template<class HT>
+HT HistoryBank<HT>::pop()
+{
+    testPrecondition( !empty() );
+    HT history = d_histories.back();
+    d_histories.pop_back();
+    return history;
+}
+
+//---------------------------------------------------------------------------//
 
 } // end namespace Chimera
 
-#endif // end Chimera_ADJOINTNEUMANNULAMSOLVER_HPP
+#endif // end Chimera_BANK_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_AdjointNeumannUlamSolver.hpp
+// end Chimera_HistoryBank.hpp
 //---------------------------------------------------------------------------//
+
