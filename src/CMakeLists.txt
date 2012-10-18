@@ -37,6 +37,7 @@ APPEND_SET(HEADERS
   Chimera_LinearProblem_def.hpp
   Chimera_LinearSolver.hpp
   Chimera_LinearSolverFactory.hpp
+  Chimera_NeumannUlamSolver.hpp
   Chimera_OperatorTools.hpp
   Chimera_OperatorTools_def.hpp
   Chimera_RNGTraits.hpp
