@@ -75,7 +75,7 @@ HistoryBuffer<HT>::~HistoryBuffer()
 template<class HT>
 HistoryBank<HT> HistoryBuffer<HT>::communicate()
 {
-    // Get the global states for the particles in the buffer.
+    // Get the global states for the histories in the buffer.
     Teuchos::Array<GO> global_states( d_buffer.size() );
     typename Teuchos::Array<GO>::iterator global_state_it;
     typename Teuchos::Array<HT>::const_iterator buffer_it;
