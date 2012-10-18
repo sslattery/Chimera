@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------//
 /*!
- * \file tstHistory.cpp
+ * \file tstHistoryBank.cpp
  * \author Stuart R. Slattery
  * \brief History tests.
  */
@@ -14,11 +14,8 @@
 #include <algorithm>
 #include <cassert>
 
+#include <Chimera_HistoryBank.hpp>
 #include <Chimera_History.hpp>
-#include <Chimera_RNGTraits.hpp>
-#include <Chimera_BoostRNG.hpp>
-
-#include <boost/random/mersenne_twister.hpp>
 
 #include <Teuchos_UnitTestHarness.hpp>
 #include <Teuchos_DefaultComm.hpp>
@@ -30,135 +27,103 @@
 #include <Teuchos_TypeTraits.hpp>
 #include <Teuchos_Tuple.hpp>
 #include <Teuchos_Ptr.hpp>
+#include <Teuchos_as.hpp>
 
 //---------------------------------------------------------------------------//
 // Tests
 //---------------------------------------------------------------------------//
-TEUCHOS_UNIT_TEST( History, default_constructor_test )
+TEUCHOS_UNIT_TEST( HistoryBank, history_bank_test )
 {
     using namespace Chimera;
 
-    Teuchos::RCP<boost::mt19937> rng = RNGTraits<boost::mt19937>::create();
+    typedef History<double,int,int> HistoryType;
 
-    int num_rand = 10;
-    Teuchos::Array<double> randoms(num_rand);
-    for ( int i = 0; i < num_rand; ++i )
+    int num_histories = 2;
+
+    HistoryBank<HistoryType> bank;
+
+    // Test the bank with an array of histories.
+    Teuchos::Array<HistoryType> histories( num_histories );
+    for ( int i = 0; i < num_histories; ++i )
     {
-	randoms[i] = 
-	    Teuchos::as<double>(RNGTraits<boost::mt19937>::generate(*rng)) /
-	    Teuchos::as<double>(RNGTraits<boost::mt19937>::max(*rng));
+	histories[i].setWeight( i );
+	histories[i].setLocalState( i );
+	histories[i].setGlobalState( i );
     }
 
-    History<double,int,int> history;
+    bank.setStack( histories );
 
-    double total = 2.0;    
-    history.setWeight( total );
-    TEST_ASSERT( history.weight() == total );
+    histories.clear();
 
-    for ( int i = 0; i < num_rand; ++i )
+    TEST_ASSERT( !bank.empty() );
+    TEST_ASSERT( Teuchos::as<int>(bank.size()) == num_histories );
+
+    HistoryType history;
+    int rindex;
+    for ( int i = 0; i < num_histories; ++i )
     {
-	history.addWeight( randoms[i] );
-	total += randoms[i];
-	TEST_ASSERT( history.weight() == total );
+	rindex = num_histories - i - 1;
+
+	TEST_ASSERT( !bank.empty() );
+
+	TEST_ASSERT( bank.top().weight() == 
+		     Teuchos::as<HistoryType::scalar_type>(rindex) );
+	TEST_ASSERT( bank.top().localState() == 
+		     Teuchos::as<HistoryType::local_ordinal_type>(rindex) );
+	TEST_ASSERT( bank.top().globalState() == 
+		     Teuchos::as<HistoryType::global_ordinal_type>(rindex) );
+
+	history = bank.pop();
+	TEST_ASSERT( history.weight() == 
+		     Teuchos::as<HistoryType::scalar_type>(rindex) );
+	TEST_ASSERT( history.localState() == 
+		     Teuchos::as<HistoryType::local_ordinal_type>(rindex) );
+	TEST_ASSERT( history.globalState() == 
+		     Teuchos::as<HistoryType::global_ordinal_type>(rindex) );
+
+	TEST_ASSERT( Teuchos::as<int>(bank.size()) == rindex );
     }
 
-    total = 2.0;
-    history.setWeight( total );
-    for ( int i = 0; i < num_rand; ++i )
+    TEST_ASSERT( bank.empty() );
+    TEST_ASSERT( bank.size() == 0 );
+
+    // Now test the bank by pushing histories.
+    for ( int i = 0; i < num_histories; ++i )
     {
-	history.multiplyWeight( randoms[i] );
-	total *= randoms[i];
-	TEST_ASSERT( history.weight() == total );
+	bank.push( HistoryType( i, i, i ) );
     }
 
-    int local_state = 2929;
-    history.setLocalState( local_state );
-    TEST_ASSERT( history.localState() == local_state );
+    TEST_ASSERT( !bank.empty() );
+    TEST_ASSERT( Teuchos::as<int>(bank.size()) == num_histories );
 
-    int global_state = 5943;
-    history.setGlobalState( global_state );
-    TEST_ASSERT( history.globalState() == global_state );
+    for ( int i = 0; i < num_histories; ++i )
+    {
+	rindex = num_histories - i - 1;
+
+	TEST_ASSERT( !bank.empty() );
+
+	TEST_ASSERT( bank.top().weight() == 
+		     Teuchos::as<HistoryType::scalar_type>(rindex) );
+	TEST_ASSERT( bank.top().localState() == 
+		     Teuchos::as<HistoryType::local_ordinal_type>(rindex) );
+	TEST_ASSERT( bank.top().globalState() == 
+		     Teuchos::as<HistoryType::global_ordinal_type>(rindex) );
+
+	history = bank.pop();
+	TEST_ASSERT( history.weight() == 
+		     Teuchos::as<HistoryType::scalar_type>(rindex) );
+	TEST_ASSERT( history.localState() == 
+		     Teuchos::as<HistoryType::local_ordinal_type>(rindex) );
+	TEST_ASSERT( history.globalState() == 
+		     Teuchos::as<HistoryType::global_ordinal_type>(rindex) );
+
+	TEST_ASSERT( Teuchos::as<int>(bank.size()) == rindex );
+    }
+
+    TEST_ASSERT( bank.empty() );
+    TEST_ASSERT( bank.size() == 0 );
 }
 
 //---------------------------------------------------------------------------//
-TEUCHOS_UNIT_TEST( History, state_constructor_test )
-{
-    using namespace Chimera;
-
-    Teuchos::RCP<boost::mt19937> rng = RNGTraits<boost::mt19937>::create();
-
-    int num_rand = 10;
-    Teuchos::Array<double> randoms(num_rand);
-    for ( int i = 0; i < num_rand; ++i )
-    {
-	randoms[i] = 
-	    Teuchos::as<double>(RNGTraits<boost::mt19937>::generate(*rng)) /
-	    Teuchos::as<double>(RNGTraits<boost::mt19937>::max(*rng));
-    }
-
-
-
-    double total = 2.0;    
-    int local_state = 2929;
-    int global_state = 5943;
-
-    History<double,int,int> history( total, local_state, global_state );
-    TEST_ASSERT( history.weight() == total );
-
-    for ( int i = 0; i < num_rand; ++i )
-    {
-	history.addWeight( randoms[i] );
-	total += randoms[i];
-	TEST_ASSERT( history.weight() == total );
-    }
-
-    total = 2.0;
-    history.setWeight( total );
-    for ( int i = 0; i < num_rand; ++i )
-    {
-	history.multiplyWeight( randoms[i] );
-	total *= randoms[i];
-	TEST_ASSERT( history.weight() == total );
-    }
-
-    history.setLocalState( local_state );
-    TEST_ASSERT( history.localState() == local_state );
-
-    history.setGlobalState( global_state );
-    TEST_ASSERT( history.globalState() == global_state );
-}
-
-//---------------------------------------------------------------------------//
-TEUCHOS_UNIT_TEST( History, serialization_test )
-{
-    using namespace Chimera;
-
-    Teuchos::RCP<const Teuchos::Comm<int> > comm = 
-	Teuchos::DefaultComm<int>::getComm();
-    int comm_rank = comm->getRank();
-    
-    History<double,int,int> history;
-
-    double weight = 4.393939;
-    int local_state = 4941;
-    int global_state = 28390;
-
-    if ( comm_rank == 0 )
-    {
-	history.setWeight( weight );
-	history.setLocalState( local_state );
-	history.setGlobalState( global_state );
-    }
-    comm->barrier();
-    
-    Teuchos::broadcast( *comm, 0, 
-			Teuchos::Ptr<History<double,int,int> >( &history ) );
- 
-    TEST_ASSERT( history.weight() == weight );
-    TEST_ASSERT( history.localState() == local_state );
-    TEST_ASSERT( history.globalState() == global_state );
-}
-
-//---------------------------------------------------------------------------//
-// end tstHistory.cpp
+// end tstHistoryBank.cpp
 //---------------------------------------------------------------------------//

@@ -30,6 +30,13 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   )
 
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  HistoryBank_test
+  SOURCES tstHistoryBank.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
+  COMM serial mpi
+  STANDARD_PASS_OUTPUT
+  )
+
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
   LinearProblem_test
   SOURCES tstLinearProblem.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi

@@ -38,8 +38,8 @@
  */
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_BANK_HPP
-#define Chimera_BANK_HPP
+#ifndef Chimera_HISTORYBANK_HPP
+#define Chimera_HISTORYBANK_HPP
 
 #include "Chimera_Assertion.hpp"
 
@@ -77,7 +77,7 @@ class HistoryBank
 
     //! Set the history stack.
     void setStack( const Teuchos::Array<HT>& histories ) 
-    { d_histories = history_stack; }
+    { d_histories = histories; }
 
     //! Return if the bank is empty.
     bool empty () const
@@ -127,7 +127,7 @@ HT HistoryBank<HT>::pop()
 
 } // end namespace Chimera
 
-#endif // end Chimera_BANK_HPP
+#endif // end Chimera_HISTORYBANK_HPP
 
 //---------------------------------------------------------------------------//
 // end Chimera_HistoryBank.hpp
