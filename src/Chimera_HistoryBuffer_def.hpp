@@ -51,8 +51,8 @@ namespace Chimera
 /*!
  * \brief Constructor.
  */
-template<class HT, class LO, class GO>
-HistoryBuffer<HT,LO,GO>::HistoryBuffer( const RCP_TpetraMap& state_map )
+template<class HT>
+HistoryBuffer<HT>::HistoryBuffer( const RCP_TpetraMap& state_map )
     : d_state_map( state_map )
     , d_buffer( 0 )
 { /* ... */ }
@@ -61,8 +61,8 @@ HistoryBuffer<HT,LO,GO>::HistoryBuffer( const RCP_TpetraMap& state_map )
 /*!
  * \brief Destructor.
  */
-template<class HT, class LO, class GO>
-HistoryBuffer<HT,LO,GO>::~HistoryBuffer()
+template<class HT>
+HistoryBuffer<HT>::~HistoryBuffer()
 { /* ... */ }
 
 //---------------------------------------------------------------------------//
@@ -70,8 +70,8 @@ HistoryBuffer<HT,LO,GO>::~HistoryBuffer()
  * \brief Communicate the buffer to its destinations and return the incoming
     buffer.
 */
-template<class HT, class LO, class GO>
-Teuchos::Array<HT> HistoryBuffer<HT,LO,GO>::communicate()
+template<class HT>
+Teuchos::Array<HT> HistoryBuffer<HT>::communicate()
 {
     // Get the global states for the particles in the buffer.
     Teuchos::Array<GO> global_states( d_buffer.size() );
@@ -89,13 +89,16 @@ Teuchos::Array<HT> HistoryBuffer<HT,LO,GO>::communicate()
     Tpetra::LookupStatus lookup_status = 
 	d_state_map->getRemoteIndexList( global_states(), destination_procs() );
     testInvariant( lookup_status == Tpetra::AllIDsPresent );
+
     global_states.clear();
 
     // Redistribute the histories to their destinations.
     Tpetra::Distributor distributor( d_state_map->getComm() );
     GO num_import_histories = 
 	distributor.createFromSends( destination_procs() );
+
     destination_procs.clear();
+
     Teuchos::Array<HT> incoming_buffer( num_incoming_histories );
     distributor.doPostsAndWaits( d_buffer(), 1, incoming_buffer() );
 

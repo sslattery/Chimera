@@ -54,7 +54,7 @@ namespace Chimera
  * \brief History buffer for communicating histories.
  */
 //---------------------------------------------------------------------------//
-template<class HT, class LO, class GO>
+template<class HT>
 class HistoryBuffer
 {
   public:
@@ -62,8 +62,8 @@ class HistoryBuffer
     //@{
     //! Typedefs.
     typedef HT                                        history_type;
-    typedef LO                                        local_ordinal_type;
-    typedef GO                                        global_ordinal_type;
+    typedef typename HT::local_ordinal                LO;
+    typedef typename HT::global_ordinal_type          GO;
     typedef Tpetra::Map<LO,GO>                        TpetraMap;
     typedef Teuchos::RCP<TpetraMap>                   RCP_TpetraMap;
     typedef typename Teuchos::Array<HT>::size_type    size_type;
