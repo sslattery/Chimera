@@ -69,6 +69,7 @@ class HistoryBank
 
     //! Constructor.
     HistoryBank()
+	: d_histories( 0 )
     { /* ... */ }
 
     //! Destructor.
