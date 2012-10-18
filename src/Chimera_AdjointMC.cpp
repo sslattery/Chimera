@@ -135,8 +135,9 @@ void AdjointMC::walk()
     for ( int n = 0; n < num_histories; ++n )
     {
 	// Sample the source to get the initial state.
-	zeta = Teuchos::as<double>(RNGTraits<boost::mt11213b>::generate(*d_rng)) / 
-	       Teuchos::as<double>(RNGTraits<boost::mt11213b>::max(*d_rng));
+	zeta = 
+	    Teuchos::as<double>(RNGTraits<boost::mt11213b>::generate(*d_rng)) / 
+	    Teuchos::as<double>(RNGTraits<boost::mt11213b>::max(*d_rng));
 
 	// Line source.
 	if ( d_plist->get<bool>("LINE SOURCE") )
@@ -176,8 +177,9 @@ void AdjointMC::walk()
 	    			      &C_values[0], 
 	    			      &C_indices[0] );
 
-	    zeta = Teuchos::as<double>(RNGTraits<boost::mt11213b>::generate(*d_rng)) / 
-		   Teuchos::as<double>(RNGTraits<boost::mt11213b>::max(*d_rng));
+	    zeta = 
+		Teuchos::as<double>(RNGTraits<boost::mt11213b>::generate(*d_rng)) /
+		Teuchos::as<double>(RNGTraits<boost::mt11213b>::max(*d_rng));
 
 	    new_index = std::distance( 
 	    	C_values.begin(),

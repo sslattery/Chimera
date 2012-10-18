@@ -48,7 +48,7 @@ namespace Chimera
 //---------------------------------------------------------------------------//
 /*!
  * \class OperatorTools
- * \brief A stateless class providing tools for operator analysis.
+ * \brief A stateless class providing tools for operators.
  */
 //---------------------------------------------------------------------------//
 class OperatorTools
@@ -63,9 +63,16 @@ class OperatorTools
     ~OperatorTools()
     { /* ... */ }
 
+    // Get a local component of an operator given a global row and column
+    // index.
+    template<class Scalar, class LO, class GO>
+    static Scalar getMatrixComponent( 
+	const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix,
+	const GO global_row, const GO global_col );
+
     // Compute the spectral radius of an operator.
-    template<class Scalar,class LO, class GO>
-    Scalar static spectralRadius( 
+    template<class Scalar, class LO, class GO>
+    static Scalar spectralRadius( 
 	const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix );
 };
 

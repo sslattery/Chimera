@@ -39,12 +39,18 @@
 #ifndef Chimera_OPERATORTOOLS_DEF_HPP
 #define Chimera_OPERATORTOOLS_DEF_HPP
 
+#include <algorithm>
+
 #include "Chimera_Assertion.hpp"
 
 #include <Teuchos_ParameterList.hpp>
+#include <Teuchos_ArrayView.hpp>
+#include <Teuchos_OrdinalTraits.hpp>
+#include <Teuchos_as.hpp>
 
 #include <Tpetra_Operator.hpp>
 #include <Tpetra_MultiVector.hpp>
+#include <Tpetra_Map.hpp>
 
 #include <AnasaziTypes.hpp>
 #include <AnasaziBasicEigenproblem.hpp>
@@ -54,6 +60,43 @@
 
 namespace Chimera
 {
+//---------------------------------------------------------------------------//
+/*!
+ * \brief Get a local component of an operator given a global row and column
+ * index. 
+ */
+template<class Scalar, class LO, class GO>
+Scalar OperatorTools::getMatrixComponent( 
+    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix,
+    const GO global_row, const GO global_col )
+{
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map = matrix->getRowMap();
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > col_map = matrix->getColMap();
+
+    LO local_row = row_map->getLocalElement( global_row );
+    LO local_col = col_map->getLocalElement( global_col );
+
+    testPrecondition( local_row != Teuchos::OrdinalTraits<LO>::invalid() );
+    testPrecondition( local_col != Teuchos::OrdinalTraits<LO>::invalid() );
+
+    Teuchos::ArrayView<const LO> local_indices;
+    Teuchos::ArrayView<const Scalar> local_values;
+    matrix->getLocalRowView( local_row, local_indices, local_values );
+
+    typename Teuchos::ArrayView<const LO>::const_iterator local_idx_it =
+	std::find( local_indices.begin(), local_indices.end(), local_col );
+
+    if ( local_idx_it != local_indices.end() )
+    {
+	return local_values[ std::distance( local_indices.begin(),
+					    local_idx_it ) ];
+    }
+    else
+    {
+	return 0.0;
+    }
+}
+
 //---------------------------------------------------------------------------//
 /*!
  * \brief Compute the spectral radius of an operator.
