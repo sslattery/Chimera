@@ -27,6 +27,8 @@ APPEND_SET(HEADERS
   Chimera_History.hpp
   Chimera_History_def.hpp
   Chimera_HistoryBank.hpp
+  Chimera_HistoryBuffer.hpp
+  Chimera_HistoryBuffer_def.hpp
   Chimera_JacobiSplit.hpp
   Chimera_JacobiSplit_def.hpp
   Chimera_LinearOperatorSplit.hpp

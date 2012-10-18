@@ -41,6 +41,8 @@
 #ifndef Chimera_HISTORYBUFFER_HPP
 #define Chimera_HISTORYBUFFER_HPP
 
+#include "Chimera_HistoryBank.hpp"
+
 #include <Teuchos_RCP.hpp>
 #include <Teuchos_Array.hpp>
 
@@ -79,9 +81,9 @@ class HistoryBuffer
     void pushBack( const HT& outgoing_history )
     { d_buffer.push_back( outgoing_history ); }
 
-    // Communicate the buffer to its destinations and return the
-    // incoming buffer. 
-    Teuchos::Array<HT> communicate();
+    // Communicate the buffer to its destinations and return a fresh bank of
+    // histories. 
+    HistoryBank<HT> communicate();
 
     //! Flush the buffer.
     void flush()

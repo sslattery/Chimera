@@ -67,9 +67,14 @@ class HistoryBank
     typedef typename Teuchos::Array<HT>::size_type         size_type;
     //@}
 
-    //! Constructor.
+    //! Default constructor.
     HistoryBank()
 	: d_histories( 0 )
+    { /* ... */ }
+
+    //! Stack constructor.
+    HistoryBank( const Teuchos::Array<HT>& histories )
+	: d_histories( histories )
     { /* ... */ }
 
     //! Destructor.

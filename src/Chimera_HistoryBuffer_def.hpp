@@ -67,11 +67,11 @@ HistoryBuffer<HT>::~HistoryBuffer()
 
 //---------------------------------------------------------------------------//
 /*!
- * \brief Communicate the buffer to its destinations and return the incoming
-    buffer.
+ * \brief Communicate the buffer to its destinations and return a fresh
+ * history bank.
 */
 template<class HT>
-Teuchos::Array<HT> HistoryBuffer<HT>::communicate()
+HistoryBank<HT> HistoryBuffer<HT>::communicate()
 {
     // Get the global states for the particles in the buffer.
     Teuchos::Array<GO> global_states( d_buffer.size() );
@@ -102,7 +102,8 @@ Teuchos::Array<HT> HistoryBuffer<HT>::communicate()
     Teuchos::Array<HT> incoming_buffer( num_incoming_histories );
     distributor.doPostsAndWaits( d_buffer(), 1, incoming_buffer() );
 
-    return incoming_buffer;
+    // Return a new history bank populated with the incoming buffer.
+    return HistoryBank<HT>( incoming_buffer );
 }
 
 //---------------------------------------------------------------------------//
