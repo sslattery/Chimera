@@ -47,10 +47,9 @@ namespace Chimera
 /*!
  * \brief Default constructor.
  */
-template<class Scalar, class LO, class GO>
-History<Scalar,LO,GO>::History()
+template<class Scalar, class GO>
+History<Scalar,GO>::History()
     : d_weight( 1.0 )
-    , d_local_state( 0 )
     , d_global_state( 0 )
 { /* ... */ }
 
@@ -58,10 +57,9 @@ History<Scalar,LO,GO>::History()
 /*!
  * \brief State constructor.
  */
-template<class Scalar, class LO, class GO>
-History<Scalar,LO,GO>::History( Scalar weight, LO local_state, GO global_state )
+template<class Scalar, class GO>
+History<Scalar,GO>::History( Scalar weight, GO global_state )
     : d_weight( weight )
-    , d_local_state( local_state )
     , d_global_state( global_state )
 { /* ... */ }
 
@@ -69,8 +67,8 @@ History<Scalar,LO,GO>::History( Scalar weight, LO local_state, GO global_state )
 /*!
  * \brief destructor.
  */
-template<class Scalar, class LO, class GO>
-History<Scalar,LO,GO>::~History()
+template<class Scalar, class GO>
+History<Scalar,GO>::~History()
 { /* ... */ }
 
 //---------------------------------------------------------------------------//

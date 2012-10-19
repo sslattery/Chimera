@@ -64,15 +64,11 @@ class HistoryBuffer
     //@{
     //! Typedefs.
     typedef HT                                                history_type;
-    typedef typename HT::local_ordinal_type                   LO;
-    typedef typename HT::global_ordinal_type                  GO;
-    typedef Tpetra::Map<LO,GO>                                TpetraMap;
-    typedef Teuchos::RCP<const TpetraMap>                     RCP_TpetraMap;
     typedef typename Teuchos::Array<HT>::size_type            size_type;
     //@}
 
     //! Constructor.
-    HistoryBuffer( const RCP_TpetraMap& state_map );
+    HistoryBuffer();
 
     //! Destructor.
     ~HistoryBuffer();
@@ -83,7 +79,9 @@ class HistoryBuffer
 
     // Communicate the buffer to its destinations and return a fresh bank of
     // histories. 
-    HistoryBank<HT> communicate();
+    template<class LO,class GO>
+    HistoryBank<HT> communicate( 
+	const Teuchos::RCP<const Tpetra::Map<LO,GO> >& state_map );
 
     //! Flush the buffer.
     void flush()
@@ -98,9 +96,6 @@ class HistoryBuffer
     { return d_buffer.size(); }
 
   private:
-
-    // State distribution map.
-    RCP_TpetraMap d_state_map;
 
     // History buffer.
     Teuchos::Array<HT> d_buffer;

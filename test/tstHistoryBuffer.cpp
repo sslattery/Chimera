@@ -37,7 +37,7 @@ TEUCHOS_UNIT_TEST( HistoryBuffer, history_buffer_test )
 {
     using namespace Chimera;
 
-    typedef History<double,int,int> HistoryType;
+    typedef History<double,int> HistoryType;
 
     // Setup parallel distribution.
     Teuchos::RCP<const Teuchos::Comm<int> > comm = 
@@ -52,19 +52,18 @@ TEUCHOS_UNIT_TEST( HistoryBuffer, history_buffer_test )
 	Tpetra::createUniformContigMap<int,int>( global_num_histories, comm );
 
     // Build a history buffer with inverse rank destination states.
-    HistoryBuffer<HistoryType> history_buffer( map );
+    HistoryBuffer<HistoryType> history_buffer();
     int inverse_rank = comm_size - comm_rank - 1;
     double weight = comm_rank*1.0;
-    int local_state = comm_rank;
     int global_state = inverse_rank*local_num_histories;
     for ( int i = 0; i < local_num_histories; ++i )
     {
 	history_buffer.pushBack( 
-	    HistoryType( weight, local_state, global_state ) );
+	    HistoryType( weight, global_state ) );
     }
 
     // Communicate the histories to their destinations. 
-    HistoryBank<HistoryType> bank = history_buffer.communicate();
+    HistoryBank<HistoryType> bank = history_buffer.communicate( map );
 
     // Check the bank created.
     TEST_ASSERT( !bank.empty() );
@@ -77,9 +76,6 @@ TEUCHOS_UNIT_TEST( HistoryBuffer, history_buffer_test )
 	history = bank.pop();
 	TEST_ASSERT( history.weight() == 
 		     Teuchos::as<HistoryType::scalar_type>(inverse_rank) );
-	TEST_ASSERT( history.localState() == 
-		     Teuchos::as<HistoryType::local_ordinal_type>(
-			 inverse_rank) );
 	TEST_ASSERT( history.globalState() == 
 		     Teuchos::as<HistoryType::global_ordinal_type>(
 			 comm_rank*local_num_histories) );

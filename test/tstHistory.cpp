@@ -49,7 +49,7 @@ TEUCHOS_UNIT_TEST( History, default_constructor_test )
 	    Teuchos::as<double>(RNGTraits<boost::mt19937>::max(*rng));
     }
 
-    History<double,int,int> history;
+    History<double,int> history;
 
     double total = 2.0;    
     history.setWeight( total );
@@ -70,10 +70,6 @@ TEUCHOS_UNIT_TEST( History, default_constructor_test )
 	total *= randoms[i];
 	TEST_ASSERT( history.weight() == total );
     }
-
-    int local_state = 2929;
-    history.setLocalState( local_state );
-    TEST_ASSERT( history.localState() == local_state );
 
     int global_state = 5943;
     history.setGlobalState( global_state );
@@ -99,10 +95,9 @@ TEUCHOS_UNIT_TEST( History, state_constructor_test )
 
 
     double total = 2.0;    
-    int local_state = 2929;
     int global_state = 5943;
 
-    History<double,int,int> history( total, local_state, global_state );
+    History<double,int> history( total, global_state );
     TEST_ASSERT( history.weight() == total );
 
     for ( int i = 0; i < num_rand; ++i )
@@ -121,9 +116,6 @@ TEUCHOS_UNIT_TEST( History, state_constructor_test )
 	TEST_ASSERT( history.weight() == total );
     }
 
-    history.setLocalState( local_state );
-    TEST_ASSERT( history.localState() == local_state );
-
     history.setGlobalState( global_state );
     TEST_ASSERT( history.globalState() == global_state );
 }
@@ -137,16 +129,14 @@ TEUCHOS_UNIT_TEST( History, serialization_test )
 	Teuchos::DefaultComm<int>::getComm();
     int comm_rank = comm->getRank();
     
-    History<double,int,int> history;
+    History<double,int> history;
 
     double weight = 4.393939;
-    int local_state = 4941;
     int global_state = 28390;
 
     if ( comm_rank == 0 )
     {
 	history.setWeight( weight );
-	history.setLocalState( local_state );
 	history.setGlobalState( global_state );
     }
     comm->barrier();
@@ -155,7 +145,6 @@ TEUCHOS_UNIT_TEST( History, serialization_test )
 			Teuchos::Ptr<History<double,int,int> >( &history ) );
  
     TEST_ASSERT( history.weight() == weight );
-    TEST_ASSERT( history.localState() == local_state );
     TEST_ASSERT( history.globalState() == global_state );
 }
 

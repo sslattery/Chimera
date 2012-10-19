@@ -54,9 +54,8 @@ namespace Chimera
  * \brief Constructor.
  */
 template<class HT>
-HistoryBuffer<HT>::HistoryBuffer( const RCP_TpetraMap& state_map )
-    : d_state_map( state_map )
-    , d_buffer( 0 )
+HistoryBuffer<HT>::HistoryBuffer()
+    : d_buffer( 0 )
 { /* ... */ }
 
 //---------------------------------------------------------------------------//
@@ -72,8 +71,10 @@ HistoryBuffer<HT>::~HistoryBuffer()
  * \brief Communicate the buffer to its destinations and return a fresh
  * history bank.
 */
+template<class LO,class GO>
 template<class HT>
-HistoryBank<HT> HistoryBuffer<HT>::communicate()
+HistoryBank<HT> HistoryBuffer<HT>::communicate(
+    const Teuchos::RCP<const Tpetra::Map<LO,GO> >& state_map )
 {
     // Get the global states for the histories in the buffer.
     Teuchos::Array<GO> global_states( d_buffer.size() );
@@ -89,13 +90,13 @@ HistoryBank<HT> HistoryBuffer<HT>::communicate()
     // Get the destination procs for those global states.
     Teuchos::Array<int> destination_procs( d_buffer.size() );
     Tpetra::LookupStatus lookup_status = 
-	d_state_map->getRemoteIndexList( global_states(), destination_procs() );
+	state_map->getRemoteIndexList( global_states(), destination_procs() );
     testInvariant( lookup_status == Tpetra::AllIDsPresent );
 
     global_states.clear();
 
     // Redistribute the histories to their destinations.
-    Tpetra::Distributor distributor( d_state_map->getComm() );
+    Tpetra::Distributor distributor( state_map->getComm() );
     size_type num_incoming_histories = 
 	distributor.createFromSends( destination_procs() );
 

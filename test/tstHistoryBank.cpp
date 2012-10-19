@@ -36,7 +36,7 @@ TEUCHOS_UNIT_TEST( HistoryBank, history_bank_test )
 {
     using namespace Chimera;
 
-    typedef History<double,int,int> HistoryType;
+    typedef History<double,int> HistoryType;
 
     int num_histories = 2;
 
@@ -47,7 +47,6 @@ TEUCHOS_UNIT_TEST( HistoryBank, history_bank_test )
     for ( int i = 0; i < num_histories; ++i )
     {
 	histories[i].setWeight( i );
-	histories[i].setLocalState( i );
 	histories[i].setGlobalState( i );
     }
 
@@ -68,16 +67,12 @@ TEUCHOS_UNIT_TEST( HistoryBank, history_bank_test )
 
 	TEST_ASSERT( bank.top().weight() == 
 		     Teuchos::as<HistoryType::scalar_type>(rindex) );
-	TEST_ASSERT( bank.top().localState() == 
-		     Teuchos::as<HistoryType::local_ordinal_type>(rindex) );
 	TEST_ASSERT( bank.top().globalState() == 
 		     Teuchos::as<HistoryType::global_ordinal_type>(rindex) );
 
 	history = bank.pop();
 	TEST_ASSERT( history.weight() == 
 		     Teuchos::as<HistoryType::scalar_type>(rindex) );
-	TEST_ASSERT( history.localState() == 
-		     Teuchos::as<HistoryType::local_ordinal_type>(rindex) );
 	TEST_ASSERT( history.globalState() == 
 		     Teuchos::as<HistoryType::global_ordinal_type>(rindex) );
 
@@ -90,7 +85,7 @@ TEUCHOS_UNIT_TEST( HistoryBank, history_bank_test )
     // Now test the bank by pushing histories.
     for ( int i = 0; i < num_histories; ++i )
     {
-	bank.push( HistoryType( i, i, i ) );
+	bank.push( HistoryType( i, i ) );
     }
 
     TEST_ASSERT( !bank.empty() );
@@ -104,16 +99,12 @@ TEUCHOS_UNIT_TEST( HistoryBank, history_bank_test )
 
 	TEST_ASSERT( bank.top().weight() == 
 		     Teuchos::as<HistoryType::scalar_type>(rindex) );
-	TEST_ASSERT( bank.top().localState() == 
-		     Teuchos::as<HistoryType::local_ordinal_type>(rindex) );
 	TEST_ASSERT( bank.top().globalState() == 
 		     Teuchos::as<HistoryType::global_ordinal_type>(rindex) );
 
 	history = bank.pop();
 	TEST_ASSERT( history.weight() == 
 		     Teuchos::as<HistoryType::scalar_type>(rindex) );
-	TEST_ASSERT( history.localState() == 
-		     Teuchos::as<HistoryType::local_ordinal_type>(rindex) );
 	TEST_ASSERT( history.globalState() == 
 		     Teuchos::as<HistoryType::global_ordinal_type>(rindex) );
 
@@ -128,7 +119,6 @@ TEUCHOS_UNIT_TEST( HistoryBank, history_bank_test )
     for ( int i = 0; i < num_histories; ++i )
     {
 	histories[i].setWeight( i );
-	histories[i].setLocalState( i );
 	histories[i].setGlobalState( i );
     }
 
@@ -147,16 +137,12 @@ TEUCHOS_UNIT_TEST( HistoryBank, history_bank_test )
 
 	TEST_ASSERT( bank2.top().weight() == 
 		     Teuchos::as<HistoryType::scalar_type>(rindex) );
-	TEST_ASSERT( bank2.top().localState() == 
-		     Teuchos::as<HistoryType::local_ordinal_type>(rindex) );
 	TEST_ASSERT( bank2.top().globalState() == 
 		     Teuchos::as<HistoryType::global_ordinal_type>(rindex) );
 
 	history = bank2.pop();
 	TEST_ASSERT( history.weight() == 
 		     Teuchos::as<HistoryType::scalar_type>(rindex) );
-	TEST_ASSERT( history.localState() == 
-		     Teuchos::as<HistoryType::local_ordinal_type>(rindex) );
 	TEST_ASSERT( history.globalState() == 
 		     Teuchos::as<HistoryType::global_ordinal_type>(rindex) );
 

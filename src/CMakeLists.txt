@@ -23,8 +23,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
   Chimera_Assertion.hpp
-  Chimera_AdjointNeumannUlamSolver.hpp
-  Chimera_AdjointNeumannUlamSolver_def.hpp
   Chimera_BoostRNG.hpp
   Chimera_History.hpp
   Chimera_History_def.hpp

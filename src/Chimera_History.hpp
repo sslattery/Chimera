@@ -52,7 +52,7 @@ namespace Chimera
  * \brief Encapsulation of a random walk history's state.
  */
 //---------------------------------------------------------------------------//
-template<class Scalar, class LO, class GO>
+template<class Scalar, class GO>
 class History
 {
   public:
@@ -60,7 +60,6 @@ class History
     //@{
     //! Typedefs.
     typedef Scalar                                    scalar_type;
-    typedef LO                                        local_ordinal_type;
     typedef GO                                        global_ordinal_type;
     //@}
 
@@ -68,7 +67,7 @@ class History
     History();
 
     // State constructor.
-    History( Scalar weight, LO local_state, GO global_state );
+    History( Scalar weight, GO global_state );
 
     // Destructor.
     ~History();
@@ -85,10 +84,6 @@ class History
     void multiplyWeight( const Scalar weight )
     { d_weight *= weight; }
 
-    //! Set the local history state.
-    void setLocalState( const LO local_state )
-    { d_local_state = local_state; }
-
     //! Set the global history state.
     void setGlobalState( const GO global_state )
     { d_global_state = global_state; }
@@ -96,10 +91,6 @@ class History
     //! Get the history weight.
     Scalar weight() const
     { return d_weight; }
-
-    //! Get the local history state.
-    LO localState() const
-    { return d_local_state; }
 
     //! Get the global history state.
     GO globalState() const 
@@ -109,9 +100,6 @@ class History
 
     // History weight.
     Scalar d_weight;
-
-    // Local history state.
-    LO d_local_state;
 
     // Global history state.
     GO d_global_state;
@@ -132,77 +120,41 @@ class History
 //---------------------------------------------------------------------------//
 namespace Teuchos
 {
-typedef Chimera::History<float,int,int>                         flt_int_int;
-typedef Chimera::History<double,int,int>                        dbl_int_int;
-typedef Chimera::History<float,int,long int>                    flt_int_long;
-typedef Chimera::History<double,int,long int>                   dbl_int_long;
-typedef Chimera::History<float,int,long long int>               flt_int_ll;
-typedef Chimera::History<double,int,long long int>              dbl_int_ll;
-typedef Chimera::History<float,long int,long int>               flt_long_long;
-typedef Chimera::History<double,long int,long int>              dbl_long_long;
-typedef Chimera::History<float,long int,long long int>          flt_long_ll;
-typedef Chimera::History<double,long int,long long int>         dbl_long_ll;
-typedef Chimera::History<float,long long int,long long int>     flt_ll_ll;
-typedef Chimera::History<double,long long int,long long int>    dbl_ll_ll;
+typedef Chimera::History<float,int>                         flt_int;
+typedef Chimera::History<double,int>                        dbl_int;
+typedef Chimera::History<float,long int>                    flt_long;
+typedef Chimera::History<double,long int>                   dbl_long;
+typedef Chimera::History<float,long long int>               flt_ll;
+typedef Chimera::History<double,long long int>              dbl_ll;
 
 template<typename Ordinal>
-class SerializationTraits<Ordinal,flt_int_int>
-    : public DirectSerializationTraits<Ordinal,flt_int_int >
+class SerializationTraits<Ordinal,flt_int>
+    : public DirectSerializationTraits<Ordinal,flt_int >
 {};
 
 template<typename Ordinal>
-class SerializationTraits<Ordinal,dbl_int_int>
-    : public DirectSerializationTraits<Ordinal,dbl_int_int >
+class SerializationTraits<Ordinal,dbl_int>
+    : public DirectSerializationTraits<Ordinal,dbl_int >
 {};
 
 template<typename Ordinal>
-class SerializationTraits<Ordinal,flt_int_long>
-    : public DirectSerializationTraits<Ordinal,flt_int_long >
+class SerializationTraits<Ordinal,flt_long>
+    : public DirectSerializationTraits<Ordinal,flt_long >
 {};
 
 template<typename Ordinal>
-class SerializationTraits<Ordinal,dbl_int_long>
-    : public DirectSerializationTraits<Ordinal,dbl_int_long >
+class SerializationTraits<Ordinal,dbl_long>
+    : public DirectSerializationTraits<Ordinal,dbl_long >
 {};
 
 template<typename Ordinal>
-class SerializationTraits<Ordinal,flt_int_ll>
-    : public DirectSerializationTraits<Ordinal,flt_int_ll >
+class SerializationTraits<Ordinal,flt_ll>
+    : public DirectSerializationTraits<Ordinal,flt_ll >
 {};
 
 template<typename Ordinal>
-class SerializationTraits<Ordinal,dbl_int_ll>
-    : public DirectSerializationTraits<Ordinal,dbl_int_ll >
-{};
-
-template<typename Ordinal>
-class SerializationTraits<Ordinal,flt_long_long>
-    : public DirectSerializationTraits<Ordinal,flt_long_long >
-{};
-
-template<typename Ordinal>
-class SerializationTraits<Ordinal,dbl_long_long>
-    : public DirectSerializationTraits<Ordinal,dbl_long_long >
-{};
-
-template<typename Ordinal>
-class SerializationTraits<Ordinal,flt_long_ll>
-    : public DirectSerializationTraits<Ordinal,flt_long_ll >
-{};
-
-template<typename Ordinal>
-class SerializationTraits<Ordinal,dbl_long_ll>
-    : public DirectSerializationTraits<Ordinal,dbl_long_ll >
-{};
-
-template<typename Ordinal>
-class SerializationTraits<Ordinal,flt_ll_ll>
-    : public DirectSerializationTraits<Ordinal,flt_ll_ll >
-{};
-
-template<typename Ordinal>
-class SerializationTraits<Ordinal,dbl_ll_ll>
-    : public DirectSerializationTraits<Ordinal,dbl_ll_ll >
+class SerializationTraits<Ordinal,dbl_ll>
+    : public DirectSerializationTraits<Ordinal,dbl_ll >
 {};
 
 } // end namespace Teuchos

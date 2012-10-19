@@ -41,7 +41,13 @@
 #ifndef Chimera_ADJOINTNEUMANNULAMSOLVER_DEF_HPP
 #define Chimera_ADJOINTNEUMANNULAMSOLVER_DEF_HPP
 
+#include <numeric>
+
 #include "Chimera_Assertion.hpp"
+
+#include <Teuchos_ArrayView.hpp>
+
+#include <Tpetra_Map.hpp>
 
 namespace Chimera
 {
@@ -91,7 +97,17 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 template<class Scalar, class LO, class GO, class RNG>
 void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildProbabilityMatrix()
 {
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map = 
+	this->b_linear_problem->getOperator()->getRowMap();
+    d_probability_matrix = Tpetra::createCrsMatrix( row_map );
 
+    Scalar row_sum = 0.0;
+    Teuchos::ArrayView<const GO> global_rows = row_map->getNodeElementList();
+    typename Teuchos::ArrayView<const GO>::const_iterator row_it;
+    for ( row_it = global_rows.begin(); row_it != global_rows.end(); ++row_it )
+    {
+	
+    }
 }
 
 //---------------------------------------------------------------------------//
