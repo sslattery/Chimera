@@ -142,7 +142,7 @@ TEUCHOS_UNIT_TEST( History, serialization_test )
     comm->barrier();
     
     Teuchos::broadcast( *comm, 0, 
-			Teuchos::Ptr<History<double,int,int> >( &history ) );
+			Teuchos::Ptr<History<double,int> >( &history ) );
  
     TEST_ASSERT( history.weight() == weight );
     TEST_ASSERT( history.globalState() == global_state );

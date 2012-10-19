@@ -71,8 +71,8 @@ HistoryBuffer<HT>::~HistoryBuffer()
  * \brief Communicate the buffer to its destinations and return a fresh
  * history bank.
 */
-template<class LO,class GO>
 template<class HT>
+template<class LO, class GO>
 HistoryBank<HT> HistoryBuffer<HT>::communicate(
     const Teuchos::RCP<const Tpetra::Map<LO,GO> >& state_map )
 {

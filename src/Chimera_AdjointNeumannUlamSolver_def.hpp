@@ -46,8 +46,10 @@
 #include "Chimera_Assertion.hpp"
 
 #include <Teuchos_ArrayView.hpp>
+#include <Teuchos_Array.hpp>
 
 #include <Tpetra_Map.hpp>
+#include <Tpetra_CrsMatrix.hpp>
 
 namespace Chimera
 {
@@ -97,17 +99,60 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 template<class Scalar, class LO, class GO, class RNG>
 void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildProbabilityMatrix()
 {
+    Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> iteration_matrix =
+	this->b_linear_operator_split->iterationMatrix();
     Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map = 
-	this->b_linear_problem->getOperator()->getRowMap();
-    d_probability_matrix = Tpetra::createCrsMatrix( row_map );
+	iteration_matrix->getRowMap();
+    d_probability_matrix = Tpetra::createCrsMatrix<Scalar>( row_map );
 
     Scalar row_sum = 0.0;
+
+    Teuchos::ArrayView<const GO> row_indices;
+    typename Teuchos::ArrayView<const GO>::const_iterator row_indices_it;
+    Teuchos::ArrayView<const Scalar> row_values;
+    typename Teuchos::ArrayView<const Scalar>::const_iterator row_values_it;
+
+    Teuchos::Array<GO> probability_col(1);
+    Teuchos::Array<Scalar> probability_value(1);
+
     Teuchos::ArrayView<const GO> global_rows = row_map->getNodeElementList();
     typename Teuchos::ArrayView<const GO>::const_iterator row_it;
     for ( row_it = global_rows.begin(); row_it != global_rows.end(); ++row_it )
     {
-	
+	iteration_matrix->getGlobalRowView( 
+	    *row_it, row_indices, row_values );
+
+	row_sum = 0.0;
+	for ( row_values_it = row_values.begin();
+	      row_values_it != row_values.end();
+	      ++row_values_it )
+	{
+	    row_sum += std::abs( *row_values_it );
+	}
+
+	probability_col[0] = *row_it;
+
+	for ( row_indices_it = row_indices.begin(),
+	       row_values_it = row_values.begin();
+	      row_indices_it != row_indices.end();
+	      ++row_indices_it, ++row_values_it )
+	{
+	    if ( row_sum > 0.0 )
+	    {
+		probability_value[0] = std::abs( *row_values_it ) / row_sum;
+	    }
+	    else
+	    {
+		probability_value[0] = 0.0;
+	    }
+
+	    d_probability_matrix->insertGlobalValues( *row_indices_it,
+						      probability_col(),
+						      probability_value() );
+	}
     }
+
+    d_probability_matrix->fillComplete();
 }
 
 //---------------------------------------------------------------------------//

@@ -78,39 +78,45 @@ JacobiSplit<Scalar,LO,GO>::~JacobiSplit()
 template<class Scalar, class LO, class GO>
 void JacobiSplit<Scalar,LO,GO>::split()
 {
-    // Grab the row map from the operator.
+    // Grab the row and column maps from the operator.
     Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map =
-	this->b_linear_operator->getRowMap();
+        this->b_linear_operator->getRowMap();
+
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > col_map =
+        this->b_linear_operator->getColMap();
 
     // Build the iteration matrix by extracting the diagonal and scaling by
     // its inverse.
-    this->b_iteration_matrix = Teuchos::rcp( 
-	new Tpetra::CrsMatrix<Scalar,LO,GO>( row_map, 0 ) );
+    this->b_iteration_matrix = Teuchos::rcp(
+        new Tpetra::CrsMatrix<Scalar,LO,GO>(
+            row_map, col_map,
+            this->b_linear_operator->getGlobalMaxNumRowEntries() ) );
 
-    Teuchos::ArrayView<const GO> global_col_indices;
-    Teuchos::ArrayView<const Scalar> global_values;
+    Teuchos::ArrayView<const LO> local_col_indices;
+    Teuchos::ArrayView<const Scalar> local_values;
 
     Teuchos::Array<LO> diag_col_index(1,0);
     Teuchos::Array<Scalar> diag_zero(1,0.0);
 
-    Teuchos::ArrayView<const GO> global_rows = row_map->getNodeElementList();
-    typename Teuchos::ArrayView<const GO>::const_iterator row_it;
-    for ( row_it = global_rows.begin(); row_it != global_rows.end(); ++row_it )
+    for ( LO row_index = row_map->getMinLocalIndex();
+          row_index < row_map->getMaxLocalIndex() + 1;
+          ++row_index )
     {
-	this->b_linear_operator->getGlobalRowView( 
-	    *row_it, global_col_indices, global_values );
+        this->b_linear_operator->getLocalRowView(
+            row_index, local_col_indices, local_values );
 
-	this->b_iteration_matrix->insertGlobalValues(
-	    *row_it, global_col_indices, global_values );
+        this->b_iteration_matrix->insertLocalValues(
+            row_index, local_col_indices, local_values );
 
-	diag_col_index[0] = *row_it;
+        diag_col_index[0] =
+            col_map->getLocalElement( row_map->getGlobalElement( row_index ) );
 
-	this->b_iteration_matrix->replaceGlobalValues(
-	    *row_it, diag_col_index(), diag_zero() );
+        this->b_iteration_matrix->replaceLocalValues(
+            row_index, diag_col_index(), diag_zero() );
     }
 
-    RCP_TpetraVector diagonal_inv = 
-	Tpetra::createVector<Scalar,LO,GO>( row_map );
+    RCP_TpetraVector diagonal_inv =
+        Tpetra::createVector<Scalar,LO,GO>( row_map );
     this->b_linear_operator->getLocalDiagCopy( *diagonal_inv );
 
     diagonal_inv->reciprocal( *diagonal_inv );

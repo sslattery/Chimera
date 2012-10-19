@@ -48,18 +48,17 @@ TEUCHOS_UNIT_TEST( HistoryBuffer, history_buffer_test )
     // Setup map.
     int local_num_histories = 10;
     int global_num_histories = local_num_histories*comm_size;
-    Teuchos::RCP<const Tpetra::Map<int> > map = 
+    Teuchos::RCP<const Tpetra::Map<int,int> > map = 
 	Tpetra::createUniformContigMap<int,int>( global_num_histories, comm );
 
     // Build a history buffer with inverse rank destination states.
-    HistoryBuffer<HistoryType> history_buffer();
+    HistoryBuffer<HistoryType> history_buffer;
     int inverse_rank = comm_size - comm_rank - 1;
     double weight = comm_rank*1.0;
     int global_state = inverse_rank*local_num_histories;
     for ( int i = 0; i < local_num_histories; ++i )
     {
-	history_buffer.pushBack( 
-	    HistoryType( weight, global_state ) );
+	history_buffer.pushBack( HistoryType( weight, global_state ) );
     }
 
     // Communicate the histories to their destinations. 
