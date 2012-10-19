@@ -34,7 +34,7 @@
 /*!
  * \file Chimera_AdjointNeumannUlamSolver.hpp
  * \author Stuart R. Slattery
- * \brief Adjoint Neumann-Ulam solver interface definition.
+ * \brief Adjoint Neumann-Ulam solver declaration.
  */
 //---------------------------------------------------------------------------//
 
@@ -102,6 +102,14 @@ class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
 };
 
 } // end namespace Chimera
+
+//---------------------------------------------------------------------------//
+// Template includes.
+//---------------------------------------------------------------------------//
+
+#include "Chimera_AdjointNeumannUlamSolver_def.hpp"
+
+//---------------------------------------------------------------------------//
 
 #endif // end Chimera_ADJOINTNEUMANNULAMSOLVER_HPP
 

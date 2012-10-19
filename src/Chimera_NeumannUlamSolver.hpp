@@ -105,14 +105,14 @@ class NeumannUlamSolver
 
   protected:
 
-    // Random number generator.
-    RCP_RNG b_rng;
-
     // The linear problem.
     RCP_LinearProblem b_linear_problem;
 
     // Linear operator split.
     RCP_LinearOperatorSplit b_linear_operator_split;
+
+    // Random number generator.
+    RCP_RNG b_rng;
 
     // Cutoff weight.
     Scalar b_weight_cutoff;
