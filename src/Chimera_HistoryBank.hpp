@@ -95,6 +95,7 @@ class HistoryBank
 
     //! Access the top history in the stack.
     inline const HT& top() const;
+    inline HT& top();
 
     //! Push history onto the stack.
     void push( const HT& history )
@@ -114,6 +115,13 @@ class HistoryBank
 //---------------------------------------------------------------------------//
 template<class HT>
 const HT& HistoryBank<HT>::top() const
+{
+    testPrecondition( !empty() );
+    return d_histories.back();
+}
+
+template<class HT>
+HT& HistoryBank<HT>::top()
 {
     testPrecondition( !empty() );
     return d_histories.back();
