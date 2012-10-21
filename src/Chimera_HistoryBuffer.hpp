@@ -77,8 +77,8 @@ class HistoryBuffer
     void pushBack( const HT& outgoing_history )
     { d_buffer.push_back( outgoing_history ); }
 
-    // Communicate the buffer to its destinations and return a fresh bank of
-    // histories. 
+    // Communicate the history buffer to its destinations and return a fresh
+    // bank of local histories.
     template<class LO, class GO>
     HistoryBank<HT> communicate( 
 	const Teuchos::RCP<const Tpetra::Map<LO,GO> >& state_map );

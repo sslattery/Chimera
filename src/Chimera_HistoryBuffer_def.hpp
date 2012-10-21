@@ -106,6 +106,9 @@ HistoryBank<HT> HistoryBuffer<HT>::communicate(
     Teuchos::ArrayView<const HT> outgoing_buffer = d_buffer();
     distributor.doPostsAndWaits( outgoing_buffer, 1, incoming_buffer() );
 
+    // Flush the outgoing buffer.
+    d_buffer.clear();
+
     // Return a new history bank populated with the incoming buffer.
     return HistoryBank<HT>( incoming_buffer );
 }

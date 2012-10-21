@@ -44,6 +44,9 @@
 #include <Chimera_NeumannUlamSolver.hpp>
 #include <Chimera_LinearProblem.hpp>
 #include <Chimera_LinearOperatorSplit.hpp>
+#include "Chimera_History.hpp"
+#include "Chimera_HistoryBank.hpp"
+#include "Chimera_HistoryBuffer.hpp"
 
 #include <Teuchos_RCP.hpp>
 #include <Teuchos_ParameterList.hpp>
@@ -76,6 +79,7 @@ class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
     typedef Teuchos::RCP<Teuchos::ParameterList>      RCP_ParameterList;
     typedef Tpetra::CrsMatrix<Scalar,LO,GO>           TpetraCrsMatrix;
     typedef Teuchos::RCP<TpetraCrsMatrix>             RCP_TpetraCrsMatrix;
+    typedef History<Scalar,GO>                        HistoryType;
     //@}
 
     //! Constructor.
@@ -95,10 +99,22 @@ class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
     // Build the probability matrix.
     void buildProbabilityMatrix();
 
+    // Sample the source to build a starting history bank.
+    HistoryBank<HistoryType> sampleSource();
+
+    // Check for completion of all random walks.
+    bool allRandomWalksComplete( const HistoryBank<HistoryType>& bank );
+
+    // Check for empty buffers on all processes.
+    bool allBuffersEmpty( const HistoryBuffer<HistoryType>& buffer );
+
   private:
 
     // Probability matrix.
     RCP_TpetraCrsMatrix d_probability_matrix;
+
+    // Relative weight cutoff.
+    Scalar d_relative_weight_cutoff;
 };
 
 } // end namespace Chimera

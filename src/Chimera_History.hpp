@@ -92,6 +92,10 @@ class History
     Scalar weight() const
     { return d_weight; }
 
+    //! Get the absolute value of the history weight.
+    Scalar weightAbs() const
+    { return std::abs(d_weight); }
+
     //! Get the global history state.
     GO globalState() const 
     { return d_global_state; }

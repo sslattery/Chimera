@@ -62,11 +62,47 @@ namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
+ * \brief Get a local component of an operator given a local row and column
+ * index. 
+ */
+template<class Scalar, class LO, class GO>
+Scalar OperatorTools::getMatrixComponentFromLocal( 
+    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix,
+    const LO local_row, const LO local_col )
+{
+    remember(
+	Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map = matrix->getRowMap();
+	Teuchos::RCP<const Tpetra::Map<LO,GO> > col_map = matrix->getColMap();
+	);
+
+    testPrecondition( row_map->isNodeLocalElement( local_row ) );
+    testPrecondition( col_map->isNodeLocalElement( local_col ) );
+
+    Teuchos::ArrayView<const LO> local_indices;
+    Teuchos::ArrayView<const Scalar> local_values;
+    matrix->getLocalRowView( local_row, local_indices, local_values );
+
+    typename Teuchos::ArrayView<const LO>::const_iterator local_idx_it =
+	std::find( local_indices.begin(), local_indices.end(), local_col );
+
+    if ( local_idx_it != local_indices.end() )
+    {
+	return local_values[ std::distance( local_indices.begin(),
+					    local_idx_it ) ];
+    }
+    else
+    {
+	return 0.0;
+    }
+}
+
+//---------------------------------------------------------------------------//
+/*!
  * \brief Get a local component of an operator given a global row and column
  * index. 
  */
 template<class Scalar, class LO, class GO>
-Scalar OperatorTools::getMatrixComponent( 
+Scalar OperatorTools::getMatrixComponentFromGlobal( 
     const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix,
     const GO global_row, const GO global_col )
 {

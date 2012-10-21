@@ -118,7 +118,8 @@ TEUCHOS_UNIT_TEST( OperatorTools, matrix_component_test )
 	    global_i = comm_rank*local_num_rows + i;
 
 	    matrix_component = 
-		Chimera::OperatorTools::getMatrixComponent( A, global_i, j );
+		Chimera::OperatorTools::getMatrixComponentFromGlobal( 
+		    A, global_i, j );
 
 	    if ( global_i == j )
 	    {

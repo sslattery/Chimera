@@ -63,10 +63,17 @@ class OperatorTools
     ~OperatorTools()
     { /* ... */ }
 
+    // Get a local component of an operator given a local row and column
+    // index.
+    template<class Scalar, class LO, class GO>
+    static Scalar getMatrixComponentFromLocal( 
+	const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix,
+	const LO local_row, const LO local_col );
+
     // Get a local component of an operator given a global row and column
     // index.
     template<class Scalar, class LO, class GO>
-    static Scalar getMatrixComponent( 
+    static Scalar getMatrixComponentFromGlobal( 
 	const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix,
 	const GO global_row, const GO global_col );
 
