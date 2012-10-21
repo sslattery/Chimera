@@ -70,13 +70,8 @@ Scalar OperatorTools::getMatrixComponentFromLocal(
     const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix,
     const LO local_row, const LO local_col )
 {
-    remember(
-	Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map = matrix->getRowMap();
-	Teuchos::RCP<const Tpetra::Map<LO,GO> > col_map = matrix->getColMap();
-	);
-
-    testPrecondition( row_map->isNodeLocalElement( local_row ) );
-    testPrecondition( col_map->isNodeLocalElement( local_col ) );
+    testPrecondition( matrix->getRowMap()->isNodeLocalElement( local_row ) );
+    testPrecondition( matrix->getColMap()->isNodeLocalElement( local_col ) );
 
     Teuchos::ArrayView<const LO> local_indices;
     Teuchos::ArrayView<const Scalar> local_values;

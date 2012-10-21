@@ -121,7 +121,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     bool walk = true;
     while ( walk )
     {
-	// Get the current state.
+	// Get the current history state.
 	global_state = bank.top().globalState();
 	local_state = state_map->getLocalElement( global_state );
 	
@@ -133,9 +133,9 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    local_state, local_indices, local_values );
 	new_local_state = SamplingTools::sampleLocalDiscretePDF(
 	    local_values, local_indices, d_rng );
+	new_global_state = state_map->getGlobalElement( new_local_state );
 
 	// Compute state transition weight.
-	new_global_state = state_map->getGlobalElement( new_local_state );
 	h_transition = OperatorTools::getMatrixComponentFromLocal(
 	    this->b_linear_problem->getOperator(), 
 	    new_local_state, local_state );
@@ -152,8 +152,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	{
 	    bank.pop();
 	}
-
-	// If the history has left the local domain, buffer it.
+	// Else if the history has left the local domain, buffer it.
 	else if ( !state_map->isNodeGlobalElement( bank.top().globalState() ) )
 	{
 	    buffer.push_back( bank.pop() );
@@ -162,14 +161,13 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	// Check if the banks are empty.
 	if ( allRandomWalksComplete( bank ) )
 	{
-	    // If they are empty and the all the buffers are empty, the walk
-	    // is complete.
+	    // If all the buffers are empty, the walk is complete.
 	    if ( allBuffersEmpty( buffer ) )
 	    {
 		walk = false;
 	    }
 
-	    // If the buffers are not empty, communicate them.
+	    // Else the buffers are not empty, communicate them.
 	    else
 	    {
 		bank = buffer.communicate( state_map );
