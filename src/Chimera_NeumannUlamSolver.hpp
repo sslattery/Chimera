@@ -101,7 +101,7 @@ class NeumannUlamSolver
 
     //! Get the number of histories per stage.
     GO historiesPerStage() const
-    { return d_histories_per_stage; }
+    { return b_histories_per_stage; }
 
   protected:
 

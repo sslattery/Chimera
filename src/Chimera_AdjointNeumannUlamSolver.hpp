@@ -83,10 +83,11 @@ class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
     //@}
 
     //! Constructor.
-    AdjointNeumannUlamSolver( const RCP_LinearProblem& linear_problem,
-			      const RCP_LinearOperatorSplit& operator_split,
-			      const RCP_RNG& rng,
-			      const RCP_Parameterlist& plist );
+    AdjointNeumannUlamSolver( 
+	const RCP_LinearProblem& linear_problem,
+	const RCP_LinearOperatorSplit& linear_operator_split,
+	const RCP_RNG& rng,
+	const RCP_ParameterList& plist );
 
     //! Destructor.
     ~AdjointNeumannUlamSolver();

@@ -166,8 +166,8 @@ Teuchos::ArrayRCP<GO> SamplingTools::stratifySampleGlobalPDF(
  */
 template<class Scalar, class LO, class RNG>
 LO SamplingTools::sampleLocalDiscretePDF( 
-    const Teuchos::ArrayView<Scalar>& pdf_values,
-    const Teuchos::ArrayView<LO>& pdf_indices,
+    const Teuchos::ArrayView<const Scalar>& pdf_values,
+    const Teuchos::ArrayView<const LO>& pdf_indices,
     const Teuchos::RCP<RNG>& rng )
 {
     Scalar pdf_sum = std::accumulate( 
@@ -179,9 +179,9 @@ LO SamplingTools::sampleLocalDiscretePDF(
 
     Scalar cdf = 0.0;
     LO new_state_index = 0;
-    typename Teuchos::ArrayView<Scalar>::const_iterator value_begin =
+    typename Teuchos::ArrayView<const Scalar>::const_iterator value_begin =
 	pdf_values.begin();
-    typename Teuchos::ArrayView<Scalar>::const_iterator value_iterator;
+    typename Teuchos::ArrayView<const Scalar>::const_iterator value_iterator;
     for ( value_iterator = pdf_values.begin();
 	  value_iterator != pdf_values.end();
 	  ++value_iterator )

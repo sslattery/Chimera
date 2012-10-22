@@ -29,6 +29,7 @@
 #include <Teuchos_OpaqueWrapper.hpp>
 #include <Teuchos_TypeTraits.hpp>
 #include <Teuchos_Tuple.hpp>
+#include <Teuchos_as.hpp>
 
 #include <Tpetra_Vector.hpp>
 
@@ -139,13 +140,15 @@ TEUCHOS_UNIT_TEST( SamplingTools, local_pdf_sample_test )
 
     // Sample the local PDF.
     TEST_ASSERT( pdf_size == SamplingTools::sampleLocalDiscretePDF( 
-		     pdf_values(), pdf_indices(), rng ) );
+		     Teuchos::as<Teuchos::ArrayView<const double> >(pdf_values()), 
+		     Teuchos::as<Teuchos::ArrayView<const int> >(pdf_indices()), rng ) );
 
     // Reset the PDF to a different state and sample again.
     std::fill( pdf_values.begin(), pdf_values.end(), 0.0 );
     pdf_values[ pdf_size-3 ] = 1.0;
     TEST_ASSERT( pdf_size-2 == SamplingTools::sampleLocalDiscretePDF( 
-		     pdf_values(), pdf_indices(), rng ) );
+		     Teuchos::as<Teuchos::ArrayView<const double> >(pdf_values()), 
+		     Teuchos::as<Teuchos::ArrayView<const int> >(pdf_indices()), rng ) );
 }
 
 //---------------------------------------------------------------------------//

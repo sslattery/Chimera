@@ -32,7 +32,7 @@
 */
 //---------------------------------------------------------------------------//
 /*!
- * \file Chimera_AdjointNeumannUlamSolver.hpp
+ * \file Chimera_AdjointNeumannUlamSolver_def.hpp
  * \author Stuart R. Slattery
  * \brief Adjoint Neumann-Ulam solver definition.
  */
@@ -67,13 +67,13 @@ namespace Chimera
 template<class Scalar, class LO, class GO, class RNG>
 AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::AdjointNeumannUlamSolver( 
     const RCP_LinearProblem& linear_problem,
-    const RCP_LinearOperatorSplit& operator_split,
+    const RCP_LinearOperatorSplit& linear_operator_split,
     const RCP_RNG& rng,
-    const RCP_Parameterlist& plist )
+    const RCP_ParameterList& plist )
     : d_relative_weight_cutoff( plist->get<Scalar>("WEIGHT CUTOFF") )
 {
     this->b_linear_problem = linear_problem;
-    this->b_operator_split = operator_split;
+    this->b_linear_operator_split = linear_operator_split;
     this->b_rng = rng;
     this->b_weight_cutoff = d_relative_weight_cutoff;
     this->b_histories_per_stage = plist->get<int>("HISTORIES PER STAGE");
@@ -99,9 +99,9 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 { 
     // Get the state map.
     Teuchos::RCP<const Tpetra::Map<LO,GO> > state_map =
-	this->b_linear_problem->getOperator->getRowMap();
+	this->b_linear_problem->getOperator()->getRowMap();
 
-    // Zero out the local solution vector and get a view to write into.
+    // Zero out the solution vector and get a local view to write into.
     this->b_linear_problem->getLHS()->putScalar( 0.0 );
     Teuchos::ArrayRCP<Scalar> lhs_view =     
 	this->b_linear_problem->getLHS()->get1dViewNonConst();
@@ -115,9 +115,9 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     // Random walk until all global histories are terminated.
     LO local_state, new_local_state;
     GO global_state, new_global_state;
-    Scalar h_transition, p_transition, transition_weight;
-    Teuchos::ArrayView<LO> local_indices;
-    Teuchos::ArrayView<Scalar> local_values;
+    Scalar transition_h, transition_p, transition_weight;
+    Teuchos::ArrayView<const LO> local_indices;
+    Teuchos::ArrayView<const Scalar> local_values;
     bool walk = true;
     while ( walk )
     {
@@ -129,19 +129,20 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	lhs_view[ local_state ] += bank.top().weight();
 
 	// Sample the probability matrix to get the new state.
-	this->b_linear_problem->getOperator()->localRowView( 
+	this->b_linear_problem->getOperator()->getLocalRowView( 
 	    local_state, local_indices, local_values );
 	new_local_state = SamplingTools::sampleLocalDiscretePDF(
-	    local_values, local_indices, d_rng );
+	    local_values, local_indices, this->b_rng );
 	new_global_state = state_map->getGlobalElement( new_local_state );
 
 	// Compute state transition weight.
-	h_transition = OperatorTools::getMatrixComponentFromLocal(
+	transition_h = OperatorTools::getMatrixComponentFromLocal(
 	    this->b_linear_problem->getOperator(), 
 	    new_local_state, local_state );
-	p_transition = OperatorTools::getMatrixComponentsFromLocal(
+	transition_p = OperatorTools::getMatrixComponentFromLocal(
 	    d_probability_matrix, local_state, new_local_state );
-	transition_weight = h_transition / p_transition;
+	transition_weight = transition_h / transition_p;
+	testInvariant( 1.0 >= std::abs(transition_weight) );
 
 	// Update the history for the transition.
 	bank.top().setGlobalState( new_global_state );
@@ -155,7 +156,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	// Else if the history has left the local domain, buffer it.
 	else if ( !state_map->isNodeGlobalElement( bank.top().globalState() ) )
 	{
-	    buffer.push_back( bank.pop() );
+	    buffer.pushBack( bank.pop() );
 	}
 
 	// Check if the banks are empty.
@@ -166,7 +167,6 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    {
 		walk = false;
 	    }
-
 	    // Else the buffers are not empty, communicate them.
 	    else
 	    {
@@ -176,7 +176,8 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     }
 
     // Scale the solution by the number of histories in this stage.
-    Scalar solution_scaling = 1.0 / this->b_histories_per_stage;
+    Scalar solution_scaling = 
+	1.0 / Teuchos::as<Scalar>(this->b_histories_per_stage);
     this->b_linear_problem->getLHS()->scale( solution_scaling );
 }
 
@@ -187,28 +188,34 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 template<class Scalar, class LO, class GO, class RNG>
 void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildProbabilityMatrix()
 {
-    Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> iteration_matrix =
+    Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> > iteration_matrix =
 	this->b_linear_operator_split->iterationMatrix();
     Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map = 
 	iteration_matrix->getRowMap();
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > col_map = 
+	iteration_matrix->getColMap();
     d_probability_matrix = Tpetra::createCrsMatrix<Scalar>( row_map );
 
     Scalar row_sum = 0.0;
 
-    Teuchos::ArrayView<const GO> row_indices;
-    typename Teuchos::ArrayView<const GO>::const_iterator row_indices_it;
+    Teuchos::ArrayView<const LO> row_indices;
+    typename Teuchos::ArrayView<const LO>::const_iterator row_indices_it;
     Teuchos::ArrayView<const Scalar> row_values;
     typename Teuchos::ArrayView<const Scalar>::const_iterator row_values_it;
 
     Teuchos::Array<GO> probability_col(1);
     Teuchos::Array<Scalar> probability_value(1);
 
+    LO local_row;
+    GO probability_row;
     Teuchos::ArrayView<const GO> global_rows = row_map->getNodeElementList();
     typename Teuchos::ArrayView<const GO>::const_iterator row_it;
     for ( row_it = global_rows.begin(); row_it != global_rows.end(); ++row_it )
     {
-	iteration_matrix->getGlobalRowView( 
-	    *row_it, row_indices, row_values );
+	local_row = row_map->getLocalElement( *row_it );
+
+	iteration_matrix->getLocalRowView( 
+	    local_row, row_indices, row_values );
 
 	row_sum = 0.0;
 	for ( row_values_it = row_values.begin();
@@ -234,7 +241,9 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildProbabilityMatrix()
 		probability_value[0] = 0.0;
 	    }
 
-	    d_probability_matrix->insertGlobalValues( *row_indices_it,
+	    probability_row = col_map->getGlobalElement( *row_indices_it );
+
+	    d_probability_matrix->insertGlobalValues( probability_row,
 						      probability_col(),
 						      probability_value() );
 	}
@@ -254,7 +263,7 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
     Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> > source = 
 	this->b_linear_problem->getRHS();
 
-    Teuchos::ArrayRCP<Scalar> local_source_view = source->get1dView();
+    Teuchos::ArrayRCP<const Scalar> local_source_view = source->get1dView();
 
     Teuchos::RCP<const Tpetra::Map<LO,GO> > source_map = source->getMap();
     Teuchos::ArrayView<const GO> global_states = 
@@ -271,7 +280,7 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
     d_relative_weight_cutoff *= source_weight;
 
     Scalar history_weight = 0.0;
-    typename Teuchos::ArrayRCP<Scalar>::const_iterator local_source_it;
+    typename Teuchos::ArrayRCP<const Scalar>::const_iterator local_source_it;
     typename Teuchos::ArrayRCP<GO>::const_iterator starting_states_it;
     typename Teuchos::ArrayView<const GO>::const_iterator global_states_it;
     for ( local_source_it = local_source_view.begin(),
@@ -309,7 +318,7 @@ bool AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::allRandomWalksComplete(
     size_type global_num_histories = 0;
 
     Teuchos::reduceAll( *comm, Teuchos::REDUCE_SUM, bank.size(), 
-			Teuchos::Ptr<size_type>(*global_num_histories) );
+			Teuchos::Ptr<size_type>(&global_num_histories) );
 
     return 0 == global_num_histories;
 }
@@ -319,7 +328,7 @@ bool AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::allRandomWalksComplete(
  * \brief Check for empty buffers on all processes.
  */
 template<class Scalar, class LO, class GO, class RNG>
-bool AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::allBuffersEmpty
+bool AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::allBuffersEmpty(
     const HistoryBuffer<HistoryType>& buffer )
 {
     typedef typename HistoryBuffer<HistoryType>::size_type size_type;
@@ -330,7 +339,7 @@ bool AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::allBuffersEmpty
     size_type global_num_histories = 0;
 
     Teuchos::reduceAll( *comm, Teuchos::REDUCE_SUM, buffer.size(), 
-			Teuchos::Ptr<size_type>(*global_num_histories) );
+			Teuchos::Ptr<size_type>(&global_num_histories) );
 
     return 0 == global_num_histories;
 }
@@ -339,8 +348,8 @@ bool AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::allBuffersEmpty
 
 } // end namespace Chimera
 
-#endif // end Chimera_ADJOINTNEUMANNULAMSOLVER_HPP
+#endif // end Chimera_ADJOINTNEUMANNULAMSOLVER_DEF_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_AdjointNeumannUlamSolver.hpp
+// end Chimera_AdjointNeumannUlamSolver_def.hpp
 //---------------------------------------------------------------------------//

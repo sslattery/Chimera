@@ -61,9 +61,9 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
 
     Teuchos::Array<int> global_columns(3);
     Teuchos::Array<double> matrix_values(3);
-    matrix_values[0] = 1.0;
+    matrix_values[0] = -1.0;
     matrix_values[1] = 2.0;
-    matrix_values[2] = 3.0;
+    matrix_values[2] = -1.0;
     int gid = 0;
     for ( int i = 1; i < local_num_rows-1; ++i )
     {
@@ -132,7 +132,8 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
 	Teuchos::rcp( new Chimera::LinearProblem<double,int,int>( A, X, B ) );
 
     // Build the random number generator.
-    Teuchos::RCP<boost::mt19937> rng = RNGTraits<boost::mt19937>::create();
+    Teuchos::RCP<boost::mt19937> rng = 
+	Chimera::RNGTraits<boost::mt19937>::create();
 
     // Build the Adjoint solver.
     std::string split_type = "JACOBI";
@@ -148,9 +149,10 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
 	Chimera::LinearOperatorSplitFactory::create( plist, A );
     lin_op_split->split();
 
-    Teuchos::RCP<NeumannUlamSolver<double,int,int> > solver =
-	Teuchos::rcp( new Chimera::AdjointNeumannUlamSolver<double,int,int>(
-			  linear_problem, lin_op_split, rng, plist ) );
+    Teuchos::RCP<Chimera::NeumannUlamSolver<double,int,int,boost::mt19937> > solver =
+	Teuchos::rcp( 
+	    new Chimera::AdjointNeumannUlamSolver<double,int,int,boost::mt19937>(
+		linear_problem, lin_op_split, rng, plist ) );
 
     // Check the solver parameters.
     TEST_ASSERT( solver->linearProblem() == linear_problem );
