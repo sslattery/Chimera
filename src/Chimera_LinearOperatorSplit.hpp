@@ -78,9 +78,6 @@ class LinearOperatorSplit
     virtual ~LinearOperatorSplit()
     { /* ... */ }
 
-    //! Split the operator.
-    virtual void split() = 0;
-
     //! Get the linear operator (A).
     RCP_TpetraCrsMatrix linearOperator()
     { return b_linear_operator; }

@@ -139,7 +139,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    // Get the current history state.
 	    global_state = bank.top().globalState();
 	    local_state = state_map->getLocalElement( global_state );
-	
+
 	    // Update LHS.
 	    lhs_view[local_state] += bank.top().weight();
 
@@ -181,7 +181,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    {
 		transition_weight = std::abs( transition_h / transition_p );
 	    }
-	
+
 	    // We want to check this to insure the weight is decreasing.
 	    testInvariant( 1.0 >= transition_weight );
 
@@ -329,23 +329,30 @@ template<class Scalar, class LO, class GO, class RNG>
 HistoryBank<History<Scalar,GO> > 
 AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
 {
+    // Precondition the RHS with the operator split.
     Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> > source = 
 	this->b_linear_problem->getRHS();
-
-    Teuchos::ArrayRCP<const Scalar> local_source_view = source->get1dView();
-
     Teuchos::RCP<const Tpetra::Map<LO,GO> > source_map = source->getMap();
+    
+    Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> > precond_source =
+	Tpetra::createVector<Scalar,LO,GO>( source_map );
+    this->b_linear_operator_split->applyInvM( source, precond_source );
+    Teuchos::ArrayRCP<const Scalar> local_source_view =
+	precond_source->get1dView();
+
+    // Stratify sample the preconditioned source.
     Teuchos::ArrayView<const GO> global_states = 
 	source_map->getNodeElementList();
     testInvariant( local_source_view.size() == global_states.size() );
 
     Teuchos::ArrayRCP<GO> starting_states = 
 	SamplingTools::stratifySampleGlobalPDF( 
-	    this->b_histories_per_stage, source );
+	    this->b_histories_per_stage, precond_source );
     testInvariant( local_source_view.size() == starting_states.size() );
 
+    // Build the starting source bank.
     HistoryBank<HistoryType> source_bank;
-    Scalar source_weight = source->norm1();
+    Scalar source_weight = precond_source->norm1();
     d_relative_weight_cutoff *= source_weight;
 
     Scalar history_weight = 0.0;

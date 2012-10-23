@@ -11,12 +11,6 @@
 #include <string>
 #include <set>
 
-#include "Chimera_MCSA.hpp"
-#include "Chimera_JacobiPreconditioner.hpp"
-#include "Chimera_OperatorTools.hpp"
-#include "Chimera_AdjointMC.hpp"
-#include "Chimera_DirectMC.hpp"
-
 #include "TransientPoisson_EquationSetFactory.hpp"
 #include "TransientPoisson_ClosureModelFactory_TemplateBuilder.hpp"
 #include "TransientPoisson_BCStrategy_Factory.hpp"
@@ -58,6 +52,7 @@
 
 #include <AztecOO.h>
 
+//---------------------------------------------------------------------------//
 int main( int argc, char * argv[] )
 {
     // Initialize parallel communication.
@@ -74,8 +69,7 @@ int main( int argc, char * argv[] )
     Chimera::TransientPoisson::ClosureModelFactory_TemplateBuilder cm_builder;
 
     // Generate the mesh.
-    int mesh_size = 30;
-    int problem_size = mesh_size*mesh_size;
+    int mesh_size = 200;
     const std::size_t workset_size = 20;
     panzer_stk::SquareQuadMeshFactory mesh_factory;
 
@@ -252,16 +246,15 @@ int main( int argc, char * argv[] )
     user_data.set<double>("Thermal Conductivity", 2.0 );
 
     // Setup the field managers.
-    Teuchos::RCP<panzer::FieldManagerBuilder<int,int> > field_manager_builder =
-	Teuchos::rcp( new panzer::FieldManagerBuilder<int,int> );
-    field_manager_builder->setupVolumeFieldManagers( *workset_container,
-						     physics_blocks,
+    Teuchos::RCP<panzer::FieldManagerBuilder > field_manager_builder =
+	Teuchos::rcp( new panzer::FieldManagerBuilder );
+    field_manager_builder->setWorksetContainer( workset_container );
+    field_manager_builder->setupVolumeFieldManagers( physics_blocks,
 						     closure_model_factory,
 						     closure_models,
 						     *lin_obj_factory,
 						     user_data );
-    field_manager_builder->setupBCFieldManagers( *workset_container,
-						 boundary_conditions,
+    field_manager_builder->setupBCFieldManagers( boundary_conditions,
 						 physics_blocks,
 						 eqset_factory,
 						 closure_model_factory,
@@ -271,8 +264,8 @@ int main( int argc, char * argv[] )
 						 user_data );
 
     // Generate the assembly engine.
-    panzer::AssemblyEngine_TemplateManager<panzer::Traits,int,int> assembly_engine;
-    panzer::AssemblyEngine_TemplateBuilder<int,int> assembly_builder( 
+    panzer::AssemblyEngine_TemplateManager<panzer::Traits> assembly_engine;
+    panzer::AssemblyEngine_TemplateBuilder assembly_builder( 
 	field_manager_builder, lin_obj_factory );
     assembly_engine.buildObjects( assembly_builder );
 
@@ -300,7 +293,7 @@ int main( int argc, char * argv[] )
     input.beta = 1;
     assembly_engine.getAsObject<panzer::Traits::Jacobian>()->evaluate( input );
 
-    // Solve the linear problem with with the Neumann-Ulam method.
+    // Solve the linear problem with with Aztec GMRES.
     Teuchos::RCP<panzer::EpetraLinearObjContainer> ep_container =
 	Teuchos::rcp_dynamic_cast<panzer::EpetraLinearObjContainer>( container );
 
@@ -309,49 +302,14 @@ int main( int argc, char * argv[] )
 				  &*ep_container->get_x(),
 				  &*ep_container->get_f() ) );
 
-    Chimera::JacobiPreconditioner preconditioner( problem );
-    preconditioner.precondition();
-    int max_iters = 10000;
-    double tolerance = 1.0e-8;
-    int num_histories = 10000;
-    double weight_cutoff = 1.0e-4;
-    bool line_source = false;
-    int source_state = problem_size / 2;
-    bool history_diagnostics = false;
-    bool iteration_diagnostics = true;
-    Teuchos::RCP<Teuchos::ParameterList> solver_plist = 
-    	Teuchos::rcp( new Teuchos::ParameterList() );
-    solver_plist->set( "MAX ITERS", max_iters );
-    solver_plist->set( "TOLERANCE", tolerance );
-    solver_plist->set( "NUM HISTORIES", num_histories );
-    solver_plist->set( "WEIGHT CUTOFF", weight_cutoff );
-    solver_plist->set( "LINE SOURCE", line_source );
-    solver_plist->set( "SOURCE STATE", source_state );
-    solver_plist->set( "HISTORY DIAGNOSTICS", history_diagnostics );
-    solver_plist->set( "ITERATION DIAGNOSTICS", iteration_diagnostics );
-
-    Chimera::AdjointMC adj( problem, solver_plist );
-    std::cout << "SPEC RAD: " 
-	      << Chimera::OperatorTools::spectralRadius( adj.getH() )
-	      << std::endl;
-
-    Chimera::MCSA solver( problem, solver_plist );
-    solver.iterate();
-
-    // // Aztec solve
-    // AztecOO solver(*problem);
-    // solver.SetAztecOption(AZ_solver,AZ_gmres);
-    // solver.SetAztecOption(AZ_precond,AZ_none);
-    // solver.SetAztecOption(AZ_kspace,1000);
-    // solver.SetAztecOption(AZ_output,10);
-    // solver.Iterate(1000,1e-8);
+    AztecOO solver(*problem);
+    solver.SetAztecOption(AZ_solver,AZ_gmres);
+    solver.SetAztecOption(AZ_precond,AZ_none);
+    solver.SetAztecOption(AZ_kspace,500);
+    solver.SetAztecOption(AZ_output,10);
+    solver.Iterate(1000,1e-8);
 
     ep_container->get_x()->Scale( -1.0 );
-
-    // Analysis.
-    int max_elements_per_row = ep_container->get_A()->GlobalMaxNumEntries();
-    std::cout << "Problem size: " << problem_size << std::endl;
-    std::cout << "Max elements in operator row: " << max_elements_per_row << std::endl;
 
     // Generate output.
     lin_obj_factory->globalToGhostContainer( 
@@ -364,7 +322,7 @@ int main( int argc, char * argv[] )
     panzer_stk::write_solution_data( 
 	*Teuchos::rcp_dynamic_cast<panzer::DOFManager<int,int> >( dof_manager ),
 	*mesh, *ep_ghost_container->get_x() );
-    mesh->writeToExodus( "transient_poisson.exo" );
+    mesh->writeToExodus( "transient_poisson_aztec.exo" );
 
     // Complete.
     return 0;

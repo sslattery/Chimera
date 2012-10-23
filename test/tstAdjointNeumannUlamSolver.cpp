@@ -201,7 +201,6 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
 
     Teuchos::RCP<Chimera::LinearOperatorSplit<double,int,int> > lin_op_split =
 	Chimera::LinearOperatorSplitFactory::create( plist, A );
-    lin_op_split->split();
 
     Teuchos::RCP<Chimera::NeumannUlamSolver<double,int,int,boost::mt19937> > solver =
 	Teuchos::rcp( 

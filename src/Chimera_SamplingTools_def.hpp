@@ -122,8 +122,8 @@ Teuchos::ArrayRCP<GO> SamplingTools::stratifySampleGlobalPDF(
 	  bin_histories_it != bin_histories.end();
 	  ++bin_histories_it, ++local_values_it )
     {
-	*bin_histories_it = std::floor( local_num_histories * 
-					(*local_values_it) / local_sum );
+	*bin_histories_it = std::floor( 
+	    local_num_histories * std::abs(*local_values_it) / local_sum );
     }
 
     GO local_histories_sum = std::accumulate( bin_histories.begin(), 

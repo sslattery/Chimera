@@ -59,8 +59,10 @@ JacobiSplit<Scalar,LO,GO>::JacobiSplit(
     const RCP_TpetraCrsMatrix& linear_operator )
 {
     testPrecondition( !linear_operator.is_null() );
-
     this->b_linear_operator = linear_operator;
+
+    split();
+    testPostcondition( !this->b_iteration_matrix.is_null() );
 }
 
 //---------------------------------------------------------------------------//
@@ -70,6 +72,28 @@ JacobiSplit<Scalar,LO,GO>::JacobiSplit(
 template<class Scalar, class LO, class GO>
 JacobiSplit<Scalar,LO,GO>::~JacobiSplit()
 { /* ... */ }
+
+//---------------------------------------------------------------------------//
+/*!
+ * \brief Apply M^-1 to a vector (M^-1 x = y).
+ */
+template<class Scalar, class LO, class GO>
+void JacobiSplit<Scalar,LO,GO>::applyInvM( const RCP_TpetraVector& x,
+					   RCP_TpetraVector& y )
+{
+    testPrecondition( !x.is_null() );
+    testPrecondition( !y.is_null() );
+
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map =
+	this->b_linear_operator->getRowMap();
+
+    RCP_TpetraVector diagonal_inv = 
+	Tpetra::createVector<Scalar,LO,GO>( row_map );
+    this->b_linear_operator->getLocalDiagCopy( *diagonal_inv );
+    diagonal_inv->reciprocal( *diagonal_inv );
+
+    y->elementWiseMultiply( 1.0, *diagonal_inv, *x, 0.0 );
+}
 
 //---------------------------------------------------------------------------//
 /*!
@@ -114,40 +138,15 @@ void JacobiSplit<Scalar,LO,GO>::split()
         this->b_iteration_matrix->replaceLocalValues(
             row_index, diag_col_index(), diag_zero() );
     }
+    this->b_iteration_matrix->fillComplete();
 
     RCP_TpetraVector diagonal_inv =
         Tpetra::createVector<Scalar,LO,GO>( row_map );
     this->b_linear_operator->getLocalDiagCopy( *diagonal_inv );
-
+    diagonal_inv->scale( -1.0 );
     diagonal_inv->reciprocal( *diagonal_inv );
-
-    this->b_iteration_matrix->fillComplete();
 
     this->b_iteration_matrix->leftScale( *diagonal_inv );
-
-    testPostcondition( !this->b_iteration_matrix.is_null() );
-}
-
-//---------------------------------------------------------------------------//
-/*!
- * \brief Apply M^-1 to a vector (M^-1 x = y).
- */
-template<class Scalar, class LO, class GO>
-void JacobiSplit<Scalar,LO,GO>::applyInvM( const RCP_TpetraVector& x,
-					   RCP_TpetraVector& y )
-{
-    testPrecondition( !x.is_null() );
-    testPrecondition( !y.is_null() );
-
-    Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map =
-	this->b_linear_operator->getRowMap();
-
-    RCP_TpetraVector diagonal_inv = 
-	Tpetra::createVector<Scalar,LO,GO>( row_map );
-    this->b_linear_operator->getLocalDiagCopy( *diagonal_inv );
-    diagonal_inv->reciprocal( *diagonal_inv );
-
-    y->elementWiseMultiply( 1.0, *diagonal_inv, *x, 0.0 );
 }
 
 //---------------------------------------------------------------------------//

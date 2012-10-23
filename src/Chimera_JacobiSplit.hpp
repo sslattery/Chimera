@@ -75,11 +75,13 @@ class JacobiSplit : public LinearOperatorSplit<Scalar,LO,GO>
     // Destructor.
     ~JacobiSplit();
 
-    // Split the operator with Jacobi splitting.
-    void split();
-
     // Apply M^-1 to a vector (M^-1 x = y).
     void applyInvM( const RCP_TpetraVector& x, RCP_TpetraVector& y );
+
+  private:
+
+    // Split the operator with Jacobi splitting.
+    void split();
 };
 
 } // end namespace Chimera
