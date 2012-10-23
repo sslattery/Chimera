@@ -65,8 +65,14 @@ Teuchos::ArrayRCP<GO> SamplingTools::stratifySampleGlobalPDF(
     const Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& pdf )
 {
     Teuchos::ArrayRCP<const Scalar> local_values = pdf->get1dView();
-    typename Teuchos::ScalarTraits<Scalar>::magnitudeType local_sum =
-	std::accumulate( local_values.begin(), local_values.end(), 0.0 );
+    typename Teuchos::ArrayRCP<const Scalar>::const_iterator local_values_it;
+    typename Teuchos::ScalarTraits<Scalar>::magnitudeType local_sum = 0.0;
+    for ( local_values_it = local_values.begin();
+	  local_values_it != local_values.end();
+	  ++local_values_it )
+    {
+	local_sum += std::abs( *local_values_it );
+    }
 
     typename Teuchos::ScalarTraits<Scalar>::magnitudeType global_sum =
 	pdf->norm1();
@@ -110,7 +116,6 @@ Teuchos::ArrayRCP<GO> SamplingTools::stratifySampleGlobalPDF(
     // Second, stratify sample the local pdf to get the number of histories to
     // be generated in each local state.
     typename Teuchos::ArrayRCP<GO> bin_histories( local_values.size() );
-    typename Teuchos::ArrayRCP<Scalar>::const_iterator local_values_it;
     typename Teuchos::ArrayRCP<GO>::iterator bin_histories_it;
     for ( bin_histories_it = bin_histories.begin(),
 	   local_values_it = local_values.begin();
@@ -124,26 +129,19 @@ Teuchos::ArrayRCP<GO> SamplingTools::stratifySampleGlobalPDF(
     GO local_histories_sum = std::accumulate( bin_histories.begin(), 
 					      bin_histories.end(), 0.0 );
     GO local_remainder = local_num_histories - local_histories_sum;
-    GO local_index = 0;
     for ( bin_histories_it = bin_histories.begin();
 	  bin_histories_it != bin_histories.end();
 	  ++bin_histories_it )
     {
-	local_index = std::distance( bin_histories.begin(), bin_histories_it );	
-
-	if ( local_remainder > 0 )
+	if ( local_remainder > 0 && *bin_histories_it > 0)
 	{
-	    if (  local_index < local_remainder )
-	    {
-		++(*bin_histories_it);
-	    }
+	    ++(*bin_histories_it);
+	    --local_remainder;
 	}
-	else if ( local_remainder < 0 )
+	else if ( local_remainder < 0 && *bin_histories_it > 0 )
 	{
-	    if ( local_index < std::abs(local_remainder) )
-	    {
-		--(*bin_histories_it);
-	    }
+	    --(*bin_histories_it);
+	    ++local_remainder;
 	}
     }
 

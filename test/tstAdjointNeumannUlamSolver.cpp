@@ -22,7 +22,7 @@
 #include <Chimera_NeumannUlamSolver.hpp>
 #include <Chimera_AdjointNeumannUlamSolver.hpp>
 #include <Chimera_BoostRNG.hpp>
-
+#include <Chimera_OperatorTools.hpp>
 #include <Teuchos_UnitTestHarness.hpp>
 #include <Teuchos_DefaultComm.hpp>
 #include <Teuchos_CommHelpers.hpp>
@@ -46,71 +46,82 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     // Setup parallel distribution.
     Teuchos::RCP<const Teuchos::Comm<int> > comm = 
 	Teuchos::DefaultComm<int>::getComm();
-    int comm_rank = comm->getRank();
-    int comm_size = comm->getSize();
 
-    // Setup linear operator distribution.
-    int local_num_rows = 10;
-    int global_num_rows = local_num_rows*comm_size;
+    // Build the linear operator - this is a 2D Transient Diffusion operator.
+    int N = 10;
+    int problem_size = N*N;
+    double dx = 0.01;
+    double dy = 0.01;
+    double dt = 0.005;
+    double alpha = 0.01;
     Teuchos::RCP<const Tpetra::Map<int> > row_map = 
-	Tpetra::createUniformContigMap<int,int>( global_num_rows, comm );
-
-    // Build the linear operator.
+	Tpetra::createUniformContigMap<int,int>( problem_size, comm );
     Teuchos::RCP<Tpetra::CrsMatrix<double,int,int> > A = 
 	Tpetra::createCrsMatrix<double,int,int>( row_map, 3 );
 
-    Teuchos::Array<int> global_columns(3);
-    Teuchos::Array<double> matrix_values(3);
-    matrix_values[0] = -1.0;
-    matrix_values[1] = 2.0;
-    matrix_values[2] = -1.0;
-    int gid = 0;
-    for ( int i = 1; i < local_num_rows-1; ++i )
+    Teuchos::Array<double> diag( 1, 1.0 + 2*dt*alpha*( 1/(dx*dx) + 1/(dy*dy) ) );
+    Teuchos::Array<double> i_minus( 1, -dt*alpha/(dx*dx) );
+    Teuchos::Array<double> i_plus( 1, -dt*alpha/(dx*dx) );
+    Teuchos::Array<double> j_minus( 1, -dt*alpha/(dy*dy) );
+    Teuchos::Array<double> j_plus( 1, -dt*alpha/(dy*dy) );
+
+    Teuchos::Array<int> idx(1);
+    Teuchos::Array<int> idx_iminus(1);
+    Teuchos::Array<int> idx_iplus(1);
+    Teuchos::Array<int> idx_jminus(1);
+    Teuchos::Array<int> idx_jplus(1);
+    Teuchos::Array<double> one(1,1.0);
+
+    // Min X boundary Dirichlet.
+    for ( int j = 1; j < N-1; ++j )
     {
-	gid = i + local_num_rows*comm_rank;
-	global_columns[0] = gid-1;
-	global_columns[1] = gid;
-	global_columns[2] = gid+1;
-	A->insertGlobalValues( gid, global_columns(), matrix_values() );
+	int i = 0;
+	idx[0] = i + j*N;
+	A->insertGlobalValues( idx[0], idx(), one() );
     }
 
-    Teuchos::Array<int> edge_global_columns(2);
-    Teuchos::Array<double> edge_matrix_values(2);
-    edge_matrix_values[0] = 2.0;
-    edge_matrix_values[1] = 3.0;
-    gid = local_num_rows*comm_rank;
-    edge_global_columns[0] = gid;
-    edge_global_columns[1] = gid+1;
-    global_columns[0] = gid-1;
-    global_columns[1] = gid;
-    global_columns[2] = gid+1;
-    if ( comm_rank == 0 )
+    // Max X boundary Dirichlet.
+    for ( int j = 1; j < N-1; ++j )
     {
-	A->insertGlobalValues( gid, edge_global_columns(), edge_matrix_values() );
+	int i = N-1;
+	idx[0] = i + j*N;
+	A->insertGlobalValues( idx[0], idx(), one() );
     }
-    else
-    {
-	A->insertGlobalValues( gid, global_columns(), matrix_values() );
-    }
-    comm->barrier();
 
-    edge_matrix_values[0] = 1.0;
-    edge_matrix_values[1] = 2.0;
-    gid = local_num_rows - 1 + local_num_rows*comm_rank;
-    edge_global_columns[0] = gid-1;
-    edge_global_columns[1] = gid;
-    global_columns[0] = gid-1;
-    global_columns[1] = gid;
-    global_columns[2] = gid+1;
-    if ( comm_rank == comm_size-1 )
+    // Min Y boundary Dirichlet.
+    for ( int i = 0; i < N; ++i )
     {
-	A->insertGlobalValues( gid, edge_global_columns(), edge_matrix_values() );
+	int j = 0;
+	idx[0] = i + j*N;
+	A->insertGlobalValues( idx[0], idx(), one() );
     }
-    else
+
+    // Max Y boundary Dirichlet.
+    for ( int i = 0; i < N; ++i )
     {
-	A->insertGlobalValues( gid, global_columns(), matrix_values() );
+	int j = N-1;
+	idx[0] = i + j*N;
+	A->insertGlobalValues( idx[0], idx(), one() );
     }
-    comm->barrier();
+
+    // Central grid points.
+    for ( int i = 1; i < N-1; ++i )
+    {
+	for ( int j = 1; j < N-1; ++j )
+	{
+	    idx[0] = i + j*N;
+	    idx_iminus[0] = (i-1) + j*N;
+	    idx_iplus[0] = (i+1) + j*N;
+	    idx_jminus[0] = i + (j-1)*N;
+	    idx_jplus[0] = i + (j+1)*N;
+	    
+	    A->insertGlobalValues( idx[0], idx_jminus(), j_minus() );
+	    A->insertGlobalValues( idx[0], idx_iminus(), i_minus() );
+	    A->insertGlobalValues( idx[0], idx(),        diag()    );
+	    A->insertGlobalValues( idx[0], idx_iplus(),  i_plus()  );
+	    A->insertGlobalValues( idx[0], idx_jplus(),  j_plus()  );
+	}
+    }
 
     A->fillComplete();
 
@@ -121,10 +132,41 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     X->putScalar( X_val );
 
     // Build the right hand side.
-    double B_val = 5.0;
+    double B_val = 0.0;
     Teuchos::RCP<Tpetra::Vector<double,int> > B = 
 	Tpetra::createVector<double,int>( row_map );
     B->putScalar( B_val );
+
+    // Set dirichlet boundary conditions.
+    int row;
+    // left
+    for ( int j = 1; j < N-1; ++j )
+    {
+	int i = 0;
+	row = i + j*N;
+	B->replaceGlobalValue( row, 5.0 );
+    }
+    // right
+    for ( int j = 1; j < N-1; ++j )
+    {
+	int i = N-1;
+	row = i + j*N;
+	B->replaceGlobalValue( row, 5.0 );
+    }
+    // bottom
+    for ( int i = 0; i < N; ++i )
+    {
+	int j = 0;
+	row = i + j*N;
+	B->replaceGlobalValue( row, 0.0 );
+    }
+    // top
+    for ( int i = 0; i < N; ++i )
+    {
+	int j = N-1;
+	row = i + j*N;
+	B->replaceGlobalValue( row, 0.0 );
+    }
 
     // Build the linear problem.
     comm->barrier();
@@ -138,7 +180,7 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     // Build the Adjoint solver.
     std::string split_type = "JACOBI";
     double weight_cutoff = 1.0e-4;
-    int histories_per_stage = 1;
+    int histories_per_stage = 1000;
     Teuchos::RCP<Teuchos::ParameterList> plist =
 	Teuchos::rcp( new Teuchos::ParameterList() );
     plist->set<std::string>("SPLIT TYPE", split_type);
@@ -159,7 +201,8 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     TEST_ASSERT( solver->linearOperatorSplit() == lin_op_split );
     TEST_ASSERT( solver->weightCutoff() == weight_cutoff );
     TEST_ASSERT( solver->historiesPerStage() == histories_per_stage );
-
+    std::cout << "SPEC RAD " << Chimera::OperatorTools::spectralRadius(
+	lin_op_split->iterationMatrix() ) << std::endl;
     // Solve.
     solver->walk();
 
@@ -167,35 +210,6 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     Teuchos::ArrayRCP<const double> X_view = 
 	linear_problem->getLHS()->get1dView();
     std::cout << X_view() << std::endl;
-    for ( int i = 1; i < local_num_rows-1; ++i )
-    {
-	TEST_ASSERT( X_view[i] == 
-		     B_val*(1.0+matrix_values[0]+matrix_values[2])/matrix_values[1] );
-    }
-
-    if ( comm_rank == 0 )
-    {
-	TEST_ASSERT( X_view[0] == 
-		     B_val*(1.0+matrix_values[2])/matrix_values[1] );
-    }
-    else
-    {
-	TEST_ASSERT( X_view[0] == 
-		     B_val*(1.0+matrix_values[0]+matrix_values[2])/matrix_values[1] );
-    }
-    comm->barrier();
-
-    if ( comm_rank == comm_size-1 )
-    {
-	TEST_ASSERT( X_view[local_num_rows-1] == 
-		     B_val*(1.0+matrix_values[0])/matrix_values[1] );
-    }
-    else
-    {
-	TEST_ASSERT( X_view[local_num_rows-1] == 
-		     B_val*(1.0+matrix_values[0]+matrix_values[2])/matrix_values[1] );
-    }
-    comm->barrier();
 }
 
 //---------------------------------------------------------------------------//

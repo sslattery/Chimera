@@ -126,10 +126,10 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	local_state = state_map->getLocalElement( global_state );
 	
 	// Update LHS.
-	lhs_view[ local_state ] += bank.top().weight();
+	lhs_view[local_state] += bank.top().weight();
 
 	// Sample the probability matrix to get the new state.
-	this->b_linear_problem->getOperator()->getLocalRowView( 
+	d_probability_matrix->getLocalRowView( 
 	    local_state, local_indices, local_values );
 	new_local_state = SamplingTools::sampleLocalDiscretePDF(
 	    local_values, local_indices, this->b_rng );
@@ -137,12 +137,22 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 
 	// Compute state transition weight.
 	transition_h = OperatorTools::getMatrixComponentFromLocal(
-	    this->b_linear_problem->getOperator(), 
+	    this->b_linear_operator_split->iterationMatrix(), 
 	    new_local_state, local_state );
 	transition_p = OperatorTools::getMatrixComponentFromLocal(
 	    d_probability_matrix, local_state, new_local_state );
-	transition_weight = transition_h / transition_p;
-	testInvariant( 1.0 >= std::abs(transition_weight) );
+
+	if ( transition_p == 0.0 )
+	{
+	    transition_weight = 0.0;
+	}
+	else
+	{
+	    transition_weight = std::abs( transition_h / transition_p );
+	}
+	
+	// We want to check this to insure the weight is decreasing.
+	testInvariant( 1.0 >= transition_weight );
 
 	// Update the history for the transition.
 	bank.top().setGlobalState( new_global_state );
@@ -254,7 +264,8 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildProbabilityMatrix()
 
 //---------------------------------------------------------------------------//
 /*!
- * \brief Sample the source to build a starting history bank.
+ * \brief Sample the source to build a starting history bank and set the
+ * random number generator seeds.
  */
 template<class Scalar, class LO, class GO, class RNG>
 HistoryBank<History<Scalar,GO> > 
