@@ -130,6 +130,36 @@ Scalar OperatorTools::getMatrixComponentFromGlobal(
 
 //---------------------------------------------------------------------------//
 /*!
+ * \brief Get the non-zero global column indices of a matrix that correspond
+ *  to global row indices that are off process. 
+ */
+template<class Scalar, class LO, class GO>
+Teuchos::Array<GO> OperatorTools::getOffProcColumns(
+    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix )
+{
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map = matrix->getRowMap();
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > col_map = matrix->getColMap();
+
+    Teuchos::ArrayView<const GO> global_cols = col_map->getNodeElementList();
+    typename Teuchos::ArrayView<const GO>::const_iterator global_col_it;
+
+    Teuchos::Array<GO> off_proc_cols(0);
+
+    for ( global_col_it = global_cols.begin();
+	  global_col_it != global_cols.end();
+	  ++global_col_it )
+    {
+	if ( !row_map->isNodeGlobalElement( *global_col_it ) )
+	{
+	    off_proc_cols.push_back( *global_col_it );
+	}
+    }
+
+    return off_proc_cols;
+}
+
+//---------------------------------------------------------------------------//
+/*!
  * \brief Compute the spectral radius of an operator.
  */
 template<class Scalar,class LO, class GO>

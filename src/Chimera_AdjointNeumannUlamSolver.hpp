@@ -100,6 +100,9 @@ class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
     // Build the probability matrix.
     void buildProbabilityMatrix();
 
+    // Build the ghosted iteration matrix.
+    void buildGhostIterationMatrix();
+
     // Sample the source to build a starting history bank.
     HistoryBank<HistoryType> sampleSource();
 
@@ -111,11 +114,14 @@ class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
 
   private:
 
+    // Relative weight cutoff.
+    Scalar d_relative_weight_cutoff;
+
     // Probability matrix.
     RCP_TpetraCrsMatrix d_probability_matrix;
 
-    // Relative weight cutoff.
-    Scalar d_relative_weight_cutoff;
+    // Ghosted iteration matrix.
+    RCP_TpetraCrsMatrix d_ghost_iteration_matrix;
 };
 
 } // end namespace Chimera

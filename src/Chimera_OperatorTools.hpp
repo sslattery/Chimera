@@ -77,6 +77,12 @@ class OperatorTools
 	const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix,
 	const GO global_row, const GO global_col );
 
+    // Get the non-zero global column indices of a matrix that correspond to
+    // global row indices that are off process.
+    template<class Scalar, class LO, class GO>
+    static Teuchos::Array<GO> getOffProcColumns(
+	const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix );
+
     // Compute the spectral radius of an operator.
     template<class Scalar, class LO, class GO>
     static Scalar spectralRadius( 

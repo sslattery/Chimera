@@ -57,6 +57,7 @@
 
 #include <Tpetra_Map.hpp>
 #include <Tpetra_CrsMatrix.hpp>
+#include <Tpetra_Export.hpp>
 
 namespace Chimera
 {
@@ -80,6 +81,9 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::AdjointNeumannUlamSolver(
 
     buildProbabilityMatrix();
     testPostcondition( !d_probability_matrix.is_null() );
+
+    buildGhostIterationMatrix();
+    testPostcondition( !d_ghost_iteration_matrix.is_null() );
 }
 
 //---------------------------------------------------------------------------//
@@ -97,9 +101,16 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::~AdjointNeumannUlamSolver()
 template<class Scalar, class LO, class GO, class RNG>
 void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 { 
-    // Get the state map.
+    // Get the system communicator.
+    Teuchos::RCP<const Teuchos::Comm<int> > comm = 
+	this->b_linear_problem->getOperator()->getComm();
+
+    // Get the state map and column map.
     Teuchos::RCP<const Tpetra::Map<LO,GO> > state_map =
 	this->b_linear_problem->getOperator()->getRowMap();
+
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > col_map =
+	this->b_linear_problem->getOperator()->getColMap();
 
     // Zero out the solution vector and get a local view to write into.
     this->b_linear_problem->getLHS()->putScalar( 0.0 );
@@ -112,61 +123,84 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     // Setup a history buffer.
     HistoryBuffer<HistoryType> buffer;
 
-    // Random walk until all global histories are terminated.
+    // Random walk setup.
     LO local_state, new_local_state;
     GO global_state, new_global_state;
     Scalar transition_h, transition_p, transition_weight;
     Teuchos::ArrayView<const LO> local_indices;
     Teuchos::ArrayView<const Scalar> local_values;
+    bool new_state_is_local = false;
     bool walk = true;
+
+    // Random walk until all global histories are terminated.
     while ( walk )
     {
-	// Get the current history state.
-	global_state = bank.top().globalState();
-	local_state = state_map->getLocalElement( global_state );
+	// If the bank isn't empty, process the top history.
+	if ( !bank.empty() )
+	{
+	    // Get the current history state.
+	    global_state = bank.top().globalState();
+	    local_state = state_map->getLocalElement( global_state );
 	
-	// Update LHS.
-	lhs_view[local_state] += bank.top().weight();
+	    // Update LHS.
+	    lhs_view[local_state] += bank.top().weight();
 
-	// Sample the probability matrix to get the new state.
-	d_probability_matrix->getLocalRowView( 
-	    local_state, local_indices, local_values );
-	new_local_state = SamplingTools::sampleLocalDiscretePDF(
-	    local_values, local_indices, this->b_rng );
-	new_global_state = state_map->getGlobalElement( new_local_state );
+	    // Sample the probability matrix to get the new state.
+	    d_probability_matrix->getLocalRowView( 
+		local_state, local_indices, local_values );
+	    new_local_state = SamplingTools::sampleLocalDiscretePDF(
+		local_values, local_indices, this->b_rng );
+	    new_global_state = col_map->getGlobalElement( new_local_state );
 
-	// Compute state transition weight.
-	transition_h = OperatorTools::getMatrixComponentFromLocal(
-	    this->b_linear_operator_split->iterationMatrix(), 
-	    new_local_state, local_state );
-	transition_p = OperatorTools::getMatrixComponentFromLocal(
-	    d_probability_matrix, local_state, new_local_state );
+	    // Check if the new state is on process.
+	    new_state_is_local = 
+		state_map->isNodeLocalElement( new_local_state );
 
-	if ( transition_p == 0.0 )
-	{
-	    transition_weight = 0.0;
-	}
-	else
-	{
-	    transition_weight = std::abs( transition_h / transition_p );
-	}
+	    // Compute iteration matrix transition data from on process data.
+	    if ( new_state_is_local )
+	    {
+		transition_h = OperatorTools::getMatrixComponentFromLocal(
+		    this->b_linear_operator_split->iterationMatrix(), 
+		    new_local_state, local_state );
+	    }
+	    // Compute iteration matrix transition data from ghosted data.
+	    else
+	    {
+		transition_h = OperatorTools::getMatrixComponentFromGlobal(
+		    d_ghost_iteration_matrix, new_global_state, global_state );
+	    }
+
+	    // Get the transition probability.
+	    transition_p = OperatorTools::getMatrixComponentFromLocal(
+		d_probability_matrix, local_state, new_local_state );
+
+	    // Compute the state transition weight.
+	    if ( transition_p == 0.0 )
+	    {
+		transition_weight = 0.0;
+	    }
+	    else
+	    {
+		transition_weight = std::abs( transition_h / transition_p );
+	    }
 	
-	// We want to check this to insure the weight is decreasing.
-	testInvariant( 1.0 >= transition_weight );
+	    // We want to check this to insure the weight is decreasing.
+	    testInvariant( 1.0 >= transition_weight );
 
-	// Update the history for the transition.
-	bank.top().setGlobalState( new_global_state );
-	bank.top().multiplyWeight( transition_weight );
+	    // Update the history for the transition.
+	    bank.top().setGlobalState( new_global_state );
+	    bank.top().multiplyWeight( transition_weight );
 
-	// If the history is below the weight cutoff it is terminated.
-	if ( d_relative_weight_cutoff > bank.top().weightAbs() )
-	{
-	    bank.pop();
-	}
-	// Else if the history has left the local domain, buffer it.
-	else if ( !state_map->isNodeGlobalElement( bank.top().globalState() ) )
-	{
-	    buffer.pushBack( bank.pop() );
+	    // If the history is below the weight cutoff it is terminated.
+	    if ( d_relative_weight_cutoff > bank.top().weightAbs() )
+	    {
+		bank.pop();
+	    }
+	    // Else if the history has left the local domain, buffer it.
+	    else if ( !new_state_is_local )
+	    {
+		buffer.pushBack( bank.pop() );
+	    }
 	}
 
 	// Check if the banks are empty.
@@ -193,7 +227,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 
 //---------------------------------------------------------------------------//
 /*!
- * \brief Build the probability matrix.
+ * \brief Build the adjoint probability matrix.
  */
 template<class Scalar, class LO, class GO, class RNG>
 void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildProbabilityMatrix()
@@ -264,6 +298,32 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildProbabilityMatrix()
 
 //---------------------------------------------------------------------------//
 /*!
+ * \brief Build the ghost iteration matrix. This consists of the non-zero
+ * off-process components that we will need for computing the adjoint weights.
+ */
+template<class Scalar, class LO, class GO, class RNG>
+void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildGhostIterationMatrix()
+{
+    Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> > iteration_matrix =
+	this->b_linear_operator_split->iterationMatrix();
+
+    Teuchos::Array<GO> ghost_global_rows = 
+	OperatorTools::getOffProcColumns( iteration_matrix );
+
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > ghost_map =	
+	Tpetra::createNonContigMap<LO,GO>( 
+	    ghost_global_rows(), iteration_matrix->getComm() );
+
+    Tpetra::Export<LO,GO> ghost_exporter( 
+	iteration_matrix->getRowMap(), ghost_map );
+
+    d_ghost_iteration_matrix = 
+	Tpetra::exportAndFillCompleteCrsMatrix<Tpetra::CrsMatrix<Scalar,LO,GO> >( 
+	    iteration_matrix, ghost_exporter );
+}
+
+//---------------------------------------------------------------------------//
+/*!
  * \brief Sample the source to build a starting history bank and set the
  * random number generator seeds.
  */
@@ -282,8 +342,8 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
     testInvariant( local_source_view.size() == global_states.size() );
 
     Teuchos::ArrayRCP<GO> starting_states = 
-	SamplingTools::stratifySampleGlobalPDF( this->b_histories_per_stage,
-						source );
+	SamplingTools::stratifySampleGlobalPDF( 
+	    this->b_histories_per_stage, source );
     testInvariant( local_source_view.size() == starting_states.size() );
 
     HistoryBank<HistoryType> source_bank;
@@ -330,7 +390,7 @@ bool AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::allRandomWalksComplete(
 
     Teuchos::reduceAll( *comm, Teuchos::REDUCE_SUM, bank.size(), 
 			Teuchos::Ptr<size_type>(&global_num_histories) );
-
+ 
     return 0 == global_num_histories;
 }
 

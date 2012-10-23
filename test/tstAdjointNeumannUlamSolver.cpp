@@ -52,7 +52,7 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     int problem_size = N*N;
     double dx = 0.01;
     double dy = 0.01;
-    double dt = 0.005;
+    double dt = 0.0001;
     double alpha = 0.01;
     Teuchos::RCP<const Tpetra::Map<int> > row_map = 
 	Tpetra::createUniformContigMap<int,int>( problem_size, comm );
@@ -144,28 +144,40 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     {
 	int i = 0;
 	row = i + j*N;
-	B->replaceGlobalValue( row, 5.0 );
+	if ( row_map->isNodeGlobalElement( row ) )
+	{
+	    B->replaceGlobalValue( row, 5.0 );
+	}
     }
     // right
     for ( int j = 1; j < N-1; ++j )
     {
 	int i = N-1;
 	row = i + j*N;
-	B->replaceGlobalValue( row, 5.0 );
+	if ( row_map->isNodeGlobalElement( row ) )
+	{
+	    B->replaceGlobalValue( row, 5.0 );
+	}
     }
     // bottom
     for ( int i = 0; i < N; ++i )
     {
 	int j = 0;
 	row = i + j*N;
-	B->replaceGlobalValue( row, 0.0 );
+	if ( row_map->isNodeGlobalElement( row ) )
+	{
+	    B->replaceGlobalValue( row, 0.0 );
+	}
     }
     // top
     for ( int i = 0; i < N; ++i )
     {
 	int j = N-1;
 	row = i + j*N;
-	B->replaceGlobalValue( row, 0.0 );
+	if ( row_map->isNodeGlobalElement( row ) )
+	{
+	    B->replaceGlobalValue( row, 0.0 );
+	}
     }
 
     // Build the linear problem.
