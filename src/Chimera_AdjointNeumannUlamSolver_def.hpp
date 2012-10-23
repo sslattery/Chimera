@@ -101,10 +101,6 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::~AdjointNeumannUlamSolver()
 template<class Scalar, class LO, class GO, class RNG>
 void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 { 
-    // Get the system communicator.
-    Teuchos::RCP<const Teuchos::Comm<int> > comm = 
-	this->b_linear_problem->getOperator()->getComm();
-
     // Get the state map and column map.
     Teuchos::RCP<const Tpetra::Map<LO,GO> > state_map =
 	this->b_linear_problem->getOperator()->getRowMap();
@@ -135,7 +131,9 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     // Random walk until all global histories are terminated.
     while ( walk )
     {
-	// If the bank isn't empty, process the top history.
+	// If the bank isn't empty, process the top history. We need this here
+	// so proccesses that have emptied their banks can wait until all
+	// banks are empty and buffer communication can occur.
 	if ( !bank.empty() )
 	{
 	    // Get the current history state.

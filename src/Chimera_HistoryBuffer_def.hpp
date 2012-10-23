@@ -91,7 +91,7 @@ HistoryBank<HT> HistoryBuffer<HT>::communicate(
     Teuchos::Array<int> destination_procs( d_buffer.size() );
     Tpetra::LookupStatus lookup_status = 
 	state_map->getRemoteIndexList( global_states(), destination_procs() );
-    testInvariant( lookup_status == Tpetra::AllIDsPresent );
+    testAssertion( lookup_status == Tpetra::AllIDsPresent );
 
     global_states.clear();
 
