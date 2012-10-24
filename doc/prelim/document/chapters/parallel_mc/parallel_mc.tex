@@ -352,7 +352,7 @@ forming the Neumann series in reverse order:
 We can readily build an estimator for the adjoint solution from this
 series expansion, but we instead desire the direct solution. We
 achieve this by using Eq~(\ref{eq:adjoint_vector_relation}) as a
-constraint. Here we have 2 unkowns, $\ve{y}$ and $\ve{d}$ and
+constraint. Here we have 2 unknowns, $\ve{y}$ and $\ve{d}$ and
 therefore we require a second constraint to close the system. As a
 second constraint we select:
 \begin{equation}
@@ -476,7 +476,7 @@ iterative scheme as a solution to Eq~(\ref{eq:linear_problem})\:
 where the correction $\boldsymbol{\delta}$ is computed by the adjoint
 Monte Carlo method. The merits of Halton's approach are immediately
 visible in that we have now broken the binding of the convergence rate
-to the Central Limit Thereom. Here, the Monte Carlo solver is used to
+to the Central Limit Theorem. Here, the Monte Carlo solver is used to
 produce a correction from the residual, analogous to using the
 residual to extract a correction from the search subspace in a
 projection method. By doing this, the Monte Carlo error is bound in
@@ -692,7 +692,7 @@ replicated $O(1,000)$ times achieves simulation on $O(100,000)$
 processors, thus providing spatial and particle parallelism. Each
 collection of processors that constitutes a representation of the
 entire domain is referred to as a set, and within a set overlap occurs
-among its subdomains. The original motivation was to decompose the
+among its sub-domains. The original motivation was to decompose the
 domain in a way that it remained in a physical cabinet in a large
 distributed machine, thus reducing latency costs during
 communication. A multiple set scheme is also motivated by the fact
@@ -799,15 +799,15 @@ may overcome the bandwidth limitations of the system, resulting in a
 decrease in performance. In their numerical experiments, they used the
 above geometry and leakage rates based on that computed for a reactor
 system for a single material problem with a total cross section
-equivalent to that of homogonized light water reactor. Given the
+equivalent to that of homogenized light water reactor. Given the
 optimal local domain size, they observed for load balanced situations
 that nearest neighbor communication costs during transport are a small
-fraction of total compute time, leading to the conclusing that domain
+fraction of total compute time, leading to the conclusion that domain
 decomposition is feasible for large-scale Monte Carlo calculations.
 
 \subsubsection{Load Balancing Concerns}
 \label{subsubsec:mc_load_balancing}
-Although domain decomposition was shown to be efficient in a prefectly
+Although domain decomposition was shown to be efficient in a perfectly
 load balanced situation in Siegel's work \citep{siegel_analysis_2012},
 careful consideration must be made for situations where this is not
 the case. Given the stochastic nature of the problem and lack of a
