@@ -1,0 +1,21 @@
+\begin{picture}(0,0)%
+\includegraphics{orthogonal_residual.pdf}%
+\end{picture}%
+\setlength{\unitlength}{1579sp}%
+%
+\begingroup\makeatletter\ifx\SetFigFont\undefined%
+\gdef\SetFigFont#1#2#3#4#5{%
+  \reset@font\fontsize{#1}{#2pt}%
+  \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
+  \selectfont}%
+\fi\endgroup%
+\begin{picture}(8590,3048)(2714,-5267)
+\put(3827,-5019){\makebox(0,0)[lb]{\smash{{\SetFigFont{5}{6.0}{\familydefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\mathcal{L}$}%
+}}}}
+\put(8504,-2562){\makebox(0,0)[lb]{\smash{{\SetFigFont{5}{6.0}{\familydefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\ve{r}_0$}%
+}}}}
+\put(6901,-2401){\makebox(0,0)[lb]{\smash{{\SetFigFont{5}{6.0}{\familydefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\tilde{\ve{r}}$}%
+}}}}
+\put(8401,-4501){\makebox(0,0)[lb]{\smash{{\SetFigFont{5}{6.0}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\ve{A}\boldsymbol{\delta}$}%
+}}}}
+\end{picture}%
