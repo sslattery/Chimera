@@ -199,9 +199,10 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Projection Methods}
 
-  We choose a search subspace $\mathcal{K}$ and a search subspace
-  $\mathcal{L}$ and determine the solution to the linear problem by
-  extracting the solution from the search subspace:
+  We choose a \textit{search subspace} $\mathcal{K}$ and a
+  \textit{constraint subspace} $\mathcal{L}$ and determine the solution
+  to the linear problem by extracting the solution from the search
+  subspace:
   \[
   \tilde{\ve{x}} = \ve{x}_0 +
   \boldsymbol{\delta},\ \boldsymbol{\delta} \in \mathcal{K}\:,
@@ -211,6 +212,83 @@
   \langle \tilde{\ve{r}},\ve{w} \rangle = 0,\ \forall \ve{w} \in
   \mathcal{L}\:.
   \]
+
+  We can generate a more physical and geometric-based understanding of
+  these constraints by writing the new residual as:
+  \[
+  \tilde{\ve{r}} = \ve{r}_0 - \ve{A}\boldsymbol{\delta}
+  \]
+
+  If $\tilde{\ve{r}}$ is to be orthogonal to $\mathcal{L}$, then
+  $\ve{A}\boldsymbol{\delta}$ must be the projection of $\ve{r}_0$
+  onto the subspace $\mathcal{L}$ that eliminates the components of
+  the residual that exist in $\mathcal{L}$.
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{The Orthogonality Constraint}
+
+  \begin{figure}[htpb!]
+    \begin{center}
+      \scalebox{1.25}{
+        \input{orthogonal_residual.pdftex_t} }
+    \end{center}
+    \caption{\textbf{Orthogonality constraint of the new residual with
+        respect to $\mathcal{L}$.} \textit{By projecting $\ve{r}_0$ onto
+        the constraint subspace, we minimize the new residual by
+        removing those components.}}
+    \label{fig:linear_projection_constraint}
+  \end{figure}
+
+  From this we note:
+  \[
+  ||\tilde{\ve{r}}||_2 \leq ||\ve{r}_0||_2,\ \forall \ve{r}_0 \in
+  \mathbb{R}^N\:,
+  \]
+  meaning that the residual of the system will always be
+  \textit{minimized} with respect to the constraints.
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Projection Iteration}
+
+  Consider a matrix $\ve{V}$ to form a basis of $\mathcal{K}$ and a
+  matrix $\ve{W}$ to form a basis of $\mathcal{L}$.
+
+  \[
+  \boldsymbol{\delta} = \ve{V}\ve{y},\ \forall \ve{y} \in
+  \mathbb{R}^N\:.
+  \]
+
+  From the orthogonality constraint it then follows that:
+  \[
+  \ve{y} = (\ve{W}^T\ve{A}\ve{V})^{-1}\ve{W}^T\ve{r}_0\:,
+  \]
+
+  We can then form an iteration sequence:
+  \[
+  \ve{r}^k = \ve{b} - \ve{A}\ve{x}^k
+  \]
+  \[
+  \ve{y}^k = (\ve{W}^T\ve{A}\ve{V})^{-1}\ve{W}^T\ve{r}^k
+  \]
+  \[
+  \ve{x}^{k+1} = \ve{x}^k + \ve{V}\ve{y}^k\:,
+  \]
+
+  with $\ve{V}$ and $\ve{W}$ updated prior to each iteration.
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Krylov Subspace Methods}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{GMRES}
 
 \end{frame}
 
