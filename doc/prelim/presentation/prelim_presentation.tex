@@ -42,17 +42,18 @@
   \\ \href{mailto:sslattery@wisc.edu}{\texttt{sslattery@wisc.edu}}
 }
 
-\date{\today}
-\title{Massively Parallel Monte Carlo Methods for Linear and Nonlinear
-Problems}
+\date{\today} 
+\title{Massively Parallel Monte Carlo Methods for Discrete Linear and
+  Nonlinear Systems} 
 \begin{document}
 \maketitle
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Introduction}
   \begin{itemize}
-    \item Predictive modeling and simulation capability yields nuclear
-      system designs that are safer and better performing.
+    \item Predictive modeling and simulation ehances engineering
+      capability to yield nuclear system designs that are safer and
+      better performing.
     \item Modern work focused on this task leverages multiple physics
       simulation (CASL, NEAMS).
     \item New hardware drives algorithm development (petascale and
@@ -113,33 +114,103 @@ Problems}
       of the tallies while hard failures are high variance events.
     \item New machines will also be memory restricted with a continued
       decrease of memory/FLOPS predicted.
-    \item Compared to conventional methods, we will show that Monte
+    \item Compared to conventional methods, we aim show that Monte
       Carlo methods offer a memory savings.
   \end{itemize}
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Research Outline}
-
+  \begin{itemize}
+    \item Parallelization of classic Monte Carlo methods.
+    \item Parallel strategies taken from modern reactor physics
+      methods in Monte Carlo.
+    \item Research is required to explore how domain decomposition
+      patterns and the discrete system properties are related.
+    \item Research is required to explore how these methods perform
+      in modern multiple physics simulations where strong
+      nonlinearities are present.
+  \end{itemize}
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Conventional Solution Methods for Linear Problems}
+\begin{frame}{The Linear Problem}
 
-\end{frame}
+  We will seek solutions of the general linear problem:
 
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Linear Problem Preliminaries}
+  \[
+  \ve{A} \ve{x} = \ve{b}\:,
+  \]
+  \[
+  \ve{A} \in \mathbb{R}^{N \times N},\ \ve{A} : \mathbb{R}^{N}
+  \rightarrow \mathbb{R}^{N},\ \ve{x} \in \mathbb{R}^N,\ \ve{b} \in
+  \mathbb{R}^N\:.
+  \]
+
+  We will assert that $\ve{A}$ is \textit{nonsingular}. The solution
+  is then:
+  \[
+  \ve{x} = \ve{A}^{-1}\ve{b}\:.
+  \]
+
+  We can also define the residual of the system as:
+  \[
+  \ve{r} = \ve{b} - \ve{A}\ve{x}\:,
+  \]
+  where $\ve{r}=\ve{0}$ when an exact solution is found.
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Stationary Methods}
+  General stationary methods are formed by splitting the linear
+  operator:
+  \[
+  \ve{A} = \ve{M} - \ve{N}\:.
+  \]
+
+  We can then reformulate the linear system as:
+  \[
+  \ve{x} = \ve{M}^{-1}\ve{N}\ve{x} + \ve{M}^{-1}\ve{b}\:.
+  \]
+
+  We identify $\ve{M}^{-1}\ve{N}$ as the \textit{iteration matrix},
+  $\ve{H}$, and apply iteration indices to the solution vectors to
+  give an iterative method.
+  \[
+  \ve{x}^{k+1} = \ve{H}\ve{x}^{k} + \ve{c}\:.
+  \]
+
+  The qualities of the iteration matrix dictate convergence. Defining
+  $\ve{e}^k = \ve{x}^k-\ve{x}$ as the error at the $k^{th}$ iterate
+  gives a recurrence relation:
+  \[
+  \ve{e}^{k+1} = \ve{H} \ve{e}^k\:,
+  \]
+  
+  By diagonalizing $\ve{H}$ to extract its Eigenvalues, we find that 
+  \[
+  ||\ve{e}^{k}||_2 = \rho(\ve{H})^k ||\ve{e}^0||_2\:,
+  \]
+  and therefore we bound $\ve{H}$ by $\rho(\ve{H}) < 1$ for convergence.
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Projection Methods}
+
+  We choose a search subspace $\mathcal{K}$ and a search subspace
+  $\mathcal{L}$ and determine the solution to the linear problem by
+  extracting the solution from the search subspace:
+  \[
+  \tilde{\ve{x}} = \ve{x}_0 +
+  \boldsymbol{\delta},\ \boldsymbol{\delta} \in \mathcal{K}\:,
+  \]
+  and by constraining it with the constraint subspace:
+  \[
+  \langle \tilde{\ve{r}},\ve{w} \rangle = 0,\ \forall \ve{w} \in
+  \mathcal{L}\:.
+  \]
 
 \end{frame}
 
