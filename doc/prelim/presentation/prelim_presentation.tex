@@ -56,7 +56,7 @@
 \begin{frame}{Introduction}
 
   \begin{itemize}
-    \item Predictive modeling and simulation ehances engineering
+    \item Predictive modeling and simulation enhances engineering
       capability
     \item Modern work focused on this task leverages multiple physics
       simulation (CASL, NEAMS)
@@ -79,7 +79,7 @@
     {Predictive nuclear reactor analysis enables...}
     \begin{itemize}
     \item Tighter design tolerance for improved thermal performance
-      and efficieny
+      and efficiency
     \item Higher fuel burn-up
     \item High confidence in accident scenario models
     \end{itemize}
@@ -103,14 +103,30 @@
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Physics-Based Motivation: DNB}
-  \begin{figure}[htpb!]
-    \begin{center}
-      \scalebox{1}{ \input{dnb_example.pdftex_t} }
-    \end{center}
-    \caption{\textbf{Multiphysics dependency analysis of departure
-        from nucleate boiling.} }
-    \label{fig:dnb_example}
-  \end{figure}
+
+  \begin{columns}
+
+    \begin{column}{0.35\textwidth}
+      \begin{figure}[htpb!]
+        \begin{center}
+          \scalebox{1}{ \input{dnb_schematic.pdftex_t} }
+        \end{center}
+        \caption{\textbf{Departure from nucleate boiling scenario.} }
+      \end{figure}
+    \end{column}
+
+    \begin{column}{0.65\textwidth}
+      \begin{figure}[htpb!]
+        \begin{center}
+          \scalebox{0.8}{ \input{dnb_example.pdftex_t} }
+        \end{center}
+        \caption{\textbf{Multiphysics dependency analysis of departure
+            from nucleate boiling.} }
+      \end{figure}
+    \end{column}
+
+  \end{columns}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
