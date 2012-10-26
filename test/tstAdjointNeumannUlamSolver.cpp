@@ -22,6 +22,7 @@
 #include <Chimera_NeumannUlamSolver.hpp>
 #include <Chimera_AdjointNeumannUlamSolver.hpp>
 #include <Chimera_BoostRNG.hpp>
+#include <Chimera_OperatorTools.hpp>
 
 #include <Teuchos_UnitTestHarness.hpp>
 #include <Teuchos_DefaultComm.hpp>
@@ -48,11 +49,11 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
 	Teuchos::DefaultComm<int>::getComm();
 
     // Build the linear operator - this is a 2D Transient Diffusion operator.
-    int N = 100;
+    int N = 10;
     int problem_size = N*N;
     double dx = 0.01;
     double dy = 0.01;
-    double dt = 0.001;
+    double dt = 0.1;
     double alpha = 0.01;
     Teuchos::RCP<const Tpetra::Map<int> > row_map = 
 	Tpetra::createUniformContigMap<int,int>( problem_size, comm );
@@ -192,7 +193,7 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     // Build the Adjoint solver.
     std::string split_type = "JACOBI";
     double weight_cutoff = 1.0e-4;
-    int histories_per_stage = 100000;
+    int histories_per_stage = 100;
     Teuchos::RCP<Teuchos::ParameterList> plist =
 	Teuchos::rcp( new Teuchos::ParameterList() );
     plist->set<std::string>("SPLIT TYPE", split_type);
@@ -212,6 +213,9 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     TEST_ASSERT( solver->linearOperatorSplit() == lin_op_split );
     TEST_ASSERT( solver->weightCutoff() == weight_cutoff );
     TEST_ASSERT( solver->historiesPerStage() == histories_per_stage );
+
+    std::cout << "SPEC RAD: " << Chimera::OperatorTools::spectralRadius( 
+	lin_op_split->iterationMatrix() ) << std::endl;
 
     // Solve.
     solver->walk();

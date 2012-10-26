@@ -171,7 +171,7 @@ Scalar OperatorTools::spectralRadius(
 
     const int nev = 1;
     const int block_size = 1;
-    const int num_blocks = 5;
+    const int num_blocks = 3;
     const int max_restarts = 100;
     const Scalar tol = 1.0e-6;
 
