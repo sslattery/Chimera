@@ -219,7 +219,6 @@ TEUCHOS_UNIT_TEST( OperatorTools, spectral_radius_test )
     // Build the Jacobi split.
     Teuchos::RCP<Chimera::LinearOperatorSplit<double,int,int> > a_split =
 	Teuchos::rcp( new Chimera::JacobiSplit<double,int,int>( A ) );
-    a_split->split();
 
     // Check the spectral radius of the iteration matrix.
     double spectral_radius = 

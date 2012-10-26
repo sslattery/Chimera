@@ -116,7 +116,6 @@ TEUCHOS_UNIT_TEST( LinearOperatorSplitFactory, jacobi_split_test )
 
     Teuchos::RCP<Chimera::LinearOperatorSplit<double,int,int> > a_split =
 	Chimera::LinearOperatorSplitFactory::create( plist, A );
-    a_split->split();
 
     // Check the operator.
     TEST_ASSERT( A == a_split->linearOperator() );
@@ -129,36 +128,36 @@ TEUCHOS_UNIT_TEST( LinearOperatorSplitFactory, jacobi_split_test )
     for ( int i = 1; i < local_num_rows-1; ++i )
     {
 	iteration_matrix->getLocalRowView( i, col_indices, row_values );
-	TEST_ASSERT( row_values[0] == matrix_values[0] / matrix_values[1] );
+	TEST_ASSERT( row_values[0] == -matrix_values[0] / matrix_values[1] );
 	TEST_ASSERT( row_values[1] == 0.0 );
-	TEST_ASSERT( row_values[2] == matrix_values[2] / matrix_values[1] );
+	TEST_ASSERT( row_values[2] == -matrix_values[2] / matrix_values[1] );
     }
 
     iteration_matrix->getLocalRowView( 0, col_indices, row_values );
     if ( comm_rank == 0 )
     {
 	TEST_ASSERT( row_values[0] == 0.0 );
-	TEST_ASSERT( row_values[1] == matrix_values[2] / matrix_values[1] );
+	TEST_ASSERT( row_values[1] == -matrix_values[2] / matrix_values[1] );
     }
     else
     {
-	TEST_ASSERT( row_values[0] == matrix_values[0] / matrix_values[1] );
+	TEST_ASSERT( row_values[0] == -matrix_values[0] / matrix_values[1] );
 	TEST_ASSERT( row_values[1] == 0.0 );
-	TEST_ASSERT( row_values[2] == matrix_values[2] / matrix_values[1] );
+	TEST_ASSERT( row_values[2] == -matrix_values[2] / matrix_values[1] );
     }
     comm->barrier();
 
     iteration_matrix->getLocalRowView( local_num_rows-1, col_indices, row_values );
     if ( comm_rank == comm_size-1 )
     {
-	TEST_ASSERT( row_values[0] == matrix_values[0] / matrix_values[1] );
+	TEST_ASSERT( row_values[0] == -matrix_values[0] / matrix_values[1] );
 	TEST_ASSERT( row_values[1] == 0.0 );
     }
     else
     {
-	TEST_ASSERT( row_values[0] == matrix_values[0] / matrix_values[1] );
+	TEST_ASSERT( row_values[0] == -matrix_values[0] / matrix_values[1] );
 	TEST_ASSERT( row_values[1] == 0.0 );
-	TEST_ASSERT( row_values[2] == matrix_values[2] / matrix_values[1] );
+	TEST_ASSERT( row_values[2] == -matrix_values[2] / matrix_values[1] );
     }
     comm->barrier();
 

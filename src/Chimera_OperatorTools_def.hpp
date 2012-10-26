@@ -131,7 +131,7 @@ Scalar OperatorTools::getMatrixComponentFromGlobal(
 //---------------------------------------------------------------------------//
 /*!
  * \brief Get the non-zero global column indices of a matrix that correspond
- *  to global row indices that are off process. 
+ *  to global row indices that are off-process. 
  */
 template<class Scalar, class LO, class GO>
 Teuchos::Array<GO> OperatorTools::getOffProcColumns(

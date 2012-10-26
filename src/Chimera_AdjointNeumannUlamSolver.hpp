@@ -107,7 +107,7 @@ class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
     HistoryBank<HistoryType> sampleSource();
 
     // Check for completion of all random walks.
-    bool allRandomWalksComplete( const HistoryBank<HistoryType>& bank );
+    bool allBanksEmpty( const HistoryBank<HistoryType>& bank );
 
     // Check for empty buffers on all processes.
     bool allBuffersEmpty( const HistoryBuffer<HistoryType>& buffer );

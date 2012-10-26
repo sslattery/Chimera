@@ -135,7 +135,6 @@ TEUCHOS_UNIT_TEST( StationaryIteration, jacobi_iteration_test )
 
     Teuchos::RCP<Chimera::LinearOperatorSplit<double,int,int> > a_split =
 	Chimera::LinearOperatorSplitFactory::create( plist, A );
-    a_split->split();
 
     // Build the stationary iteration.
     Teuchos::RCP<Chimera::StationaryIteration<double,int,int> > stationary_it =

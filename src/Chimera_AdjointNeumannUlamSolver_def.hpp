@@ -128,7 +128,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     bool new_state_is_local = false;
     bool walk = true;
 
-    // Random walk until all global histories are terminated.
+    // Random walk until all global histories in the stage are terminated.
     while ( walk )
     {
 	// If the bank isn't empty, process the top history. We need this here
@@ -183,7 +183,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    }
 
 	    // We want to check this to insure the weight is decreasing.
-	    testInvariant( 1.0 >= transition_weight );
+	    testInvariant( 1.0 > transition_weight );
 
 	    // Update the history for the transition.
 	    bank.top().setGlobalState( new_global_state );
@@ -202,9 +202,9 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	}
 
 	// Check if the banks are empty.
-	if ( allRandomWalksComplete( bank ) )
+	if ( allBanksEmpty( bank ) )
 	{
-	    // If all the buffers are empty, the walk is complete.
+	    // If all the buffers are empty, the stage is complete.
 	    if ( allBuffersEmpty( buffer ) )
 	    {
 		walk = false;
@@ -329,11 +329,14 @@ template<class Scalar, class LO, class GO, class RNG>
 HistoryBank<History<Scalar,GO> > 
 AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
 {
-    // Precondition the RHS with the operator split.
+    // Get the RHS.
     Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> > source = 
 	this->b_linear_problem->getRHS();
     Teuchos::RCP<const Tpetra::Map<LO,GO> > source_map = source->getMap();
-    
+    Teuchos::ArrayView<const GO> global_states = 
+	source_map->getNodeElementList();
+
+    // Precondition the RHS with the linear operator split.    
     Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> > precond_source =
 	Tpetra::createVector<Scalar,LO,GO>( source_map );
     this->b_linear_operator_split->applyInvM( source, precond_source );
@@ -341,20 +344,19 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
 	precond_source->get1dView();
 
     // Stratify sample the preconditioned source.
-    Teuchos::ArrayView<const GO> global_states = 
-	source_map->getNodeElementList();
-    testInvariant( local_source_view.size() == global_states.size() );
-
     Teuchos::ArrayRCP<GO> starting_states = 
 	SamplingTools::stratifySampleGlobalPDF( 
 	    this->b_histories_per_stage, precond_source );
     testInvariant( local_source_view.size() == starting_states.size() );
 
-    // Build the starting source bank.
-    HistoryBank<HistoryType> source_bank;
+    // Get the starting source weight.
     Scalar source_weight = precond_source->norm1();
+
+    // Set the relative weight cutoff.
     d_relative_weight_cutoff *= source_weight;
 
+    // Build the starting source bank.
+    HistoryBank<HistoryType> source_bank;
     Scalar history_weight = 0.0;
     typename Teuchos::ArrayRCP<const Scalar>::const_iterator local_source_it;
     typename Teuchos::ArrayRCP<GO>::const_iterator starting_states_it;
@@ -380,10 +382,10 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
 
 //---------------------------------------------------------------------------//
 /*!
- * \brief Check for completion of all random walks.
+ * \brief Check for completion of all local random walks in the bank.
  */
 template<class Scalar, class LO, class GO, class RNG>
-bool AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::allRandomWalksComplete(
+bool AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::allBanksEmpty(
     const HistoryBank<HistoryType>& bank )
 {
     typedef typename HistoryBank<HistoryType>::size_type size_type;
