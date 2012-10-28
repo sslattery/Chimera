@@ -76,6 +76,7 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Physics-Based Motivation}
  
+  \pause 
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Predictive nuclear reactor analysis enables...}
     \begin{itemize}
@@ -575,25 +576,389 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Direct Method}
 
+  \begin{itemize}
+    \item Compute row-normalized transition probabilities and weights
+  \end{itemize}
+
+  \[
+  p_{ij} = \frac{|h_{ij}|}{\sum_j |h_{ij}|},\ w_{ij} =
+  \frac{h_{ij}}{p_{ij}}
+  \]
+
+  \begin{itemize}
+    \item Generate an expectation value for the solution
+  \end{itemize}
+
+  \[
+  W_{m} = \sum_{m=0}^k w_{i,i_1} w_{i_1,i_2} \cdots w_{i_{m-1},i_m}
+  \]
+  \[
+  X_{\nu}(i_0 = i) = \sum_{m=0}^k W_{m} b_{i_m}
+  \]
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Direct Method}
+
+  \begin{itemize}
+    \item Compute the probability of a particular random walk permutation
+  \end{itemize}
+
+  \[
+  P_{\nu} = p_{i,i_1} p_{i_1,i_2} \cdots p_{i_{k-1},i_k}
+  \]
+
+  \begin{itemize}
+  \item Generate the estimator
+  \end{itemize}
+
+  \[
+  E\{X(i_0 = i)\} = \sum_{\nu} P_{\nu} X_{\nu}
+  \]
+
+  \begin{itemize}
+  \item Check that we recover the exact solution
+  \end{itemize}
+
+  \[
+  \begin{split}
+    E\{X(i_0 = i)\}
+    &=\sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+    \sum_{i_k}^{N} p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
+    w_{i,i_1}w_{i_1,i_2}\ldots w_{i_{k-1},i_k} b_{i_k}\\ &= x_i\:,
+  \end{split}
+  \]
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Direct Method: Evolution of a Solution}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Adjoint Method}
+
+  \begin{itemize}
+  \item Solve the adjoint linear system
+  \end{itemize}
+
+  \[
+  \ve{A}^T \ve{y} = \ve{d}
+  \]
+
+  \[
+  \ve{y} = \ve{H}^T \ve{y} + \ve{d}
+  \]
+
+  \begin{itemize}
+  \item Set the adjoint constraint
+  \end{itemize}
+
+  \[
+  \langle \ve{A}^T \ve{x}, \ve{y} \rangle = \langle \ve{x}, \ve{A}
+  \ve{y} \rangle
+  \]
+
+  \[
+  \langle \ve{x}, \ve{d} \rangle = \langle \ve{y}, \ve{b} \rangle
+  \]
+  
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Adjoint Method}
+
+  \begin{itemize}
+  \item Generate the Neumann series for the adjoint operator
+  \end{itemize}
+
+  \[
+  \ve{y} = (\ve{I} - \ve{H}^T)^{-1} \ve{d}
+  \]
+
+  \[
+  \ve{y} = \sum_{k=0}^{\infty} (\ve{H}^T)^k\ve{d}
+  \]
+
+  \begin{itemize}
+  \item Expand the series
+  \end{itemize}
+
+  \[
+  y_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}h_{i_k,i_{k-1}}\ldots h_{i_2,i_1} h_{i_1,i} d_{i_k}
+  \]
+
+  \begin{itemize}
+  \item Pick another constraint to yield the original solution
+  \end{itemize}
+
+  \[
+  \ve{d} = \boldsymbol{\delta}_i,\ \langle \ve{y}, \ve{b} \rangle =
+  \langle \ve{x}, \boldsymbol{\delta}_i \rangle = x_i
+  \]
+  
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Adjoint Method}
+
+  \begin{itemize}
+  \item Use the adjoint Neumann-Ulam decomposition
+  \end{itemize}
+
+  \[
+  \ve{H}^{T} = \ve{P} \circ \ve{W}
+  \]
+
+  \[
+  p_{ij} = \frac{|h_{ji}|}{\sum_j |h_{ji}|},\ w_{ij} =
+  \frac{h_{ji}}{p_{ij}}
+  \]
+
+  \begin{itemize}
+  \item Build the estimator and expectation value
+  \end{itemize}
+
+  \[
+  X_{\nu} = \sum_{m=0}^k W_{m} b_{i_0} \delta_{i,i_m}
+  \]
+
+  \[
+  \begin{split}
+    E\{X_j\} &=\sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+    \sum_{i_k}^{N} b_{i_0} h_{i,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}
+    \delta_{i_k,j} \\ &= x_{j}\:,
+  \end{split}
+  \]
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Adjoint Method: Evolution of a Solution}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Sequential Monte Carlo}
 
+  \begin{itemize}
+  \item Neumann-Ulam methods bound by the Central Limit Theorem
+  \item Halton proposed an iterative residual method
+  \item Iteration error decoupled from Monte Carlo error
+  \item Exponential convergence
+  \end{itemize}
+
+  \[
+  \ve{r}^k = \ve{b} - \ve{A}\ve{x}^k
+  \]
+  \[
+  \ve{A}\boldsymbol{\delta}^{k} = \ve{r}^{k}
+  \]
+  \[
+  \ve{x}^{k+1} = \ve{x}^k + \boldsymbol{\delta}^{k}
+  \]
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Monte Carlo Synthetic-Acceleration}
+  \begin{itemize}
+  \item Split the operator to yield Richardson's iteration
+  \end{itemize}
+
+  \[
+  \ve{x} = (\ve{I} - \ve{A})\ve{x} + \ve{b}
+  \]
+  \[
+  \ve{x}^{k+1} = (\ve{I} - \ve{A})\ve{x}^k + \ve{b}
+  \]
+
+  \begin{itemize}
+  \item Define the iteration error
+  \end{itemize}
+
+  \[
+  \delta \ve{x}^k = \ve{x} - \ve{x}^k
+  \]
+  \[
+  \delta \ve{x}^{k+1} = (\ve{I} - \ve{A})\delta \ve{x}^k
+  \]
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Monte Carlo Synthetic-Acceleration}
 
+  \begin{itemize}
+  \item Subtract $(\ve{I} - \ve{A})\delta \ve{x}^{k+1}$
+  \end{itemize}
+
+  \[
+  \begin{split}
+    \ve{A}\delta \ve{x}^{k+1} &= (\ve{I} -
+    \ve{A})(\ve{x}^{k+1}-\ve{x}^{k}) \\ &= \ve{r}^{k+1}
+  \end{split}
+  \]
+
+  \begin{itemize}
+  \item The following converges in one iteration with exact inversion
+    of $\ve{A}$:
+  \end{itemize}
+
+  \[
+  \ve{x}^{k+1} = (\ve{I} - \ve{A})\ve{x}^k + \ve{b}
+  \]
+  \[
+  \ve{A} \delta \ve{x}^{k+1} = \ve{r}^{k+1}
+  \]
+  \[
+  \ve{x} = \ve{x}^{k+1} + \delta \ve{x}^{k+1}
+  \]
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Parallelization of Stochastic Methods}
+\begin{frame}{Monte Carlo Synthetic-Acceleration}
+
+  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
+    {MCSA Iteration}
+
+    \[
+    \ve{x}^{k+1/2} = (\ve{I} - \ve{A})\ve{x}^k + \ve{b}
+    \]
+    \[
+    \ve{r}^{k+1/2} = \ve{b} - \ve{A}\ve{x}^{k+1/2}
+    \]
+    \[
+    \hat{\ve{A}}\delta\ve{x}^{k+1/2} = \ve{r}^{k+1/2}
+    \]
+    \[
+    \ve{x}^{k+1} = \ve{x}^{k+1/2} + \delta \ve{x}^{k+1/2}
+    \]
+
+  \end{beamerboxesrounded}
+
+  \begin{itemize}
+  \item Adjoint Neumann-Ulam solver computes the correction
+  \item Decouples Monte Carlo error from solution error
+  \item Exponential convergence
+  \item Demonstrated by Evans and colleagues to be competitive with
+    Krylov methods
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Preconditioning Monte Carlo Methods}
+
+  \begin{itemize}
+    \item No symmetry requirements
+    \item Require $\rho(\ve{H}) < 1$
+    \item Choose Jacobi preconditioning at a minimum
+  \end{itemize}
+
+  \[
+  \ve{M} = diag(\ve{A})
+  \]
+  \[
+  \ve{M}^{-1}\ve{A}\ve{x} = \ve{M}^{-1}\ve{b}
+  \]
+  
+  \begin{itemize}
+  \item Yields a preconditioned MCSA iteration with no in-state
+    transitions
+  \end{itemize}
+
+  \[
+  \ve{x}^{k+1/2} = (\ve{I} - \ve{M}^{-1}\ve{A})\ve{x}^k + \ve{b}
+  \]
+  \[
+  \ve{r}^{k+1/2} = \ve{b} - \ve{M}^{-1}\ve{A}\ve{x}^{k+1/2}
+  \]
+  \[
+  \ve{M}^{-1}\ve{A}\delta\ve{x}^{k+1/2} = \ve{r}^{k+1/2}
+  \]
+  \[
+  \ve{x}^{k+1} = \ve{x}^{k+1/2} + \delta \ve{x}^{k+1/2}
+  \]
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Parallelization of Monte Methods}
+
+  \begin{itemize}
+  \item No literature observed for parallel Neumann-Ulam solvers
+  \item Numerous references for modern parallel Monte Carlo methods
+    in reactor physics
+  \item MCSA parallelism comes from parallel matrix/vector operations
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Domain Decomposition}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Multiple-Set Overlapping-Domain Decomposition}
+
+  \begin{figure}[htpb!]
+    \begin{center}
+      \scalebox{1.0}{
+        \input{msod_example.pdftex_t} }
+    \end{center}
+    \caption{\textbf{Overlapping domain example illustrating how domain
+        overlap can reduce communication costs.}}
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Domain-to-Domain Communication}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Load Balancing}
+
+  \begin{figure}[htpb!]
+    \begin{center}
+      \scalebox{1.0}{
+        \input{procassini_example.pdftex_t} }
+    \end{center}
+    \caption{\textbf{Example illustrating how domain decomposition can
+        create load balance issues in Monte Carlo.}}
+    \label{fig:procassini_example}
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Reproducability}
+
+  \begin{figure}[htpb!]
+    \begin{center}
+      \scalebox{1.0}{
+        \input{gentile_example.pdftex_t} }
+    \end{center}
+    \caption{\textbf{Gentile's example illustrating how domain
+        decomposition can create reproducibility issues in Monte Carlo.}}
+    \label{fig:gentile_example}
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Parallel Adjoint Method}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Parallel MCSA}
 
 \end{frame}
 
@@ -603,17 +968,47 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Monte Carlo Nonlinear Solver Preliminaries}
+\begin{frame}{Nonlinear Preliminaries}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Inexact Newton Methods}
+\begin{frame}{Nonlinear Preliminaries}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Newton-Krylov Methods}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Newton-Krylov Methods}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Matrix-Free Approximation}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Automatic Differentiation}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{The FANM Method}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Jacobian Storage vs. Subspace Storage}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Parallel FANM Method}
 
 \end{frame}
 
@@ -624,6 +1019,16 @@
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Experimental Framework}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Progress to Date}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Progress to Date}
 
 \end{frame}
 
