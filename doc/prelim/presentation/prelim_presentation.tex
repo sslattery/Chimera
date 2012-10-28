@@ -475,7 +475,7 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Parallel Projection Method Notes}
+\begin{frame}{Projection Method Notes}
 
 \begin{itemize}
   \item Global reduction operations observed not to impede scalability
@@ -489,17 +489,86 @@
       \item Matrix-vector multiply
       \item Weak scaling is better
     \end{itemize}
+   
 \end{itemize}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Monte Carlo Solution Methods for Linear Problems}
+\begin{frame}{Monte Carlo Solution Methods for Discrete Linear Systems}
+
+  \begin{itemize}
+    \item First proposed by J. Von Neumann and S.M. Ulam in the 1940's
+    \item Earliest published reference in 1950
+    \item General lack of published work
+    \item Modern work by Evans and others has yielded new applications
+    \item No indication of parallel methods in the literature
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Monte Carlo Linear Solver Preliminaries}
+
+  \begin{itemize}
+  \item Split the operator
+  \end{itemize}
+
+  \[
+  \ve{H} = \ve{I} - \ve{A}
+  \]
+
+  \[
+  \ve{x} = \ve{H} \ve{x} + \ve{b}
+  \]
+
+  \begin{itemize}
+  \item Generate the \textit{Neumann series}
+  \end{itemize}
+  
+  \[
+  \ve{A}^{-1} = (\ve{I}-\ve{H})^{-1} = \sum_{k=0}^{\infty} \ve{H}^k
+  \]
+
+  \begin{itemize}
+  \item Require $\rho(\ve{H}) < 1$ for convergence
+  \end{itemize}
+
+  \[
+  \ve{A}^{-1}\ve{b} = \sum_{k=0}^{\infty} \ve{H}^k\ve{b} = \ve{x}
+  \]
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Monte Carlo Linear Solver Preliminaries}
+
+  \begin{itemize}
+  \item Expand the Nuemann series
+  \end{itemize}
+
+  \[
+  x_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}h_{i,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}b_{i_k}
+  \]
+
+  \begin{itemize}
+  \item Define a sequence of state transitions
+  \end{itemize}
+  
+  \[
+  \nu = i \rightarrow i_1 \rightarrow \cdots \rightarrow i_{k-1}
+  \rightarrow i_{k}
+  \]
+
+  \begin{itemize}
+  \item Define the \textit{Neumann-Ulam decomposition}\footnote{The
+    Hadamard product $\ve{A} = \ve{B} \circ \ve{C}$ is defined
+    element-wise as $a_{ij} = b_{ij} c_{ij}$.}
+  \end{itemize}
+
+  \[
+  \ve{H} = \ve{P} \circ \ve{W}
+  \]
 
 \end{frame}
 
