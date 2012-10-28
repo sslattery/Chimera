@@ -9,6 +9,7 @@
 \usepackage{amsthm} \usepackage{amsmath} \usepackage{tmadd,tmath}
 \usepackage[mathcal]{euscript} \usepackage{color}
 \usepackage{textcomp}
+\usepackage{algorithm,algorithmic}
 \definecolor{listinggray}{gray}{0.9}
 \definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
 \lstset{
@@ -391,12 +392,104 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{GMRES}
+\begin{frame}[fragile]{GMRES}
+
+\begin{algorithm}[H]
+  \begin{algorithmic}[1]
+    \STATE $\ve{r}_0 := \ve{b}-\ve{A}\ve{x}_0$
+    \STATE $\beta := ||\ve{r}_0||_2$
+    \STATE $\ve{v}_1 := \ve{r}_0 / \beta$
+    \COMMENT{Create the orthonormal basis for the Krylov subspace}
+    \FOR{$j = 1, 2, \cdots, m$}
+    \STATE $h_{ij} \leftarrow \langle w_j,v_j \rangle$
+    \STATE $w_j \leftarrow w_j - h_{ij}v_i$
+    \ENDFOR
+    \STATE $h_{j+1,j} \leftarrow ||w_j||_2$
+    \STATE $v_{j+1} \leftarrow w_j / h_{j+1,j}$
+    \COMMENT{Apply the orthogonality constraints}
+    \STATE $\ve{y}_m \leftarrow argmin_y ||\beta \ve{e}_1 - \ve{H}_m\
+    \ve{y}||_2 $
+    \STATE $\ve{x}_m \leftarrow \ve{x}_0 + \ve{V_m} \ve{y}_m$
+  \end{algorithmic}
+  \caption{GMRES Iteration}
+\end{algorithm}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Parallel Projection Methods}
+  
+  \begin{itemize}
+  \item Parallel vector update
+  \end{itemize}
+  \[
+  \ve{y}[n] \leftarrow \ve{y}[n] + a * \ve{x}[n],\ \forall n \in [1,N_g]
+  \]
+  \[
+  \ve{y}[n] \leftarrow \ve{y}[n] + a * \ve{x}[n],\ \forall n \in [1,N_l]
+  \]
+  
+  \begin{itemize}
+  \item Parallel dot product
+  \end{itemize}
+  \[
+  d_l = \ve{y}_l \cdot \ve{x}_l,\ d_g = \sum_p d_l
+  \]
+
+  \begin{itemize}
+  \item Parallel vector norm
+  \end{itemize}
+  \[
+  ||x||_{\infty,l} = \max_n \ve{y}[n],\ \forall n \in [1,N_l]
+  \]
+  \[
+  ||x||_{\infty,g} = \max_p ||x||_{\infty,l}
+  \]
+  
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Parallel Matrix-Vector Multiplication}
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{0.75}{
+      \input{partitioned_matrix.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Matrix-vector multiply $\ve{A}\ve{x}=\ve{y}$
+      operation on 3 processors.}
+  \label{fig:partitioned_matvec_multiply} }
+\end{figure}
+
+\pause
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{0.75}{
+      \input{matvec_proc_1.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Components of multiply operation owned by process
+      1.} }
+  \label{fig:matvec_proc_1}
+\end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Parallel Projection Method Notes}
+
+\begin{itemize}
+  \item Global reduction operations observed not to impede scalability
+    \begin{itemize}
+    \item Dot product
+    \item Vector norms
+    \end{itemize}
+  \item Nearest neighbor computations have poor algorithmic strong
+    scaling
+    \begin{itemize}
+      \item Matrix-vector multiply
+      \item Weak scaling is better
+    \end{itemize}
+\end{itemize}
 
 \end{frame}
 

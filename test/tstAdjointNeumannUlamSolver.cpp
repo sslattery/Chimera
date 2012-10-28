@@ -53,7 +53,7 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     int problem_size = N*N;
     double dx = 0.01;
     double dy = 0.01;
-    double dt = 0.1;
+    double dt = 0.5;
     double alpha = 0.01;
     Teuchos::RCP<const Tpetra::Map<int> > row_map = 
 	Tpetra::createUniformContigMap<int,int>( problem_size, comm );
@@ -223,7 +223,7 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     // Check the solution vector.
     Teuchos::ArrayRCP<const double> X_view = 
 	linear_problem->getLHS()->get1dView();
-//    std::cout << X_view() << std::endl;
+    std::cout << X_view() << std::endl;
 }
 
 //---------------------------------------------------------------------------//

@@ -139,7 +139,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    // Get the current history state.
 	    global_state = bank.top().globalState();
 	    local_state = state_map->getLocalElement( global_state );
-
+	    
 	    // Update LHS.
 	    lhs_view[local_state] += bank.top().weight();
 
