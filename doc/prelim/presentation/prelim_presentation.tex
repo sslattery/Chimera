@@ -402,11 +402,14 @@
     \STATE $\ve{v}_1 := \ve{r}_0 / \beta$
     \COMMENT{Create the orthonormal basis for the Krylov subspace}
     \FOR{$j = 1, 2, \cdots, m$}
-    \STATE $h_{ij} \leftarrow \langle w_j,v_j \rangle$
-    \STATE $w_j \leftarrow w_j - h_{ij}v_i$
+    \STATE $\ve{w}_j := \ve{A}\ve{v}_j$
+    \FOR{$i = 1, 2, \cdots, j$}
+    \STATE $h_{ij} \leftarrow \langle \ve{w}_j,\ve{v}_j \rangle$
+    \STATE $\ve{w}_j \leftarrow \ve{w}_j - h_{ij}\ve{v}_i$
     \ENDFOR
-    \STATE $h_{j+1,j} \leftarrow ||w_j||_2$
-    \STATE $v_{j+1} \leftarrow w_j / h_{j+1,j}$
+    \STATE $h_{j+1,j} \leftarrow ||\ve{w}_j||_2$
+    \STATE $\ve{v}_{j+1} \leftarrow \ve{w}_j / h_{j+1,j}$
+    \ENDFOR
     \COMMENT{Apply the orthogonality constraints}
     \STATE $\ve{y}_m \leftarrow argmin_y ||\beta \ve{e}_1 - \ve{H}_m\
     \ve{y}||_2 $
@@ -496,14 +499,13 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Monte Carlo Solution Methods for Discrete Linear Systems}
+\begin{frame}{Monte Carlo Methods for Discrete Linear Systems}
 
   \begin{itemize}
     \item First proposed by J. Von Neumann and S.M. Ulam in the 1940's
     \item Earliest published reference in 1950
     \item General lack of published work
     \item Modern work by Evans and others has yielded new applications
-    \item No indication of parallel methods in the literature
   \end{itemize}
 \end{frame}
 
@@ -633,6 +635,15 @@
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Direct Method: Evolution of a Solution}
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=4in]{direct_1.png}
+    \end{center}
+    \caption{\textbf{Direct solution to Poisson Equation.} \textit{1
+        history per state, 2500 total histories. 0.785 seconds CPU
+        time} }
+  \end{figure}
 
 \end{frame}
 
@@ -887,7 +898,85 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Parallelization of Monte Methods}
+\begin{frame}{Direct vs. Adjoint Analysis}
+
+  \begin{itemize}
+  \item Analysis needed to select Monte Carlo method
+  \item Time-dependent 2-dimensional Poisson equation
+  \item Spectral radius fixed
+  \item Sparsity varied with 2 Laplacian stencils
+  \end{itemize}
+
+  \[
+  \nabla^2_5 = \frac{1}{\Delta^2}[u_{i-1,j} + u_{i+1,j} + u_{i,j-1} +
+    u_{i,j+1} - 4 u_{i,j}]
+  \]
+  \[
+  \begin{split}
+    \nabla^2_9 = \frac{1}{6\Delta^2}[4 u_{i-1,j} + 4 u_{i+1,j} + 4
+      u_{i,j-1} + 4 u_{i,j+1} + u_{i-1,j-1}\\ + u_{i-1,j+1} +
+      u_{i+1,j-1} + u_{i+1,j+1} - 20 u_{i,j}]
+  \end{split}
+  \]
+
+  \begin{itemize}
+  \item Implicit Euler time differencing
+  \end{itemize}
+
+  \[
+  \ve{A} \ve{u}^{n+1} = \ve{u}^n
+  \]
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Direct vs. Adjoint Analysis}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+      \begin{figure}[h!]
+        \centering
+        \includegraphics[width=2.5in,clip]{Adjoint_Direct_CPU_Time.pdf}
+        \caption{\textbf{CPU Time (s) to converge vs. Problem Size ($N$ for
+            an $N \times N$ square mesh).} }
+      \end{figure}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{figure}[h!]
+        \centering
+        \includegraphics[width=2.5in,clip]{Adjoint_Direct_Iterations.pdf}
+        \caption{\textbf{Iterations to converge vs. Problem Size ($N$ for an
+            $N \times N$ square mesh).} }
+      \end{figure}
+    \end{column}
+
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Direct vs. Adjoint Analysis}
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=2.5in,clip]{Adjoint_Direct_Convergence.pdf}
+    \caption{\textbf{Infinity norm of the solution residual
+        vs. iteration number for a problem of fixed size.} }
+  \end{figure}
+
+  \begin{itemize}
+  \item CPU time dominating factor in method selection
+  \item Significant speedup with adjoint method
+  \item Does not affect convergence behavior
+  \item Use adjoint with MCSA and Sequential Monte Carlo
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Parallelization of Monte Carlo Methods}
 
   \begin{itemize}
   \item No literature observed for parallel Neumann-Ulam solvers
