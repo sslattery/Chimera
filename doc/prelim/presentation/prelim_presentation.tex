@@ -1117,6 +1117,11 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
+\begin{frame}{Generalization of MCSA for Linear Problems}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
 \begin{frame}{Parallelization of Monte Carlo Methods}
 
   \begin{itemize}
@@ -1189,6 +1194,32 @@
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Parallel MCSA}
+
+  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
+    {MCSA Iteration}
+
+    \[
+    \ve{x}^{k+1/2} = (\ve{I} - \ve{A})\ve{x}^k + \ve{b}
+    \]
+    \[
+    \ve{r}^{k+1/2} = \ve{b} - \ve{A}\ve{x}^{k+1/2}
+    \]
+    \[
+    \hat{\ve{A}}\delta\ve{x}^{k+1/2} = \ve{r}^{k+1/2}
+    \]
+    \[
+    \ve{x}^{k+1} = \ve{x}^{k+1/2} + \delta \ve{x}^{k+1/2}
+    \]
+
+  \end{beamerboxesrounded}
+
+  \begin{itemize}
+  \item Richardson iteration and residual computation require parallel
+    matrix-vector multiply and parallel vector update
+  \item This work will generate a parallel adjoint Neumann-Ulam solver 
+  \item Application of correction requires parallel vector update
+  \item Convergence checks through parallel norm computation
+  \end{itemize}
 
 \end{frame}
 
@@ -1446,30 +1477,45 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Parallel FANM Method}
 
+  \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+      \STATE $k := 0$
+      \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon ||\ve{F}(\ve{u}^{0})||$}
+      \STATE $\ve{J}(\ve{u}^{k}) \leftarrow AD(\ve{F}(\ve{u}^k))$
+      \COMMENT{Automatic differentation}
+      \STATE $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
+      \COMMENT{Solve for the Newton correction with MCSA}
+      \STATE $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$
+      \STATE $k \leftarrow k+1$
+      \ENDWHILE
+    \end{algorithmic}
+    \caption{FANM}
+  \end{algorithm}
+
+  \begin{itemize}
+  \item Modern FAD packages are parallelized using element-level assembly
+  \item This work will generate a parallel MCSA solver
+  \item Application of the Newton correction requires a parallel vector
+    update
+  \item Convergence checks through parallel norm comptutation
+  \end{itemize}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Research Proposal}
 
+  \begin{itemize}
+  \item Experimental framework
+  \item Methods verification
+  \item Numerical experiments
+  \item Challenge problem
+  \end{itemize}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Experimental Framework}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Progress to Date}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Progress to Date}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Progress to Date}
 
 \end{frame}
 
