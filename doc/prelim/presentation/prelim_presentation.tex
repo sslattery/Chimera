@@ -1200,10 +1200,71 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Nonlinear Preliminaries}
 
+  \begin{itemize}
+  \item We seek solutions of the general nonlinear problem
+  \end{itemize}
+
+  \[
+  \ve{F}(\ve{u}) = \ve{0}
+  \]
+  \[
+  \ve{u} \in \mathbb{R}^n,\ \ve{F}:\mathbb{R}^N \rightarrow
+  \mathbb{R}^N
+  \]
+
+  \begin{itemize}
+  \item We interpret the exact solution $\ve{u}$ to be the roots of
+    $\ve{F}(\ve{u})$
+  \item Taylor expand the residuals at the $k+1$ iterate about the $k$
+    iterate
+  \end{itemize}
+
+  \[
+  \ve{F}(\ve{u}^{k+1}) = \ve{F}(\ve{u}^{k}) +
+  \ve{F}'(\ve{u}^{k})(\ve{u}^{k+1}-\ve{u}^{k}) +
+  \frac{\ve{F}''(\ve{u}^{k})}{2}(\ve{u}^{k+1}-\ve{u}^{k})^2 + \cdots
+  \]
+
+  \begin{itemize}
+  \item Assert $\ve{u}^{k+1}$ is the exact solution
+  \end{itemize}
+
+  \[
+  -\ve{F}(\ve{u}^{k}) = \ve{F}'(\ve{u}^{k})(\ve{u}^{k+1}-\ve{u}^{k})
+  \]
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Nonlinear Preliminaries}
+
+  \begin{itemize}
+  \item $\ve{F}'(\ve{u}^{k})$ is the \textit{Jacobian}
+    $\ve{J}(\ve{u})$
+  \end{itemize}
+
+  \[
+  J_{ij} = \frac{\partial F_i(\ve{u})}{\partial u_j}
+  \]
+
+  \begin{itemize}
+  \item $(\ve{u}^{k+1}-\ve{u}^{k})$ is the solution update from the
+    $k$ iterate to the $k+1$ iterate
+  \end{itemize}
+
+  \[
+  \delta \ve{u}^k = \ve{u}^{k+1}-\ve{u}^{k}
+  \]
+
+  \begin{itemize}
+  \item Form Newton's method
+  \end{itemize}
+  \[
+  \ve{J}(\ve{u}) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})
+  \]
+  \[
+  \ve{u}^{k+1} = \ve{u}^k + \delta \ve{u}^k
+  \]
 
 \end{frame}
 
