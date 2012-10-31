@@ -57,26 +57,26 @@
 \begin{frame}{Introduction}
 
   \begin{itemize}
-    \item Predictive modeling and simulation enhances engineering
-      capability
-    \item Modern work focused on this task leverages multiple physics
-      simulation (CASL, NEAMS)
-    \item New hardware drives algorithm development (petascale and
-      exascale)
-    \item Monte Carlo methods have the potential to provide great
-      improvements that permit finer simulations and better mapping to
-      future hardware
-    \item A set of massively parallel Monte Carlo methods is proposed
-      to advance multiple physics simulation on contemporary and
-      future leadership class machines
+  \item Predictive modeling and simulation enhances engineering
+    capability
+  \item Modern work focused on this task leverages multiple physics
+    simulation (CASL, NEAMS)
+  \item New hardware drives algorithm development (petascale and
+    exascale)
+  \item Monte Carlo methods have the potential to provide great
+    improvements that permit finer simulations and better mapping to
+    future hardware
+  \item A set of massively parallel Monte Carlo methods is proposed to
+    advance multiple physics simulation on contemporary and future
+    leadership class machines
   \end{itemize}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Physics-Based Motivation}
- 
-  \pause 
+  
+  \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Predictive nuclear reactor analysis enables...}
     \begin{itemize}
@@ -87,9 +87,9 @@
     \end{itemize}
   \end{beamerboxesrounded}
 
-  \pause 
+  \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
-  {Multiple physics simulations are complicated...}
+    {Multiple physics simulations are complicated...}
     \begin{itemize}
     \item Neutronics, thermal hydraulics, computational fluid
       dynamics, structural mechanics, and many other physics
@@ -162,20 +162,19 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Research Outline}
   \begin{itemize}
-    \item Parallelization of Monte Carlo methods for discrete systems
-      \begin{itemize}
-      \item Parallel strategies taken from modern reactor physics
-        methods
-      \item Research is required to explore varying parallel
-        strategies
-      \item Scalability is of concern
-      \end{itemize}
-    \item Development of a nonlinear solver leveraging Monte Carlo
-      \begin{itemize}
-        \item Application to nonlinear problems of interest
-        \item Memory benefits
-        \item Performance benefits
-      \end{itemize}
+  \item Parallelization of Monte Carlo methods for discrete systems
+    \begin{itemize}
+    \item Parallel strategies taken from modern reactor physics
+      methods
+    \item Research is required to explore varying parallel strategies
+    \item Scalability is of concern
+    \end{itemize}
+  \item Development of a nonlinear solver leveraging Monte Carlo
+    \begin{itemize}
+    \item Application to nonlinear problems of interest
+    \item Memory benefits
+    \item Performance benefits
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -206,8 +205,8 @@
 
   \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
-    {A Requirement}
-    Assert that $\ve{A}$ is \textit{nonsingular}. The solution is then:
+    {A Requirement} Assert that $\ve{A}$ is \textit{nonsingular}. The
+    solution is then:
     \[
     \ve{x} = \ve{A}^{-1}\ve{b}\:
     \]
@@ -246,7 +245,7 @@
 \begin{frame}{Stationary Methods Convergence}
 
   \begin{itemize}
-  \item The qualities of the iteration matrix dictate convergence 
+  \item The qualities of the iteration matrix dictate convergence
   \item Define $\ve{e}^k = \ve{x}^k-\ve{x}$ as the error at the
     $k^{th}$ iterate
   \end{itemize}
@@ -274,16 +273,15 @@
 \begin{frame}{Projection Methods}
 
   \begin{itemize}
-    \item Powerful class of iterative methods
-    \item Provides theory that encapsulates most other iterative
-      methods 
-    \item Leveraged in many modern physics codes at the petascale
+  \item Powerful class of iterative methods
+  \item Provides theory that encapsulates most other iterative methods
+  \item Leveraged in many modern physics codes at the petascale
   \end{itemize}
 
   \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
-    {Search Subspace $\mathcal{K}$} 
-    Extract the solution from the search subspace:
+    {Search Subspace $\mathcal{K}$} Extract the solution from the
+    search subspace:
     \[
     \tilde{\ve{x}} = \ve{x}_0 +
     \boldsymbol{\delta},\ \boldsymbol{\delta} \in \mathcal{K}\:
@@ -292,9 +290,9 @@
 
   \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
-    {Constraint Subspace $\mathcal{L}$} 
-    Constrain the extraction with the constraint subspace by asserting
-    orthogonality with the residual:
+    {Constraint Subspace $\mathcal{L}$} Constrain the extraction with
+    the constraint subspace by asserting orthogonality with the
+    residual:
     \[
     \langle \tilde{\ve{r}},\ve{w} \rangle = 0,\ \forall \ve{w} \in
     \mathcal{L}\:
@@ -312,8 +310,7 @@
 
   \begin{figure}[htpb!]
     \begin{center}
-      \scalebox{1.25}{
-        \input{orthogonal_residual.pdftex_t} }
+      \scalebox{1.25}{ \input{orthogonal_residual.pdftex_t} }
     \end{center}
     \caption{\textbf{Orthogonality constraint of the new residual with
         respect to $\mathcal{L}$.} }
@@ -342,8 +339,7 @@
   \end{itemize}
 
   \[
-  \boldsymbol{\delta} = \ve{V}\ve{y},\ \forall \ve{y} \in
-  \mathbb{R}^N
+  \boldsymbol{\delta} = \ve{V}\ve{y},\ \forall \ve{y} \in \mathbb{R}^N
   \]
 
   \[
@@ -353,18 +349,18 @@
   \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Projection Method Iteration}
-  \[
-  \ve{r}^k = \ve{b} - \ve{A}\ve{x}^k
-  \]
-  \[
-  \ve{y}^k = (\ve{W}^T\ve{A}\ve{V})^{-1}\ve{W}^T\ve{r}^k
-  \]
-  \[
-  \ve{x}^{k+1} = \ve{x}^k + \ve{V}\ve{y}^k\:
-  \]
-  \[
-  Update\ \ve{V}\ and\ \ve{W}
-  \]
+    \[
+    \ve{r}^k = \ve{b} - \ve{A}\ve{x}^k
+    \]
+    \[
+    \ve{y}^k = (\ve{W}^T\ve{A}\ve{V})^{-1}\ve{W}^T\ve{r}^k
+    \]
+    \[
+    \ve{x}^{k+1} = \ve{x}^k + \ve{V}\ve{y}^k\:
+    \]
+    \[
+    Update\ \ve{V}\ and\ \ve{W}
+    \]
   \end{beamerboxesrounded}
 
 \end{frame}
@@ -386,8 +382,8 @@
   \item Must generate an orthonormal basis $\ve{V}_m \in \mathbb{R}^{N
     \times m}$ for $\mathcal{K}_m(\ve{A},\ve{r}_0)$
   \item $\ve{W}_m = \ve{A}\ve{V}_m$
-  \item Typically choose a Gram-Schmidt-like procedure such as
-    Arnoldi or Lanzcos
+  \item Typically choose a Gram-Schmidt-like procedure such as Arnoldi
+    or Lanzcos
   \end{itemize}
 
 \end{frame}
@@ -395,28 +391,23 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}[fragile]{GMRES}
 
-\begin{algorithm}[H]
-  \begin{algorithmic}[1]
-    \STATE $\ve{r}_0 := \ve{b}-\ve{A}\ve{x}_0$
-    \STATE $\beta := ||\ve{r}_0||_2$
-    \STATE $\ve{v}_1 := \ve{r}_0 / \beta$
-    \COMMENT{Create the orthonormal basis for the Krylov subspace}
-    \FOR{$j = 1, 2, \cdots, m$}
-    \STATE $\ve{w}_j := \ve{A}\ve{v}_j$
-    \FOR{$i = 1, 2, \cdots, j$}
-    \STATE $h_{ij} \leftarrow \langle \ve{w}_j,\ve{v}_j \rangle$
-    \STATE $\ve{w}_j \leftarrow \ve{w}_j - h_{ij}\ve{v}_i$
-    \ENDFOR
-    \STATE $h_{j+1,j} \leftarrow ||\ve{w}_j||_2$
-    \STATE $\ve{v}_{j+1} \leftarrow \ve{w}_j / h_{j+1,j}$
-    \ENDFOR
-    \COMMENT{Apply the orthogonality constraints}
-    \STATE $\ve{y}_m \leftarrow argmin_y ||\beta \ve{e}_1 - \ve{H}_m\
-    \ve{y}||_2 $
-    \STATE $\ve{x}_m \leftarrow \ve{x}_0 + \ve{V_m} \ve{y}_m$
-  \end{algorithmic}
-  \caption{GMRES Iteration}
-\end{algorithm}
+  \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+      \STATE $\ve{r}_0 := \ve{b}-\ve{A}\ve{x}_0$ \STATE $\beta :=
+      ||\ve{r}_0||_2$ \STATE $\ve{v}_1 := \ve{r}_0 / \beta$
+      \COMMENT{Create the orthonormal basis for the Krylov subspace}
+      \FOR{$j = 1, 2, \cdots, m$} \STATE $\ve{w}_j := \ve{A}\ve{v}_j$
+      \FOR{$i = 1, 2, \cdots, j$} \STATE $h_{ij} \leftarrow \langle
+      \ve{w}_j,\ve{v}_j \rangle$ \STATE $\ve{w}_j \leftarrow \ve{w}_j
+      - h_{ij}\ve{v}_i$ \ENDFOR \STATE $h_{j+1,j} \leftarrow
+      ||\ve{w}_j||_2$ \STATE $\ve{v}_{j+1} \leftarrow \ve{w}_j /
+      h_{j+1,j}$ \ENDFOR \COMMENT{Apply the orthogonality constraints}
+      \STATE $\ve{y}_m \leftarrow argmin_y ||\beta \ve{e}_1 -
+      \ve{H}_m\ \ve{y}||_2 $ \STATE $\ve{x}_m \leftarrow \ve{x}_0 +
+      \ve{V_m} \ve{y}_m$
+    \end{algorithmic}
+    \caption{GMRES Iteration}
+  \end{algorithm}
 
 \end{frame}
 
@@ -427,10 +418,12 @@
   \item Parallel vector update
   \end{itemize}
   \[
-  \ve{y}[n] \leftarrow \ve{y}[n] + a * \ve{x}[n],\ \forall n \in [1,N_g]
+  \ve{y}[n] \leftarrow \ve{y}[n] + a * \ve{x}[n],\ \forall n \in
+     [1,N_g]
   \]
   \[
-  \ve{y}[n] \leftarrow \ve{y}[n] + a * \ve{x}[n],\ \forall n \in [1,N_l]
+  \ve{y}[n] \leftarrow \ve{y}[n] + a * \ve{x}[n],\ \forall n \in
+     [1,N_l]
   \]
   
   \begin{itemize}
@@ -455,33 +448,32 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Parallel Matrix-Vector Multiplication}
 
-\begin{figure}[htpb!]
-  \begin{center}
-    \scalebox{0.75}{
-      \input{partitioned_matrix.pdftex_t} }
-  \end{center}
-  \caption{\textbf{Matrix-vector multiply $\ve{A}\ve{x}=\ve{y}$
-      operation on 3 processors.}
-  \label{fig:partitioned_matvec_multiply} }
-\end{figure}
+  \begin{figure}[htpb!]
+    \begin{center}
+      \scalebox{0.75}{ \input{partitioned_matrix.pdftex_t} }
+    \end{center}
+    \caption{\textbf{Matrix-vector multiply $\ve{A}\ve{x}=\ve{y}$
+        operation on 3 processors.}
+      \label{fig:partitioned_matvec_multiply} }
+  \end{figure}
 
-\pause
-\begin{figure}[htpb!]
-  \begin{center}
-    \scalebox{0.75}{
-      \input{matvec_proc_1.pdftex_t} }
-  \end{center}
-  \caption{\textbf{Components of multiply operation owned by process
-      1.} }
-  \label{fig:matvec_proc_1}
-\end{figure}
+  \pause
+  \begin{figure}[htpb!]
+    \begin{center}
+      \scalebox{0.75}{ \input{matvec_proc_1.pdftex_t} }
+    \end{center}
+    \caption{\textbf{Components of multiply operation owned by process
+        1.} }
+    \label{fig:matvec_proc_1}
+  \end{figure}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Projection Method Notes}
+\begin{frame}{Projection Methods Summary}
 
-\begin{itemize}
+  \begin{itemize}
+  \item Used in practice everywhere
   \item Global reduction operations observed not to impede scalability
     \begin{itemize}
     \item Dot product
@@ -490,11 +482,10 @@
   \item Nearest neighbor computations have poor algorithmic strong
     scaling
     \begin{itemize}
-      \item Matrix-vector multiply
-      \item Weak scaling is better
+    \item Matrix-vector multiply
+    \item Weak scaling is better
     \end{itemize}
-   
-\end{itemize}
+  \end{itemize}
 
 \end{frame}
 
@@ -502,10 +493,10 @@
 \begin{frame}{Monte Carlo Methods for Discrete Linear Systems}
 
   \begin{itemize}
-    \item First proposed by J. Von Neumann and S.M. Ulam in the 1940's
-    \item Earliest published reference in 1950
-    \item General lack of published work
-    \item Modern work by Evans and others has yielded new applications
+  \item First proposed by J. Von Neumann and S.M. Ulam in the 1940's
+  \item Earliest published reference in 1950
+  \item General lack of published work
+  \item Modern work by Evans and others has yielded new applications
   \end{itemize}
 \end{frame}
 
@@ -579,7 +570,7 @@
 \begin{frame}{Direct Method}
 
   \begin{itemize}
-    \item Compute row-normalized transition probabilities and weights
+  \item Compute row-normalized transition probabilities and weights
   \end{itemize}
 
   \[
@@ -588,7 +579,7 @@
   \]
 
   \begin{itemize}
-    \item Generate an expectation value for the solution
+  \item Generate an expectation value for the solution
   \end{itemize}
 
   \[
@@ -603,7 +594,8 @@
 \begin{frame}{Direct Method}
 
   \begin{itemize}
-    \item Compute the probability of a particular random walk permutation
+  \item Compute the probability of a particular random walk
+    permutation
   \end{itemize}
 
   \[
@@ -1006,9 +998,9 @@
 \begin{frame}{Preconditioning Monte Carlo Methods}
 
   \begin{itemize}
-    \item No symmetry requirements
-    \item Require $\rho(\ve{H}) < 1$
-    \item Choose Jacobi preconditioning at a minimum
+  \item No symmetry requirements
+  \item Require $\rho(\ve{H}) < 1$
+  \item Choose Jacobi preconditioning at a minimum
   \end{itemize}
 
   \[
@@ -1126,8 +1118,8 @@
 
   \begin{itemize}
   \item No literature observed for parallel Neumann-Ulam solvers
-  \item Numerous references for modern parallel Monte Carlo methods
-    in reactor physics
+  \item Numerous references for modern parallel Monte Carlo methods in
+    reactor physics
   \item MCSA parallelism comes from parallel matrix/vector operations
   \end{itemize}
 
@@ -1143,11 +1135,10 @@
 
   \begin{figure}[htpb!]
     \begin{center}
-      \scalebox{1.0}{
-        \input{msod_example.pdftex_t} }
+      \scalebox{1.0}{ \input{msod_example.pdftex_t} }
     \end{center}
-    \caption{\textbf{Overlapping domain example illustrating how domain
-        overlap can reduce communication costs.}}
+    \caption{\textbf{Overlapping domain example illustrating how
+        domain overlap can reduce communication costs.}}
   \end{figure}
 
 \end{frame}
@@ -1162,8 +1153,7 @@
 
   \begin{figure}[htpb!]
     \begin{center}
-      \scalebox{1.0}{
-        \input{procassini_example.pdftex_t} }
+      \scalebox{1.0}{ \input{procassini_example.pdftex_t} }
     \end{center}
     \caption{\textbf{Example illustrating how domain decomposition can
         create load balance issues in Monte Carlo.}}
@@ -1177,11 +1167,11 @@
 
   \begin{figure}[htpb!]
     \begin{center}
-      \scalebox{1.0}{
-        \input{gentile_example.pdftex_t} }
+      \scalebox{1.0}{ \input{gentile_example.pdftex_t} }
     \end{center}
     \caption{\textbf{Gentile's example illustrating how domain
-        decomposition can create reproducibility issues in Monte Carlo.}}
+        decomposition can create reproducibility issues in Monte
+        Carlo.}}
     \label{fig:gentile_example}
   \end{figure}
 
@@ -1216,7 +1206,7 @@
   \begin{itemize}
   \item Richardson iteration and residual computation require parallel
     matrix-vector multiply and parallel vector update
-  \item This work will generate a parallel adjoint Neumann-Ulam solver 
+  \item This work will generate a parallel adjoint Neumann-Ulam solver
   \item Application of correction requires parallel vector update
   \item Convergence checks through parallel norm computation
   \end{itemize}
@@ -1309,25 +1299,25 @@
   \[
   ||\ve{J}(\ve{u}^k)\delta \ve{u}^k + \ve{F}(\ve{u}^k)|| \leq \eta^k
   ||\ve{F}(\ve{u}^k)||,\ \eta^k \in [0,1)
-  \]
+    \]
 
-  \begin{itemize}
-  \item Choose a Krylov method to solve for the Newton correction
-  \item GMRES with a long recurrence relation obeserved as more robust
-  \item Generates a monotonically decreasing residual from maintaining
-    the optimization and orthogonality conditions
-  \end{itemize}
-
-  \pause
-  Where does the Jacobian come from?
-  \pause
-  \begin{itemize}
-  \item The Jacobian can come from hand-coded derivatives
     \begin{itemize}
-    \item Tedious and error prone
-    \item Repeated for each equation set and hard to do for multiphysics
+    \item Choose a Krylov method to solve for the Newton correction
+    \item GMRES with a long recurrence relation obeserved as more
+      robust
+    \item Generates a monotonically decreasing residual from
+      maintaining the optimization and orthogonality conditions
     \end{itemize}
-  \end{itemize} 
+
+    \pause Where does the Jacobian come from?  \pause
+    \begin{itemize}
+    \item The Jacobian can come from hand-coded derivatives
+      \begin{itemize}
+      \item Tedious and error prone
+      \item Repeated for each equation set and hard to do for
+        multiphysics
+      \end{itemize}
+    \end{itemize} 
 
 \end{frame}
 
@@ -1400,15 +1390,13 @@
   \pause
   \begin{algorithm}[H]
     \begin{algorithmic}[1]
-      \STATE $k := 0$
-      \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon ||\ve{F}(\ve{u}^{0})||$}
-      \STATE $\ve{J}(\ve{u}^{k}) \leftarrow AD(\ve{F}(\ve{u}^k))$
-      \COMMENT{Automatic differentation}
-      \STATE $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
-      \COMMENT{Solve for the Newton correction with MCSA}
-      \STATE $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$
-      \STATE $k \leftarrow k+1$
-      \ENDWHILE
+      \STATE $k := 0$ \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon
+        ||\ve{F}(\ve{u}^{0})||$} \STATE $\ve{J}(\ve{u}^{k}) \leftarrow
+      AD(\ve{F}(\ve{u}^k))$ \COMMENT{Automatic differentation} \STATE
+      $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
+      \COMMENT{Solve for the Newton correction with MCSA} \STATE
+      $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$ \STATE $k
+      \leftarrow k+1$ \ENDWHILE
     \end{algorithmic}
     \caption{FANM}
   \end{algorithm}
@@ -1468,7 +1456,8 @@
     {If we need 10 Krylov iterations to converge...}
     \begin{itemize}
     \item 66 elements required for subspace vectors
-    \item 72 total elements required for Jacobian and probability matrix
+    \item 72 total elements required for Jacobian and probability
+      matrix
     \end{itemize}
   \end{beamerboxesrounded}
 
@@ -1479,24 +1468,23 @@
 
   \begin{algorithm}[H]
     \begin{algorithmic}[1]
-      \STATE $k := 0$
-      \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon ||\ve{F}(\ve{u}^{0})||$}
-      \STATE $\ve{J}(\ve{u}^{k}) \leftarrow AD(\ve{F}(\ve{u}^k))$
-      \COMMENT{Automatic differentation}
-      \STATE $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
-      \COMMENT{Solve for the Newton correction with MCSA}
-      \STATE $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$
-      \STATE $k \leftarrow k+1$
-      \ENDWHILE
+      \STATE $k := 0$ \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon
+        ||\ve{F}(\ve{u}^{0})||$} \STATE $\ve{J}(\ve{u}^{k}) \leftarrow
+      AD(\ve{F}(\ve{u}^k))$ \COMMENT{Automatic differentation} \STATE
+      $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
+      \COMMENT{Solve for the Newton correction with MCSA} \STATE
+      $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$ \STATE $k
+      \leftarrow k+1$ \ENDWHILE
     \end{algorithmic}
     \caption{FANM}
   \end{algorithm}
 
   \begin{itemize}
-  \item Modern FAD packages are parallelized using element-level assembly
+  \item Modern FAD packages are parallelized using element-level
+    assembly
   \item This work will generate a parallel MCSA solver
-  \item Application of the Newton correction requires a parallel vector
-    update
+  \item Application of the Newton correction requires a parallel
+    vector update
   \item Convergence checks through parallel norm comptutation
   \end{itemize}
 
@@ -1517,15 +1505,95 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Experimental Framework}
 
+  \begin{itemize}
+  \item Need a framework to generate linear and nonlinear systems in
+    parallel
+    \begin{itemize}
+    \item Linear algebra data structures
+    \item Parallel communication framework
+    \item Mesh generation and partitioning
+    \item Automatic differentiation and more...
+    \end{itemize}
+  \item Choose the finite element method to leverage a finite element
+    assembly engine
+  \end{itemize}
+
+  \[
+  \ve{A}(\ve{u}) = \ve{0},\ \forall \ve{u} \in \Omega
+  \]
+  \[
+  \ve{B}(\ve{u}) = \ve{0},\ \forall \ve{u} \in \Gamma
+  \]
+  \[
+  \int_{\Omega} \ve{v}^T \ve{A}(\ve{u}) d\Omega + \int_{\Gamma}
+  \bar{\ve{v}}^T \ve{B}(\ve{u}) d\Gamma = \ve{0}
+  \]
+  \[
+  \int_{\Omega} \ve{C}(\ve{v}^T) \ve{D}(\ve{u}) d\Omega +
+  \int_{\Gamma} \ve{E}(\bar{\ve{v}}^T) \ve{F}(\ve{u}) d\Gamma = \ve{0}
+  \]
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Monte Carlo Methods Verification}
 
+  \begin{itemize}
+  \item Analytic solution to the heat equation for the linear methods
+  \item Sequence of Navier-Stokes benchmarks for the nonlinear methods
+    \begin{itemize}
+    \item Thermal convection cavity problem (De Vahl Davis, 1983)
+    \item Lid driven cavity problem (Ghia et al., 1982)
+    \item Backward-Facing step problem (Gartling, 1990)
+    \end{itemize}
+  \item Tuning benchmark parameters varies the strength of
+    nonlinearities
+  \end{itemize}
+
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \[
+      \rho \ve{u} \cdot \nabla \ve{u} - \nabla \cdot \ve{T} - \rho
+      \ve{g} = \ve{0}
+      \]
+      \[
+      \nabla \cdot \ve{u} = 0
+      \]
+      \[
+      \rho C_p \ve{u} \cdot \nabla T + \nabla \cdot \ve{q} = 0
+      \]
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \[
+      \ve{T} = -P \ve{I} + \mu[\nabla \ve{u} + \nabla \ve{u}^T]
+      \]
+      \[
+      \ve{q} = - k \nabla T
+      \]
+    \end{column}
+  \end{columns}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Proposed Numerical Experiments}
+
+  Domain Overlap Studies for the Parallel Neumann-Ulam Method
+
+
+  Domain Replication Studies for the Parallel Neumann-Ulam Method
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Proposed Numerical Experiments}
+
+  Parallel Performance and Numerical Accuracy Studies for the MCSA
+  Method
+
+  Parallel Performance and Numerical Accuracy Studies for the FANM
+  Method
 
 \end{frame}
 
@@ -1542,5 +1610,3 @@
 %%---------------------------------------------------------------------------%%
 
 \end{document}
-
-
