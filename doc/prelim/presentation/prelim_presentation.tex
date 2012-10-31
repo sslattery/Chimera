@@ -1250,7 +1250,7 @@
   \pause
   \begin{itemize}
   \item Many multiphysics problems of interest are nonlinear
-  \item Segregated methods lack the consitency of fully implicit
+  \item Segregated methods lack the consistency of fully implicit
     methods
   \item Newton methods often leverage Krylov solvers
     \begin{itemize}
@@ -1446,7 +1446,7 @@
       \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon
         ||\ve{F}(\ve{u}^{0})||$} 
       \STATE $\ve{J}(\ve{u}^{k}) \leftarrow AD(\ve{F}(\ve{u}^k))$ 
-      \COMMENT{Automatic differentation} 
+      \COMMENT{Automatic differentiation} 
       \STATE $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
       \COMMENT{Solve for the Newton correction with MCSA} 
       \STATE $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$ 
@@ -1527,7 +1527,7 @@
       \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon
         ||\ve{F}(\ve{u}^{0})||$} 
       \STATE $\ve{J}(\ve{u}^{k}) \leftarrow AD(\ve{F}(\ve{u}^k))$ 
-      \COMMENT{Automatic differentation} 
+      \COMMENT{Automatic differentiation} 
       \STATE $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
       \COMMENT{Solve for the Newton correction with MCSA} 
       \STATE $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$ 
@@ -1688,6 +1688,30 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Proposed Challenge Problem}
 
+  \begin{itemize}
+  \item Problems of interest are coupled large scale problems in
+    reactor physics
+  \item The Consortium for Advanced Simulation of LWRs (CASL) is a
+    modeling and simulation program aimed at:
+    \begin{itemize}
+      \item Higher power uprates and efficiency
+      \item Higher burn-up
+      \item Predictive accident scenario analysis
+    \end{itemize}
+  \item CASL and industry partners identified challenge problems:
+    \begin{itemize}
+    \item Departure from nucleate boiling
+    \item Grid-to-rod-fretting
+    \end{itemize}
+  \item Our challenge problem should reflect how this work aids the
+    solution of these problems
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Proposed Challenge Problem}
+
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{figure}[htpb!]
@@ -1707,16 +1731,16 @@
   \end{columns}
 
   \begin{itemize}
-  \item Problems of interest are large scale problems in reactor
-    physics
-  \item CASL has leveraged the Drekar multiphysics code
-  \item Coupled fluid flow and heat transfer is required to
-    characterize many phenomena
-    \begin{itemize}
-    \item Departure from nucleate boiling
-    \item Grid-to-rod-fretting
-    \end{itemize}
+  \item CASL has leveraged the Drekar multiphysics code (SNL)
+  \item Coupled fluid flow and heat transfer helps characterize many
+    phenomena
+  \item Drekar is massively parallel and leverages Newton-Krylov
+    methods
+  \item Propose using the largest Drekar problem to date as a
+    challenge problem for the new Monte Carlo methods
   \end{itemize}
+
+  {\small \sl Images source: www.casl.gov}
 
 \end{frame}
 
