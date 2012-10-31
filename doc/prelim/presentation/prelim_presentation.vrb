@@ -1,23 +1,27 @@
-\frametitle {GMRES}\par \begin{algorithm}[H]
-  \begin{algorithmic}[1]
-    \STATE $\ve{r}_0 := \ve{b}-\ve{A}\ve{x}_0$
-    \STATE $\beta := ||\ve{r}_0||_2$
-    \STATE $\ve{v}_1 := \ve{r}_0 / \beta$
-    \COMMENT{Create the orthonormal basis for the Krylov subspace}
-    \FOR{$j = 1, 2, \cdots, m$}
-    \STATE $\ve{w}_j := \ve{A}\ve{v}_j$
-    \FOR{$i = 1, 2, \cdots, j$}
-    \STATE $h_{ij} \leftarrow \langle \ve{w}_j,\ve{v}_j \rangle$
-    \STATE $\ve{w}_j \leftarrow \ve{w}_j - h_{ij}\ve{v}_i$
-    \ENDFOR
-    \STATE $h_{j+1,j} \leftarrow ||\ve{w}_j||_2$
-    \STATE $\ve{v}_{j+1} \leftarrow \ve{w}_j / h_{j+1,j}$
-    \ENDFOR
-    \COMMENT{Apply the orthogonality constraints}
-    \STATE $\ve{y}_m \leftarrow argmin_y ||\beta \ve{e}_1 - \ve{H}_m\
-    \ve{y}||_2 $
-    \STATE $\ve{x}_m \leftarrow \ve{x}_0 + \ve{V_m} \ve{y}_m$
-  \end{algorithmic}
-  \caption{GMRES Iteration}
-\end{algorithm}
+\frametitle {The FANM Method}\par   Forward-Automated Newton-MCSA
+
+  \pause
+  \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+      \STATE $k := 0$
+      \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon ||\ve{F}(\ve{u}^{0})||$}
+      \STATE $\ve{J}(\ve{u}^{k}) \leftarrow AD(\ve{F}(\ve{u}^k))$
+      \COMMENT{Automatic differentation}
+      \STATE $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
+      \COMMENT{Solve for the Newton correction with MCSA}
+      \STATE $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$
+      \STATE $k \leftarrow k+1$
+      \ENDWHILE
+    \end{algorithmic}
+    \caption{FANM}
+  \end{algorithm}
+
+  \pause
+  \begin{itemize}
+  \item Robustness of Newton's method (inexact)
+  \item Accuracy and convenience of FAD
+  \item Parallelism, memory, and resiliency benefits of MCSA
+  \item Requires only nonlinear function evaluations
+  \end{itemize}
+
 

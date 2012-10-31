@@ -1079,8 +1079,8 @@
       \begin{figure}[h!]
         \centering
         \includegraphics[width=2.5in,clip]{Adjoint_Direct_CPU_Time.pdf}
-        \caption{\textbf{CPU Time (s) to converge vs. Problem Size ($N$ for
-            an $N \times N$ square mesh).} }
+        \caption{\textbf{CPU Time (s) to converge vs. Problem Size
+            ($N$ for an $N \times N$ square mesh).} }
       \end{figure}
     \end{column}
 
@@ -1088,8 +1088,8 @@
       \begin{figure}[h!]
         \centering
         \includegraphics[width=2.5in,clip]{Adjoint_Direct_Iterations.pdf}
-        \caption{\textbf{Iterations to converge vs. Problem Size ($N$ for an
-            $N \times N$ square mesh).} }
+        \caption{\textbf{Iterations to converge vs. Problem Size ($N$
+            for an $N \times N$ square mesh).} }
       \end{figure}
     \end{column}
 
@@ -1271,30 +1271,175 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Newton-Krylov Methods}
 
-\end{frame}
+  \begin{itemize}
+  \item A form of inexact Newton methods
+  \end{itemize}
 
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Newton-Krylov Methods}
+  \[
+  ||\ve{J}(\ve{u}^k)\delta \ve{u}^k + \ve{F}(\ve{u}^k)|| \leq \eta^k
+  ||\ve{F}(\ve{u}^k)||,\ \eta^k \in [0,1)
+  \]
+
+  \begin{itemize}
+  \item Choose a Krylov method to solve for the Newton correction
+  \item GMRES with a long recurrence relation obeserved as more robust
+  \item Generates a monotonically decreasing residual from maintaining
+    the optimization and orthogonality conditions
+  \end{itemize}
+
+  \pause
+  Where does the Jacobian come from?
+  \pause
+  \begin{itemize}
+  \item The Jacobian can come from hand-coded derivatives
+    \begin{itemize}
+    \item Tedious and error prone
+    \item Repeated for each equation set and hard to do for multiphysics
+    \end{itemize}
+  \end{itemize} 
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Matrix-Free Approximation}
 
+  
+  \begin{itemize}
+  \item Krylov methods only need the action of the linear operator
+  \item The action of the Jacobian can be approximated using a forward
+    difference
+  \end{itemize}
+
+  \[
+  \ve{J}(\ve{u})\ve{v} = \frac{\ve{F}(\ve{u} + \epsilon \ve{v}) -
+    \ve{F}(\ve{u})}{\epsilon}
+  \]
+
+  \begin{itemize}
+  \item Forms the basis of Jacobian-Free Newton-Krylov (JFNK) methods
+    \begin{itemize}
+    \item Sensitive to scaling and discretization error
+    \item Still have to form part of Jacobian periodically for
+      preconditioning
+    \item Eventually break even with generating and storing the full
+      Jacobian
+    \end{itemize}
+  \end{itemize}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Automatic Differentiation}
 
+  \begin{itemize}
+  \item Automatically generate Jacobians from nonlinear function
+    evaluations
+    \begin{itemize}
+    \item Overload math operators and apply the chain rule (FAD)
+    \item Yields evaluations as accurate as function discretization
+    \end{itemize}
+  \item Modern packages take an element-level assembly approach
+    \begin{itemize}
+    \item Function evaluations are local, communication builds global
+      data
+    \end{itemize}
+  \end{itemize}
+
+  \[
+  \ve{J}(\ve{u}) = \sum_{i=1}^N \ve{Q}^T_i \ve{J}_k \ve{P}_i
+  \]
+  \[
+  e_k : \mathbb{R}^{n_k} \rightarrow \mathbb{R}^{m_k},\ \ve{J}_{k_i} =
+  \partial e_{k_i} / \partial P_i u,\ \ve{P} \in \mathbb{R}^{m_{k_i}
+    \times N}
+  \]
+
+  \begin{itemize}
+  \item Performance studies give acceptable results for use in
+    large-scale, production physics codes
+  \end{itemize}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{The FANM Method}
+\begin{frame}[fragile]{The FANM Method}
+
+  Forward-Automated Newton-MCSA
+
+  \pause
+  \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+      \STATE $k := 0$
+      \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon ||\ve{F}(\ve{u}^{0})||$}
+      \STATE $\ve{J}(\ve{u}^{k}) \leftarrow AD(\ve{F}(\ve{u}^k))$
+      \COMMENT{Automatic differentation}
+      \STATE $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
+      \COMMENT{Solve for the Newton correction with MCSA}
+      \STATE $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$
+      \STATE $k \leftarrow k+1$
+      \ENDWHILE
+    \end{algorithmic}
+    \caption{FANM}
+  \end{algorithm}
+
+  \pause
+  \begin{itemize}
+  \item Robustness of Newton's method (inexact)
+  \item Accuracy and convenience of FAD
+  \item Parallelism, memory, and resiliency benefits of MCSA
+  \item Requires only nonlinear function evaluations
+  \end{itemize}
+
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Jacobian Storage vs. Subspace Storage}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item Jacobian will be in a compressed row storage format
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \small{\[ \ve{A} =
+        \begin{bmatrix}
+          2 & 0 & 8 & 0 & 0 & 0 \\ 4 & 5 & 0 & 1 & 0 & 0 \\ 0 & 2 & 1
+          & 0 & 1 & 0 \\ 0 & 0 & 3 & 7 & 0 & 2 \\ 0 & 0 & 0 & 4 & 9 &
+          0 \\ 0 & 0 & 0 & 0 & 9 & 1 \\
+        \end{bmatrix}      
+        \]}
+    \end{column}
+
+  \end{columns}
+
+  \pause \small{ \[
+    \begin{array}{lccccccccccccccc}
+      \ve{A}\ values: & 2 & 8 & 4 & 5 & 1 & 2 & 1 & 1 & 3 & 7 & 2 & 4
+      & 9 & 9 & 1 \\ column: & 1 & 3 & 1 & 2 & 4 & 2 & 3 & 5 & 3 & 4 &
+      6 & 4 & 5 & 5 & 6 \\ row\ start: & 1 & 3 & 6 & 9 & 12 & 14 & 16
+      \\
+    \end{array}
+    \]}
+
+  \pause
+  \begin{itemize}
+  \item $m$ Krylov iterations require $(m+1)$ subspace vectors
+  \item Storage requirement is $\big[(m+1) N\big]$ for $\ve{x} \in
+    \mathbb{R}^{N \times N}$
+  \end{itemize}
+
+  \pause
+  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
+    {If we need 10 Krylov iterations to converge...}
+    \begin{itemize}
+    \item 66 elements required for subspace vectors
+    \item 72 total elements required for Jacobian and probability matrix
+    \end{itemize}
+  \end{beamerboxesrounded}
 
 \end{frame}
 
