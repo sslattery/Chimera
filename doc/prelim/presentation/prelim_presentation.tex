@@ -325,7 +325,7 @@
     respect to the constraints
     \[
     ||\tilde{\ve{r}}||_2 \leq ||\ve{r}_0||_2,\ \forall \ve{r}_0 \in
-    \mathbb{R}^N\:,
+    \mathbb{R}^N
     \]
   \end{beamerboxesrounded}
 
@@ -645,7 +645,7 @@
   \caption{\textbf{Problem setup for 2D heat equation.}
     \textit{Dirichlet conditions are set for the temperature on all 4
       boundaries of the Cartesian grid. No thermal source was
-      present.}}
+      present. $50 \times 50$ grid.}}
   \end{figure}
 
 \end{frame}
@@ -685,9 +685,9 @@
     \begin{center}
       \includegraphics[width=4in]{direct_100.png}
     \end{center}
-    \caption{\textbf{Direct solution to Poisson Equation.} \textit{100
-        histories per state, \sn{2.5}{5} total histories. 54.7 seconds
-        CPU time.} }
+    \caption{\textbf{Direct solution to Poisson Equation.}
+      \textit{1000 histories per state, \sn{2.5}{5} total
+        histories. 54.7 seconds CPU time.} }
   \end{figure}
 
 \end{frame}
@@ -798,7 +798,7 @@
   \[
   \begin{split}
     E\{X_j\} &=\sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-    \sum_{i_k}^{N} b_{i_0} h_{i,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}
+    \sum_{i_k}^{N} b_{i_0} h_{i_0,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}
     \delta_{i_k,j} \\ &= x_{j}\:,
   \end{split}
   \]
@@ -1260,8 +1260,6 @@
     \pause
   \item How do we define $\lambda$ empirically for linear operator
     equations? 
-    \pause
-  \item Full-clip roulette for the MCSA correction?
   \end{itemize}
 
 \end{frame}
