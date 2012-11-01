@@ -493,7 +493,7 @@
     \item Matrix-vector multiply
     \item Weak scaling is better
     \end{itemize}
-  \item Short and long reccurrence relations available for
+  \item Short and long recurrence relations available for
     orthogonalization
   \end{itemize}
 
@@ -547,7 +547,7 @@
 \begin{frame}{Monte Carlo Linear Solver Preliminaries}
 
   \begin{itemize}
-  \item Expand the Nuemann series
+  \item Expand the Neumann series
   \end{itemize}
 
   \[
@@ -1142,7 +1142,7 @@
     \item Radiation transport equations used as model system
     \item Transition probabilities built from problem-specific
       parameters
-    \item Probabilities and weights must be rederived for each new
+    \item Probabilities and weights must be re-derived for each new
       equation set
     \end{itemize}
   \item Desire a generalization for all linear operator equations
@@ -1250,7 +1250,7 @@
   \]
 
   \begin{itemize}
-  \item Sigel observed $\lambda$ to be bound empirically to the mean
+  \item Siegel observed $\lambda$ to be bound empirically to the mean
     free path of the system
   \item Optimum ratio of local to global domain size exists
   \item Experiments show feasibility for large-scale calculations
@@ -1260,7 +1260,8 @@
     \pause
   \item How do we define $\lambda$ empirically for linear operator
     equations? 
-  \item Full-clip roullette for the MCSA correction?
+    \pause
+  \item Full-clip roulette for the MCSA correction?
   \end{itemize}
 
 \end{frame}
@@ -1286,7 +1287,7 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Reproducability}
+\begin{frame}{Reproducibility}
 
   \begin{figure}[htpb!]
     \begin{center}
@@ -1299,8 +1300,8 @@
   \end{figure}
 
   \begin{itemize}
-  \item 2005 work by Gentile outlines reproducability in parallel
-    Monte carlo
+  \item 2005 work by Gentile outlines reproducibility in parallel
+    Monte Carlo
   \item Maintaining random number sequences
   \item Floating point addition does not commute
   \item Useful for benchmarking and unit testing
@@ -1325,7 +1326,7 @@ Questions
     equations? 
   \item Is memory a limitation for overlap and replication?
   \item Do the linear operator properties help select overlap?
-  \item Will full-clip roullette perturb the MCSA solution?
+  \item Will full-clip roulette perturb the MCSA solution?
   \item How much does MSOD facilitate scaling?
   \end{itemize}
 
@@ -1661,7 +1662,7 @@ Questions
   \item This work will generate a parallel MCSA solver
   \item Application of the Newton correction requires a parallel
     vector update
-  \item Convergence checks through parallel norm comptutation
+  \item Convergence checks through parallel norm computation
   \end{itemize}
 
 \end{frame}
@@ -1788,7 +1789,7 @@ Questions
   \item Characterize Neumann-Ulam parameters required for good
     correction
   \item Feasibility of MCSA with full-clip Neumann-Ulam
-  \item Performance for assymmetric systems
+  \item Performance for asymmetric systems
   \item Memory usage compared to Krylov methods
   \end{itemize}
 
