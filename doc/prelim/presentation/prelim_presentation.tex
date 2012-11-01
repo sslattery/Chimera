@@ -169,7 +169,8 @@
     \item Research is required to explore varying parallel strategies
     \item Scalability is of concern
     \end{itemize}
-  \item Development of a nonlinear solver leveraging Monte Carlo
+  \item Development of a nonlinear solver for discrete systems
+    leveraging Monte Carlo
     \begin{itemize}
     \item Application to nonlinear problems of interest
     \item Memory benefits
@@ -331,7 +332,7 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Putting it All Together}
+\begin{frame}{Putting It All Together}
 
   \begin{itemize}
   \item Choose $\ve{V}$ as a basis of $\mathcal{K}$ and $\ve{W}$ as a
@@ -478,7 +479,9 @@
 \begin{frame}{Projection Methods Summary}
 
   \begin{itemize}
-  \item Used in practice everywhere
+  \item Widely used in practice
+  \item Krylov methods require only the action of the operator
+  \item Parallelism achieved through a handful of operations
   \item Global reduction operations observed not to impede scalability
     \begin{itemize}
     \item Dot product
@@ -490,6 +493,8 @@
     \item Matrix-vector multiply
     \item Weak scaling is better
     \end{itemize}
+  \item Short and long reccurrence relations available for
+    orthogonalization
   \end{itemize}
 
 \end{frame}
@@ -588,7 +593,7 @@
   \end{itemize}
 
   \[
-  W_{m} = \sum_{m=0}^k w_{i,i_1} w_{i_1,i_2} \cdots w_{i_{m-1},i_m}
+  W_{m} = w_{i,i_1} w_{i_1,i_2} \cdots w_{i_{m-1},i_m}
   \]
   \[
   X_{\nu}(i_0 = i) = \sum_{m=0}^k W_{m} b_{i_m}
@@ -633,7 +638,21 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Direct Method: Evolution of a Solution}
 
-  \pause
+  \begin{figure}[h!]
+    \begin{center}
+      \scalebox{1.0}{ \input{heat_eq_setup.pdftex_t} }
+    \end{center}
+  \caption{\textbf{Problem setup for 2D heat equation.}
+    \textit{Dirichlet conditions are set for the temperature on all 4
+      boundaries of the Cartesian grid. No thermal source was
+      present.}}
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Direct Method: Evolution of a Solution}
+
   \begin{figure}[h!]
     \begin{center}
       \includegraphics[width=4in]{direct_1.png}
@@ -789,7 +808,6 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Adjoint Method: Evolution of a Solution}
 
-  \pause
   \begin{figure}[h!]
     \begin{center}
       \includegraphics[width=4in]{adjoint_1.png}
@@ -1119,7 +1137,7 @@
 \begin{frame}{Generalization of MCSA for Linear Problems}
 
   \begin{itemize}
-  \item Work to date has used a physics-based formulation
+  \item Published work to date has used a physics-based formulation
     \begin{itemize}
     \item Radiation transport equations used as model system
     \item Transition probabilities built from problem-specific
@@ -1159,23 +1177,91 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Domain Decomposition}
 
+  \begin{itemize}
+  \item Each parallel process owns a piece of the domain
+  \item Random walks must be transported across domains through
+    communication
+  \end{itemize}
+
+  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
+    {Brunner's Work (2006 and 2009)}
+
+    \begin{itemize}
+    \item Looked at 4 communication patterns:
+      \begin{itemize}
+      \item Fully-locking synchronous
+      \item asynchronous-send/synchronous-receive
+      \item master/slave
+      \item binary tree master/slave
+      \end{itemize}
+    \item Binary tree master/slave performed best but race conditions observed
+    \item A later improvement to their work showed a fully asynchronous
+      pattern to work best
+    \item Poor scaling for unbalanced problems
+    \end{itemize}
+    
+  \end{beamerboxesrounded}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Multiple-Set Overlapping-Domain Decomposition}
 
-  \begin{figure}[htpb!]
-    \begin{center}
-      \scalebox{1.0}{ \input{msod_example.pdftex_t} }
-    \end{center}
-    \caption{\textbf{Overlapping domain example illustrating how
-        domain overlap can reduce communication costs.}}
-  \end{figure}
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+      \begin{figure}[htpb!]
+        \begin{center}
+          \scalebox{0.75}{ \input{msod_example.pdftex_t} }
+        \end{center}
+        \caption{\textbf{Overlapping domain example illustrating how
+            domain overlap can reduce communication costs.}}
+      \end{figure}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item Developed by Wagner and colleagues in 2010
+      \item Each set contains the full domain
+      \item Multiple sets replicate the domain
+      \item Domains overlap within a set
+      \item Reduces communication by a significant fraction
+      \item Increases scalability through smaller processor sets
+      \item Redundancy for resiliency (and useful work)
+      \end{itemize}
+    \end{column}
+
+  \end{columns}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Domain-to-Domain Communication}
+
+  \begin{itemize}
+  \item The amount of domain leakage dictates communication
+  \item Per Siegel's 2012 work, define a leakage fraction
+  \end{itemize}
+
+  \[
+  \lambda =
+  \frac{average\ \#\ of\ particles\ leaving\ local\ domain}{total\ 
+    of\ \#\ of\ particles\ starting\ in\ local\ domain}
+  \]
+
+  \begin{itemize}
+  \item Sigel observed $\lambda$ to be bound empirically to the mean
+    free path of the system
+  \item Optimum ratio of local to global domain size exists
+  \item Experiments show feasibility for large-scale calculations
+    \begin{itemize}
+    \item Not bandwidth or latency limited in load-balanced case
+    \end{itemize}
+    \pause
+  \item How do we define $\lambda$ empirically for linear operator
+    equations? 
+  \item Full-clip roullette for the MCSA correction?
+  \end{itemize}
 
 \end{frame}
 
@@ -1191,6 +1277,12 @@
     \label{fig:procassini_example}
   \end{figure}
 
+  \begin{itemize}
+  \item Procassini's 2005 work addressed some concerns
+  \item Dynamic balancing replicates domains independently
+  \item Linear operator equations may benefit - fixed source problems
+  \end{itemize}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
@@ -1198,7 +1290,7 @@
 
   \begin{figure}[htpb!]
     \begin{center}
-      \scalebox{1.0}{ \input{gentile_example.pdftex_t} }
+      \scalebox{0.7}{ \input{gentile_example.pdftex_t} }
     \end{center}
     \caption{\textbf{Gentile's example illustrating how domain
         decomposition can create reproducibility issues in Monte
@@ -1206,10 +1298,36 @@
     \label{fig:gentile_example}
   \end{figure}
 
+  \begin{itemize}
+  \item 2005 work by Gentile outlines reproducability in parallel
+    Monte carlo
+  \item Maintaining random number sequences
+  \item Floating point addition does not commute
+  \item Useful for benchmarking and unit testing
+  \end{itemize}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Parallel Adjoint Method}
+
+Strategy
+  \begin{itemize}
+  \item Direct analogs between particle transport and Neumann-Ulam
+    solvers 
+  \item Aim for MSOD implementation and fully asynchronous
+    communication patterns
+  \end{itemize}
+
+Questions
+  \begin{itemize}
+  \item How much domain overlap is suitable for linear operator
+    equations? 
+  \item Is memory a limitation for overlap and replication?
+  \item Do the linear operator properties help select overlap?
+  \item Will full-clip roullette perturb the MCSA solution?
+  \item How much does MSOD facilitate scaling?
+  \end{itemize}
 
 \end{frame}
 
@@ -1731,7 +1849,7 @@
   \end{columns}
 
   \begin{itemize}
-  \item CASL has leveraged the Drekar multiphysics code (SNL)
+  \item CASL has utilized the Drekar multiphysics code (SNL)
   \item Coupled fluid flow and heat transfer helps characterize many
     phenomena
   \item Drekar is massively parallel and leverages Newton-Krylov
