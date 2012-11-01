@@ -187,21 +187,21 @@
   \end{itemize}
 
   \[
-  \ve{A} \ve{x} = \ve{b}\:
+  \ve{A} \ve{x} = \ve{b}
   \]
   \[
   \ve{A} \in \mathbb{R}^{N \times N},\ \ve{A} : \mathbb{R}^{N}
   \rightarrow \mathbb{R}^{N},\ \ve{x} \in \mathbb{R}^N,\ \ve{b} \in
-  \mathbb{R}^N\:
+  \mathbb{R}^N
   \]
 
 
   \[
-  \ve{r} = \ve{b} - \ve{A}\ve{x}\:
+  \ve{r} = \ve{b} - \ve{A}\ve{x}
   \]
 
   \begin{itemize}
-  \item $\ve{r}=\ve{0}$ when an exact solution is found.
+  \item $\ve{r}=\ve{0}$ when an exact solution is found
   \end{itemize}
 
   \pause
@@ -209,7 +209,7 @@
     {A Requirement} Assert that $\ve{A}$ is \textit{nonsingular}. The
     solution is then:
     \[
-    \ve{x} = \ve{A}^{-1}\ve{b}\:
+    \ve{x} = \ve{A}^{-1}\ve{b}
     \]
   \end{beamerboxesrounded}
 
@@ -224,11 +224,11 @@
   \end{itemize}
 
   \[
-  \ve{A} = \ve{M} - \ve{N}\:.
+  \ve{A} = \ve{M} - \ve{N}
   \]
 
   \[
-  \ve{x} = \ve{M}^{-1}\ve{N}\ve{x} + \ve{M}^{-1}\ve{b}\:.
+  \ve{x} = \ve{M}^{-1}\ve{N}\ve{x} + \ve{M}^{-1}\ve{b}
   \]
 
   \begin{itemize}
@@ -237,7 +237,7 @@
   \end{itemize}
 
   \[
-  \ve{x}^{k+1} = \ve{H}\ve{x}^{k} + \ve{c}\:.
+  \ve{x}^{k+1} = \ve{H}\ve{x}^{k} + \ve{c}
   \]
 
 \end{frame}
@@ -252,7 +252,7 @@
   \end{itemize}
 
   \[
-  \ve{e}^{k+1} = \ve{H} \ve{e}^k\:
+  \ve{e}^{k+1} = \ve{H} \ve{e}^k
   \]
 
 
@@ -261,7 +261,7 @@
   \end{itemize}
 
   \[
-  ||\ve{e}^{k}||_2 = \rho(\ve{H})^k ||\ve{e}^0||_2\:,
+  ||\ve{e}^{k}||_2 = \rho(\ve{H})^k ||\ve{e}^0||_2
   \]
 
   \begin{itemize}
@@ -285,7 +285,7 @@
     search subspace:
     \[
     \tilde{\ve{x}} = \ve{x}_0 +
-    \boldsymbol{\delta},\ \boldsymbol{\delta} \in \mathcal{K}\:
+    \boldsymbol{\delta},\ \boldsymbol{\delta} \in \mathcal{K}
     \]
   \end{beamerboxesrounded}
 
@@ -296,7 +296,7 @@
     residual:
     \[
     \langle \tilde{\ve{r}},\ve{w} \rangle = 0,\ \forall \ve{w} \in
-    \mathcal{L}\:
+    \mathcal{L}
     \]  
   \end{beamerboxesrounded}
 
@@ -357,7 +357,7 @@
     \ve{y}^k = (\ve{W}^T\ve{A}\ve{V})^{-1}\ve{W}^T\ve{r}^k
     \]
     \[
-    \ve{x}^{k+1} = \ve{x}^k + \ve{V}\ve{y}^k\:
+    \ve{x}^{k+1} = \ve{x}^k + \ve{V}\ve{y}^k
     \]
     \[
     Update\ \ve{V}\ and\ \ve{W}
@@ -629,7 +629,7 @@
     E\{X(i_0 = i)\}
     &=\sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
     \sum_{i_k}^{N} p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
-    w_{i,i_1}w_{i_1,i_2}\ldots w_{i_{k-1},i_k} b_{i_k}\\ &= x_i\:,
+    w_{i,i_1}w_{i_1,i_2}\ldots w_{i_{k-1},i_k} b_{i_k}\\ &= x_i
   \end{split}
   \]
 
@@ -799,7 +799,7 @@
   \begin{split}
     E\{X_j\} &=\sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
     \sum_{i_k}^{N} b_{i_0} h_{i_0,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}
-    \delta_{i_k,j} \\ &= x_{j}\:,
+    \delta_{i_k,j} \\ &= x_{j}
   \end{split}
   \]
 
@@ -914,7 +914,7 @@
 
   \begin{itemize}
   \item Neumann-Ulam methods bound by the Central Limit Theorem
-  \item Halton proposed an iterative residual method
+  \item Halton proposed an iterative residual method in 1962
   \item Iteration error decoupled from Monte Carlo error
   \item Exponential convergence
   \end{itemize}
@@ -934,6 +934,7 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Monte Carlo Synthetic-Acceleration}
   \begin{itemize}
+  \item Evans and Mosher 2009 work
   \item Split the operator to yield Richardson's iteration
   \end{itemize}
 
