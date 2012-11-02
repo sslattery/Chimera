@@ -216,61 +216,6 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Stationary Methods}
-
-  \begin{itemize}
-  \item General stationary methods are formed by splitting the linear
-    operator
-  \end{itemize}
-
-  \[
-  \ve{A} = \ve{M} - \ve{N}
-  \]
-
-  \[
-  \ve{x} = \ve{M}^{-1}\ve{N}\ve{x} + \ve{M}^{-1}\ve{b}
-  \]
-
-  \begin{itemize}
-  \item We identify $\ve{H} =\ve{M}^{-1}\ve{N}$ as the
-    \textit{iteration matrix}
-  \end{itemize}
-
-  \[
-  \ve{x}^{k+1} = \ve{H}\ve{x}^{k} + \ve{c}
-  \]
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Stationary Methods Convergence}
-
-  \begin{itemize}
-  \item The qualities of the iteration matrix dictate convergence
-  \item Define $\ve{e}^k = \ve{x}^k-\ve{x}$ as the error at the
-    $k^{th}$ iterate
-  \end{itemize}
-
-  \[
-  \ve{e}^{k+1} = \ve{H} \ve{e}^k
-  \]
-
-
-  \begin{itemize}
-  \item We diagonalize $\ve{H}$ to extract its Eigenvalues
-  \end{itemize}
-
-  \[
-  ||\ve{e}^{k}||_2 = \rho(\ve{H})^k ||\ve{e}^0||_2
-  \]
-
-  \begin{itemize}
-  \item We bound $\ve{H}$ by $\rho(\ve{H}) < 1$ for convergence
-  \end{itemize}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
 \begin{frame}{Projection Methods}
 
   \begin{itemize}
