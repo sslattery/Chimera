@@ -266,46 +266,11 @@
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Minimization Property}
 
-    The residual of the system will always be \textit{minimized} with
-    respect to the constraints
+    The residual of the system is \textit{minimized} with respect to
+    the constraints
     \[
     ||\tilde{\ve{r}}||_2 \leq ||\ve{r}_0||_2,\ \forall \ve{r}_0 \in
     \mathbb{R}^N
-    \]
-  \end{beamerboxesrounded}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Putting It All Together}
-
-  \begin{itemize}
-  \item Choose $\ve{V}$ as a basis of $\mathcal{K}$ and $\ve{W}$ as a
-    basis of $\mathcal{L}$
-  \end{itemize}
-
-  \[
-  \boldsymbol{\delta} = \ve{V}\ve{y},\ \forall \ve{y} \in \mathbb{R}^N
-  \]
-
-  \[
-  \ve{y} = (\ve{W}^T\ve{A}\ve{V})^{-1}\ve{W}^T\ve{r}_0
-  \]
-
-  \pause
-  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
-    {Projection Method Iteration}
-    \[
-    \ve{r}^k = \ve{b} - \ve{A}\ve{x}^k
-    \]
-    \[
-    \ve{y}^k = (\ve{W}^T\ve{A}\ve{V})^{-1}\ve{W}^T\ve{r}^k
-    \]
-    \[
-    \ve{x}^{k+1} = \ve{x}^k + \ve{V}\ve{y}^k
-    \]
-    \[
-    Update\ \ve{V}\ and\ \ve{W}
     \]
   \end{beamerboxesrounded}
 
@@ -318,6 +283,10 @@
   \mathcal{K}_m(\ve{A},\ve{r}_0) = span\{\ve{r}_0, \ve{A}\ve{r}_0,
   \ve{A}^2\ve{r}_0, \dots, \ve{A}^{m-1}\ve{r}_0\}
   \]
+
+  \begin{itemize}
+  \item For GMRES:
+  \end{itemize}
   \[
   \mathcal{L} = \ve{A} \mathcal{K}_m(\ve{A},\ve{r}_0)
   \]
@@ -327,38 +296,11 @@
     \ve{A}^T\ve{b}$
   \item Must generate an orthonormal basis $\ve{V}_m \in \mathbb{R}^{N
     \times m}$ for $\mathcal{K}_m(\ve{A},\ve{r}_0)$
-  \item $\ve{W}_m = \ve{A}\ve{V}_m$
   \item Typically choose a Gram-Schmidt-like procedure such as Arnoldi
     or Lanzcos
+  \item Short and long recurrence relations available for
+    orthogonalization
   \end{itemize}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}[fragile]{GMRES}
-
-  \begin{algorithm}[H]
-    \begin{algorithmic}[1]
-      \STATE $\ve{r}_0 := \ve{b}-\ve{A}\ve{x}_0$ 
-      \STATE $\beta := ||\ve{r}_0||_2$ 
-      \STATE $\ve{v}_1 := \ve{r}_0 / \beta$
-      \COMMENT{Create the orthonormal basis for the Krylov subspace}
-      \FOR{$j = 1, 2, \cdots, m$} 
-      \STATE $\ve{w}_j := \ve{A}\ve{v}_j$
-      \FOR{$i = 1, 2, \cdots, j$} 
-      \STATE $h_{ij} \leftarrow \langle \ve{w}_j,\ve{v}_j \rangle$ 
-      \STATE $\ve{w}_j \leftarrow \ve{w}_j - h_{ij}\ve{v}_i$ 
-      \ENDFOR 
-      \STATE $h_{j+1,j} \leftarrow ||\ve{w}_j||_2$ 
-      \STATE $\ve{v}_{j+1} \leftarrow \ve{w}_j / h_{j+1,j}$ 
-      \ENDFOR 
-      \COMMENT{Apply the orthogonality constraints}
-      \STATE $\ve{y}_m \leftarrow argmin_y ||\beta \ve{e}_1 -
-      \ve{H}_m\ \ve{y}||_2 $ 
-      \STATE $\ve{x}_m \leftarrow \ve{x}_0 + \ve{V_m} \ve{y}_m$
-    \end{algorithmic}
-    \caption{GMRES Iteration}
-  \end{algorithm}
 
 \end{frame}
 
