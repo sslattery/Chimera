@@ -1516,44 +1516,10 @@ Questions
 \begin{frame}{Research Proposal}
 
   \begin{itemize}
-  \item Experimental framework
   \item Methods verification
   \item Numerical experiments
   \item Challenge problem
   \end{itemize}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Experimental Framework}
-
-  \begin{itemize}
-  \item Need a framework to generate linear and nonlinear systems in
-    parallel
-    \begin{itemize}
-    \item Linear algebra data structures
-    \item Parallel communication framework
-    \item Mesh generation and partitioning
-    \item Automatic differentiation and more...
-    \end{itemize}
-  \item Choose the finite element method to leverage a finite element
-    assembly engine
-  \end{itemize}
-
-  \[
-  \ve{A}(\ve{u}) = \ve{0},\ \forall \ve{u} \in \Omega
-  \]
-  \[
-  \ve{B}(\ve{u}) = \ve{0},\ \forall \ve{u} \in \Gamma
-  \]
-  \[
-  \int_{\Omega} \ve{v}^T \ve{A}(\ve{u}) d\Omega + \int_{\Gamma}
-  \bar{\ve{v}}^T \ve{B}(\ve{u}) d\Gamma = \ve{0}
-  \]
-  \[
-  \int_{\Omega} \ve{C}(\ve{v}^T) \ve{D}(\ve{u}) d\Omega +
-  \int_{\Gamma} \ve{E}(\bar{\ve{v}}^T) \ve{F}(\ve{u}) d\Gamma = \ve{0}
-  \]
 
 \end{frame}
 
