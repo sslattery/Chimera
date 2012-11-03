@@ -1351,20 +1351,22 @@ Questions
     \end{array}
     \]}
 
-  \pause
   \begin{itemize}
+  \item CRS matrix with $q$ bands storage: $\big[(2q+1)N\big]$ for $\ve{x} \in
+    \mathbb{R}^{N \times N}$ 
+    \pause
   \item $m$ Krylov iterations require $(m+1)$ subspace vectors
-  \item Storage requirement is $\big[(m+1) N\big]$ for $\ve{x} \in
+  \item Subspace storage: $\big[(m+1) N\big]$ for $\ve{x} \in
     \mathbb{R}^{N \times N}$
   \end{itemize}
 
-  \pause
+  \pause 
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
-    {If we need 10 Krylov iterations to converge...}
+    {If we need 25 Krylov iterations to converge...}
     \begin{itemize}
-    \item 66 elements required for subspace vectors
-    \item 72 total elements required for Jacobian and probability
-      matrix
+    \item Break even scenario: $4q+1 = m$
+    \item Jacobian and probability matrix with 6 bands or less is
+      cheaper
     \end{itemize}
   \end{beamerboxesrounded}
 
