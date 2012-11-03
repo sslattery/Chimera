@@ -812,67 +812,9 @@
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Monte Carlo Synthetic-Acceleration}
-  \begin{itemize}
-  \item Evans and Mosher 2009 work
-  \item Split the operator to yield Richardson's iteration
-  \end{itemize}
-
-  \[
-  \ve{x} = (\ve{I} - \ve{A})\ve{x} + \ve{b}
-  \]
-  \[
-  \ve{x}^{k+1} = (\ve{I} - \ve{A})\ve{x}^k + \ve{b}
-  \]
-
-  \begin{itemize}
-  \item Define the iteration error
-  \end{itemize}
-
-  \[
-  \delta \ve{x}^k = \ve{x} - \ve{x}^k
-  \]
-  \[
-  \delta \ve{x}^{k+1} = (\ve{I} - \ve{A})\delta \ve{x}^k
-  \]
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Monte Carlo Synthetic-Acceleration}
-
-  \begin{itemize}
-  \item Subtract $(\ve{I} - \ve{A})\delta \ve{x}^{k+1}$
-  \end{itemize}
-
-  \[
-  \begin{split}
-    \ve{A}\delta \ve{x}^{k+1} &= (\ve{I} -
-    \ve{A})(\ve{x}^{k+1}-\ve{x}^{k}) \\ &= \ve{r}^{k+1}
-  \end{split}
-  \]
-
-  \begin{itemize}
-  \item The following converges in one iteration with exact inversion
-    of $\ve{A}$:
-  \end{itemize}
-
-  \[
-  \ve{x}^{k+1} = (\ve{I} - \ve{A})\ve{x}^k + \ve{b}
-  \]
-  \[
-  \ve{A} \delta \ve{x}^{k+1} = \ve{r}^{k+1}
-  \]
-  \[
-  \ve{x} = \ve{x}^{k+1} + \delta \ve{x}^{k+1}
-  \]
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Monte Carlo Synthetic-Acceleration}
 
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
-    {MCSA Iteration}
+    {MCSA Iteration (Evans,2009)}
 
     \[
     \ve{x}^{k+1/2} = (\ve{I} - \ve{A})\ve{x}^k + \ve{b}
