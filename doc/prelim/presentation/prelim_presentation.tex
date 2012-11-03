@@ -76,7 +76,6 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Physics-Based Motivation}
   
-  \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Predictive nuclear reactor analysis enables...}
     \begin{itemize}
@@ -87,7 +86,6 @@
     \end{itemize}
   \end{beamerboxesrounded}
 
-  \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Multiple physics simulations are complicated...}
     \begin{itemize}
@@ -116,8 +114,6 @@
         \caption{\textbf{Departure from nucleate boiling scenario.} }
       \end{figure}
     \end{column}
-
-    \pause
 
     \begin{column}{0.65\textwidth}
       \begin{figure}[htpb!]
@@ -204,7 +200,6 @@
   \item $\ve{r}=\ve{0}$ when an exact solution is found
   \end{itemize}
 
-  \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {A Requirement} Assert that $\ve{A}$ is \textit{nonsingular}. The
     solution is then:
@@ -224,7 +219,6 @@
   \item Leveraged in many modern physics codes at the petascale
   \end{itemize}
 
-  \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Search Subspace $\mathcal{K}$} Extract the solution from the
     search subspace:
@@ -234,7 +228,6 @@
     \]
   \end{beamerboxesrounded}
 
-  \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Constraint Subspace $\mathcal{L}$} Constrain the extraction with
     the constraint subspace by asserting orthogonality with the
@@ -262,7 +255,6 @@
         respect to $\mathcal{L}$.}}
   \end{figure}
 
-  \pause
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Minimization Property}
 
@@ -350,7 +342,6 @@
       \label{fig:partitioned_matvec_multiply} }
   \end{figure}
 
-  \pause
   \begin{figure}[htpb!]
     \begin{center}
       \scalebox{0.7}{ \input{matvec_proc_1.pdftex_t} }
@@ -1086,7 +1077,7 @@
     \item Binary tree master/slave performed best but race conditions observed
     \item A later improvement to their work showed a fully asynchronous
       pattern to work best
-    \item Poor scaling for unbalanced problems
+    \item Poor scaling for unbalanced problems for all schemes
     \end{itemize}
     
   \end{beamerboxesrounded}
@@ -1253,7 +1244,6 @@ Questions
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Monte Carlo Solution Methods for Nonlinear Problems}
 
-  \pause
   \begin{itemize}
   \item Many multiphysics problems of interest are nonlinear
   \item Segregated methods lack the consistency of fully implicit
@@ -1351,125 +1341,62 @@ Questions
 \begin{frame}{Newton-Krylov Methods}
 
   \begin{itemize}
-  \item A form of inexact Newton methods
+  \item Choose a Krylov method to solve for the Newton correction
+  \item GMRES with a long recurrence relation observed as more
+    robust (Knoll,2004)
+  \item Generates a monotonically decreasing residual from
+    maintaining the optimization and orthogonality conditions
   \end{itemize}
 
-  \[
-  ||\ve{J}(\ve{u}^k)\delta \ve{u}^k + \ve{F}(\ve{u}^k)|| \leq \eta^k
-  ||\ve{F}(\ve{u}^k)||,\ \eta^k \in [0,1)
+  \pause Where does the Jacobian come from?
+  \begin{itemize}
+  \item The Jacobian can come from hand-coded derivatives
+    \begin{itemize}
+    \item Tedious and error prone
+    \item Repeated for each equation set and hard to do for
+      multiphysics
+    \end{itemize}
+  \end{itemize} 
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Jacobian Approximations}
+
+  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
+    {Matrix-Free Approximation}
+    \begin{itemize}
+    \item Krylov methods only need the action of the linear operator
+    \end{itemize}
+
+    \[
+    \ve{J}(\ve{u})\ve{v} = \frac{\ve{F}(\ve{u} + \epsilon \ve{v}) -
+      \ve{F}(\ve{u})}{\epsilon}
     \]
 
     \begin{itemize}
-    \item Choose a Krylov method to solve for the Newton correction
-    \item GMRES with a long recurrence relation observed as more
-      robust
-    \item Generates a monotonically decreasing residual from
-      maintaining the optimization and orthogonality conditions
-    \end{itemize}
-
-    \pause Where does the Jacobian come from?  \pause
-    \begin{itemize}
-    \item The Jacobian can come from hand-coded derivatives
+    \item Forms the basis of Jacobian-Free Newton-Krylov (JFNK) methods
       \begin{itemize}
-      \item Tedious and error prone
-      \item Repeated for each equation set and hard to do for
-        multiphysics
+      \item Sensitive to scaling and discretization error (Kelly,1995)
+      \item Eventually break even with generating and storing the full
+        Jacobian (Knoll,1994)
       \end{itemize}
-    \end{itemize} 
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Matrix-Free Approximation}
-
-  
-  \begin{itemize}
-  \item Krylov methods only need the action of the linear operator
-  \item The action of the Jacobian can be approximated using a forward
-    difference
-  \end{itemize}
-
-  \[
-  \ve{J}(\ve{u})\ve{v} = \frac{\ve{F}(\ve{u} + \epsilon \ve{v}) -
-    \ve{F}(\ve{u})}{\epsilon}
-  \]
-
-  \begin{itemize}
-  \item Forms the basis of Jacobian-Free Newton-Krylov (JFNK) methods
-    \begin{itemize}
-    \item Sensitive to scaling and discretization error
-    \item Still have to form part of Jacobian periodically for
-      preconditioning
-    \item Eventually break even with generating and storing the full
-      Jacobian
     \end{itemize}
-  \end{itemize}
+  \end{beamerboxesrounded}
 
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Automatic Differentiation}
-
-  \begin{itemize}
-  \item Automatically generate Jacobians from nonlinear function
-    evaluations
+  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
+    {Automatic Differentiation}
     \begin{itemize}
-    \item Overload math operators and apply the chain rule (FAD)
-    \item Yields evaluations as accurate as function discretization
+    \item Automatically generate Jacobians from nonlinear function
+      evaluations
+      \begin{itemize}
+      \item Overload math operators and apply the chain rule (FAD)
+      \item Yields evaluations as accurate as function discretization
+      \end{itemize}
+    \item Performance studies give acceptable results for use in
+      large-scale, production physics codes (Bartlett,2006)
     \end{itemize}
-  \item Modern packages take an element-level assembly approach
-    \begin{itemize}
-    \item Function evaluations are local, communication builds global
-      data
-    \end{itemize}
-  \end{itemize}
-
-  \[
-  \ve{J}(\ve{u}) = \sum_{i=1}^N \ve{Q}^T_i \ve{J}_k \ve{P}_i
-  \]
-  \[
-  e_k : \mathbb{R}^{n_k} \rightarrow \mathbb{R}^{m_k},\ \ve{J}_{k_i} =
-  \partial e_{k_i} / \partial P_i u,\ \ve{P} \in \mathbb{R}^{m_{k_i}
-    \times N}
-  \]
-
-  \begin{itemize}
-  \item Performance studies give acceptable results for use in
-    large-scale, production physics codes
-  \end{itemize}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}[fragile]{The FANM Method}
-
-  Forward-Automated Newton-MCSA
-
-  \pause
-  \begin{algorithm}[H]
-    \begin{algorithmic}[1]
-      \STATE $k := 0$ 
-      \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon
-        ||\ve{F}(\ve{u}^{0})||$} 
-      \STATE $\ve{J}(\ve{u}^{k}) \leftarrow AD(\ve{F}(\ve{u}^k))$ 
-      \COMMENT{Automatic differentiation} 
-      \STATE $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
-      \COMMENT{Solve for the Newton correction with MCSA} 
-      \STATE $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$ 
-      \STATE $k \leftarrow k+1$ 
-      \ENDWHILE
-    \end{algorithmic}
-    \caption{FANM}
-  \end{algorithm}
-
-  \pause
-  \begin{itemize}
-  \item Robustness of Newton's method (inexact)
-  \item Accuracy and convenience of FAD
-  \item Parallelism, memory, and resiliency benefits of MCSA
-  \item Requires only nonlinear function evaluations
-  \end{itemize}
-
+  \end{beamerboxesrounded}
 
 \end{frame}
 
@@ -1496,7 +1423,7 @@ Questions
 
   \end{columns}
 
-  \pause \small{ \[
+  \small{ \[
     \begin{array}{lccccccccccccccc}
       \ve{A}\ values: & 2 & 8 & 4 & 5 & 1 & 2 & 1 & 1 & 3 & 7 & 2 & 4
       & 9 & 9 & 1 \\ column: & 1 & 3 & 1 & 2 & 4 & 2 & 3 & 5 & 3 & 4 &
@@ -1521,6 +1448,37 @@ Questions
       matrix
     \end{itemize}
   \end{beamerboxesrounded}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{The FANM Method}
+
+  Forward-Automated Newton-MCSA
+
+  \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+      \STATE $k := 0$ 
+      \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon
+        ||\ve{F}(\ve{u}^{0})||$} 
+      \STATE $\ve{J}(\ve{u}^{k}) \leftarrow AD(\ve{F}(\ve{u}^k))$ 
+      \COMMENT{Automatic differentiation} 
+      \STATE $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
+      \COMMENT{Solve for the Newton correction with MCSA} 
+      \STATE $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$ 
+      \STATE $k \leftarrow k+1$ 
+      \ENDWHILE
+    \end{algorithmic}
+    \caption{FANM}
+  \end{algorithm}
+
+  \begin{itemize}
+  \item Robustness of Newton's method (inexact)
+  \item Accuracy and convenience of FAD
+  \item Parallelism, memory, and resiliency benefits of MCSA
+  \item Requires only nonlinear function evaluations
+  \end{itemize}
+
 
 \end{frame}
 
