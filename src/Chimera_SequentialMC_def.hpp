@@ -77,12 +77,6 @@ SequentialMC<Scalar,LO,GO,RNG>::SequentialMC(
     this->b_num_iters = 0;
     this->b_is_converged = false;
 
-    // Build the stationary iteration.
-    d_stationary_iteration = 
-	Teuchos::rcp( new StationaryIteration<Scalar,LO,GO>( 
-			  this->b_linear_problem,
-			  this->b_linear_operator_split ) );
-
     // Generate the residual linear problem.
     Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map =
 	this->b_linear_problem->getOperator()->getRowMap();
@@ -92,17 +86,16 @@ SequentialMC<Scalar,LO,GO,RNG>::SequentialMC(
 
     RCP_LinearProblem residual_problem = 
 	Teuchos::rcp( new LinearProblem<Scalar,LO,GO>( 
-			  residual_problem,
+			  this->b_linear_problem->getOperator(),
 			  delta_X,
-			  this->b_linear_problem->getResidual() );
+			  this->b_linear_problem->getResidual() ) );
 
     // Build the Nuemann-Ulam solver.
     d_nu_solver = NeumannUlamSolverFactory::create( 
-	plist, this->linear_problem, this->b_linear_operator_split, d_rng );
+	plist, residual_problem, this->b_linear_operator_split, d_rng );
 
     // Check postconditions.
     testPostcondition( !this->b_linear_operator_split.is_null() );
-    testPostcondition( !d_stationary_iteration.is_null() );
     testPostcondition( !d_rng.is_null() );
     testPostcondition( !d_nu_solver.is_null() );
 }

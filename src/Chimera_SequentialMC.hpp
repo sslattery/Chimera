@@ -40,7 +40,6 @@
 #define Chimera_SEQUENTIALMC_HPP
 
 #include <Chimera_LinearProblem.hpp>
-#include <Chimera_StationaryIteration.hpp>
 #include <Chimera_NeumannUlamSolver.hpp>
 
 #include <Teuchos_RCP.hpp>
@@ -66,8 +65,6 @@ class SequentialMC : public LinearSolver<Scalar,LO,GO>
     typedef GO                                        global_ordinal_type;
     typedef LinearSolver<Scalar,LO,GO>                Base;
     typedef typename Base::RCP_LinearProblem          RCP_LinearProblem;
-    typedef StationaryIteration<Scalar,LO,GO>         StationaryIterationType;
-    typedef Teuchos::RCP<StationaryIterationType>     RCP_StationaryIteration;
     typedef Teuchos::RCP<RNG>                         RCP_RNG;
     typedef NeumannUlamSolver<Scalar,LO,GO,RNG>       NeumannUlamSolverType;  
     typedef Teuchos::RCP<NeumannUlamSolverType>       RCP_NeumannUlamSolver;
@@ -88,9 +85,6 @@ class SequentialMC : public LinearSolver<Scalar,LO,GO>
 
     // Random number generator.
     RCP_RNG d_rng;
-
-    // Stationary iteration.
-    RCP_StationaryIteration d_stationary_iteration;
 
     // Neumann-Ulam solver.
     RCP_NeumannUlamSolver d_nu_solver;
