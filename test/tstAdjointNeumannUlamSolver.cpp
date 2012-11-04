@@ -49,7 +49,7 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
 	Teuchos::DefaultComm<int>::getComm();
 
     // Build the linear operator - this is a 2D Transient Diffusion operator.
-    int N = 10;
+    int N = 50;
     int problem_size = N*N;
     double dx = 0.01;
     double dy = 0.01;
@@ -193,7 +193,7 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     // Build the Adjoint solver.
     std::string split_type = "JACOBI";
     double weight_cutoff = 1.0e-4;
-    int histories_per_stage = 100;
+    int histories_per_stage = 1000;
     Teuchos::RCP<Teuchos::ParameterList> plist =
 	Teuchos::rcp( new Teuchos::ParameterList() );
     plist->set<std::string>("SPLIT TYPE", split_type);

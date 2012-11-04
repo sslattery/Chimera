@@ -54,6 +54,7 @@
 #include <Teuchos_Comm.hpp>
 #include <Teuchos_Ptr.hpp>
 #include <Teuchos_as.hpp>
+#include <Teuchos_OrdinalTraits.hpp>
 
 #include <Tpetra_Map.hpp>
 #include <Tpetra_CrsMatrix.hpp>
@@ -139,8 +140,8 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    // Get the current history state.
 	    global_state = bank.top().globalState();
 	    local_state = state_map->getLocalElement( global_state );
-	    
-	    // Update LHS.
+	    std::cout << bank.top().weight() << std::endl;
+	    // Update LHS tally.
 	    lhs_view[local_state] += bank.top().weight();
 
 	    // Sample the probability matrix to get the new state.
@@ -148,38 +149,51 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 		local_state, local_indices, local_values );
 	    new_local_state = SamplingTools::sampleLocalDiscretePDF(
 		local_values, local_indices, this->b_rng );
-	    new_global_state = col_map->getGlobalElement( new_local_state );
 
-	    // Check if the new state is on process.
-	    new_state_is_local = 
-		state_map->isNodeLocalElement( new_local_state );
-
-	    // Compute iteration matrix transition data from on process data.
-	    if ( new_state_is_local )
+	    // The new state is valid.
+	    if ( new_local_state != Teuchos::OrdinalTraits<LO>::invalid() )
 	    {
-		transition_h = OperatorTools::getMatrixComponentFromLocal(
-		    this->b_linear_operator_split->iterationMatrix(), 
-		    new_local_state, local_state );
+		new_global_state = col_map->getGlobalElement( new_local_state );
+
+		// Check if the new state is on process.
+		new_state_is_local = 
+		    state_map->isNodeGlobalElement( new_global_state );
+
+		// Compute iteration matrix transition data from on process
+		// data. 
+		if ( new_state_is_local )
+		{
+		    transition_h = OperatorTools::getMatrixComponentFromLocal(
+			this->b_linear_operator_split->iterationMatrix(), 
+			new_local_state, local_state );
+		}
+		// Compute iteration matrix transition data from ghosted
+		// data. 
+		else
+		{
+		    transition_h = OperatorTools::getMatrixComponentFromGlobal(
+			d_ghost_iteration_matrix, 
+			new_global_state, global_state );
+		}
+
+		// Get the transition probability.
+		transition_p = OperatorTools::getMatrixComponentFromLocal(
+		    d_probability_matrix, local_state, new_local_state );
+
+		// Compute the state transition weight.
+		if ( transition_p == 0.0 )
+		{
+		    transition_weight = 0.0;
+		}
+		else
+		{
+		    transition_weight = std::abs( transition_h / transition_p );
+		}
 	    }
-	    // Compute iteration matrix transition data from ghosted data.
+	    // Invalid state. Terminate the history.
 	    else
-	    {
-		transition_h = OperatorTools::getMatrixComponentFromGlobal(
-		    d_ghost_iteration_matrix, new_global_state, global_state );
-	    }
-
-	    // Get the transition probability.
-	    transition_p = OperatorTools::getMatrixComponentFromLocal(
-		d_probability_matrix, local_state, new_local_state );
-
-	    // Compute the state transition weight.
-	    if ( transition_p == 0.0 )
 	    {
 		transition_weight = 0.0;
-	    }
-	    else
-	    {
-		transition_weight = std::abs( transition_h / transition_p );
 	    }
 
 	    // We want to check this to insure the weight is decreasing.

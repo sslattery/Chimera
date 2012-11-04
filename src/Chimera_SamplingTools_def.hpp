@@ -51,6 +51,7 @@
 #include <Teuchos_CommHelpers.hpp>
 #include <Teuchos_Ptr.hpp>
 #include <Teuchos_ScalarTraits.hpp>
+#include <Teuchos_OrdinalTraits.hpp>
 
 namespace Chimera
 {
@@ -160,7 +161,10 @@ Teuchos::ArrayRCP<GO> SamplingTools::stratifySampleGlobalPDF(
 
 //---------------------------------------------------------------------------//
 /*!
- * \brief Random sample a local discrete PDF for a new local state index.
+ * \brief Random sample a local discrete PDF for a new local state index. The
+ * local PDF can sum to less than 1. If the case between the PDF sum and 1 is
+ * sampled then an invalid ordinal is achieved, signaling the end of a
+ * history. 
  */
 template<class Scalar, class LO, class RNG>
 LO SamplingTools::sampleLocalDiscretePDF( 
@@ -168,11 +172,7 @@ LO SamplingTools::sampleLocalDiscretePDF(
     const Teuchos::ArrayView<const LO>& pdf_indices,
     const Teuchos::RCP<RNG>& rng )
 {
-    Scalar pdf_sum = std::accumulate( 
-	pdf_values.begin(), pdf_values.end(), 0.0 );
-
-    Scalar zeta = pdf_sum * 
-		  ( Teuchos::as<Scalar>(RNGTraits<RNG>::generate(*rng)) /
+    Scalar zeta = ( Teuchos::as<Scalar>(RNGTraits<RNG>::generate(*rng)) /
 		    Teuchos::as<Scalar>(RNGTraits<RNG>::max(*rng)) );
 
     Scalar cdf = 0.0;
@@ -194,8 +194,7 @@ LO SamplingTools::sampleLocalDiscretePDF(
 	}
     }
 
-    testPostcondition( zeta <= cdf );
-    return 0;
+    return Teuchos::OrdinalTraits<LO>::invalid();
 }
 
 //---------------------------------------------------------------------------//
