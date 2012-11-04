@@ -64,6 +64,7 @@ MCSA<Scalar,LO,GO,RNG>::MCSA(
     const RCP_ParameterList& plist )
     : d_rng( RNGTraits<RNG>::create() )
 {
+    // Check preconditions.
     testPrecondition( !linear_problem.is_null() );
     testPrecondition( !plist.is_null() );
 
@@ -93,11 +94,13 @@ MCSA<Scalar,LO,GO,RNG>::MCSA(
 	Teuchos::rcp( new LinearProblem<Scalar,LO,GO>( 
 			  residual_problem,
 			  delta_X,
-			  this->b_linear_problem->getResidual() );
+			  this->b_linear_problem->getResidual() ) );
 
+    // Build the Nuemann-Ulam solver.
     d_nu_solver = NeumannUlamSolverFactory::create( 
 	plist, this->linear_problem, this->b_linear_operator_split, d_rng );
-
+		      
+    //  Check post conditions.
     testPostcondition( !this->b_linear_operator_split.is_null() );
     testPostcondition( !d_stationary_iteration.is_null() );
     testPostcondition( !d_rng.is_null() );
@@ -163,6 +166,10 @@ void MCSA<Scalar,LO,GO,RNG>::iterate()
 
 	// Update iteration count.
 	++(this->b_num_iters);
+
+	// Print iteration data.
+	std::cout << "MCSA Iteration " << this->b_num_iters << ": Residual = "
+		  << residual_norm << std::endl;
     }
 
     // Check for convergence.
