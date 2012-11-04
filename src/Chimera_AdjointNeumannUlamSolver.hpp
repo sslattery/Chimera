@@ -41,9 +41,9 @@
 #ifndef Chimera_ADJOINTNEUMANNULAMSOLVER_HPP
 #define Chimera_ADJOINTNEUMANNULAMSOLVER_HPP
 
-#include <Chimera_NeumannUlamSolver.hpp>
-#include <Chimera_LinearProblem.hpp>
-#include <Chimera_LinearOperatorSplit.hpp>
+#include "Chimera_NeumannUlamSolver.hpp"
+#include "Chimera_LinearProblem.hpp"
+#include "Chimera_LinearOperatorSplit.hpp"
 #include "Chimera_History.hpp"
 #include "Chimera_HistoryBank.hpp"
 #include "Chimera_HistoryBuffer.hpp"
