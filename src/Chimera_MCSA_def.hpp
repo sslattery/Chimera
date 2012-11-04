@@ -32,20 +32,25 @@
 */
 //---------------------------------------------------------------------------//
 /*!
- * \file Chimera_StationarySolver_def.hpp
+ * \file Chimera_MCSA_def.hpp
  * \author Stuart R. Slattery
- * \brief StationarySolver definition.
+ * \brief MCSA definition.
  */
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_STATIONARYSOLVER_DEF_HPP
-#define Chimera_STATIONARYSOLVER_DEF_HPP
+#ifndef Chimera_MCSA_DEF_HPP
+#define Chimera_MCSA_DEF_HPP
 
 #include "Chimera_Assertion.hpp"
+#include "Chimera_RNGTraits.hpp"
 #include "Chimera_LinearOperatorSplitFactory.hpp"
+#include "Chimera_NeumannUlamSolverFactory.hpp"
 
 #include <Teuchos_ScalarTraits.hpp>
 #include <Teuchos_as.hpp>
+
+#include <Tpetra_Map.hpp>
+#include <Tpetra_Vector.hpp>
 
 namespace Chimera
 {
@@ -53,45 +58,66 @@ namespace Chimera
 /*!
  * \brief Constructor.
  */
-template<class Scalar, class LO, class GO>
-StationarySolver<Scalar,LO,GO>::StationarySolver( 
+template<class Scalar, class LO, class GO, class RNG>
+MCSA<Scalar,LO,GO,RNG>::MCSA( 
     const RCP_LinearProblem& linear_problem,
     const RCP_ParameterList& plist )
+    : d_rng( RNGTraits<RNG>::create() )
 {
     testPrecondition( !linear_problem.is_null() );
     testPrecondition( !plist.is_null() );
 
+    // Set the base data.
     this->b_linear_problem = linear_problem;
     this->b_linear_operator_split = LinearOperatorSplitFactory::create( 
-	plist, linear_problem->getOperator() );
+	plist, this->linear_problem->getOperator() );
     this->b_tolerance = plist->get<Scalar>("TOLERANCE");
     this->b_max_num_iters = plist->get<int>("MAX ITERS");
     this->b_num_iters = 0;
     this->b_is_converged = false;
 
+    // Build the stationary iteration.
     d_stationary_iteration = 
 	Teuchos::rcp( new StationaryIteration<Scalar,LO,GO>( 
 			  this->b_linear_problem,
 			  this->b_linear_operator_split ) );
 
+    // Generate the residual linear problem.
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > row_map =
+	this->b_linear_problem->getOperator()->getRowMap();
+
+    Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> > delta_X =
+	Tpetra::createVector<Scalar,LO,GO>( row_map );
+
+    RCP_LinearProblem residual_problem = 
+	Teuchos::rcp( new LinearProblem<Scalar,LO,GO>( 
+			  residual_problem,
+			  delta_X,
+			  this->b_linear_problem->getResidual() );
+
+    d_nu_solver = NeumannUlamSolverFactory::create( 
+	plist, this->linear_problem, this->b_linear_operator_split, d_rng );
+
     testPostcondition( !this->b_linear_operator_split.is_null() );
     testPostcondition( !d_stationary_iteration.is_null() );
+    testPostcondition( !d_rng.is_null() );
+    testPostcondition( !d_nu_solver.is_null() );
 }
 
 //---------------------------------------------------------------------------//
 /*!
  * \brief Destructor.
  */
-template<class Scalar, class LO, class GO>
-StationarySolver<Scalar,LO,GO>::~StationarySolver()
+template<class Scalar, class LO, class GO, class RNG>
+MCSA<Scalar,LO,GO,RNG>::~MCSA()
 { /* ... */ }
 
 //---------------------------------------------------------------------------//
 /*!
  * \brief Iterate until convergence.
  */
-template<class Scalar, class LO, class GO>
-void StationarySolver<Scalar,LO,GO>::iterate()
+template<class Scalar, class LO, class GO, class RNG>
+void MCSA<Scalar,LO,GO,RNG>::iterate()
 {
     // Generate the convergence criteria.
     typename Teuchos::ScalarTraits<Scalar>::magnitudeType b_norm = 
@@ -99,7 +125,7 @@ void StationarySolver<Scalar,LO,GO>::iterate()
     typename Teuchos::ScalarTraits<Scalar>::magnitudeType 
 	convergence_criteria = this->b_tolerance * b_norm;
 
-    // Setup.
+    // Setup for iteration.
     typename Teuchos::ScalarTraits<Scalar>::magnitudeType 
 	residual_norm = 1.0;
     this->b_num_iters = 0;
@@ -120,7 +146,19 @@ void StationarySolver<Scalar,LO,GO>::iterate()
 	    this->b_linear_problem->getResidual(),
 	    this->b_linear_problem->getResidual() );
 
-	// Update norm for convergence.
+	// Neumann-Ulam solver for the correction.
+	d_nu_solver->linearProblem->getRHS()->putScalar( 0.0 );
+	d_nu_solver->walk();
+
+	// Apply the correction.
+	this->b_linear_problem->getRHS()->update( 
+	    1.0, d_nu_solver->linearProblem->getRHS(), 1.0 );
+
+	// Update residual norm for convergence.
+	this->b_linear_problem->computeResidual();
+	this->b_linear_operator_split->applyInvM(
+	    this->b_linear_problem->getResidual(),
+	    this->b_linear_problem->getResidual() );
 	residual_norm = this->b_linear_problem->getResidual()->normInf();
 
 	// Update iteration count.
@@ -142,8 +180,8 @@ void StationarySolver<Scalar,LO,GO>::iterate()
 
 //---------------------------------------------------------------------------//
 
-#endif // end Chimera_STATIONARYSOLVER_DEF_HPP
+#endif // end Chimera_MCSA_DEF_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_StationarySolver_def.hpp
+// end Chimera_MCSA_def.hpp
 //---------------------------------------------------------------------------//

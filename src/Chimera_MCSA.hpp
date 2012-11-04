@@ -39,53 +39,72 @@
 #ifndef Chimera_MCSA_HPP
 #define Chimera_MCSA_HPP
 
+#include <Chimera_LinearProblem.hpp>
+#include <Chimera_StationaryIteration.hpp>
+#include <Chimera_NeumannUlamSolver.hpp>
+
 #include <Teuchos_RCP.hpp>
 #include <Teuchos_ParameterList.hpp>
-
-#include <Epetra_CrsMatrix.h>
-#include <Epetra_LinearProblem.h>
 
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
  * \class MCSA
- * \brief Epetra-based MCSA implementation;
+ * \brief MCSA solver.
  */
 //---------------------------------------------------------------------------//
-class MCSA
+template<class Scalar, class LO, class GO, class RNG>
+class MCSA : public LinearSolver<Scalar,LO,GO>
 {
   public:
 
-    // Constructor.
-    MCSA( Teuchos::RCP<Epetra_LinearProblem> &linear_problem,
-	  Teuchos::RCP<Teuchos::ParameterList> &plist );
+    //@{
+    //! Typedefs.
+    typedef Scalar                                    scalar_type;
+    typedef LO                                        local_ordinal_type;
+    typedef GO                                        global_ordinal_type;
+    typedef LinearSolver<Scalar,LO,GO>                Base;
+    typedef typename Base::RCP_LinearProblem          RCP_LinearProblem;
+    typedef StationaryIteration<Scalar,LO,GO>         StationaryIterationType;
+    typedef Teuchos::RCP<StationaryIterationType>     RCP_StationaryIteration;
+    typedef Teuchos::RCP<RNG>                         RCP_RNG;
+    typedef NeumannUlamSolver<Scalar,LO,GO,RNG>       NeumannUlamSolverType;  
+    typedef Teuchos::RCP<NeumannUlamSolverType>       RCP_NeumannUlamSolver;
+    typedef Teuchos::RCP<Teuchos::ParameterList>      RCP_ParameterList;
+    //@}
 
-    // Destructor.
+    //! Constructor.
+    MCSA( const RCP_LinearProblem& linear_problem,
+	  const RCP_ParameterList& plist );
+
+    //! Destructor.
     ~MCSA();
 
-    // Solve.
+    //! Iterate until convergence.
     void iterate();
-
-    // Get the iteration count from the last solve.
-    int getNumIters() const
-    { return d_num_iters; }
 
   private:
 
-    // Linear problem.
-    Teuchos::RCP<Epetra_LinearProblem> d_linear_problem;
+    // Random number generator.
+    RCP_RNG d_rng;
 
-    // Parameter list.
-    Teuchos::RCP<Teuchos::ParameterList> d_plist;
+    // Stationary iteration.
+    RCP_StationaryIteration d_stationary_iteration;
 
-    // Iteration count.
-    int d_num_iters;
+    // Neumann-Ulam solver.
+    RCP_NeumannUlamSolver d_nu_solver;
 };
 
+} // end namespace Chimera
+
+//---------------------------------------------------------------------------//
+// Template includes.
 //---------------------------------------------------------------------------//
 
-} // end namespace Chimera
+#include "Chimera_MCSA_def.hpp"
+
+//---------------------------------------------------------------------------//
 
 #endif // end Chimera_MCSA_HPP
 
