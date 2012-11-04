@@ -40,6 +40,8 @@ APPEND_SET(HEADERS
   Chimera_LinearProblem_def.hpp
   Chimera_LinearSolver.hpp
   Chimera_LinearSolverFactory.hpp
+  Chimera_MCSA.hpp
+  Chimera_MCSA_def.hpp
   Chimera_NeumannUlamSolver.hpp
   Chimera_NeumannUlamSolverFactory.hpp
   Chimera_NeumannUlamSolverFactory_def.hpp
@@ -48,6 +50,8 @@ APPEND_SET(HEADERS
   Chimera_RNGTraits.hpp
   Chimera_SamplingTools.hpp
   Chimera_SamplingTools_def.hpp
+  Chimera_SequentialMC.hpp
+  Chimera_SequentialMC_def.hpp
   Chimera_StationaryIteration.hpp
   Chimera_StationaryIteration_def.hpp
   Chimera_StationarySolver.hpp
