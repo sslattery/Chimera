@@ -71,7 +71,8 @@ class LinearProblem
   public:
 
     // Constructor.
-    LinearProblem( const RCP_TpetraCrsMatrix& A, const RCP_TpetraVector& x, 
+    LinearProblem( const RCP_TpetraCrsMatrix& A, 
+		   const RCP_TpetraVector& x, 
 		   const RCP_TpetraVector& b );
 
     // Destructor.

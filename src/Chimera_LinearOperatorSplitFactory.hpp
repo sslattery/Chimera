@@ -52,7 +52,7 @@ namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
- * \class LinerarOperatorSplitFactory
+ * \class LinearOperatorSplitFactory
  * \brief Factory for linear operator split implementations.
  */
 //---------------------------------------------------------------------------//

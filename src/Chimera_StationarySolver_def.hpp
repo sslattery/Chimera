@@ -93,30 +93,40 @@ StationarySolver<Scalar,LO,GO>::~StationarySolver()
 template<class Scalar, class LO, class GO>
 void StationarySolver<Scalar,LO,GO>::iterate()
 {
+    // Generate the convergence criteria.
     typename Teuchos::ScalarTraits<Scalar>::magnitudeType b_norm = 
 	this->b_linear_problem->getRHS()->normInf();
     typename Teuchos::ScalarTraits<Scalar>::magnitudeType 
 	convergence_criteria = this->b_tolerance * b_norm;
 
+    // Setup.
     typename Teuchos::ScalarTraits<Scalar>::magnitudeType 
 	residual_norm = 1.0;
     this->b_num_iters = 0;
     this->b_is_converged = false;
 
+    // Iterate.
     while ( residual_norm > 
 	    Teuchos::as<typename Teuchos::ScalarTraits<Scalar>::magnitudeType>(
 		convergence_criteria) &&
 	    this->b_num_iters < this->b_max_num_iters )
     {
+	// Do a stationary iteration.
 	d_stationary_iteration->doOneIteration();
 
+	// Compute the new residual.
 	this->b_linear_problem->computeResidual();
+
+	this->b_linear_operator_split->applyInvM( 
+	    this->b_linear_problem->getResidual(), 
+	    this->b_linear_problem->getResidual() );
 
 	residual_norm = this->b_linear_problem->getResidual()->normInf();
 
 	++(this->b_num_iters);
     }
 
+    // Check for convergence.
     if ( residual_norm <= 
 	 Teuchos::as<typename Teuchos::ScalarTraits<Scalar>::magnitudeType>(
 	     convergence_criteria) )

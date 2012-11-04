@@ -41,41 +41,45 @@
 #ifndef Chimera_NEUMANNULAMSOLVERFACTORY_DEF_HPP
 #define Chimera_NEUMANNULAMSOLVERFACTORY_DEF_HPP
 
+#include <string>
+
 #include "Chimera_Assertion.hpp"
 #include "Chimera_AdjointNeumannUlamSolver.hpp"
-
-#include <Teuchos_RCP.hpp>
-#include <Teuchos_ParameterList.hpp>
 
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
- * \class LinerarOperatorSplitFactory
- * \brief Factory for linear operator split implementations.
+ * \brief Creation method
  */
-//---------------------------------------------------------------------------//
-class NeumannUlamSolverFactory
+template<class Scalar, class LO, class GO, class RNG>
+Teuchos::RCP<NeumannUlamSolver<Scalar,LO,GO,RNG> >
+NeumannUlamSolverFactory::create( 
+    const Teuchos::RCP<Teuchos::ParameterList>& plist,
+    const Teuchos::RCP<LinearProblem<Scalar,LO,GO> >& linear_problem,
+    const Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> >& lin_op_split,
+    const Teuchos::RCP<RNG>& rng )
 {
-  public:
+    testPrecondition( !plist.is_null() );
+    testPrecondition( !linear_problem.is_null() );
+    testPrecondition( !lin_op_split.is_null() );
+    testPrecondition( !rng.is_null() );
 
-    //! Constructor.
-    NeumannUlamSolverFactory()
-    { /* ... */ }
+    Teuchos::RCP<NeumannUlamSolver<Scalar,LO,GO,RNG> > nu_solver;
 
-    //! Destructor.
-    ~NeumannUlamSolverFactory()
-    { /* ... */ }
+    if( plist->get<std::string>("MC TYPE") == "ADJOINT" )
+    {
+	nu_solver = Teuchos::rcp(
+	    new AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>(
+		linear_problem, lin_op_split, rng, plist ) );
+    }
 
-    // Factory method.
-    template<class Scalar, class LO, class GO, class RNG>
-    static Teuchos::RCP<NeumannUlamSolver<Scalar,LO,GO,RNG> >
-    create( 
-	const Teuchos::RCP<Teuchos::ParameterList>& plist,
-	const Teuchos::RCP<LinearProblem<Scalar,LO,GO> >& linear_problem,
-	const Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> >& lin_op_split,
-	const Teuchos::RCP<RNG>& rng );
-};
+    testPostcondition( !nu_solver.is_null() );
+
+    return nu_solver;
+}
+
+//---------------------------------------------------------------------------//
 
 } // end namepsace Chimera
 

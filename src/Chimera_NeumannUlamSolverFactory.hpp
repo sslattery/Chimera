@@ -41,54 +41,50 @@
 #ifndef Chimera_NEUMANNULAMSOLVERFACTORY_HPP
 #define Chimera_NEUMANNULAMSOLVERFACTORY_HPP
 
-#include <string>
-
 #include "Chimera_NeumannUlamSolver.hpp"
 #include "Chimera_LinearProblem.hpp"
 #include "Chimera_LinearOperatorSplit.hpp"
+
+#include <Teuchos_RCP.hpp>
+#include <Teuchos_ParameterList.hpp>
 
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
- * \brief Creation method
+ * \class NeumannUlamSolverFactory
+ * \brief Factory for Neumann-Ulam solvers.
  */
-template<class Scalar, class LO, class GO, class RNG>
-Teuchos::RCP<NeumannUlamSolver<Scalar,LO,GO,RNG> >
-NeumannUlamSolverFactory::create( 
-    const Teuchos::RCP<Teuchos::ParameterList>& plist,
-    const Teuchos::RCP<LinearProblem<Scalar,LO,GO> >& linear_problem,
-    const Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> >& lin_op_split,
-    const Teuchos::RCP<RNG>& rng )
-{
-    testPrecondition( !plist.is_null() );
-    testPrecondition( !linear_problem.is_null() );
-    testPrecondition( !lin_op_split.is_null() );
-    testPrecondition( !rng.is_null() );
-
-    Teuchos::RCP<NeumannUlamSolver<Scalar,LO,GO,RNG> > nu_solver;
-
-    if( plist->get<std::string>("MC TYPE") == "ADJOINT" )
-    {
-	nu_solver = Teuchos::rcp(
-	    new AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>(
-		linear_problem, lin_op_split, rng, plist ) );
-    }
-
-    testPostcondition( !nu_solver.is_null() );
-
-    return nu_solver;
-}
-
 //---------------------------------------------------------------------------//
+class NeumannUlamSolverFactory
+{
+  public:
 
-} // end namepsace Chimera
+    //! Constructor.
+    NeumannUlamSolverFactory()
+    { /* ... */ }
+
+    //! Destructor.
+    ~NeumannUlamSolverFactory()
+    { /* ... */ }
+
+    // Factory method.
+    template<class Scalar, class LO, class GO, class RNG>
+    static Teuchos::RCP<NeumannUlamSolver<Scalar,LO,GO,RNG> >
+    create( 
+	const Teuchos::RCP<Teuchos::ParameterList>& plist,
+	const Teuchos::RCP<LinearProblem<Scalar,LO,GO> >& linear_problem,
+	const Teuchos::RCP<LinearOperatorSplit<Scalar,LO,GO> >& lin_op_split,
+	const Teuchos::RCP<RNG>& rng );
+};
 
 //---------------------------------------------------------------------------//
 // Template includes.
 //---------------------------------------------------------------------------//
 
 #include "Chimera_NeumannUlamSolverFactory_def.hpp"
+
+} // end namepsace Chimera
 
 //---------------------------------------------------------------------------//
 
