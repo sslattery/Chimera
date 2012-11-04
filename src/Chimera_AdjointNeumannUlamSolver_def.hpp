@@ -140,7 +140,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    // Get the current history state.
 	    global_state = bank.top().globalState();
 	    local_state = state_map->getLocalElement( global_state );
-	    std::cout << bank.top().weight() << std::endl;
+
 	    // Update LHS tally.
 	    lhs_view[local_state] += bank.top().weight();
 
@@ -411,7 +411,7 @@ bool AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::allBanksEmpty(
 
     Teuchos::reduceAll( *comm, Teuchos::REDUCE_SUM, bank.size(), 
 			Teuchos::Ptr<size_type>(&global_num_histories) );
- 
+
     return 0 == global_num_histories;
 }
 
