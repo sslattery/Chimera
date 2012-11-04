@@ -44,7 +44,10 @@
 #include <string>
 
 #include "Chimera_Assertion.hpp"
+#include "Chimera_BoostRNGTraits.hpp"
 #include "Chimera_StationarySolver.hpp"
+#include "Chimera_SequentialMC.hpp"
+#include "Chimera_MCSA.hpp"
 
 namespace Chimera
 {
@@ -65,11 +68,30 @@ LinearSolverFactory::create(
 
     if( plist->get<std::string>("SOLVER TYPE") == "STATIONARY" )
     {
-	linear_solver = 
-	    Teuchos::rcp( new StationarySolver<Scalar,LO,GO>( linear_problem,
-							      plist ) );
+	linear_solver = Teuchos::rcp( 
+	    new StationarySolver<Scalar,LO,GO>( linear_problem, plist ) );
     }
 
+    else if( plist->get<std::string>("SOLVER TYPE") == "SEQUENTIAL MC" )
+    {
+	if ( plist->get<std::string>("RNG TYPE") == "MT19937" )
+	{
+	    linear_solver = Teuchos::rcp( 
+		new SequentialMC<Scalar,LO,GO,Boost::mt19937>( 
+		    linear_problem, plist ) );
+	}
+    }
+
+    else if( plist->get<std::string>("SOLVER TYPE") == "MCSA" )
+    {
+	if ( plist->get<std::string>("RNG TYPE") == "MT19937" )
+	{
+	    linear_solver = Teuchos::rcp( 
+		new MCSA<Scalar,LO,GO,Boost::mt19937>( 
+		    linear_problem, plist ) );
+	}
+    }
+    
     testPostcondition( !linear_solver.is_null() );
 
     return linear_solver;

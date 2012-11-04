@@ -73,7 +73,7 @@ class SequentialMC : public LinearSolver<Scalar,LO,GO>
 
     //! Constructor.
     SequentialMC( const RCP_LinearProblem& linear_problem,
-	  const RCP_ParameterList& plist );
+		  const RCP_ParameterList& plist );
 
     //! Destructor.
     ~SequentialMC();
