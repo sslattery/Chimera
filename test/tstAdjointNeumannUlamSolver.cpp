@@ -147,7 +147,7 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
 	row = i + j*N;
 	if ( row_map->isNodeGlobalElement( row ) )
 	{
-	    B->replaceGlobalValue( row, 5.0 );
+	    B->replaceGlobalValue( row, -5.0 );
 	}
     }
     // right
@@ -157,7 +157,7 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
 	row = i + j*N;
 	if ( row_map->isNodeGlobalElement( row ) )
 	{
-	    B->replaceGlobalValue( row, 5.0 );
+	    B->replaceGlobalValue( row, -5.0 );
 	}
     }
     // bottom
@@ -193,7 +193,7 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     // Build the Adjoint solver.
     std::string split_type = "JACOBI";
     double weight_cutoff = 1.0e-4;
-    int histories_per_stage = 10000;
+    int histories_per_stage = 1000;
     Teuchos::RCP<Teuchos::ParameterList> plist =
 	Teuchos::rcp( new Teuchos::ParameterList() );
     plist->set<std::string>("SPLIT TYPE", split_type);

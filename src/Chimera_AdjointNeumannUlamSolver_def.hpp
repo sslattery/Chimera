@@ -112,7 +112,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     this->b_linear_problem->getLHS()->putScalar( 0.0 );
     Teuchos::ArrayRCP<Scalar> lhs_view =     
 	this->b_linear_problem->getLHS()->get1dViewNonConst();
-   
+
     // Sample the source and populate the history bank.
     HistoryBank<HistoryType> bank = sampleSource();
 
@@ -141,7 +141,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    local_state = state_map->getLocalElement( global_state );
 
 	    // Update LHS tally.
-	    lhs_view[local_state] += bank.top().weightAbs();
+	    lhs_view[local_state] += bank.top().weight();
 
 	    // Sample the probability matrix to get the new state.
 	    d_probability_matrix->getLocalRowView( 
@@ -197,7 +197,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 
 	    // We want to check this to insure the weight is decreasing for
 	    // convergence.
-	    testInvariant( 1.0 > transition_weight );
+	    testInvariant( 1.0 > transition_weight && transition_weight >= 0.0 );
 
 	    // Update the history for the transition.
 	    bank.top().setGlobalState( new_global_state );
@@ -311,7 +311,8 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildProbabilityMatrix()
 //---------------------------------------------------------------------------//
 /*!
  * \brief Build the ghost iteration matrix. This consists of the non-zero
- * off-process components that we will need for computing the adjoint weights.
+ * off-process components that we will need for computing the adjoint weights
+ * before the history leaves the local domain.
  */
 template<class Scalar, class LO, class GO, class RNG>
 void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildGhostIterationMatrix()

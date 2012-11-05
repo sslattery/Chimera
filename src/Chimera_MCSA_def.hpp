@@ -166,8 +166,12 @@ void MCSA<Scalar,LO,GO,RNG>::iterate()
 	++(this->b_num_iters);
 
 	// Print iteration data.
-	std::cout << "MCSA Iteration " << this->b_num_iters << ": Residual = "
-		  << residual_norm << std::endl;
+	if ( this->b_linear_problem->getOperator()->getComm()->getRank() == 0 )
+	{
+	    std::cout << "MCSA Iteration " << this->b_num_iters << ": Residual = "
+		      << residual_norm << std::endl;
+	}
+	this->b_linear_problem->getOperator()->getComm()->barrier();
     }
 
     // Check for convergence.

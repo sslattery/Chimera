@@ -1,8 +1,8 @@
 //---------------------------------------------------------------------------//
 /*!
- * \file tstAdjointNeumannUlamSolver.cpp
+ * \file tstSequentialMC.cpp
  * \author Stuart R. Slattery
- * \brief Stationary solver tests.
+ * \brief SequentialMC tests.
  */
 //---------------------------------------------------------------------------//
 
@@ -17,12 +17,8 @@
 
 #include <Chimera_LinearSolver.hpp>
 #include <Chimera_LinearProblem.hpp>
-#include <Chimera_LinearOperatorSplit.hpp>
-#include <Chimera_LinearOperatorSplitFactory.hpp>
-#include <Chimera_NeumannUlamSolver.hpp>
-#include <Chimera_AdjointNeumannUlamSolver.hpp>
-#include <Chimera_BoostRNG.hpp>
-#include <Chimera_OperatorTools.hpp>
+#include <Chimera_LinearSolverFactory.hpp>
+#include <Chimera_SequentialMC.hpp>
 
 #include <Teuchos_UnitTestHarness.hpp>
 #include <Teuchos_DefaultComm.hpp>
@@ -42,19 +38,19 @@
 //---------------------------------------------------------------------------//
 // Tests
 //---------------------------------------------------------------------------//
-TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
+TEUCHOS_UNIT_TEST( SequentialMC, sequential_mc_test )
 {
     // Setup parallel distribution.
     Teuchos::RCP<const Teuchos::Comm<int> > comm = 
 	Teuchos::DefaultComm<int>::getComm();
 
     // Build the linear operator - this is a 2D Transient Diffusion operator.
-    int N = 50;
+    int N = 10;
     int problem_size = N*N;
     double dx = 0.01;
     double dy = 0.01;
-    double dt = 0.5;
-    double alpha = 0.01;
+    double dt = 0.05;
+    double alpha = 0.001;
     Teuchos::RCP<const Tpetra::Map<int> > row_map = 
 	Tpetra::createUniformContigMap<int,int>( problem_size, comm );
     Teuchos::RCP<Tpetra::CrsMatrix<double,int,int> > A = 
@@ -186,47 +182,31 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     Teuchos::RCP<Chimera::LinearProblem<double,int,int> > linear_problem = 
 	Teuchos::rcp( new Chimera::LinearProblem<double,int,int>( A, X, B ) );
 
-    // Build the random number generator.
-    Teuchos::RCP<boost::mt19937> rng = 
-	Chimera::RNGTraits<boost::mt19937>::create();
-
-    // Build the Adjoint solver.
-    std::string split_type = "JACOBI";
-    double weight_cutoff = 1.0e-4;
-    int histories_per_stage = 1000;
+    // Set the solver parameters.
     Teuchos::RCP<Teuchos::ParameterList> plist =
 	Teuchos::rcp( new Teuchos::ParameterList() );
-    plist->set<std::string>("SPLIT TYPE", split_type);
-    plist->set<double>("WEIGHT CUTOFF", weight_cutoff);
-    plist->set<int>("HISTORIES PER STAGE", histories_per_stage);
+    plist->set<std::string>( "SOLVER TYPE",         "SEQUENTIAL MC" );
+    plist->set<std::string>( "RNG TYPE",            "MT19937"       );
+    plist->set<double>(      "TOLERANCE",           1.0e-8          );
+    plist->set<int>(         "MAX ITERS",           100             );
+    plist->set<std::string>( "SPLIT TYPE",          "JACOBI"        );
+    plist->set<std::string>( "MC TYPE",             "ADJOINT"       );
+    plist->set<double>(      "WEIGHT CUTOFF",       1.0e-4          );
+    plist->set<int>(         "HISTORIES PER STAGE", 1000            );
 
-    Teuchos::RCP<Chimera::LinearOperatorSplit<double,int,int> > lin_op_split =
-	Chimera::LinearOperatorSplitFactory::create( plist, A );
-
-    Teuchos::RCP<Chimera::NeumannUlamSolver<double,int,int,boost::mt19937> > solver =
-	Teuchos::rcp( 
-	    new Chimera::AdjointNeumannUlamSolver<double,int,int,boost::mt19937>(
-		linear_problem, lin_op_split, rng, plist ) );
-
-    // Check the solver parameters.
-    TEST_ASSERT( solver->linearProblem() == linear_problem );
-    TEST_ASSERT( solver->linearOperatorSplit() == lin_op_split );
-    TEST_ASSERT( solver->weightCutoff() == weight_cutoff );
-    TEST_ASSERT( solver->historiesPerStage() == histories_per_stage );
-
-    std::cout << "SPEC RAD: " << Chimera::OperatorTools::spectralRadius( 
-	lin_op_split->iterationMatrix() ) << std::endl;
+    Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =
+	Chimera::LinearSolverFactory::create( plist, linear_problem );
 
     // Solve.
-    solver->walk();
+    solver->iterate();
 
     // Check the solution vector.
     Teuchos::ArrayRCP<const double> X_view = 
 	linear_problem->getLHS()->get1dView();
-    std::cout << X_view() << std::endl;
+//    std::cout << X_view() << std::endl;
 }
 
 //---------------------------------------------------------------------------//
-// end tstAdjointNeumannUlamSolver.cpp
+// end tstSequentialMC.cpp
 //---------------------------------------------------------------------------//
 
