@@ -59,13 +59,17 @@
   \begin{itemize}
   \item Predictive modeling and simulation enhances engineering
     capability
+    \medskip
   \item Modern work focused on this task leverages multiple physics
     simulation (CASL, NEAMS)
+    \medskip
   \item New hardware drives algorithm development (petascale and
     exascale)
+    \medskip
   \item Monte Carlo methods have the potential to provide great
     improvements that permit finer simulations and better mapping to
     future hardware
+    \medskip
   \item A set of massively parallel Monte Carlo methods is proposed to
     advance multiple physics simulation on contemporary and future
     leadership class machines
@@ -111,12 +115,14 @@
     \item Heterogeneous machines
     \item Both characterized by low power and high concurrency
     \end{itemize}
+    \medskip \medskip
   \item Some issues:
     \begin{itemize}
     \item Higher potential for both soft and hard failures (DOE,2012)
     \item Memory restrictions are expected with a continued decrease
       in memory/FLOPS
     \end{itemize}
+    \medskip \medskip
   \item Potential resolution from Monte Carlo:
     \begin{itemize}
     \item Soft failures buried within the tally variance
@@ -137,6 +143,7 @@
     \item Research is required to explore varying parallel strategies
     \item Scalability is of concern
     \end{itemize}
+    \medskip \medskip \medskip
   \item Development of a nonlinear solver for discrete systems
     leveraging Monte Carlo
     \begin{itemize}
@@ -172,6 +179,7 @@
   \item $\ve{r}=\ve{0}$ when an exact solution is found
   \end{itemize}
 
+  \medskip \medskip 
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {A Requirement} Assert that $\ve{A}$ is \textit{nonsingular}. The
     solution is then:
@@ -191,6 +199,7 @@
   \item Leveraged in many modern physics codes at the petascale
   \end{itemize}
 
+  \medskip \medskip
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Search Subspace $\mathcal{K}$} Extract the solution from the
     search subspace:
@@ -200,6 +209,7 @@
     \]
   \end{beamerboxesrounded}
 
+  \medskip \medskip
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Constraint Subspace $\mathcal{L}$} Constrain the extraction with
     the constraint subspace by asserting orthogonality with the
@@ -249,22 +259,26 @@
   \]
 
   \begin{itemize}
-  \item For GMRES (Saad, 1986):
+  \item For GMRES (Saad, 1986): $\mathcal{L} = \ve{A}
+    \mathcal{K}_m(\ve{A},\ve{r}_0)$
   \end{itemize}
-  \[
-  \mathcal{L} = \ve{A} \mathcal{K}_m(\ve{A},\ve{r}_0)
-  \]
 
+  \medskip \medskip \medskip
+  \small{
   \begin{itemize}
   \item Yields the normal system $\ve{A}^T\ve{A}\ve{x} =
     \ve{A}^T\ve{b}$
+    \medskip
   \item Must generate an orthonormal basis for
     $\mathcal{K}_m(\ve{A},\ve{r}_0)$
+    \medskip
   \item Typically choose a Gram-Schmidt-like procedure such as Arnoldi
     or Lanzcos
+    \medskip
   \item Short and long recurrence relations available for
     orthogonalization
   \end{itemize}
+  }
 
 \end{frame}
 
@@ -283,6 +297,7 @@
      [1,N_l]
   \]
   
+  \medskip \medskip
   \begin{itemize}
   \item Parallel dot product
   \end{itemize}
@@ -290,6 +305,7 @@
   d_l = \ve{y}_l \cdot \ve{x}_l,\ d_g = \sum_p d_l
   \]
 
+  \medskip \medskip
   \begin{itemize}
   \item Parallel vector norm
   \end{itemize}
@@ -330,20 +346,25 @@
 
   \begin{itemize}
   \item Widely used in practice
+    \medskip
   \item Krylov methods require only the action of the operator
+    \medskip
   \item Parallelism achieved through a handful of operations
+    \medskip
   \item Global reduction operations observed not to impede scalability
     (Gropp,2001)
     \begin{itemize}
     \item Dot product
     \item Vector norms
     \end{itemize}
+    \medskip
   \item Nearest neighbor computations have poor algorithmic strong
     scaling
     \begin{itemize}
     \item Matrix-vector multiply
     \item Weak scaling is better
     \end{itemize}
+    \medskip
   \item Short and long recurrence relations available for
     orthogonalization
   \end{itemize}
@@ -355,8 +376,11 @@
 
   \begin{itemize}
   \item First proposed by J. Von Neumann and S.M. Ulam in the 1940's
+    \medskip \medskip
   \item Earliest published reference in 1950
+    \medskip \medskip
   \item General lack of published work
+    \medskip \medskip
   \item Modern work by Evans and others has yielded new applications
   \end{itemize}
 \end{frame}
@@ -376,6 +400,7 @@
   \ve{x} = \ve{H} \ve{x} + \ve{b}
   \]
 
+  \medskip
   \begin{itemize}
   \item Generate the \textit{Neumann series}
   \end{itemize}
@@ -384,6 +409,7 @@
   \ve{A}^{-1} = (\ve{I}-\ve{H})^{-1} = \sum_{k=0}^{\infty} \ve{H}^k
   \]
 
+  \medskip
   \begin{itemize}
   \item Require $\rho(\ve{H}) < 1$ for convergence
   \end{itemize}
@@ -406,6 +432,7 @@
   \sum_{i_k}^{N}h_{i,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}b_{i_k}
   \]
 
+  \medskip
   \begin{itemize}
   \item Define a sequence of state transitions
   \end{itemize}
@@ -415,6 +442,7 @@
   \rightarrow i_{k}
   \]
 
+  \medskip
   \begin{itemize}
   \item Define the \textit{Neumann-Ulam decomposition}\footnote{The
     Hadamard product $\ve{A} = \ve{B} \circ \ve{C}$ is defined
@@ -439,6 +467,7 @@
   \frac{h_{ij}}{p_{ij}}
   \]
 
+  \medskip \medskip
   \begin{itemize}
   \item Generate an expectation value for the solution
   \end{itemize}
@@ -572,6 +601,7 @@
   \ve{y} = \ve{H}^T \ve{y} + \ve{d}
   \]
 
+  \medskip
   \begin{itemize}
   \item Set the adjoint constraint
   \end{itemize}
@@ -595,13 +625,11 @@
   \end{itemize}
 
   \[
-  \ve{y} = (\ve{I} - \ve{H}^T)^{-1} \ve{d}
+  \ve{y} = (\ve{I} - \ve{H}^T)^{-1} \ve{d} = \sum_{k=0}^{\infty}
+  (\ve{H}^T)^k\ve{d}
   \]
 
-  \[
-  \ve{y} = \sum_{k=0}^{\infty} (\ve{H}^T)^k\ve{d}
-  \]
-
+  \medskip
   \begin{itemize}
   \item Expand the series
   \end{itemize}
@@ -611,6 +639,7 @@
   \sum_{i_k}^{N}h_{i_k,i_{k-1}}\ldots h_{i_2,i_1} h_{i_1,i} d_{i_k}
   \]
 
+  \medskip
   \begin{itemize}
   \item Pick another constraint to yield the original solution
   \end{itemize}
@@ -638,6 +667,7 @@
   \frac{h_{ji}}{p_{ij}}
   \]
 
+  \medskip
   \begin{itemize}
   \item Build the estimator and expectation value
   \end{itemize}
@@ -781,6 +811,7 @@
 
   \end{beamerboxesrounded}
 
+  \medskip \medskip
   \begin{itemize}
   \item Neumann-Ulam methods bound by the Central Limit Theorem
   \item Build on Halton's 1962 Sequential Monte Carlo method
@@ -807,6 +838,7 @@
   \ve{M}^{-1}\ve{A}\ve{x} = \ve{M}^{-1}\ve{b}
   \]
   
+  \medskip
   \begin{itemize}
   \item Yields a preconditioned MCSA iteration with no in-state
     transitions
@@ -917,6 +949,7 @@
     \item Probabilities and weights must be re-derived for each new
       equation set
     \end{itemize}
+    \medskip \medskip
   \item Desire a generalization for all linear operator equations
     \begin{itemize}
     \item Requires a general parallel framework
@@ -924,8 +957,10 @@
       framework
     \item Operator, vector, and graph abstractions
     \end{itemize}
+    \medskip \medskip
   \item Neumann-Ulam solvers and MCSA implemented using the Trilinos
     Petra frameworks
+    \medskip \medskip
   \item Can be leveraged in modern physics implementations
   \end{itemize}
 
@@ -936,10 +971,13 @@
 
   \begin{itemize}
   \item No literature observed for parallel Neumann-Ulam solvers
+    \medskip \medskip
   \item Numerous references for modern parallel Monte Carlo methods in
     reactor physics
+    \medskip \medskip
   \item Build a strategy for applying modern methods to the
     Neumann-Ulam method
+    \medskip \medskip
   \item MCSA iteration-level parallelism comes from parallel
     matrix/vector operations
   \end{itemize}
@@ -955,6 +993,7 @@
     communication
   \end{itemize}
 
+  \medskip \medskip
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
     {Brunner's Work (2006 and 2009)}
 
@@ -962,9 +1001,9 @@
     \item Looked at 4 communication patterns:
       \begin{itemize}
       \item Fully-locking synchronous
-      \item asynchronous-send/synchronous-receive
-      \item master/slave
-      \item binary tree master/slave
+      \item Asynchronous-send/synchronous-receive
+      \item Master/slave
+      \item Binary tree master/slave
       \end{itemize}
     \item Binary tree master/slave performed best but race conditions observed
     \item A later improvement to their work showed a fully asynchronous
@@ -1012,6 +1051,7 @@
 
   \begin{itemize}
   \item The amount of domain leakage dictates communication
+    \medskip
   \item Per Siegel's 2012 work, define a leakage fraction
   \end{itemize}
 
@@ -1021,15 +1061,19 @@
     of\ \#\ of\ particles\ starting\ in\ local\ domain}
   \]
 
+  \medskip
   \begin{itemize}
   \item Siegel observed $\lambda$ to be bound empirically to the mean
     free path of the system
+    \medskip
   \item Optimum ratio of local to global domain size exists
+    \medskip
   \item Experiments show feasibility for large-scale calculations
     \begin{itemize}
     \item Not bandwidth or latency limited in load-balanced case
     \end{itemize}
     \pause
+    \medskip
   \item How do we define $\lambda$ empirically for linear operator
     equations? 
   \end{itemize}
@@ -1067,6 +1111,7 @@ Strategy
     communication patterns
   \end{itemize}
 
+  \medskip \medskip \medskip
 Questions
   \begin{itemize}
   \item How much domain overlap is suitable for linear operator
@@ -1100,6 +1145,7 @@ Questions
 
   \end{beamerboxesrounded}
 
+  \medskip \medskip
   \begin{itemize}
   \item Richardson iteration and residual computation require parallel
     matrix-vector multiply and parallel vector update
@@ -1115,15 +1161,19 @@ Questions
 
   \begin{itemize}
   \item Many multiphysics problems of interest are nonlinear
+    \medskip
   \item Segregated methods lack the consistency of fully implicit
     methods
+    \medskip
   \item Newton methods often leverage Krylov solvers
     \begin{itemize}
     \item Robust implementations
     \item No operator required
     \item Memory intensive
     \end{itemize}
+    \medskip
   \item Monte Carlo methods need the full operator
+    \medskip
   \item Automatic construction of the linear operator available
     \begin{itemize}
     \item Ideal for Monte Carlo
@@ -1178,12 +1228,15 @@ Questions
 
   \begin{itemize}
   \item Choose a Krylov method to solve for the Newton correction
+    \medskip
   \item GMRES with a long recurrence relation observed as more
     robust (Knoll,2004)
+    \medskip
   \item Generates a monotonically decreasing residual from
     maintaining the optimization and orthogonality conditions
   \end{itemize}
 
+  \medskip \medskip \medskip
   \pause Where does the Jacobian come from?
   \begin{itemize}
   \item The Jacobian can come from hand-coded derivatives
@@ -1353,11 +1406,15 @@ Questions
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Research Proposal}
 
+  \large{
   \begin{itemize}
   \item Methods verification
+  \medskip \medskip \medskip \medskip \medskip
   \item Numerical experiments
+    \medskip \medskip \medskip \medskip \medskip
   \item Challenge problem
   \end{itemize}
+  }
 
 \end{frame}
 
@@ -1366,16 +1423,19 @@ Questions
 
   \begin{itemize}
   \item Analytic solution to the heat equation for the linear methods
+    \medskip
   \item Sequence of Navier-Stokes benchmarks for the nonlinear methods
     \begin{itemize}
     \item Thermal convection cavity problem (De Vahl Davis, 1983)
     \item Lid driven cavity problem (Ghia et al., 1982)
     \item Backward-Facing step problem (Gartling, 1990)
     \end{itemize}
+    \medskip
   \item Tuning benchmark parameters varies the strength of
     nonlinearities
   \end{itemize}
 
+  \medskip  \medskip
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \[
@@ -1419,6 +1479,7 @@ Questions
   \item Evaluate memory cost
   \end{itemize}
 
+  \medskip  \medskip
   \pause
   \textbf{Domain Replication Studies for Parallel Neumann-Ulam Method}
   \begin{itemize}
@@ -1442,6 +1503,7 @@ Questions
   \item Memory usage compared to Krylov methods
   \end{itemize}
 
+  \medskip  \medskip
   \pause
   \textbf{Parallel Performance and Numerical Accuracy Studies for FANM
     Method}
@@ -1459,6 +1521,7 @@ Questions
   \begin{itemize}
   \item Problems of interest are coupled large scale problems in
     reactor physics
+    \medskip
   \item The Consortium for Advanced Simulation of LWRs (CASL) is a
     modeling and simulation program aimed at:
     \begin{itemize}
@@ -1466,11 +1529,13 @@ Questions
       \item Higher burn-up
       \item Predictive accident scenario analysis
     \end{itemize}
+    \medskip
   \item CASL and industry partners identified challenge problems:
     \begin{itemize}
     \item Departure from nucleate boiling
     \item Grid-to-rod-fretting
     \end{itemize}
+    \medskip
   \item Our challenge problem should reflect how this work aids the
     solution of these problems
   \end{itemize}
@@ -1521,9 +1586,13 @@ Questions
     \item Parallelization of Monte Carlo methods for linear systems
     \item FANM for nonlinear systems
     \end{itemize}
+    \medskip
   \item Verification through benchmarks
+    \medskip
   \item Numerical experiments for understanding
+    \medskip
   \item Challenge problem for application
+    \medskip
   \item Directed towards hard problems in nuclear reactor analysis:
     \begin{itemize}
     \item Application to multiphysics
@@ -1538,16 +1607,22 @@ Questions
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Acknowledgements}
 
-  Thanks to...\footnote{This work was performed under
-        appointment to the Nuclear Regulatory Commission Fellowship
-        program at the University of Wisconsin - Madison Department of
-        Engineering Physics.}
+  Thanks to...
 
   \begin{itemize}
   \item Paul Wilson
   \item Tom Evans
   \item ORNL and SNL
   \end{itemize}
+
+  \medskip \medskip \medskip \medskip \medskip \medskip \medskip
+
+  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
+    {Support} 
+    This work was performed under appointment to the Nuclear Regulatory
+    Commission Fellowship program at the University of Wisconsin - Madison
+    Department of Engineering Physics.
+  \end{beamerboxesrounded}
 
 \end{frame}
 
