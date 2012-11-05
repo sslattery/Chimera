@@ -192,7 +192,7 @@ TEUCHOS_UNIT_TEST( MCSA, mcsa_test )
     plist->set<std::string>( "SPLIT TYPE",          "JACOBI"  );
     plist->set<std::string>( "MC TYPE",             "ADJOINT" );
     plist->set<double>(      "WEIGHT CUTOFF",       1.0e-4    );
-    plist->set<int>(         "HISTORIES PER STAGE", 10000     );
+    plist->set<int>(         "HISTORIES PER STAGE", 100       );
 
     Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =
 	Chimera::LinearSolverFactory::create( plist, linear_problem );
