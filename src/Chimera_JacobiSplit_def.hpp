@@ -123,7 +123,7 @@ void JacobiSplit<Scalar,LO,GO>::split()
     typename Teuchos::ArrayView<const Scalar>::const_iterator local_values_it;
 
     Teuchos::Array<Scalar> iteration_matrix_vals;
-    typename Teuchos::ArrayView<Scalar>::iterator iteration_matrix_vals_it;
+    typename Teuchos::Array<Scalar>::iterator iteration_matrix_vals_it;
 
     Teuchos::Array<LO> diag_col_index(1,0);
     Teuchos::Array<Scalar> diag_zero(1,0.0);
@@ -148,6 +148,7 @@ void JacobiSplit<Scalar,LO,GO>::split()
             row_index, local_col_indices, local_values );
 
 	iteration_matrix_vals.resize( local_values.size() );
+
 	for ( local_values_it = local_values.begin(),
      iteration_matrix_vals_it = iteration_matrix_vals.begin();
 	      local_values_it != local_values.end();

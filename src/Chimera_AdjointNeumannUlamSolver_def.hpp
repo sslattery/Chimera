@@ -57,7 +57,6 @@
 #include <Teuchos_OrdinalTraits.hpp>
 
 #include <Tpetra_Map.hpp>
-#include <Tpetra_CrsMatrix.hpp>
 #include <Tpetra_Export.hpp>
 
 namespace Chimera
@@ -133,8 +132,8 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     while ( walk )
     {
 	// If the bank isn't empty, process the top history. We need this here
-	// so proccesses that have emptied their banks can wait until all
-	// banks are empty and buffer communication can occur.
+	// so processes that have emptied their banks can wait until all banks
+	// are empty and buffer communication can occur.
 	if ( !bank.empty() )
 	{
 	    // Get the current history state.
@@ -150,8 +149,13 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    new_local_state = SamplingTools::sampleLocalDiscretePDF(
 		local_values, local_indices, this->b_rng );
 
+	    // Invalid state. Terminate the history.
+	    if ( new_local_state == Teuchos::OrdinalTraits<LO>::invalid() )
+	    {
+		transition_weight = 0.0;
+	    }
 	    // The new state is valid.
-	    if ( new_local_state != Teuchos::OrdinalTraits<LO>::invalid() )
+	    else
 	    {
 		new_global_state = col_map->getGlobalElement( new_local_state );
 
@@ -190,13 +194,9 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 		    transition_weight = std::abs( transition_h / transition_p );
 		}
 	    }
-	    // Invalid state. Terminate the history.
-	    else
-	    {
-		transition_weight = 0.0;
-	    }
 
-	    // We want to check this to insure the weight is decreasing.
+	    // We want to check this to insure the weight is decreasing for
+	    // convergence.
 	    testInvariant( 1.0 > transition_weight );
 
 	    // Update the history for the transition.

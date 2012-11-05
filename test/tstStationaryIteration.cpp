@@ -60,7 +60,7 @@ TEUCHOS_UNIT_TEST( StationaryIteration, jacobi_iteration_test )
     Teuchos::Array<double> matrix_values(3);
     matrix_values[0] = 1.0;
     matrix_values[1] = 2.0;
-    matrix_values[2] = 3.0;
+    matrix_values[2] = 4.0;
     int gid = 0;
     for ( int i = 1; i < local_num_rows-1; ++i )
     {
@@ -73,8 +73,8 @@ TEUCHOS_UNIT_TEST( StationaryIteration, jacobi_iteration_test )
 
     Teuchos::Array<int> edge_global_columns(2);
     Teuchos::Array<double> edge_matrix_values(2);
-    edge_matrix_values[0] = 2.0;
-    edge_matrix_values[1] = 3.0;
+    edge_matrix_values[0] = matrix_values[1];
+    edge_matrix_values[1] = matrix_values[2];
     gid = local_num_rows*comm_rank;
     edge_global_columns[0] = gid;
     edge_global_columns[1] = gid+1;
@@ -91,8 +91,8 @@ TEUCHOS_UNIT_TEST( StationaryIteration, jacobi_iteration_test )
     }
     comm->barrier();
 
-    edge_matrix_values[0] = 1.0;
-    edge_matrix_values[1] = 2.0;
+    edge_matrix_values[0] = matrix_values[0];
+    edge_matrix_values[1] = matrix_values[1];
     gid = local_num_rows - 1 + local_num_rows*comm_rank;
     edge_global_columns[0] = gid-1;
     edge_global_columns[1] = gid;
@@ -160,30 +160,35 @@ TEUCHOS_UNIT_TEST( StationaryIteration, jacobi_iteration_test )
     for ( int i = 1; i < local_num_rows-1; ++i )
     {
 	TEST_ASSERT( X_view[i] == 
-		     B_val*(1.0+matrix_values[0]+matrix_values[2])/matrix_values[1] );
+		     (1-(matrix_values[0]+matrix_values[2])/
+		      matrix_values[1])*B_val/matrix_values[1] );
     }
 
     if ( comm_rank == 0 )
     {
 	TEST_ASSERT( X_view[0] == 
-		     B_val*(1.0+matrix_values[2])/matrix_values[1] );
+		     (1-(matrix_values[2])/
+		      matrix_values[1])*B_val/matrix_values[1] );   
     }
     else
     {
 	TEST_ASSERT( X_view[0] == 
-		     B_val*(1.0+matrix_values[0]+matrix_values[2])/matrix_values[1] );
+		     (1-(matrix_values[0]+matrix_values[2])/
+		      matrix_values[1])*B_val/matrix_values[1] );   
     }
     comm->barrier();
 
     if ( comm_rank == comm_size-1 )
     {
 	TEST_ASSERT( X_view[local_num_rows-1] == 
-		     B_val*(1.0+matrix_values[0])/matrix_values[1] );
+		     (1-(matrix_values[0])/
+		      matrix_values[1])*B_val/matrix_values[1] );   
     }
     else
     {
 	TEST_ASSERT( X_view[local_num_rows-1] == 
-		     B_val*(1.0+matrix_values[0]+matrix_values[2])/matrix_values[1] );
+		     (1-(matrix_values[0]+matrix_values[2])/
+		      matrix_values[1])*B_val/matrix_values[1] );   
     }
     comm->barrier();
 }
