@@ -71,7 +71,7 @@ MCSA<Scalar,LO,GO,RNG>::MCSA(
     // Set the base data.
     this->b_linear_problem = linear_problem;
     this->b_linear_operator_split = LinearOperatorSplitFactory::create( 
-	plist, this->linear_problem->getOperator() );
+	plist, this->b_linear_problem->getOperator() );
     this->b_tolerance = plist->get<Scalar>("TOLERANCE");
     this->b_max_num_iters = plist->get<int>("MAX ITERS");
     this->b_num_iters = 0;
@@ -135,9 +135,7 @@ void MCSA<Scalar,LO,GO,RNG>::iterate()
     this->b_is_converged = false;
 
     // Iterate.
-    while ( residual_norm > 
-	    Teuchos::as<typename Teuchos::ScalarTraits<Scalar>::magnitudeType>(
-		convergence_criteria) &&
+    while ( residual_norm > convergence_criteria &&
 	    this->b_num_iters < this->b_max_num_iters )
     {
 	// Do a stationary iteration.
@@ -150,12 +148,12 @@ void MCSA<Scalar,LO,GO,RNG>::iterate()
 	    this->b_linear_problem->getResidual() );
 
 	// Neumann-Ulam solver for the correction.
-	d_nu_solver->linearProblem->getRHS()->putScalar( 0.0 );
+	d_nu_solver->linearProblem()->getLHS()->putScalar( 0.0 );
 	d_nu_solver->walk();
 
 	// Apply the correction.
-	this->b_linear_problem->getRHS()->update( 
-	    1.0, d_nu_solver->linearProblem->getRHS(), 1.0 );
+	this->b_linear_problem->getLHS()->update( 
+	    1.0, *(d_nu_solver->linearProblem()->getLHS()), 1.0 );
 
 	// Update residual norm for convergence.
 	this->b_linear_problem->computeResidual();

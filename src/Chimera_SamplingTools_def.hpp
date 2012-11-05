@@ -111,7 +111,6 @@ Teuchos::ArrayRCP<GO> SamplingTools::stratifySampleGlobalPDF(
 	Teuchos::reduceAll( *comm, Teuchos::REDUCE_SUM, local_num_histories, 
 			    Teuchos::Ptr<GO>(&global_sum_check) );
 	);
-
     testPostcondition( global_sum_check == global_num_histories );
 
     // Second, stratify sample the local pdf to get the number of histories to

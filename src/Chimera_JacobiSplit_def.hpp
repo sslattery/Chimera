@@ -41,10 +41,13 @@
 #ifndef Chimera_JACOBISPLIT_DEF_HPP
 #define Chimera_JACOBISPLIT_DEF_HPP
 
+#include <algorithm>
+
 #include "Chimera_Assertion.hpp"
 
 #include <Teuchos_ArrayView.hpp>
 #include <Teuchos_Array.hpp>
+#include <Teuchos_ArrayRCP.hpp>
 
 #include <Tpetra_Map.hpp>
 
@@ -109,8 +112,7 @@ void JacobiSplit<Scalar,LO,GO>::split()
     Teuchos::RCP<const Tpetra::Map<LO,GO> > col_map =
         this->b_linear_operator->getColMap();
 
-    // Build the iteration matrix by extracting the diagonal and scaling by
-    // its inverse.
+    // Setup the iteration matrix.
     this->b_iteration_matrix = Teuchos::rcp(
         new Tpetra::CrsMatrix<Scalar,LO,GO>(
             row_map, col_map,
@@ -118,19 +120,44 @@ void JacobiSplit<Scalar,LO,GO>::split()
 
     Teuchos::ArrayView<const LO> local_col_indices;
     Teuchos::ArrayView<const Scalar> local_values;
+    typename Teuchos::ArrayView<const Scalar>::const_iterator local_values_it;
+
+    Teuchos::Array<Scalar> iteration_matrix_vals;
+    typename Teuchos::ArrayView<Scalar>::iterator iteration_matrix_vals_it;
 
     Teuchos::Array<LO> diag_col_index(1,0);
     Teuchos::Array<Scalar> diag_zero(1,0.0);
 
-    for ( LO row_index = row_map->getMinLocalIndex();
-          row_index < row_map->getMaxLocalIndex() + 1;
-          ++row_index )
+    // Get the inverse diagonal.
+    RCP_TpetraVector diagonal_inv =
+        Tpetra::createVector<Scalar,LO,GO>( row_map );
+    this->b_linear_operator->getLocalDiagCopy( *diagonal_inv );
+    diagonal_inv->scale( -1.0 );
+    diagonal_inv->reciprocal( *diagonal_inv );
+    Teuchos::ArrayRCP<const Scalar> diag_inv_view = diagonal_inv->get1dView();
+    typename Teuchos::ArrayRCP<const Scalar>::const_iterator diagonal_inv_it;
+
+    // Build the iteration matrix by extracting the diagonal and scaling by
+    // its inverse.
+    LO row_index = row_map->getMinLocalIndex();
+    for ( diagonal_inv_it = diag_inv_view.begin();
+          diagonal_inv_it != diag_inv_view.end();
+          ++row_index, ++diagonal_inv_it )
     {
         this->b_linear_operator->getLocalRowView(
             row_index, local_col_indices, local_values );
 
+	iteration_matrix_vals.resize( local_values.size() );
+	for ( local_values_it = local_values.begin(),
+     iteration_matrix_vals_it = iteration_matrix_vals.begin();
+	      local_values_it != local_values.end();
+	      ++local_values_it, ++iteration_matrix_vals_it )
+	{
+	    *iteration_matrix_vals_it = (*local_values_it) * (*diagonal_inv_it);
+	}
+
         this->b_iteration_matrix->insertLocalValues(
-            row_index, local_col_indices, local_values );
+            row_index, local_col_indices, iteration_matrix_vals() );
 
         diag_col_index[0] =
             col_map->getLocalElement( row_map->getGlobalElement( row_index ) );
@@ -138,15 +165,8 @@ void JacobiSplit<Scalar,LO,GO>::split()
         this->b_iteration_matrix->replaceLocalValues(
             row_index, diag_col_index(), diag_zero() );
     }
+
     this->b_iteration_matrix->fillComplete();
-
-    RCP_TpetraVector diagonal_inv =
-        Tpetra::createVector<Scalar,LO,GO>( row_map );
-    this->b_linear_operator->getLocalDiagCopy( *diagonal_inv );
-    diagonal_inv->scale( -1.0 );
-    diagonal_inv->reciprocal( *diagonal_inv );
-
-    this->b_iteration_matrix->leftScale( *diagonal_inv );
 }
 
 //---------------------------------------------------------------------------//

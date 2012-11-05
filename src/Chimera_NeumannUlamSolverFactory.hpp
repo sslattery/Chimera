@@ -78,13 +78,13 @@ class NeumannUlamSolverFactory
 	const Teuchos::RCP<RNG>& rng );
 };
 
+} // end namepsace Chimera
+
 //---------------------------------------------------------------------------//
 // Template includes.
 //---------------------------------------------------------------------------//
 
 #include "Chimera_NeumannUlamSolverFactory_def.hpp"
-
-} // end namepsace Chimera
 
 //---------------------------------------------------------------------------//
 

@@ -96,13 +96,13 @@ class SequentialMC : public LinearSolver<Scalar,LO,GO>
 // Template includes.
 //---------------------------------------------------------------------------//
 
-#include "Chimera_SEQUENTIALMC_def.hpp"
+#include "Chimera_SequentialMC_def.hpp"
 
 //---------------------------------------------------------------------------//
 
 #endif // end Chimera_SEQUENTIALMC_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_SEQUENTIALMC.hpp
+// end Chimera_SequentialMC.hpp
 //---------------------------------------------------------------------------//
 

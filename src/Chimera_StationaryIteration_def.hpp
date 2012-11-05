@@ -70,21 +70,23 @@ StationaryIteration<Scalar,LO,GO>::~StationaryIteration()
 
 //---------------------------------------------------------------------------//
 /*!
- * \brief Do one stationary iteration.
+ * \brief Do one stationary iteration. x = (M^-1)Nx + (M^-1)b
  */
 template<class Scalar, class LO, class GO>
 void StationaryIteration<Scalar,LO,GO>::doOneIteration()
 {
+    RCP_TpetraVector tmp_vec = Tpetra::createVector<Scalar,LO,GO>( 
+	d_linear_problem->getOperator()->getRowMap() );
+
     d_linear_operator_split->iterationMatrix()->apply( 
-	*(d_linear_problem->getLHS()),
-	*(d_linear_problem->getLHS()) );
+	*(d_linear_problem->getLHS()), *(tmp_vec) );
 
     RCP_TpetraVector m_inv_b = Tpetra::createVector<Scalar,LO,GO>( 
 	d_linear_problem->getOperator()->getRowMap() );
 
     d_linear_operator_split->applyInvM( d_linear_problem->getRHS(), m_inv_b );
 
-    d_linear_problem->getLHS()->update( 1.0, *(m_inv_b), 1.0 );
+    d_linear_problem->getLHS()->update( 1.0, *(m_inv_b), 1.0, *tmp_vec, 0.0 );
 }
 
 //---------------------------------------------------------------------------//

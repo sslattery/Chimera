@@ -142,7 +142,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    local_state = state_map->getLocalElement( global_state );
 
 	    // Update LHS tally.
-	    lhs_view[local_state] += bank.top().weight();
+	    lhs_view[local_state] += bank.top().weightAbs();
 
 	    // Sample the probability matrix to get the new state.
 	    d_probability_matrix->getLocalRowView( 
@@ -349,22 +349,17 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
     Teuchos::RCP<const Tpetra::Map<LO,GO> > source_map = source->getMap();
     Teuchos::ArrayView<const GO> global_states = 
 	source_map->getNodeElementList();
-
-    // Precondition the RHS with the linear operator split.    
-    Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> > precond_source =
-	Tpetra::createVector<Scalar,LO,GO>( source_map );
-    this->b_linear_operator_split->applyInvM( source, precond_source );
     Teuchos::ArrayRCP<const Scalar> local_source_view =
-	precond_source->get1dView();
+	source->get1dView();
 
-    // Stratify sample the preconditioned source.
+    // Stratify sample the source.
     Teuchos::ArrayRCP<GO> starting_states = 
 	SamplingTools::stratifySampleGlobalPDF( 
-	    this->b_histories_per_stage, precond_source );
+	    this->b_histories_per_stage, source );
     testInvariant( local_source_view.size() == starting_states.size() );
 
     // Get the starting source weight.
-    Scalar source_weight = precond_source->norm1();
+    Scalar source_weight = source->norm1();
 
     // Set the relative weight cutoff.
     d_relative_weight_cutoff *= source_weight;

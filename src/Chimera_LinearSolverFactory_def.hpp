@@ -44,7 +44,7 @@
 #include <string>
 
 #include "Chimera_Assertion.hpp"
-#include "Chimera_BoostRNGTraits.hpp"
+#include "Chimera_BoostRNG.hpp"
 #include "Chimera_StationarySolver.hpp"
 #include "Chimera_SequentialMC.hpp"
 #include "Chimera_MCSA.hpp"
@@ -77,7 +77,7 @@ LinearSolverFactory::create(
 	if ( plist->get<std::string>("RNG TYPE") == "MT19937" )
 	{
 	    linear_solver = Teuchos::rcp( 
-		new SequentialMC<Scalar,LO,GO,Boost::mt19937>( 
+		new SequentialMC<Scalar,LO,GO,boost::mt19937>( 
 		    linear_problem, plist ) );
 	}
     }
@@ -87,7 +87,7 @@ LinearSolverFactory::create(
 	if ( plist->get<std::string>("RNG TYPE") == "MT19937" )
 	{
 	    linear_solver = Teuchos::rcp( 
-		new MCSA<Scalar,LO,GO,Boost::mt19937>( 
+		new MCSA<Scalar,LO,GO,boost::mt19937>( 
 		    linear_problem, plist ) );
 	}
     }
