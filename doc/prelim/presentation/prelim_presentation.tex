@@ -761,28 +761,6 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Sequential Monte Carlo}
-
-  \begin{itemize}
-  \item Neumann-Ulam methods bound by the Central Limit Theorem
-  \item Halton proposed an iterative residual method in 1962
-  \item Iteration error decoupled from Monte Carlo error
-  \item Exponential convergence (Evans,2003)
-  \end{itemize}
-
-  \[
-  \ve{r}^k = \ve{b} - \ve{A}\ve{x}^k
-  \]
-  \[
-  \ve{A}\boldsymbol{\delta}^{k} = \ve{r}^{k}
-  \]
-  \[
-  \ve{x}^{k+1} = \ve{x}^k + \boldsymbol{\delta}^{k}
-  \]
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
 \begin{frame}{Monte Carlo Synthetic-Acceleration}
 
   \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
@@ -804,11 +782,11 @@
   \end{beamerboxesrounded}
 
   \begin{itemize}
+  \item Neumann-Ulam methods bound by the Central Limit Theorem
+  \item Build on Halton's 1962 iterative residual method
   \item Adjoint Neumann-Ulam solver computes the correction
-  \item Decouples Monte Carlo error from solution error
-  \item Exponential convergence
-  \item Demonstrated by Evans and colleagues to be competitive with
-    Krylov methods
+  \item Decouples MC error from solution error, exponential convergence
+  \item Demonstrated by Evans to be competitive with Krylov methods
   \end{itemize}
 
 \end{frame}
