@@ -168,16 +168,14 @@ void MCSA<Scalar,LO,GO,RNG>::iterate()
 	// Print iteration data.
 	if ( this->b_linear_problem->getOperator()->getComm()->getRank() == 0 )
 	{
-	    std::cout << "MCSA Iteration " << this->b_num_iters << ": Residual = "
-		      << residual_norm << std::endl;
+	    std::cout << "MCSA Iteration " << this->b_num_iters 
+		      << ": Residual = " << residual_norm << std::endl;
 	}
 	this->b_linear_problem->getOperator()->getComm()->barrier();
     }
 
     // Check for convergence.
-    if ( residual_norm <= 
-	 Teuchos::as<typename Teuchos::ScalarTraits<Scalar>::magnitudeType>(
-	     convergence_criteria) )
+    if ( residual_norm <= convergence_criteria )
     {
 	this->b_is_converged = true;
     }

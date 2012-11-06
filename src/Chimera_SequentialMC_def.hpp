@@ -128,9 +128,7 @@ void SequentialMC<Scalar,LO,GO,RNG>::iterate()
     this->b_is_converged = false;
 
     // Iterate.
-    while ( residual_norm > 
-	    Teuchos::as<typename Teuchos::ScalarTraits<Scalar>::magnitudeType>(
-		convergence_criteria) &&
+    while ( residual_norm > convergence_criteria) &&
 	    this->b_num_iters < this->b_max_num_iters )
     {
 	// Compute the new residual.
@@ -167,9 +165,7 @@ void SequentialMC<Scalar,LO,GO,RNG>::iterate()
     }
 
     // Check for convergence.
-    if ( residual_norm <= 
-	 Teuchos::as<typename Teuchos::ScalarTraits<Scalar>::magnitudeType>(
-	     convergence_criteria) )
+    if ( residual_norm <= convergence_criteria )
     {
 	this->b_is_converged = true;
     }
