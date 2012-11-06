@@ -331,7 +331,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildGhostIterationMatrix()
 	iteration_matrix->getRowMap(), ghost_map );
 
     d_ghost_iteration_matrix = 
-	Tpetra::exportAndFillCompleteCrsMatrix<Tpetra::CrsMatrix<Scalar,LO,GO> >( 
+	Tpetra::exportAndFillCompleteCrsMatrix<Tpetra::CrsMatrix<Scalar,LO,GO> >(
 	    iteration_matrix, ghost_exporter );
 }
 
