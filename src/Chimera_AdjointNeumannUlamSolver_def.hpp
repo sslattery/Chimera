@@ -41,11 +41,10 @@
 #ifndef Chimera_ADJOINTNEUMANNULAMSOLVER_DEF_HPP
 #define Chimera_ADJOINTNEUMANNULAMSOLVER_DEF_HPP
 
-#include <numeric>
-
 #include "Chimera_Assertion.hpp"
 #include "Chimera_SamplingTools.hpp"
 #include "Chimera_OperatorTools.hpp"
+#include "Chimera_RNGTraits.hpp"
 
 #include <Teuchos_ArrayView.hpp>
 #include <Teuchos_Array.hpp>
@@ -73,15 +72,24 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::AdjointNeumannUlamSolver(
     const RCP_ParameterList& plist )
     : d_relative_weight_cutoff( plist->get<Scalar>("WEIGHT CUTOFF") )
 {
+    // Build the base class data.
     this->b_linear_problem = linear_problem;
     this->b_linear_operator_split = linear_operator_split;
     this->b_rng = rng;
     this->b_weight_cutoff = d_relative_weight_cutoff;
     this->b_histories_per_stage = plist->get<int>("HISTORIES PER STAGE");
 
+    // Set a unique RNG seed for this process.
+    RNGTraits<RNG>::setSeed( 
+	*(this->b_rng), 
+	this->b_histories_per_stage * 
+	this->b_linear_problem->getOperator()->getComm()->getSize() );
+
+    // Build the probability matrix.
     buildProbabilityMatrix();
     testPostcondition( !d_probability_matrix.is_null() );
 
+    // Build the ghosted iteration matrix.
     buildGhostIterationMatrix();
     testPostcondition( !d_ghost_iteration_matrix.is_null() );
 }

@@ -47,7 +47,6 @@
 #include "Chimera_NeumannUlamSolverFactory.hpp"
 
 #include <Teuchos_ScalarTraits.hpp>
-#include <Teuchos_as.hpp>
 
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
@@ -128,7 +127,7 @@ void SequentialMC<Scalar,LO,GO,RNG>::iterate()
     this->b_is_converged = false;
 
     // Iterate.
-    while ( residual_norm > convergence_criteria) &&
+    while ( residual_norm > convergence_criteria &&
 	    this->b_num_iters < this->b_max_num_iters )
     {
 	// Compute the new residual.

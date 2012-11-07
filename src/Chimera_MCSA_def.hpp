@@ -47,7 +47,6 @@
 #include "Chimera_NeumannUlamSolverFactory.hpp"
 
 #include <Teuchos_ScalarTraits.hpp>
-#include <Teuchos_as.hpp>
 
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>

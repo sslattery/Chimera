@@ -203,7 +203,7 @@ TEUCHOS_UNIT_TEST( SequentialMC, sequential_mc_test )
     // Check the solution vector.
     Teuchos::ArrayRCP<const double> X_view = 
 	linear_problem->getLHS()->get1dView();
-//    std::cout << X_view() << std::endl;
+    std::cout << X_view() << std::endl;
 }
 
 //---------------------------------------------------------------------------//
