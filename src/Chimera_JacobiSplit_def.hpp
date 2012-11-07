@@ -94,6 +94,7 @@ void JacobiSplit<Scalar,LO,GO>::applyInvM( const RCP_TpetraVector& x,
 	Tpetra::createVector<Scalar,LO,GO>( row_map );
     this->b_linear_operator->getLocalDiagCopy( *diagonal_inv );
     diagonal_inv->reciprocal( *diagonal_inv );
+
     y->elementWiseMultiply( 1.0, *diagonal_inv, *x, 0.0 );
 }
 
