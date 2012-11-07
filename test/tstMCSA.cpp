@@ -69,56 +69,60 @@ TEUCHOS_UNIT_TEST( MCSA, mcsa_test )
     Teuchos::Array<int> idx_jplus(1);
     Teuchos::Array<double> one(1,1.0);
 
-    // Min X boundary Dirichlet.
-    for ( int j = 1; j < N-1; ++j )
+    if ( comm->getRank() == 0 )
     {
-	int i = 0;
-	idx[0] = i + j*N;
-	A->insertGlobalValues( idx[0], idx(), one() );
-    }
-
-    // Max X boundary Dirichlet.
-    for ( int j = 1; j < N-1; ++j )
-    {
-	int i = N-1;
-	idx[0] = i + j*N;
-	A->insertGlobalValues( idx[0], idx(), one() );
-    }
-
-    // Min Y boundary Dirichlet.
-    for ( int i = 0; i < N; ++i )
-    {
-	int j = 0;
-	idx[0] = i + j*N;
-	A->insertGlobalValues( idx[0], idx(), one() );
-    }
-
-    // Max Y boundary Dirichlet.
-    for ( int i = 0; i < N; ++i )
-    {
-	int j = N-1;
-	idx[0] = i + j*N;
-	A->insertGlobalValues( idx[0], idx(), one() );
-    }
-
-    // Central grid points.
-    for ( int i = 1; i < N-1; ++i )
-    {
+	// Min X boundary Dirichlet.
 	for ( int j = 1; j < N-1; ++j )
 	{
+	    int i = 0;
 	    idx[0] = i + j*N;
-	    idx_iminus[0] = (i-1) + j*N;
-	    idx_iplus[0] = (i+1) + j*N;
-	    idx_jminus[0] = i + (j-1)*N;
-	    idx_jplus[0] = i + (j+1)*N;
+	    A->insertGlobalValues( idx[0], idx(), one() );
+	}
+
+	// Max X boundary Dirichlet.
+	for ( int j = 1; j < N-1; ++j )
+	{
+	    int i = N-1;
+	    idx[0] = i + j*N;
+	    A->insertGlobalValues( idx[0], idx(), one() );
+	}
+
+	// Min Y boundary Dirichlet.
+	for ( int i = 0; i < N; ++i )
+	{
+	    int j = 0;
+	    idx[0] = i + j*N;
+	    A->insertGlobalValues( idx[0], idx(), one() );
+	}
+
+	// Max Y boundary Dirichlet.
+	for ( int i = 0; i < N; ++i )
+	{
+	    int j = N-1;
+	    idx[0] = i + j*N;
+	    A->insertGlobalValues( idx[0], idx(), one() );
+	}
+
+	// Central grid points.
+	for ( int i = 1; i < N-1; ++i )
+	{
+	    for ( int j = 1; j < N-1; ++j )
+	    {
+		idx[0] = i + j*N;
+		idx_iminus[0] = (i-1) + j*N;
+		idx_iplus[0] = (i+1) + j*N;
+		idx_jminus[0] = i + (j-1)*N;
+		idx_jplus[0] = i + (j+1)*N;
 	    
-	    A->insertGlobalValues( idx[0], idx_jminus(), j_minus() );
-	    A->insertGlobalValues( idx[0], idx_iminus(), i_minus() );
-	    A->insertGlobalValues( idx[0], idx(),        diag()    );
-	    A->insertGlobalValues( idx[0], idx_iplus(),  i_plus()  );
-	    A->insertGlobalValues( idx[0], idx_jplus(),  j_plus()  );
+		A->insertGlobalValues( idx[0], idx_jminus(), j_minus() );
+		A->insertGlobalValues( idx[0], idx_iminus(), i_minus() );
+		A->insertGlobalValues( idx[0], idx(),        diag()    );
+		A->insertGlobalValues( idx[0], idx_iplus(),  i_plus()  );
+		A->insertGlobalValues( idx[0], idx_jplus(),  j_plus()  );
+	    }
 	}
     }
+    comm->barrier();
 
     A->fillComplete();
 

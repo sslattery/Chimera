@@ -131,13 +131,15 @@ void SequentialMC<Scalar,LO,GO,RNG>::iterate()
 	    this->b_num_iters < this->b_max_num_iters )
     {
 	// Compute the new residual.
+	Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> > res_vec = Teuchos::rcp(
+	    new Tpetra::Vector<Scalar,LO,GO>( *this->b_linear_problem->getResidual() ) );
 	this->b_linear_problem->computeResidual();
 	this->b_linear_operator_split->applyInvM(
 	    this->b_linear_problem->getResidual(),
 	    this->b_linear_problem->getResidual() );
 
 	// Neumann-Ulam solver for the correction.
-	d_nu_solver->linearProblem()->getLHS()->putScalar( 0.0 );
+ 	d_nu_solver->linearProblem()->getLHS()->putScalar( 0.0 );
 	d_nu_solver->walk();
 
 	// Apply the correction.
