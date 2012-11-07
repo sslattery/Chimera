@@ -18,7 +18,6 @@
 #include <Chimera_LinearSolver.hpp>
 #include <Chimera_LinearProblem.hpp>
 #include <Chimera_LinearSolverFactory.hpp>
-#include <Chimera_MCSA.hpp>
 
 #include <Teuchos_UnitTestHarness.hpp>
 #include <Teuchos_DefaultComm.hpp>
@@ -45,7 +44,7 @@ TEUCHOS_UNIT_TEST( MCSA, mcsa_test )
 	Teuchos::DefaultComm<int>::getComm();
 
     // Build the linear operator - this is a 2D Transient Diffusion operator.
-    int N = 10;
+    int N = 100;
     int problem_size = N*N;
     double dx = 0.01;
     double dy = 0.01;
@@ -198,6 +197,7 @@ TEUCHOS_UNIT_TEST( MCSA, mcsa_test )
     plist->set<double>(      "WEIGHT CUTOFF",       1.0e-4    );
     plist->set<int>(         "HISTORIES PER STAGE", 1000      );
 
+    // Build the solver.
     Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =
 	Chimera::LinearSolverFactory::create( plist, linear_problem );
 

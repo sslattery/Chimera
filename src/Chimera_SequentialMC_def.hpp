@@ -89,7 +89,7 @@ SequentialMC<Scalar,LO,GO,RNG>::SequentialMC(
 			  delta_X,
 			  this->b_linear_problem->getResidual() ) );
 
-    // Build the Nuemann-Ulam solver.
+    // Build the Neumann-Ulam solver.
     d_nu_solver = NeumannUlamSolverFactory::create( 
 	plist, residual_problem, this->b_linear_operator_split, d_rng );
 

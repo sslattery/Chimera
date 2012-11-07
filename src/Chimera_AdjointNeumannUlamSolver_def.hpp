@@ -128,8 +128,10 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     HistoryBuffer<HistoryType> buffer;
 
     // Random walk setup.
-    LO local_state, new_local_state;
-    GO global_state, new_global_state;
+    LO local_state = 0;
+    LO new_local_state = 0;
+    GO global_state = 0;
+    GO new_global_state = 0;
     Scalar transition_h, transition_p, transition_weight;
     Teuchos::ArrayView<const LO> local_indices;
     Teuchos::ArrayView<const Scalar> local_values;

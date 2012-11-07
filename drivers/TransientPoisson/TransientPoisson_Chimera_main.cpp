@@ -14,12 +14,7 @@
 
 #include <Chimera_LinearSolver.hpp>
 #include <Chimera_LinearProblem.hpp>
-#include <Chimera_LinearOperatorSplit.hpp>
-#include <Chimera_LinearOperatorSplitFactory.hpp>
-#include <Chimera_NeumannUlamSolver.hpp>
-#include <Chimera_AdjointNeumannUlamSolver.hpp>
-#include <Chimera_BoostRNG.hpp>
-#include <Chimera_OperatorTools.hpp>
+#include <Chimera_LinearSolverFactory.hpp>
 
 #include "TransientPoisson_EquationSetFactory.hpp"
 #include "TransientPoisson_ClosureModelFactory_TemplateBuilder.hpp"
@@ -53,7 +48,7 @@
 #include <Panzer_LinearObjFactory.hpp>
 #include <Panzer_TpetraLinearObjFactory.hpp>
 #include <Panzer_DOFManagerFactory.hpp>
-#include <Panzer_DOFManager.hpp>
+#include <Panzer_DOFManagerFEI.hpp>
 #include <Panzer_FieldManagerBuilder.hpp>
 
 #include <Panzer_STK_config.hpp>
@@ -84,7 +79,7 @@ int main( int argc, char * argv[] )
     Chimera::TransientPoisson::ClosureModelFactory_TemplateBuilder cm_builder;
 
     // Generate the mesh.
-    int mesh_size = 10;
+    int mesh_size = 200;
     const std::size_t workset_size = 20;
     panzer_stk::SquareQuadMeshFactory mesh_factory;
 
@@ -320,31 +315,24 @@ int main( int argc, char * argv[] )
 			  tp_container->get_x(),
 			  tp_container->get_f() ) );
 
-    // Build the random number generator.
-    Teuchos::RCP<boost::mt19937> rng = 
-	Chimera::RNGTraits<boost::mt19937>::create();
-
-    // Build the Adjoint solver.
-    std::string split_type = "JACOBI";
-    double weight_cutoff = 1.0e-4;
-    int histories_per_stage = 10000;
+    // Set the solver parameters.
     Teuchos::RCP<Teuchos::ParameterList> solver_plist =
 	Teuchos::rcp( new Teuchos::ParameterList() );
-    solver_plist->set<std::string>("SPLIT TYPE", split_type);
-    solver_plist->set<double>("WEIGHT CUTOFF", weight_cutoff);
-    solver_plist->set<int>("HISTORIES PER STAGE", histories_per_stage);
+    solver_plist->set<std::string>( "SOLVER TYPE",         "MCSA"    );
+    solver_plist->set<std::string>( "RNG TYPE",            "MT19937" );
+    solver_plist->set<double>(      "TOLERANCE",           1.0e-8    );
+    solver_plist->set<int>(         "MAX ITERS",           500       );
+    solver_plist->set<std::string>( "SPLIT TYPE",          "JACOBI"  );
+    solver_plist->set<std::string>( "MC TYPE",             "ADJOINT" );
+    solver_plist->set<double>(      "WEIGHT CUTOFF",       1.0e-4    );
+    solver_plist->set<int>(         "HISTORIES PER STAGE", 1000      );
 
-    Teuchos::RCP<Chimera::LinearOperatorSplit<double,int,int> > lin_op_split =
-	Chimera::LinearOperatorSplitFactory::create( 
-	    solver_plist, tp_container->get_A() );
-    std::cout << "SPEC RAD " << Chimera::OperatorTools::spectralRadius( lin_op_split->iterationMatrix() ) << std::endl;
-    Teuchos::RCP<Chimera::NeumannUlamSolver<double,int,int,boost::mt19937> > solver =
-	Teuchos::rcp( 
-	    new Chimera::AdjointNeumannUlamSolver<double,int,int,boost::mt19937>(
-		linear_problem, lin_op_split, rng, solver_plist ) );
+    // Build the solver.
+    Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =
+	Chimera::LinearSolverFactory::create( solver_plist, linear_problem );
 
     // Solve.
-    solver->walk();
+    solver->iterate();
 
     // Scale the solution.
     tp_container->get_x()->scale( -1.0 );
@@ -360,7 +348,7 @@ int main( int argc, char * argv[] )
 
     Teuchos::ArrayRCP<const double> solution_data = 
 	tp_container->get_x()->get1dView();
-    std::cout << solution_data() << std::endl;
+       std::cout << solution_data() << std::endl;
 
     // Complete.
     return 0;

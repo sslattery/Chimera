@@ -38,7 +38,7 @@
 #include <Panzer_LinearObjFactory.hpp>
 #include <Panzer_EpetraLinearObjFactory.hpp>
 #include <Panzer_DOFManagerFactory.hpp>
-#include <Panzer_DOFManager.hpp>
+#include <Panzer_DOFManagerFEI.hpp>
 #include <Panzer_FieldManagerBuilder.hpp>
 
 #include <Panzer_STK_config.hpp>
@@ -320,7 +320,7 @@ int main( int argc, char * argv[] )
     Teuchos::RCP<panzer::EpetraLinearObjContainer> ep_ghost_container =
 	Teuchos::rcp_dynamic_cast<panzer::EpetraLinearObjContainer>( ghost_container );
     panzer_stk::write_solution_data( 
-	*Teuchos::rcp_dynamic_cast<panzer::DOFManager<int,int> >( dof_manager ),
+	*Teuchos::rcp_dynamic_cast<panzer::DOFManagerFEI<int,int> >( dof_manager ),
 	*mesh, *ep_ghost_container->get_x() );
     mesh->writeToExodus( "transient_poisson_aztec.exo" );
 
