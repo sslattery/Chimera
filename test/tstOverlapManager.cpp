@@ -16,7 +16,7 @@
 #include <cassert>
 
 #include <Chimera_LinearProblem.hpp>
-#include <Chimera_DecompositionManager.hpp>
+#include <Chimera_OverlapManager.hpp>
 
 #include <Teuchos_UnitTestHarness.hpp>
 #include <Teuchos_DefaultComm.hpp>
@@ -190,7 +190,7 @@ Teuchos::RCP<Chimera::LinearProblem<double,int,int> > buildLinearProblem()
 // Tests
 //---------------------------------------------------------------------------//
 // Fully domain decomposed case.
-TEUCHOS_UNIT_TEST( DecompositionManager, no_overlap_test )
+TEUCHOS_UNIT_TEST( OverlapManager, no_overlap_test )
 {
     // Set the decomposition parameters.
     double overlap_frac = 0.0;
@@ -203,7 +203,7 @@ TEUCHOS_UNIT_TEST( DecompositionManager, no_overlap_test )
 	buildLinearProblem();
 
     // Build the decomposition manager.
-    Chimera::DecompositionManager<double,int,int> decomp_manager( 
+    Chimera::OverlapManager<double,int,int> decomp_manager( 
 	linear_problem, plist );
 
     // Check the state parameters.
@@ -228,7 +228,7 @@ TEUCHOS_UNIT_TEST( DecompositionManager, no_overlap_test )
     TEST_ASSERT( base_op_rows.size() == decomp_op_rows.size() );
     for ( int i = 0; i < base_op_rows.size(); ++i )
     {
-	TEST_ASSERT( base_op_rows[i] == decomp_op_rows.size() );
+	TEST_ASSERT( base_op_rows[i] == decomp_op_rows[i] );
     }
 
     // There is no overlap here so check that we have the same decomposition
@@ -246,7 +246,7 @@ TEUCHOS_UNIT_TEST( DecompositionManager, no_overlap_test )
     TEST_ASSERT( base_lhs_rows.size() == decomp_lhs_rows.size() );
     for ( int i = 0; i < base_lhs_rows.size(); ++i )
     {
-	TEST_ASSERT( base_lhs_rows[i] == decomp_lhs_rows.size() );
+	TEST_ASSERT( base_lhs_rows[i] == decomp_lhs_rows[i] );
     }
 
     // The RHS should be the same as the input.
@@ -263,13 +263,13 @@ TEUCHOS_UNIT_TEST( DecompositionManager, no_overlap_test )
     TEST_ASSERT( base_lhs_rows.size() == decomp_lhs_rows.size() );
     for ( int i = 0; i < base_lhs_rows.size(); ++i )
     {
-	TEST_ASSERT( base_lhs_rows[i] == decomp_lhs_rows.size() );
+	TEST_ASSERT( base_lhs_rows[i] == decomp_lhs_rows[i] );
     }
 }
 
 //---------------------------------------------------------------------------//
 // Fully replicated case.
-TEUCHOS_UNIT_TEST( DecompositionManager, full_overlap_test )
+TEUCHOS_UNIT_TEST( OverlapManager, full_overlap_test )
 {
     // Set the decomposition parameters.
     double overlap_frac = 1.0;
@@ -282,7 +282,7 @@ TEUCHOS_UNIT_TEST( DecompositionManager, full_overlap_test )
 	buildLinearProblem();
 
     // Build the decomposition manager.
-    Chimera::DecompositionManager<double,int,int> decomp_manager( 
+    Chimera::OverlapManager<double,int,int> decomp_manager( 
 	linear_problem, plist );
 
     // Check the state parameters.
@@ -294,38 +294,32 @@ TEUCHOS_UNIT_TEST( DecompositionManager, full_overlap_test )
 
     // There is no overlap here so check that we have the full operator on all
     // procs.
-    Teuchos::RCP<const Tpetra::Map<int,int> > base_op_map = 
-	linear_problem->getOperator()->getRowMap();
-    Teuchos::ArrayView<const int> base_op_rows = 
-	base_op_map->getNodeElementList();
+    int base_op_num_rows = linear_problem->getOperator()->getGlobalNumRows();
 
     Teuchos::RCP<const Tpetra::Map<int,int> > decomp_op_map = 
 	decomp_problem->getOperator()->getRowMap();
     Teuchos::ArrayView<const int> decomp_op_rows = 
 	decomp_op_map->getNodeElementList();
 
-    TEST_ASSERT( base_op_rows.size() == decomp_op_rows.size() );
-    for ( int i = 0; i < base_op_rows.size(); ++i )
+    TEST_ASSERT( base_op_num_rows == decomp_op_rows.size() );
+    for ( int i = 0; i < base_op_num_rows; ++i )
     {
-	TEST_ASSERT( base_op_rows[i] == decomp_op_rows.size() );
+	TEST_ASSERT( i == decomp_op_rows[i] );
     }
 
     // There is full overlap here so check that we have the full LHS on all
     // procs. 
-    Teuchos::RCP<const Tpetra::Map<int,int> > base_lhs_map = 
-	linear_problem->getLHS()->getMap();
-    Teuchos::ArrayView<const int> base_lhs_rows = 
-	base_lhs_map->getNodeElementList();
+    int base_lhs_num_rows = linear_problem->getLHS()->getGlobalLength();
 
     Teuchos::RCP<const Tpetra::Map<int,int> > decomp_lhs_map = 
 	decomp_problem->getLHS()->getMap();
     Teuchos::ArrayView<const int> decomp_lhs_rows = 
 	decomp_lhs_map->getNodeElementList();
 
-    TEST_ASSERT( base_lhs_rows.size() == decomp_lhs_rows.size() );
-    for ( int i = 0; i < base_lhs_rows.size(); ++i )
+    TEST_ASSERT( base_lhs_num_rows == decomp_lhs_rows.size() );
+    for ( int i = 0; i < base_lhs_num_rows(); ++i )
     {
-	TEST_ASSERT( base_lhs_rows[i] == decomp_lhs_rows.size() );
+	TEST_ASSERT( i == decomp_lhs_rows[i] );
     }
 
     // The RHS should be the same as the input.
@@ -342,7 +336,91 @@ TEUCHOS_UNIT_TEST( DecompositionManager, full_overlap_test )
     TEST_ASSERT( base_lhs_rows.size() == decomp_lhs_rows.size() );
     for ( int i = 0; i < base_lhs_rows.size(); ++i )
     {
-	TEST_ASSERT( base_lhs_rows[i] == decomp_lhs_rows.size() );
+	TEST_ASSERT( base_lhs_rows[i] == decomp_lhs_rows[i] );
+    }
+}
+
+//---------------------------------------------------------------------------//
+// Half overlap decomposed case.
+TEUCHOS_UNIT_TEST( OverlapManager, half_overlap_test )
+{
+    // Set the decomposition parameters.
+    double overlap_frac = 0.5;
+    Teuchos::RCP<Teuchos::ParameterList> plist =
+	Teuchos::rcp( new Teuchos::ParameterList() );
+    plist->set<double>("OVERLAP FRACTION", overlap_frac);
+
+    // Build the linear problem.
+    Teuchos::RCP<Chimera::LinearProblem<double,int,int> > linear_problem =
+	buildLinearProblem();
+
+    // Build the decomposition manager.
+    Chimera::OverlapManager<double,int,int> decomp_manager( 
+	linear_problem, plist );
+
+    // Check the state parameters.
+    TEST_ASSERT( decomp_manager.getOverlapFraction() == overlap_frac );
+
+    // Get the decomposed problem.
+    Teuchos::RCP<Chimera::LinearProblem<double,int,int> > decomp_problem =
+	decomp_manager.getDecomposedProblem();
+
+    // There is half overlap here so check that we have the right operator
+    // rows on proc.
+    int base_op_num_rows = linear_problem->getOperator()->getGlobalNumRows();
+    Teuchos::RCP<const Tpetra::Map<int,int> > base_op_map = 
+	linear_problem->getOperator()->getRowMap();
+    Teuchos::ArrayView<const int> base_op_rows = 
+	base_op_map->getNodeElementList();
+
+    Teuchos::RCP<const Tpetra::Map<int,int> > decomp_op_map = 
+	decomp_problem->getOperator()->getRowMap();
+    Teuchos::ArrayView<const int> decomp_op_rows = 
+	decomp_op_map->getNodeElementList();
+
+    int num_overlap_rows = 
+	std::floor(overlap_frac*base_op_rows.size()/base_op_num_rows);
+
+    TEST_ASSERT( num_overlap_rows == decomp_op_rows.size() );
+    for ( int i = 0; i < base_op_rows.size(); ++i )
+    {
+	TEST_ASSERT( base_op_rows[i] == decomp_op_rows[i] );
+    }
+
+    // There is half overlap here so check that we have the right LHS rows on
+    // proc.
+    int base_lhs_num_rows = linear_problem->getLHS()->getGlobalLength();
+    Teuchos::RCP<const Tpetra::Map<int,int> > base_lhs_map = 
+	linear_problem->getLHS()->getMap();
+    Teuchos::ArrayView<const int> base_lhs_rows = 
+	base_lhs_map->getNodeElementList();
+
+    Teuchos::RCP<const Tpetra::Map<int,int> > decomp_lhs_map = 
+	decomp_problem->getLHS()->getMap();
+    Teuchos::ArrayView<const int> decomp_lhs_rows = 
+	decomp_lhs_map->getNodeElementList();
+
+    TEST_ASSERT( num_overlap_rows == decomp_lhs_rows.size() );
+    for ( int i = 0; i < base_lhs_rows.size(); ++i )
+    {
+	TEST_ASSERT( base_lhs_rows[i] == decomp_lhs_rows[i] );
+    }
+
+    // The RHS should be the same as the input.
+    Teuchos::RCP<const Tpetra::Map<int,int> > base_lhs_map = 
+	linear_problem->getRHS()->getMap();
+    Teuchos::ArrayView<const int> base_lhs_rows = 
+	base_lhs_map->getNodeElementList();
+
+    Teuchos::RCP<const Tpetra::Map<int,int> > decomp_lhs_map = 
+	decomp_problem->getRHS()->getMap();
+    Teuchos::ArrayView<const int> decomp_lhs_rows = 
+	decomp_lhs_map->getNodeElementList();
+
+    TEST_ASSERT( base_lhs_rows.size() == decomp_lhs_rows.size() );
+    for ( int i = 0; i < base_lhs_rows.size(); ++i )
+    {
+	TEST_ASSERT( base_lhs_rows[i] == decomp_lhs_rows[i] );
     }
 }
 

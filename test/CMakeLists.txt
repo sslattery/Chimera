@@ -16,6 +16,13 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   )
 
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  OperatorTools_test
+  SOURCES tstOperatorTools.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
+  COMM serial mpi
+  STANDARD_PASS_OUTPUT
+  )
+
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SamplingTools_test
   SOURCES tstSamplingTools.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
@@ -67,13 +74,6 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
   LinearOperatorSplitFactory_test
   SOURCES tstLinearOperatorSplitFactory.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
-  COMM serial mpi
-  STANDARD_PASS_OUTPUT
-  )
-
-TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  OperatorTools_test
-  SOURCES tstOperatorTools.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   STANDARD_PASS_OUTPUT
   )
