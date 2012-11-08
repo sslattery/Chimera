@@ -31,69 +31,92 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //---------------------------------------------------------------------------//
-// \file Chimera_MCSA.hpp
+// \file Chimera_DecompositionManager.hpp
 // \author Stuart R. Slattery
-// \brief Monte Carlo Synthetic Acceleration solver declaration.
+// \brief Multiple-Set Overlapping-Domain Decomposition Manager declaration.
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_MCSA_HPP
-#define Chimera_MCSA_HPP
+#ifndef Chimera_DECOMPOSITIONMANAGER_HPP
+#define Chimera_DECOMPOSITIONMANAGER_HPP
 
 #include "Chimera_LinearProblem.hpp"
-#include "Chimera_StationaryIteration.hpp"
-#include "Chimera_NeumannUlamSolver.hpp"
 
 #include <Teuchos_RCP.hpp>
 #include <Teuchos_ParameterList.hpp>
+
+#include <Tpetra_Exporter.hpp>
 
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
- * \class MCSA
- * \brief MCSA solver.
+ * \class DecompositionManager
+ * \brief Manager for Multiple-Set Overlapping-Domain Decomposition.
  */
 //---------------------------------------------------------------------------//
-template<class Scalar, class LO, class GO, class RNG>
-class MCSA : public LinearSolver<Scalar,LO,GO>
+template<class Scalar, class LO, class GO>
+class DecompositionManager
 {
   public:
 
     //@{
-    //! Typedefs.
-    typedef Scalar                                    scalar_type;
-    typedef LO                                        local_ordinal_type;
-    typedef GO                                        global_ordinal_type;
-    typedef LinearSolver<Scalar,LO,GO>                Base;
-    typedef typename Base::RCP_LinearProblem          RCP_LinearProblem;
-    typedef StationaryIteration<Scalar,LO,GO>         StationaryIterationType;
-    typedef Teuchos::RCP<StationaryIterationType>     RCP_StationaryIteration;
-    typedef Teuchos::RCP<RNG>                         RCP_RNG;
-    typedef NeumannUlamSolver<Scalar,LO,GO,RNG>       NeumannUlamSolverType;  
-    typedef Teuchos::RCP<NeumannUlamSolverType>       RCP_NeumannUlamSolver;
-    typedef Teuchos::RCP<Teuchos::ParameterList>      RCP_ParameterList;
+    //! Typdefs
+    typedef Scalar                                        scalar_type;
+    typedef LO                                            local_ordinal_type;
+    typedef GO                                            global_ordinal_type;
+    typedef Teuchos::RCP<LinearProblem<Scalar,LO,GO> >    RCP_LinearProblem;
+    typedef Teuchos::RCP<Teuchos::ParameterList>          RCP_ParameterList;
+    typedef Teuchos::RCP<Tpetra::Export<LO,GO> >          RCP_TpetraExport;
     //@}
 
-    //! Constructor.
-    MCSA( const RCP_LinearProblem& linear_problem,
-	  const RCP_ParameterList& plist );
+    // Constructor.
+    DecompositionManager( const RCP_LinearProblem& base_problem,
+			  const RCP_ParameterList& plist );
 
-    //! Destructor.
-    ~MCSA();
+    // Deconstructor.
+    ~DecompositionManager();
 
-    //! Iterate until convergence.
-    void iterate();
+    // Export the base linear problem data to the MSOD decomposition.
+    void exportBaseDataToDecomposition();
+
+    // Export the decomposed linear problem data to the base decomposition.
+    void exportDecomposedDataToBase();
+
+    // Get the base linear problem.
+    RCP_LinearProblem getBaseProblem()
+    { return d_base_problem; }
+
+    // Get the MSOD decomposed linear problem.
+    RCP_LinearProblem getDecomposedProblem()
+    { return d_msod_problem; }
+
+    // Get the overlap fraction.
+    double getOverlapFraction() const
+    { return d_overlap_fraction; }
+
+    // Get the number of sets.
+    int getNumSets() const
+    { return d_num_sets; }
 
   private:
 
-    // Random number generator.
-    RCP_RNG d_rng;
+    // Base linear problem.
+    RCP_LinearProblem d_base_problem;
 
-    // Stationary iteration.
-    RCP_StationaryIteration d_stationary_iteration;
+    // Domain overlap fraction.
+    double d_overlap_fraction;
 
-    // Neumann-Ulam solver.
-    RCP_NeumannUlamSolver d_nu_solver;
+    // Number of sets.
+    int d_num_sets;
+
+    // MSOD decomposed problem.
+    RCP_LinearProblem d_msod_problem;
+
+    // Base-to-MSOD exporter.
+    RCP_TpetraExport d_base_to_msod_export;
+
+    // MSOD-to-Base exporter.
+    RCP_TpetraExport d_msode_to_base_export;
 };
 
 } // end namespace Chimera
@@ -102,13 +125,13 @@ class MCSA : public LinearSolver<Scalar,LO,GO>
 // Template includes.
 //---------------------------------------------------------------------------//
 
-#include "Chimera_MCSA_def.hpp"
+#include "Chimera_DecompositionManager_def.hpp"
 
 //---------------------------------------------------------------------------//
 
-#endif // end Chimera_MCSA_HPP
+#endif // end Chimera_DECOMPOSITIONMANAGER_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_MCSA.hpp
+// end Chimera_DecompositionManager.hpp
 //---------------------------------------------------------------------------//
 

@@ -39,8 +39,8 @@
 #ifndef Chimera_SEQUENTIALMC_HPP
 #define Chimera_SEQUENTIALMC_HPP
 
-#include <Chimera_LinearProblem.hpp>
-#include <Chimera_NeumannUlamSolver.hpp>
+#include "Chimera_LinearProblem.hpp"
+#include "Chimera_NeumannUlamSolver.hpp"
 
 #include <Teuchos_RCP.hpp>
 #include <Teuchos_ParameterList.hpp>
