@@ -31,13 +31,13 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //---------------------------------------------------------------------------//
-// \file Chimera_DecompositionManager.hpp
+// \file Chimera_OverlapManager.hpp
 // \author Stuart R. Slattery
 // \brief Multiple-Set Overlapping-Domain Decomposition Manager declaration.
 //---------------------------------------------------------------------------//
 
-#ifndef Chimera_DECOMPOSITIONMANAGER_HPP
-#define Chimera_DECOMPOSITIONMANAGER_HPP
+#ifndef Chimera_OVERLAPMANAGER_HPP
+#define Chimera_OVERLAPMANAGER_HPP
 
 #include "Chimera_LinearProblem.hpp"
 
@@ -50,12 +50,12 @@ namespace Chimera
 {
 //---------------------------------------------------------------------------//
 /*!
- * \class DecompositionManager
- * \brief Manager for Multiple-Set Overlapping-Domain Decomposition.
+ * \class OverlapManager
+ * \brief Manager for Overlapping-Domain Decomposition.
  */
 //---------------------------------------------------------------------------//
 template<class Scalar, class LO, class GO>
-class DecompositionManager
+class OverlapManager
 {
   public:
 
@@ -70,33 +70,29 @@ class DecompositionManager
     //@}
 
     // Constructor.
-    DecompositionManager( const RCP_LinearProblem& base_problem,
+    OverlapManager( const RCP_LinearProblem& base_problem,
 			  const RCP_ParameterList& plist );
 
     // Deconstructor.
-    ~DecompositionManager();
+    ~OverlapManager();
 
-    // Export the base linear problem data to the MSOD decomposition.
-    void exportBaseDataToDecomposition();
+    // Export the base linear problem data to the overlap decomposition.
+    void exportBaseDataToOverlap();
 
     // Export the decomposed linear problem data to the base decomposition.
-    void exportDecomposedDataToBase();
+    void exportOverlapDataToBase();
 
     // Get the base linear problem.
     RCP_LinearProblem getBaseProblem()
     { return d_base_problem; }
 
-    // Get the MSOD decomposed linear problem.
-    RCP_LinearProblem getDecomposedProblem()
-    { return d_msod_problem; }
+    // Get the overlap decomposed linear problem.
+    RCP_LinearProblem getOverlapProblem()
+    { return d_overlap_problem; }
 
     // Get the overlap fraction.
     double getOverlapFraction() const
     { return d_overlap_fraction; }
-
-    // Get the number of sets.
-    int getNumSets() const
-    { return d_num_sets; }
 
   private:
 
@@ -106,17 +102,14 @@ class DecompositionManager
     // Domain overlap fraction.
     double d_overlap_fraction;
 
-    // Number of sets.
-    int d_num_sets;
+    // Overlap decomposed problem.
+    RCP_LinearProblem d_overlap_problem;
 
-    // MSOD decomposed problem.
-    RCP_LinearProblem d_msod_problem;
+    // Base-to-Overlap exporter.
+    RCP_TpetraExport d_base_to_overlap_export;
 
-    // Base-to-MSOD exporter.
-    RCP_TpetraExport d_base_to_msod_export;
-
-    // MSOD-to-Base exporter.
-    RCP_TpetraExport d_msode_to_base_export;
+    // Overlap-to-Base exporter.
+    RCP_TpetraExport d_overlap_to_base_export;
 };
 
 } // end namespace Chimera
@@ -125,13 +118,13 @@ class DecompositionManager
 // Template includes.
 //---------------------------------------------------------------------------//
 
-#include "Chimera_DecompositionManager_def.hpp"
+#include "Chimera_OverlapManager_def.hpp"
 
 //---------------------------------------------------------------------------//
 
-#endif // end Chimera_DECOMPOSITIONMANAGER_HPP
+#endif // end Chimera_OVERLAPMANAGER_HPP
 
 //---------------------------------------------------------------------------//
-// end Chimera_DecompositionManager.hpp
+// end Chimera_OverlapManager.hpp
 //---------------------------------------------------------------------------//
 

@@ -24,6 +24,8 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 APPEND_SET(HEADERS
   Chimera_Assertion.hpp
   Chimera_BoostRNG.hpp
+  Chimera_DecompositionManager.hpp
+  Chimera_DecompositionManager_def.hpp
   Chimera_History.hpp
   Chimera_History_def.hpp
   Chimera_HistoryBank.hpp
