@@ -75,14 +75,11 @@ class OverlapManager
     // Constructor.
     OverlapManager( const RCP_TpetraCrsMatrix& iteration_matrix,
 		    const RCP_TpetraCrsMatrix& probability_matrix,
-		    const RCP_TpetraVector& LHS,
+		    const RCP_TpetraVector& lhs,
 		    const RCP_ParameterList& plist );
 
     // Deconstructor.
     ~OverlapManager();
-
-    // Export the decomposed solution data to the base decomposition.
-    void exportOverlapSolutionToBase();
 
     // Determine if a global state is in the overlap owned by this proc.
     bool isOverlapGlobalElement( const GO global_state );
@@ -91,9 +88,25 @@ class OverlapManager
     GO getNumOverlap() const
     { return d_num_overlap; }
 
+    // Get the overlapping iteration matrix.
+    RCP_TpetraCrsMatrix getOverlapIterationMatrix() 
+    { return d_overlap_iteration_matrix; }
+
+    // Get the overlapping probability matrix.
+    RCP_TpetraCrsMatrix getOverlapProbabilityMatrix() 
+    { return d_overlap_probability_matrix; }
+
+    // Get the overlapping LHS.
+    RCP_TpetraVector getOverlappingLHS()
+    { return d_overlapping_lhs; }
+
+    // Get the overlap-to-base export.
+    RCP_TpetraExport getOverlapToBaseExport()
+    { return d_overlap_to_base_export; }
+
   private:
 
-    // Build the overlap problem.
+    // Build the overlap.
     void buildOverlap();
 
   private:
@@ -105,7 +118,7 @@ class OverlapManager
     RCP_TpetraCrsMatrix d_overlap_probability_matrix;
 
     // Overlapping LHS.
-    RCP_TpetraVector d_overlap_LHS;
+    RCP_TpetraVector d_overlap_lhs;
 
     // Number of overlapping states.
     GO d_num_overlap;
