@@ -47,6 +47,7 @@
 #include "Chimera_History.hpp"
 #include "Chimera_HistoryBank.hpp"
 #include "Chimera_HistoryBuffer.hpp"
+#include "Chimera_OverlapManager.hpp"
 
 #include <Teuchos_RCP.hpp>
 #include <Teuchos_ParameterList.hpp>
@@ -80,6 +81,8 @@ class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
     typedef Tpetra::CrsMatrix<Scalar,LO,GO>           TpetraCrsMatrix;
     typedef Teuchos::RCP<TpetraCrsMatrix>             RCP_TpetraCrsMatrix;
     typedef History<Scalar,GO>                        HistoryType;
+    typedef OverlapManager<Scalar,LO,GO>              OverlapManagerType;
+    typedef Teuchos::RCP<OverlapManagerType>          RCP_OverlapManager;
     //@}
 
     //! Constructor.
@@ -99,9 +102,6 @@ class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
 
     // Build the probability matrix.
     void buildProbabilityMatrix();
-
-    // Build the ghosted iteration matrix.
-    void buildGhostIterationMatrix();
 
     // Sample the source to build a starting history bank.
     HistoryBank<HistoryType> sampleSource();
@@ -123,8 +123,8 @@ class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
     // Probability matrix.
     RCP_TpetraCrsMatrix d_probability_matrix;
 
-    // Ghosted iteration matrix.
-    RCP_TpetraCrsMatrix d_ghost_iteration_matrix;
+    // Overlap manager.
+    RCP_OverlapManager d_overlap_manager;
 };
 
 } // end namespace Chimera

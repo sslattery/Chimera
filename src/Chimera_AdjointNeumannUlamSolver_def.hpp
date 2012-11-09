@@ -89,9 +89,14 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::AdjointNeumannUlamSolver(
     buildProbabilityMatrix();
     testPostcondition( !d_probability_matrix.is_null() );
 
-    // Build the ghosted iteration matrix.
-    buildGhostIterationMatrix();
-    testPostcondition( !d_ghost_iteration_matrix.is_null() );
+    // Build the overlap manager.
+    d_overlap_manager = Teuchos::rcp( 
+	new OverlapManagerType(
+	    this->b_linear_operator_split->iterationMatrix(),
+	    d_probability_matrix,
+	    this->b_linear_problem->getLHS(),
+	    plist ) );
+    testPostcondition( !d_overlap_manager.is_null() );
 }
 
 //---------------------------------------------------------------------------//
@@ -132,6 +137,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     GO new_global_state = 0;
     Scalar transition_h, transition_p, transition_weight;
     bool new_state_is_local = false;
+    bool state_in_overlap = false;
     bool walk = true;
 
     // Random walk until all global histories in the stage are terminated.
@@ -146,12 +152,25 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    global_state = bank.top().globalState();
 	    local_state = state_map->getLocalElement( global_state );
 
+	    // Check if the current state is in the overlap.
+	    state_in_overlap = 
+		d_overlap_manager->isOverlapGlobalElement( global_state );
+
 	    // Update LHS tally.
-	    this->b_linear_problem->getLHS()->sumIntoGlobalValue( 
-		global_state, bank.top().weight() );
+	    if ( state_in_overlap )
+	    {
+		d_overlap_manager->getOverlapLHS()->sumIntoGlobalValue( 
+		    global_state, bank.top().weight() );
+	    }
+	    else
+	    {
+		this->b_linear_problem->getLHS()->sumIntoGlobalValue( 
+		    global_state, bank.top().weight() );
+	    }
 
 	    // Sample the probability matrix to get the new state.
-	    new_local_state = sampleProbabilityMatrix( local_state );
+	    new_local_state = 
+		sampleProbabilityMatrix( local_state, state_in_overlap );
 
 	    // Invalid state. Terminate the history.
 	    if ( new_local_state == Teuchos::OrdinalTraits<LO>::invalid() )
@@ -167,26 +186,32 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 		new_state_is_local = 
 		    state_map->isNodeGlobalElement( new_global_state );
 
-		// Compute iteration matrix transition data from on process
-		// data. 
+		// Get the iteration matrix transition data.
 		if ( new_state_is_local )
 		{
 		    transition_h = OperatorTools::getMatrixComponentFromLocal(
 			this->b_linear_operator_split->iterationMatrix(), 
 			new_local_state, local_state );
 		}
-		// Compute iteration matrix transition data from ghosted
-		// data. 
 		else
 		{
 		    transition_h = OperatorTools::getMatrixComponentFromGlobal(
-			d_ghost_iteration_matrix, 
+			d_overlap_manager->getOverlapIterationMatrix(), 
 			new_global_state, global_state );
 		}
 
 		// Get the transition probability.
+		if ( state_in_overlap )
+		{
 		transition_p = OperatorTools::getMatrixComponentFromLocal(
-		    d_probability_matrix, local_state, new_local_state );
+		    d_overlap_manager->getOverlapProbabilityMatrix(), 
+		    local_state, new_local_state );
+		}
+		else
+		{
+		    transition_p = OperatorTools::getMatrixComponentFromLocal(
+			d_probability_matrix, local_state, new_local_state );
+		}
 
 		// Compute the state transition weight.
 		if ( transition_p == 0.0 )
@@ -201,7 +226,8 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 
 	    // We want to check this to insure the weight is decreasing for
 	    // convergence.
-	    testInvariant( 1.0 > transition_weight && transition_weight >= 0.0 );
+	    testInvariant( 1.0 > transition_weight && 
+			   transition_weight >= 0.0 );
 
 	    // Update the history for the transition.
 	    bank.top().setGlobalState( new_global_state );
@@ -213,7 +239,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 		bank.pop();
 	    }
 	    // Else if the history has left the local domain, buffer it.
-	    else if ( !new_state_is_local )
+	    else if ( !new_state_is_local && !state_in_overlap )
 	    {
 		buffer.pushBack( bank.pop() );
 	    }
@@ -234,6 +260,12 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    }
 	}
     }
+
+    // Export the overlap LHS to the base decomposition LHS. Sum the tallies.
+    this->b_linear_problem->getLHS()->doExport(
+	*d_overlap_manager->getOverlapLHS(),
+	*d_overlap_manager->getOverlapToBaseExport(),
+	Tpetra::ADD );
 
     // Scale the solution by the number of histories in this stage.
     Scalar solution_scaling = 
@@ -314,33 +346,6 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildProbabilityMatrix()
 
 //---------------------------------------------------------------------------//
 /*!
- * \brief Build the ghost iteration matrix. This consists of the non-zero
- * off-process components that we will need for computing the adjoint weights
- * before the history leaves the local domain.
- */
-template<class Scalar, class LO, class GO, class RNG>
-void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::buildGhostIterationMatrix()
-{
-    Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> > iteration_matrix =
-	this->b_linear_operator_split->iterationMatrix();
-
-    Teuchos::Array<GO> ghost_global_rows = 
-	OperatorTools::getOffProcColumns( iteration_matrix );
-
-    Teuchos::RCP<const Tpetra::Map<LO,GO> > ghost_map =	
-	Tpetra::createNonContigMap<LO,GO>( 
-	    ghost_global_rows(), iteration_matrix->getComm() );
-
-    Tpetra::Export<LO,GO> ghost_exporter( 
-	iteration_matrix->getRowMap(), ghost_map );
-
-    d_ghost_iteration_matrix = 
-	Tpetra::exportAndFillCompleteCrsMatrix<Tpetra::CrsMatrix<Scalar,LO,GO> >(
-	    iteration_matrix, ghost_exporter );
-}
-
-//---------------------------------------------------------------------------//
-/*!
  * \brief Sample the source to build a starting history bank and set the
  * random number generator seeds.
  */
@@ -396,17 +401,25 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
 
 //---------------------------------------------------------------------------//
 /*!
- * \brief Sample a row of the probability matrix to get a new state local.
+ * \brief Sample a row of the probability matrix to get a new local state.
  */
 template<class Scalar, class LO, class GO, class RNG>
 LO AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleProbabilityMatrix(
-    const LO local_state )
+    const LO local_state, bool state_in_overlap )
 {
     Teuchos::ArrayView<const LO> local_indices;
     Teuchos::ArrayView<const Scalar> local_values;
 
-    d_probability_matrix->getLocalRowView( 
-	local_state, local_indices, local_values );
+    if ( state_in_overlap )
+    {
+	d_overlap_manager->getOverlapProbabilityMatrix()->getLocalRowView(
+	    local_state, local_indices, local_values );
+    }
+    else
+    {
+	d_probability_matrix->getLocalRowView( 
+	    local_state, local_indices, local_values );
+    }
 
     return SamplingTools::sampleLocalDiscretePDF(
 	local_values, local_indices, this->b_rng );
