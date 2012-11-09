@@ -31,9 +31,11 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //---------------------------------------------------------------------------//
-// \file Chimera_OverlapManager.hpp
-// \author Stuart R. Slattery
-// \brief Multiple-Set Overlapping-Domain Decomposition Manager declaration.
+/*!
+ * \file Chimera_OverlapManager.hpp
+ * \author Stuart R. Slattery
+ * \brief Multiple-Set Overlapping-Domain Decomposition Manager declaration.
+ */
 //---------------------------------------------------------------------------//
 
 #ifndef Chimera_OVERLAPMANAGER_HPP
@@ -84,32 +86,30 @@ class OverlapManager
     // Determine if a global state is in the overlap owned by this proc.
     bool isOverlapGlobalElement( const GO global_state );
 
-    // Get the number of overlapping states.
+    //! Get the number of overlapping states.
     GO getNumOverlap() const
     { return d_num_overlap; }
 
-    // Get the overlapping iteration matrix.
+    //! Get the overlapping iteration matrix.
     RCP_TpetraCrsMatrix getOverlapIterationMatrix() 
     { return d_overlap_iteration_matrix; }
 
-    // Get the overlapping probability matrix.
+    //! Get the overlapping probability matrix.
     RCP_TpetraCrsMatrix getOverlapProbabilityMatrix() 
     { return d_overlap_probability_matrix; }
 
-    // Get the overlapping LHS.
-    RCP_TpetraVector getOverlappingLHS()
-    { return d_overlapping_lhs; }
+    //! Get the overlapping LHS.
+    RCP_TpetraVector getOverlapLHS()
+    { return d_overlap_lhs; }
 
-    // Get the overlap-to-base export.
+    //! Get the overlap-to-base export.
     RCP_TpetraExport getOverlapToBaseExport()
     { return d_overlap_to_base_export; }
 
   private:
 
-    // Build the overlap.
-    void buildOverlap();
-
-  private:
+    // Number of overlapping states.
+    GO d_num_overlap;
 
     // Overlapping iteration matrix.
     RCP_TpetraCrsMatrix d_overlap_iteration_matrix;
@@ -119,9 +119,6 @@ class OverlapManager
 
     // Overlapping LHS.
     RCP_TpetraVector d_overlap_lhs;
-
-    // Number of overlapping states.
-    GO d_num_overlap;
 
     // Overlap-to-Base exporter.
     RCP_TpetraExport d_overlap_to_base_export;
