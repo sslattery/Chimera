@@ -116,10 +116,8 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     Teuchos::RCP<const Tpetra::Map<LO,GO> > col_map =
 	this->b_linear_problem->getOperator()->getColMap();
 
-    // Zero out the solution vector and get a local view to write into.
+    // Zero out the solution vector.
     this->b_linear_problem->getLHS()->putScalar( 0.0 );
-    Teuchos::ArrayRCP<Scalar> lhs_view =     
-	this->b_linear_problem->getLHS()->get1dViewNonConst();
 
     // Sample the source and populate the history bank.
     HistoryBank<HistoryType> bank = sampleSource();
@@ -133,8 +131,6 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     GO global_state = 0;
     GO new_global_state = 0;
     Scalar transition_h, transition_p, transition_weight;
-    Teuchos::ArrayView<const LO> local_indices;
-    Teuchos::ArrayView<const Scalar> local_values;
     bool new_state_is_local = false;
     bool walk = true;
 
@@ -151,13 +147,11 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    local_state = state_map->getLocalElement( global_state );
 
 	    // Update LHS tally.
-	    lhs_view[local_state] += bank.top().weight();
+	    this->b_linear_problem->getLHS()->sumIntoGlobalValue( 
+		global_state, bank.top().weight() );
 
 	    // Sample the probability matrix to get the new state.
-	    d_probability_matrix->getLocalRowView( 
-		local_state, local_indices, local_values );
-	    new_local_state = SamplingTools::sampleLocalDiscretePDF(
-		local_values, local_indices, this->b_rng );
+	    new_local_state = sampleProbabilityMatrix( local_state );
 
 	    // Invalid state. Terminate the history.
 	    if ( new_local_state == Teuchos::OrdinalTraits<LO>::invalid() )
@@ -398,6 +392,24 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
     }
 
     return source_bank;
+}
+
+//---------------------------------------------------------------------------//
+/*!
+ * \brief Sample a row of the probability matrix to get a new state local.
+ */
+template<class Scalar, class LO, class GO, class RNG>
+LO AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleProbabilityMatrix(
+    const LO local_state )
+{
+    Teuchos::ArrayView<const LO> local_indices;
+    Teuchos::ArrayView<const Scalar> local_values;
+
+    d_probability_matrix->getLocalRowView( 
+	local_state, local_indices, local_values );
+
+    return SamplingTools::sampleLocalDiscretePDF(
+	local_values, local_indices, this->b_rng );
 }
 
 //---------------------------------------------------------------------------//

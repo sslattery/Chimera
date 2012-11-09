@@ -147,7 +147,6 @@ void MCSA<Scalar,LO,GO,RNG>::iterate()
 	    this->b_linear_problem->getResidual() );
 
 	// Neumann-Ulam solver for the correction.
-	d_nu_solver->linearProblem()->getLHS()->putScalar( 0.0 );
 	d_nu_solver->walk();
 
 	// Apply the correction.

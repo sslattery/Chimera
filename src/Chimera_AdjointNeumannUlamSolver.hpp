@@ -106,6 +106,9 @@ class AdjointNeumannUlamSolver : public NeumannUlamSolver<Scalar,LO,GO,RNG>
     // Sample the source to build a starting history bank.
     HistoryBank<HistoryType> sampleSource();
 
+    // Sample a row of the probability matrix to get a new local state.
+    LO sampleProbabilityMatrix( const LO local_state );
+
     // Check for completion of all random walks.
     bool allBanksEmpty( const HistoryBank<HistoryType>& bank );
 

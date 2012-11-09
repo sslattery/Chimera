@@ -24,8 +24,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 APPEND_SET(HEADERS
   Chimera_Assertion.hpp
   Chimera_BoostRNG.hpp
-  Chimera_DecompositionManager.hpp
-  Chimera_DecompositionManager_def.hpp
   Chimera_History.hpp
   Chimera_History_def.hpp
   Chimera_HistoryBank.hpp
@@ -49,6 +47,8 @@ APPEND_SET(HEADERS
   Chimera_NeumannUlamSolverFactory_def.hpp
   Chimera_OperatorTools.hpp
   Chimera_OperatorTools_def.hpp
+  Chimera_OverlapManager.hpp
+  Chimera_OverlapManager_def.hpp
   Chimera_RNGTraits.hpp
   Chimera_SamplingTools.hpp
   Chimera_SamplingTools_def.hpp

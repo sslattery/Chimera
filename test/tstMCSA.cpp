@@ -44,7 +44,7 @@ TEUCHOS_UNIT_TEST( MCSA, mcsa_test )
 	Teuchos::DefaultComm<int>::getComm();
 
     // Build the linear operator - this is a 2D Transient Diffusion operator.
-    int N = 100;
+    int N = 10;
     int problem_size = N*N;
     double dx = 0.01;
     double dy = 0.01;

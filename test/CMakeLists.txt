@@ -58,8 +58,8 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   )
 
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  DecompositionManager_test
-  SOURCES tstDecompositionManager.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
+  OverlapManager_test
+  SOURCES tstOverlapManager.cpp ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   STANDARD_PASS_OUTPUT
   )
