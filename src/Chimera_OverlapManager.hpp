@@ -34,7 +34,7 @@
 /*!
  * \file Chimera_OverlapManager.hpp
  * \author Stuart R. Slattery
- * \brief Multiple-Set Overlapping-Domain Decomposition Manager declaration.
+ * \brief Overlapping-Domain Decomposition Manager declaration.
  */
 //---------------------------------------------------------------------------//
 

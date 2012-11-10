@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <string>
 #include <cassert>
+#include <set>
 
 #include <Chimera_LinearProblem.hpp>
 #include <Chimera_OverlapManager.hpp>
@@ -29,6 +30,7 @@
 #include <Teuchos_TypeTraits.hpp>
 #include <Teuchos_Tuple.hpp>
 #include <Teuchos_ParameterList.hpp>
+#include <Teuchos_as.hpp>
 
 #include <Tpetra_Map.hpp>
 #include <Tpetra_CrsMatrix.hpp>
@@ -204,66 +206,84 @@ TEUCHOS_UNIT_TEST( OverlapManager, no_overlap_test )
 
     // Build the decomposition manager.
     Chimera::OverlapManager<double,int,int> overlap_manager( 
-	linear_problem, plist );
+	linear_problem->getOperator(), linear_problem->getOperator(),
+	linear_problem->getLHS(), plist );
 
     // Check the state parameters.
     TEST_ASSERT( overlap_manager.getNumOverlap() == num_overlap );
 
-    // Get the decomposed problem.
-    Teuchos::RCP<Chimera::LinearProblem<double,int,int> > overlap_problem =
-	overlap_manager.getOverlapProblem();
+    // Get the base decomposition.
+    Teuchos::RCP<const Tpetra::Map<int,int> > base_map = 
+	linear_problem->getOperator()->getRowMap();
+    Teuchos::ArrayView<const int> base_rows = 
+	base_map->getNodeElementList();
+
+    // Check that none of the base decomposition rows are in the overlap.
+    for ( int i = 0; i < Teuchos::as<int>(base_rows.size()); ++i )
+    {
+	TEST_ASSERT( !overlap_manager.isOverlapGlobalElement( base_rows[i] ) );
+    }
 
     // There is no overlap here so check that we have the same decomposition
-    // as the input problem for the operator.
-    Teuchos::RCP<const Tpetra::Map<int,int> > base_op_map = 
-	linear_problem->getOperator()->getRowMap();
-    Teuchos::ArrayView<const int> base_op_rows = 
-	base_op_map->getNodeElementList();
+    // as the input problem for the probability matrix.
+    Teuchos::RCP<const Tpetra::Map<int,int> > probability_map = 
+	overlap_manager.getOverlapProbabilityMatrix()->getRowMap();
+    Teuchos::ArrayView<const int> probability_rows = 
+	probability_map->getNodeElementList();
 
-    Teuchos::RCP<const Tpetra::Map<int,int> > overlap_op_map = 
-	overlap_problem->getOperator()->getRowMap();
-    Teuchos::ArrayView<const int> overlap_op_rows = 
-	overlap_op_map->getNodeElementList();
-
-    TEST_ASSERT( base_op_rows.size() == overlap_op_rows.size() );
-    for ( int i = 0; i < base_op_rows.size(); ++i )
+    TEST_ASSERT( base_rows.size() == probability_rows.size() );
+    for ( int i = 0; i < Teuchos::as<int>(base_rows.size()); ++i )
     {
-	TEST_ASSERT( base_op_rows[i] == overlap_op_rows[i] );
+	TEST_ASSERT( base_rows[i] == probability_rows[i] );
     }
 
     // There is no overlap here so check that we have the same decomposition
     // as the input problem for the LHS.
-    Teuchos::RCP<const Tpetra::Map<int,int> > base_lhs_map = 
-	linear_problem->getLHS()->getMap();
-    Teuchos::ArrayView<const int> base_lhs_rows = 
-	base_lhs_map->getNodeElementList();
+    Teuchos::RCP<const Tpetra::Map<int,int> > lhs_map = 
+	overlap_manager.getOverlapLHS()->getMap();
+    Teuchos::ArrayView<const int> lhs_rows = 
+	lhs_map->getNodeElementList();
 
-    Teuchos::RCP<const Tpetra::Map<int,int> > overlap_lhs_map = 
-	overlap_problem->getLHS()->getMap();
-    Teuchos::ArrayView<const int> overlap_lhs_rows = 
-	overlap_lhs_map->getNodeElementList();
-
-    TEST_ASSERT( base_lhs_rows.size() == overlap_lhs_rows.size() );
-    for ( int i = 0; i < base_lhs_rows.size(); ++i )
+    TEST_ASSERT( base_rows.size() == lhs_rows.size() );
+    for ( int i = 0; i < Teuchos::as<int>(base_rows.size()); ++i )
     {
-	TEST_ASSERT( base_lhs_rows[i] == overlap_lhs_rows[i] );
+	TEST_ASSERT( base_rows[i] == lhs_rows[i] );
     }
 
-    // The RHS should be the same as the input.
-    Teuchos::RCP<const Tpetra::Map<int,int> > base_rhs_map = 
-	linear_problem->getRHS()->getMap();
-    Teuchos::ArrayView<const int> base_rhs_rows = 
-	base_rhs_map->getNodeElementList();
+    // Check that we have an additional state overlap for the iteration
+    // matrix.
+    Teuchos::RCP<const Tpetra::Map<int,int> > iteration_map = 
+	overlap_manager.getOverlapIterationMatrix()->getRowMap();
+    Teuchos::ArrayView<const int> iteration_rows = 
+	iteration_map->getNodeElementList();
 
-    Teuchos::RCP<const Tpetra::Map<int,int> > overlap_rhs_map = 
-	overlap_problem->getRHS()->getMap();
-    Teuchos::ArrayView<const int> overlap_rhs_rows = 
-	overlap_rhs_map->getNodeElementList();
-
-    TEST_ASSERT( base_rhs_rows.size() == overlap_rhs_rows.size() );
-    for ( int i = 0; i < base_rhs_rows.size(); ++i )
+    std::set<int> ghosted_rows;
+    for ( int i = 0; i < Teuchos::as<int>(iteration_rows.size()); ++i )
     {
-	TEST_ASSERT( base_rhs_rows[i] == overlap_rhs_rows[i] );
+	ghosted_rows.insert( iteration_rows[i] );
+    }
+
+    Teuchos::RCP<const Tpetra::Map<int,int> > iteration_col_map =
+	overlap_manager.getOverlapIterationMatrix()->getColMap();
+    Teuchos::ArrayView<const int> iteration_cols =
+	iteration_col_map->getNodeElementList();
+
+    for ( int i = 0; i < Teuchos::as<int>(iteration_cols.size()); ++i )
+    {
+	ghosted_rows.insert( iteration_cols[i] );
+    }
+
+    TEST_ASSERT( ghosted_rows.size() == 
+		 Teuchos::as<std::size_t>(iteration_rows.size()) );
+
+    Teuchos::ArrayView<const int>::const_iterator iteration_rows_it;
+    std::set<int>::const_iterator ghosted_rows_it;
+    for ( ghosted_rows_it = ghosted_rows.begin(), 
+	iteration_rows_it = iteration_rows.begin();
+	  ghosted_rows_it != ghosted_rows.end();
+	  ++ghosted_rows_it, ++iteration_rows_it );
+    {
+	TEST_ASSERT( *ghosted_rows_it == *iteration_rows_it );
     }
 }
 
@@ -271,157 +291,12 @@ TEUCHOS_UNIT_TEST( OverlapManager, no_overlap_test )
 // 1 state overlap.
 TEUCHOS_UNIT_TEST( OverlapManager, overlap_1_test )
 {
-    // Set the overlap parameters.
-    int num_overlap = 1;
-    Teuchos::RCP<Teuchos::ParameterList> plist =
-	Teuchos::rcp( new Teuchos::ParameterList() );
-    plist->set<int>("NUM OVERLAP", num_overlap);
-
-    // Build the linear problem.
-    Teuchos::RCP<Chimera::LinearProblem<double,int,int> > linear_problem =
-	buildLinearProblem();
-
-    // Build the decomposition manager.
-    Chimera::OverlapManager<double,int,int> overlap_manager( 
-	linear_problem, plist );
-
-    // Check the state parameters.
-    TEST_ASSERT( overlap_manager.getNumOverlap() == num_overlap );
-
-    // Get the decomposed problem.
-    Teuchos::RCP<Chimera::LinearProblem<double,int,int> > overlap_problem =
-	overlap_manager.getOverlapProblem();
-
-    // There is no overlap here so check that we have the full operator on all
-    // procs.
-    int base_op_num_rows = linear_problem->getOperator()->getGlobalNumRows();
-
-    Teuchos::RCP<const Tpetra::Map<int,int> > overlap_op_map = 
-	overlap_problem->getOperator()->getRowMap();
-    Teuchos::ArrayView<const int> overlap_op_rows = 
-	overlap_op_map->getNodeElementList();
-
-    TEST_ASSERT( base_op_num_rows == overlap_op_rows.size() );
-    for ( int i = 0; i < base_op_num_rows; ++i )
-    {
-	TEST_ASSERT( i == overlap_op_rows[i] );
-    }
-
-    // There is full overlap here so check that we have the full LHS on all
-    // procs. 
-    int base_lhs_num_rows = linear_problem->getLHS()->getGlobalLength();
-
-    Teuchos::RCP<const Tpetra::Map<int,int> > overlap_lhs_map = 
-	overlap_problem->getLHS()->getMap();
-    Teuchos::ArrayView<const int> overlap_lhs_rows = 
-	overlap_lhs_map->getNodeElementList();
-
-    TEST_ASSERT( base_lhs_num_rows == overlap_lhs_rows.size() );
-    for ( int i = 0; i < base_lhs_num_rows; ++i )
-    {
-	TEST_ASSERT( i == overlap_lhs_rows[i] );
-    }
-
-    // The RHS should be the same as the input.
-    Teuchos::RCP<const Tpetra::Map<int,int> > base_rhs_map = 
-	linear_problem->getRHS()->getMap();
-    Teuchos::ArrayView<const int> base_rhs_rows = 
-	base_rhs_map->getNodeElementList();
-
-    Teuchos::RCP<const Tpetra::Map<int,int> > overlap_rhs_map = 
-	overlap_problem->getRHS()->getMap();
-    Teuchos::ArrayView<const int> overlap_rhs_rows = 
-	overlap_rhs_map->getNodeElementList();
-
-    TEST_ASSERT( base_rhs_rows.size() == overlap_rhs_rows.size() );
-    for ( int i = 0; i < base_rhs_rows.size(); ++i )
-    {
-	TEST_ASSERT( base_rhs_rows[i] == overlap_rhs_rows[i] );
-    }
 }
 
 //---------------------------------------------------------------------------//
 // 2 state overlap case.
 TEUCHOS_UNIT_TEST( OverlapManager, overlap_2_test )
 {
-    // Set the overlap parameters.
-    int num_overlap = 1;
-    Teuchos::RCP<Teuchos::ParameterList> plist =
-	Teuchos::rcp( new Teuchos::ParameterList() );
-    plist->set<int>("NUM OVERLAP", num_overlap);
-
-    // Build the linear problem.
-    Teuchos::RCP<Chimera::LinearProblem<double,int,int> > linear_problem =
-	buildLinearProblem();
-
-    // Build the decomposition manager.
-    Chimera::OverlapManager<double,int,int> overlap_manager( 
-	linear_problem, plist );
-
-    // Check the state parameters.
-    TEST_ASSERT( overlap_manager.getNumOverlap() == num_overlap );
-
-    // Get the decomposed problem.
-    Teuchos::RCP<Chimera::LinearProblem<double,int,int> > overlap_problem =
-	overlap_manager.getOverlapProblem();
-
-    // There is half overlap here so check that we have the right operator
-    // rows on proc.
-    int base_op_num_rows = linear_problem->getOperator()->getGlobalNumRows();
-    Teuchos::RCP<const Tpetra::Map<int,int> > base_op_map = 
-	linear_problem->getOperator()->getRowMap();
-    Teuchos::ArrayView<const int> base_op_rows = 
-	base_op_map->getNodeElementList();
-
-    Teuchos::RCP<const Tpetra::Map<int,int> > overlap_op_map = 
-	overlap_problem->getOperator()->getRowMap();
-    Teuchos::ArrayView<const int> overlap_op_rows = 
-	overlap_op_map->getNodeElementList();
-
-    int num_overlap_rows = 
-	std::floor(overlap_frac*base_op_rows.size()/base_op_num_rows);
-
-    TEST_ASSERT( num_overlap_rows == overlap_op_rows.size() );
-    for ( int i = 0; i < base_op_rows.size(); ++i )
-    {
-	TEST_ASSERT( base_op_rows[i] == overlap_op_rows[i] );
-    }
-
-    // There is half overlap here so check that we have the right LHS rows on
-    // proc.
-    int base_lhs_num_rows = linear_problem->getLHS()->getGlobalLength();
-    Teuchos::RCP<const Tpetra::Map<int,int> > base_lhs_map = 
-	linear_problem->getLHS()->getMap();
-    Teuchos::ArrayView<const int> base_lhs_rows = 
-	base_lhs_map->getNodeElementList();
-
-    Teuchos::RCP<const Tpetra::Map<int,int> > overlap_lhs_map = 
-	overlap_problem->getLHS()->getMap();
-    Teuchos::ArrayView<const int> overlap_lhs_rows = 
-	overlap_lhs_map->getNodeElementList();
-
-    TEST_ASSERT( num_overlap_rows == overlap_lhs_rows.size() );
-    for ( int i = 0; i < base_lhs_rows.size(); ++i )
-    {
-	TEST_ASSERT( base_lhs_rows[i] == overlap_lhs_rows[i] );
-    }
-
-    // The RHS should be the same as the input.
-    Teuchos::RCP<const Tpetra::Map<int,int> > base_rhs_map = 
-	linear_problem->getRHS()->getMap();
-    Teuchos::ArrayView<const int> base_rhs_rows = 
-	base_rhs_map->getNodeElementList();
-
-    Teuchos::RCP<const Tpetra::Map<int,int> > overlap_rhs_map = 
-	overlap_problem->getRHS()->getMap();
-    Teuchos::ArrayView<const int> overlap_rhs_rows = 
-	overlap_rhs_map->getNodeElementList();
-
-    TEST_ASSERT( base_rhs_rows.size() == overlap_rhs_rows.size() );
-    for ( int i = 0; i < base_rhs_rows.size(); ++i )
-    {
-	TEST_ASSERT( base_rhs_rows[i] == overlap_rhs_rows[i] );
-    }
 }
 
 //---------------------------------------------------------------------------//

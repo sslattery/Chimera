@@ -405,7 +405,7 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
  */
 template<class Scalar, class LO, class GO, class RNG>
 LO AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleProbabilityMatrix(
-    const LO local_state, bool state_in_overlap )
+    const LO local_state, const bool state_in_overlap )
 {
     Teuchos::ArrayView<const LO> local_indices;
     Teuchos::ArrayView<const Scalar> local_values;

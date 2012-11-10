@@ -34,7 +34,7 @@
 /*! 
  * \file Chimera_OverlapManager_def.hpp
  * \author Stuart R. Slattery
- * \brief Multiple-Set Overlapping-Domain Decomposition Manager definition.
+ * \brief Overlapping-Domain Decomposition Manager definition.
  */
 //---------------------------------------------------------------------------//
 
@@ -63,26 +63,24 @@ OverlapManager<Scalar,LO,GO>::OverlapManager(
     const RCP_TpetraVector& lhs,
     const RCP_ParameterList& plist )
     : d_num_overlap( plist->get<GO>("NUM OVERLAP") )
+    , d_overlap_iteration_matrix( 
+	Tpetra::createCrsMatrix<Scalar,LO,GO>( iteration_matrix->getRowMap() ) )
 {
     // Setup for overlap construction.
-    RCP_TpetraCrsMatrix old_iteration_matrix = Teuchos::rcp(
-	new RCP_TpetraCrsMatrix( iteration_matrix ) );
-    Teuchos::Array<GO> ghost_global_rows;
-    Tpetra::Export<LO,GO> ghost_exporter;
-    Teuchos::ArrayView<const GO> global_rows(0);
+    Teuchos::ArrayView<const GO> global_rows;
     typename Teuchos::ArrayView<const GO>::const_iterator global_rows_it;
-    Teuchos::Array<GO>::iterator ghost_global_bound;
+    typename Teuchos::Array<GO>::iterator ghost_global_bound;
+
+    // Get the initial off proc columns.
+    Teuchos::Array<GO> ghost_global_rows = 
+	OperatorTools::getOffProcColumns( iteration_matrix );
 
     // Build the overlap first in the iteration matrix by traversing the
     // graph.
     for ( GO i = 0; i < d_num_overlap; ++i )
     {
-	// Get the off proc columns.
-	ghost_global_rows = 
-	    OperatorTools::getOffProcColumns( old_iteration_matrix );
-
-	// Get rid of the global rows that belong to the original matrix. We
-	// don't need to store these, just the overlap.
+	// Get rid of the global rows that belong to the original iteration
+	// matrix. We don't need to store these, just the overlap.
 	global_rows = iteration_matrix->getRowMap()->getNodeElementList();
 	for ( global_rows_it = global_rows.begin();
 	      global_rows_it != global_rows.end();
@@ -95,6 +93,11 @@ OverlapManager<Scalar,LO,GO>::OverlapManager(
 						    ghost_global_bound) );
 	}
 
+	// Get the current set of global rows in the overlap probability
+	// matrix. 
+	global_rows = 
+	    d_overlap_iteration_matrix->getRowMap()->getNodeElementList();
+
 	// Append the off proc overlap columns to the global rows.
 	for ( global_rows_it = global_rows.begin();
 	      global_rows_it != global_rows.end();
@@ -106,36 +109,30 @@ OverlapManager<Scalar,LO,GO>::OverlapManager(
 	// Make a new map of the combined global rows and off proc columns.
 	Teuchos::RCP<const Tpetra::Map<LO,GO> > ghost_map = 
 	    Tpetra::createNonContigMap<LO,GO>( 
-	    ghost_global_rows(), old_iteration_matrix->getComm() );
+	    ghost_global_rows(), d_overlap_iteration_matrix->getComm() );
 
-	// Export the iteration matrix with the new overlap.
-	ghost_exporter = Tpetra::Export<LO,GO>( 
-	    old_iteration_matrix->getRowMap(), ghost_map );
+	// Export the overlap iteration matrix with the new overlap.
+	Tpetra::Export<LO,GO> ghost_exporter( 
+	    d_overlap_iteration_matrix->getRowMap(), ghost_map );
 
+	// Update the overlap iteration matrix for the next iteration.
 	d_overlap_iteration_matrix = Tpetra::exportAndFillCompleteCrsMatrix<
 	    Tpetra::CrsMatrix<Scalar,LO,GO> >(
-		old_iteration_matrix, ghost_exporter );
+		iteration_matrix, ghost_exporter );
 
-	// Reset the old iteration matrix for the next iteration.
-	old_iteration_matrix = Teuchos::rcp(
-	    new RCP_TpetraCrsMatrix( d_overlap_iteration_matrix ) );
-
-	// Get the current set of global rows.
-	global_rows = old_iteration_matrix->getRowMap()->getNodeElementList();
+	// Get the off proc columns.
+	ghost_global_rows = 
+	    OperatorTools::getOffProcColumns( d_overlap_iteration_matrix );
     }
-    
-    // Build the overlap decomposition map.
-    Teuchos::RCP<const Tpetra::Map<LO,GO> > overlap_map = 
-	Tpetra::createNonContigMap<LO,GO>( 
-	    ghost_global_rows(), iteration_matrix->getComm() );
 
     // Build the base-to-overlap export.
     Tpetra::Export<LO,GO> base_to_overlap_export( 
-	iteration_matrix->getRowMap(), overlap_map );
+	iteration_matrix->getRowMap(), d_overlap_iteration_matrix->getRowMap() );
 
     // Build the overlap-to-base exporter.
     d_overlap_to_base_export = Teuchos::rcp( 
-	new Tpetra::Export<LO,GO>( overlap_map, iteration_matrix->getRowMap() ) );
+	new Tpetra::Export<LO,GO>( d_overlap_iteration_matrix->getRowMap(), 
+				   iteration_matrix->getRowMap() ) );
 
     // Apply the overlap to the probability matrix.
     d_overlap_probability_matrix =
@@ -143,15 +140,15 @@ OverlapManager<Scalar,LO,GO>::OverlapManager(
 	    probability_matrix, base_to_overlap_export );
 
     // Apply the overlap to the LHS.
-    d_overlap_lhs = 
-	Tpetra::createVector( d_overlap_iteration_matrix->getRowMap() );
-    d_overlap_lhs->doExport( *lhs, base_to_overlap_export );
+    d_overlap_lhs = Tpetra::createVector<Scalar,LO,GO>( 
+	d_overlap_iteration_matrix->getRowMap() );
+    d_overlap_lhs->doExport( *lhs, base_to_overlap_export, Tpetra::INSERT );
 
     // Move one more step in the graph to get the ghost elements for the
     // iteration matrix.
-    global_rows = old_iteration_matrix->getRowMap()->getNodeElementList();
+    global_rows = d_overlap_iteration_matrix->getRowMap()->getNodeElementList();
     ghost_global_rows = 
-	OperatorTools::getOffProcColumns( old_iteration_matrix );
+	OperatorTools::getOffProcColumns( d_overlap_iteration_matrix );
 
     // Remove the original rows again to only store the overlap data plus one
     // ghosted state in the iteration matrix.
@@ -176,17 +173,17 @@ OverlapManager<Scalar,LO,GO>::OverlapManager(
     }
 
     // Build the new iteration matrix map.
-    Teuchos::RCP<Tpetra::Map<LO,GO> > overlap_ghost_map = 
+    Teuchos::RCP<const Tpetra::Map<LO,GO> > overlap_ghost_map = 
 	Tpetra::createNonContigMap<LO,GO>( 
-	    ghost_global_rows(), old_iteration_matrix->getComm() );
+	    ghost_global_rows(), d_overlap_iteration_matrix->getComm() );
 
     // Export the iteration matrix to its final form.
     Tpetra::Export<LO,GO> overlap_ghost_exporter( 
-	old_iteration_matrix->getRowMap(), overlap_ghost_map );
+	d_overlap_iteration_matrix->getRowMap(), overlap_ghost_map );
 
     d_overlap_iteration_matrix = Tpetra::exportAndFillCompleteCrsMatrix<
 	Tpetra::CrsMatrix<Scalar,LO,GO> >(
-	    old_iteration_matrix, overlap_ghost_exporter );
+	    d_overlap_iteration_matrix, overlap_ghost_exporter );
 
     // Test postconditions.
     testPostcondition( !d_overlap_iteration_matrix.is_null() );
@@ -216,8 +213,6 @@ bool OverlapManager<Scalar,LO,GO>::isOverlapGlobalElement(
 }
 
 //---------------------------------------------------------------------------//
-
-};
 
 } // end namespace Chimera
 
