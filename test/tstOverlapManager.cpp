@@ -284,8 +284,7 @@ TEUCHOS_UNIT_TEST( OverlapManager, overlap_1_test )
 	TEST_ASSERT( !overlap_manager.isOverlapGlobalElement( base_rows[i] ) );
     }
 
-    // There is 1 state overlap here so check that we have the right overlap
-    // in the probability matrix.
+    // Check the probability matrix overlap.
     Teuchos::Array<int> off_proc_rows = 
 	Chimera::OperatorTools::getOffProcColumns( 
 	    linear_problem->getOperator() );
@@ -301,7 +300,7 @@ TEUCHOS_UNIT_TEST( OverlapManager, overlap_1_test )
 	TEST_ASSERT( off_proc_rows[i] == probability_rows[i] );
     }
 
-    // There is no overlap here so check that we have an empty overlap lhs.
+    // Check the LHS overlap.
     Teuchos::RCP<const Tpetra::Map<int,int> > lhs_map = 
 	overlap_manager.getOverlapLHS()->getMap();
     Teuchos::ArrayView<const int> lhs_rows = 
@@ -351,6 +350,131 @@ TEUCHOS_UNIT_TEST( OverlapManager, overlap_1_test )
 // 2 state overlap case.
 TEUCHOS_UNIT_TEST( OverlapManager, overlap_2_test )
 {
+    // Set the overlap parameters.
+    int num_overlap = 2;
+    Teuchos::RCP<Teuchos::ParameterList> plist =
+	Teuchos::rcp( new Teuchos::ParameterList() );
+    plist->set<int>("NUM OVERLAP", num_overlap);
+
+    // Build the linear problem.
+    Teuchos::RCP<Chimera::LinearProblem<double,int,int> > linear_problem =
+	buildLinearProblem();
+
+    // Build the decomposition manager.
+    Chimera::OverlapManager<double,int,int> overlap_manager( 
+	linear_problem->getOperator(), linear_problem->getOperator(),
+	linear_problem->getLHS(), plist );
+
+    // Check the state parameters.
+    TEST_ASSERT( overlap_manager.getNumOverlap() == num_overlap );
+
+    // Get the base decomposition.
+    Teuchos::RCP<const Tpetra::Map<int,int> > base_map = 
+	linear_problem->getOperator()->getRowMap();
+    Teuchos::ArrayView<const int> base_rows = 
+	base_map->getNodeElementList();
+
+    // Check that none of the base decomposition rows are in the overlap.
+    for ( int i = 0; i < Teuchos::as<int>(base_rows.size()); ++i )
+    {
+	TEST_ASSERT( !overlap_manager.isOverlapGlobalElement( base_rows[i] ) );
+    }
+
+    // Get the overlapping rows in the first group and export to a new matrix.
+    Teuchos::Array<int> off_proc_rows = 
+	Chimera::OperatorTools::getOffProcColumns( 
+	    linear_problem->getOperator() );
+    Teuchos::RCP<const Tpetra::Map<int,int> > overlap_map = 
+	Tpetra::createNonContigMap<int,int>( 
+	    off_proc_rows(), linear_problem->getOperator()->getComm() );
+    Tpetra::Export<int,int> overlap_exporter( 
+	linear_problem->getOperator()->getRowMap(), overlap_map );
+    Teuchos::RCP<Tpetra::CrsMatrix<double,int,int> > first_overlap_op =
+	Tpetra::exportAndFillCompleteCrsMatrix<
+	    Tpetra::CrsMatrix<double,int,int> >(
+		linear_problem->getOperator(), overlap_exporter );
+
+    // Get the overlapping rows in the second group and append the first group.
+    Teuchos::Array<int> off_proc_rows_2 = 
+	Chimera::OperatorTools::getOffProcColumns( first_overlap_op );
+    for ( int i = 0; i < off_proc_rows.size(); ++i )
+    {
+	off_proc_rows_2.push_back( off_proc_rows[i] );
+    }
+
+    // Remove the base rows.
+    Teuchos::Array<int>::iterator off_proc_rows_2_bound;
+    for ( int i = 0; i < base_rows.size(); ++i )
+    {
+	off_proc_rows_2_bound = std::remove( off_proc_rows_2.begin(),
+					     off_proc_rows_2.end(),
+					     base_rows[i] );
+	off_proc_rows_2.resize( std::distance( off_proc_rows_2.begin(),
+					       off_proc_rows_2_bound ) );
+    }
+    std::sort( off_proc_rows_2.begin(), off_proc_rows_2.end() );
+
+    // Check the probability matrix overlap.
+    Teuchos::RCP<const Tpetra::Map<int,int> > probability_map = 
+	overlap_manager.getOverlapProbabilityMatrix()->getRowMap();
+    Teuchos::ArrayView<const int> probability_rows = 
+	probability_map->getNodeElementList();
+    Teuchos::Array<int> probability_rows_copy( probability_rows );
+    std::sort( probability_rows_copy.begin(), probability_rows_copy.end() );
+
+    TEST_ASSERT( off_proc_rows_2.size() == probability_rows_copy.size() );
+    for ( int i = 0; i < off_proc_rows_2.size(); ++i )
+    {
+	std::cout << off_proc_rows_2[i] << " " << probability_rows_copy[i] << std::endl;
+	TEST_ASSERT( off_proc_rows_2[i] == probability_rows_copy[i] );
+    }
+
+    // Check the LHS overlap.
+    Teuchos::RCP<const Tpetra::Map<int,int> > lhs_map = 
+	overlap_manager.getOverlapLHS()->getMap();
+    Teuchos::ArrayView<const int> lhs_rows = 
+	lhs_map->getNodeElementList();
+    Teuchos::Array<int> lhs_rows_copy( lhs_rows );
+    std::sort( lhs_rows_copy.begin(), lhs_rows_copy.end() );
+
+    TEST_ASSERT( off_proc_rows_2.size() == lhs_rows_copy.size() );
+    for ( int i = 0; i < off_proc_rows_2.size(); ++i )
+    {
+	TEST_ASSERT( off_proc_rows_2[i] == lhs_rows_copy[i] );
+    }
+
+    // Check that we have an additional state overlap for the iteration
+    // matrix.
+    Teuchos::Array<int> off_proc_rows_3 = 
+	Chimera::OperatorTools::getOffProcColumns( 
+	    overlap_manager.getOverlapProbabilityMatrix() );
+    Teuchos::Array<int>::iterator off_proc_rows_3_bound;
+    for ( int i = 0; i < base_rows.size(); ++i )
+    {
+	off_proc_rows_3_bound = std::remove( off_proc_rows_3.begin(),
+					     off_proc_rows_3.end(),
+					     base_rows[i] );
+	off_proc_rows_3.resize( std::distance( off_proc_rows_3.begin(),
+					       off_proc_rows_3_bound ) );
+    }
+    for ( int i = 0; i < probability_rows.size(); ++i )
+    {
+	off_proc_rows_3.push_back( probability_rows[i] );
+    }
+    std::sort( off_proc_rows_3.begin(), off_proc_rows_3.end() );
+
+    Teuchos::RCP<const Tpetra::Map<int,int> > iteration_map = 
+	overlap_manager.getOverlapIterationMatrix()->getRowMap();
+    Teuchos::ArrayView<const int> iteration_rows = 
+	iteration_map->getNodeElementList();
+    Teuchos::Array<int> iteration_rows_copy( iteration_rows );
+    std::sort( iteration_rows_copy.begin(), iteration_rows_copy.end() );
+
+    TEST_ASSERT( iteration_rows.size() == off_proc_rows_3.size() );
+    for ( int i = 0; i < iteration_rows.size(); ++i )
+    {
+	TEST_ASSERT( iteration_rows_copy[i] == off_proc_rows_3[i] );
+    }
 }
 
 //---------------------------------------------------------------------------//
