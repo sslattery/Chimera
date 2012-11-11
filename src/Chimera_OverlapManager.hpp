@@ -108,6 +108,16 @@ class OverlapManager
 
   private:
 
+    // Build the overlap.
+    void buildOverlap( const RCP_TpetraCrsMatrix& iteration_matrix,
+		       const RCP_TpetraCrsMatrix& probability_matrix,
+		       const RCP_TpetraVector& lhs );
+
+    // Build the iteration matrix ghost rows.
+    void buildIterationGhost( const RCP_TpetraCrsMatrix& iteration_matrix );
+
+  private:
+
     // Number of overlapping states.
     GO d_num_overlap;
 
