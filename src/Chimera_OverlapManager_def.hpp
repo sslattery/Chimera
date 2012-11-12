@@ -62,7 +62,8 @@ OverlapManager<Scalar,LO,GO>::OverlapManager(
     const RCP_TpetraCrsMatrix& probability_matrix,
     const RCP_TpetraVector& lhs,
     const RCP_ParameterList& plist )
-    : d_num_overlap( plist->get<GO>("NUM OVERLAP") )
+    : d_lhs( lhs )
+    , d_num_overlap( plist->get<GO>("NUM OVERLAP") )
 {
     testPrecondition( d_num_overlap >= 0 );
 
@@ -77,7 +78,7 @@ OverlapManager<Scalar,LO,GO>::OverlapManager(
     // Build the overlap if number of overlapping states is greater than 0.
     if ( d_num_overlap > 0 )
     {
-	buildOverlap( iteration_matrix, probability_matrix, lhs );
+	buildOverlap( iteration_matrix, probability_matrix );
     }
 
     // Build the ghost rows for the iteration matrix.
@@ -91,6 +92,20 @@ OverlapManager<Scalar,LO,GO>::OverlapManager(
 template<class Scalar, class LO, class GO>
 OverlapManager<Scalar,LO,GO>::~OverlapManager()
 { /* ... */ }
+
+//---------------------------------------------------------------------------//
+/*
+ * \brief Export the overlap LHS to the original LHS by summing the tallies.
+ */
+template<class Scalar, class LO, class GO>
+void OverlapManager<Scalar,LO,GO>::exportOverlapLHS()
+{
+    if ( d_num_overlap > 0 )
+    {
+	d_lhs->doExport( 
+	    *d_overlap_lhs, *d_overlap_to_base_export, Tpetra::ADD );
+    }
+}
 
 //---------------------------------------------------------------------------//
 /*
@@ -118,8 +133,7 @@ bool OverlapManager<Scalar,LO,GO>::isOverlapGlobalElement(
 template<class Scalar, class LO, class GO>
 void OverlapManager<Scalar,LO,GO>::buildOverlap( 
     const RCP_TpetraCrsMatrix& iteration_matrix,
-    const RCP_TpetraCrsMatrix& probability_matrix,
-    const RCP_TpetraVector& lhs )
+    const RCP_TpetraCrsMatrix& probability_matrix )
 {
     // Setup for overlap construction.
     Teuchos::ArrayView<const GO> global_rows;
@@ -190,12 +204,12 @@ void OverlapManager<Scalar,LO,GO>::buildOverlap(
     // Apply the overlap to the LHS.
     d_overlap_lhs = Tpetra::createVector<Scalar,LO,GO>( 
 	d_overlap_iteration_matrix->getRowMap() );
-    Tpetra::Export<LO,GO> lhs_export( lhs->getMap(), d_overlap_lhs->getMap() );
-    d_overlap_lhs->doExport( *lhs, lhs_export, Tpetra::INSERT );
+    Tpetra::Export<LO,GO> lhs_export( d_lhs->getMap(), d_overlap_lhs->getMap() );
+    d_overlap_lhs->doExport( *d_lhs, lhs_export, Tpetra::INSERT );
 
     // Build the overlap-to-base exporter for the LHS.
     d_overlap_to_base_export = Teuchos::rcp( 
-	new Tpetra::Export<LO,GO>( d_overlap_lhs->getMap(), lhs->getMap() ) );
+	new Tpetra::Export<LO,GO>( d_overlap_lhs->getMap(), d_lhs->getMap() ) );
 
     // Test postconditions.
     testPostcondition( !d_overlap_iteration_matrix.is_null() );

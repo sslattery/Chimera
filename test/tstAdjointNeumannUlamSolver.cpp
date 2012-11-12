@@ -203,6 +203,7 @@ TEUCHOS_UNIT_TEST( AdjointNeumannUlamSolver, adjoint_neumannulam_test )
     plist->set<std::string>("SPLIT TYPE", split_type);
     plist->set<double>("WEIGHT CUTOFF", weight_cutoff);
     plist->set<int>("HISTORIES PER STAGE", histories_per_stage);
+    plist->set<int>("NUM OVERLAP", 0);
 
     Teuchos::RCP<Chimera::LinearOperatorSplit<double,int,int> > lin_op_split =
 	Chimera::LinearOperatorSplitFactory::create( plist, A );

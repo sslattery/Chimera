@@ -192,11 +192,12 @@ TEUCHOS_UNIT_TEST( SequentialMC, sequential_mc_test )
     plist->set<std::string>( "SOLVER TYPE",         "SEQUENTIAL MC" );
     plist->set<std::string>( "RNG TYPE",            "MT19937"       );
     plist->set<double>(      "TOLERANCE",           1.0e-8          );
-    plist->set<int>(         "MAX ITERS",           1             );
+    plist->set<int>(         "MAX ITERS",           100             );
     plist->set<std::string>( "SPLIT TYPE",          "JACOBI"        );
     plist->set<std::string>( "MC TYPE",             "ADJOINT"       );
     plist->set<double>(      "WEIGHT CUTOFF",       1.0e-4          );
     plist->set<int>(         "HISTORIES PER STAGE", 1000            );
+    plist->set<int>(         "NUM OVERLAP",         0               );
 
     Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =
 	Chimera::LinearSolverFactory::create( plist, linear_problem );

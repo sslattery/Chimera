@@ -203,9 +203,9 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 		// Get the transition probability.
 		if ( state_in_overlap )
 		{
-		transition_p = OperatorTools::getMatrixComponentFromLocal(
-		    d_overlap_manager->getOverlapProbabilityMatrix(), 
-		    local_state, new_local_state );
+		    transition_p = OperatorTools::getMatrixComponentFromLocal(
+			d_overlap_manager->getOverlapProbabilityMatrix(), 
+			local_state, new_local_state );
 		}
 		else
 		{
@@ -262,10 +262,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     }
 
     // Export the overlap LHS to the base decomposition LHS. Sum the tallies.
-    this->b_linear_problem->getLHS()->doExport(
-	*d_overlap_manager->getOverlapLHS(),
-	*d_overlap_manager->getOverlapToBaseExport(),
-	Tpetra::ADD );
+    d_overlap_manager->exportOverlapLHS();
 
     // Scale the solution by the number of histories in this stage.
     Scalar solution_scaling = 

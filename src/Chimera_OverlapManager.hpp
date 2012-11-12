@@ -83,6 +83,9 @@ class OverlapManager
     // Deconstructor.
     ~OverlapManager();
 
+    // Export the overlap LHS to the original LHS by summing the tallies.
+    void exportOverlapLHS();
+
     // Determine if a global state is in the overlap owned by this proc.
     bool isOverlapGlobalElement( const GO global_state );
 
@@ -110,13 +113,15 @@ class OverlapManager
 
     // Build the overlap.
     void buildOverlap( const RCP_TpetraCrsMatrix& iteration_matrix,
-		       const RCP_TpetraCrsMatrix& probability_matrix,
-		       const RCP_TpetraVector& lhs );
+		       const RCP_TpetraCrsMatrix& probability_matrix );
 
     // Build the iteration matrix ghost rows.
     void buildIterationGhost( const RCP_TpetraCrsMatrix& iteration_matrix );
 
   private:
+
+    // The original LHS.
+    RCP_TpetraVector d_lhs;
 
     // Number of overlapping states.
     GO d_num_overlap;
