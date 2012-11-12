@@ -23,7 +23,7 @@ class Partitioner
   public:
 
     //@{
-    //! typedefs.
+    //! Typedefs.
     typedef Mesh::SizePair                        SizePair;
     typedef Mesh::VecPair                         VecPair;
     typedef Teuchos::RCP<Mesh>                    RCP_Mesh;

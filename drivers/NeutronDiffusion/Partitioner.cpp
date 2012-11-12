@@ -13,7 +13,7 @@
 
 #include "Partitioner.hpp"
 
-#include <Exception.hpp>
+#include <Chimera_Assertion.hpp>
 
 #include <Teuchos_ENull.hpp>
 #include <Teuchos_CommHelpers.hpp>
