@@ -195,8 +195,8 @@ TEUCHOS_UNIT_TEST( MCSA, mcsa_test )
     plist->set<std::string>( "SPLIT TYPE",          "JACOBI"  );
     plist->set<std::string>( "MC TYPE",             "ADJOINT" );
     plist->set<double>(      "WEIGHT CUTOFF",       1.0e-4    );
-    plist->set<int>(         "HISTORIES PER STAGE", 1000      );
-    plist->set<int>(         "NUM OVERLAP",         0         );
+    plist->set<int>(         "HISTORIES PER STAGE", 10000     );
+    plist->set<int>(         "NUM OVERLAP",         20        );
 
     // Build the solver.
     Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =
