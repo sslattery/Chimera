@@ -56,6 +56,10 @@ class Partitioner
     Teuchos::ArrayView<int> getLocalRows()
     { return d_local_rows(); }
 
+    //! Get the ghosted global rows (for output).
+    Teuchos::ArrayView<int> getGhostLocalRows()
+    { return d_ghost_local_rows(); }
+
     //! Get the cell sizes.
     std::pair<double,double> getCellSizes()
     { return d_cell_size; }
@@ -76,6 +80,9 @@ class Partitioner
 
     // Local rows (vertex-based global ids).
     Teuchos::Array<int> d_local_rows;
+
+    // Ghosted local rows (for output).
+    Teuchos::Array<int> d_ghost_local_rows;
 };
 
 } // end namespace Chimera

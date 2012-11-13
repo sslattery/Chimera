@@ -29,7 +29,6 @@ class VTKOutput
     //@{
     //! Typedefs.
     typedef Partitioner::VecPair             VecPair;
-    typedef Partitioner::RCP_Mesh            RCP_Mesh;
     typedef Partitioner::RCP_Comm            RCP_Comm;
     typedef Partitioner::RCP_ParameterList   RCP_ParameterList;
     typedef Teuchos::RCP<Partitioner>        RCP_Partitioner;
@@ -61,8 +60,8 @@ class VTKOutput
     // Communicator.
     RCP_Comm d_comm;
 
-    // Mesh.
-    RCP_Mesh d_mesh;
+    // Partitioner.
+    RCP_Partitioner d_partitioner;
 
     // Mesh file.
     std::ofstream d_vtk_file;

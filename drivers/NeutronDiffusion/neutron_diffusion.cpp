@@ -58,8 +58,7 @@ int main( int argc, char * argv[] )
     clp.setOption( "xml-in-file",
 		   &xml_input_filename,
 		   "The XML file to read into a parameter list" );
-    Teuchos::CommandLineProcessor::EParseCommandLineReturn
-      parse_return = clp.parse(argc,argv);
+    clp.parse(argc,argv);
 
     // Build the parameter list from the xml input.
     Teuchos::RCP<Teuchos::ParameterList> plist =

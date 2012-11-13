@@ -189,6 +189,19 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 	row_idx = idx_i + idx_j*d_global_edges.first.size();
 	d_local_rows.push_back( row_idx );
     }
+
+    // Set the ghost global rows.
+    for ( int j = 0; j < (int) j_edges.size(); ++j )
+    {
+	for ( int i = 0; i < (int) i_edges.size(); ++i )
+	{
+	    idx_i = my_i_block*d_mesh->getLocalNumCells().first + i;
+	    idx_j = my_j_block*d_mesh->getLocalNumCells().second + j;
+	    row_idx = idx_i + idx_j*d_global_edges.first.size();
+	    d_ghost_local_rows.push_back( row_idx );
+	}
+    }
+
 }
 
 //---------------------------------------------------------------------------//

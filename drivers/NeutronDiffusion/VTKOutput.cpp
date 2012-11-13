@@ -17,6 +17,9 @@
 #include <Teuchos_ArrayRCP.hpp>
 #include <Teuchos_CommHelpers.hpp>
 
+#include <Tpetra_Map.hpp>
+#include <Tpetra_Import.hpp>
+
 namespace Chimera
 {
 //---------------------------------------------------------------------------//
@@ -27,11 +30,11 @@ VTKOutput::VTKOutput( const RCP_Comm &comm,
 		      const RCP_Partitioner &partitioner,
 		      const RCP_ParameterList &plist )
     : d_comm( comm )
-    , d_mesh( partitioner->getMesh() )
+    , d_partitioner( partitioner )
 {
     // Local mesh size.
-    d_nx = partitioner->getMesh()->getLocalEdges().first.size();
-    d_ny = partitioner->getMesh()->getLocalEdges().second.size();
+    d_nx = d_partitioner->getMesh()->getLocalEdges().first.size();
+    d_ny = d_partitioner->getMesh()->getLocalEdges().second.size();
 
     // Open the file to write.
     std::stringstream convert_rank;
@@ -56,8 +59,8 @@ VTKOutput::VTKOutput( const RCP_Comm &comm,
     std::vector<double>::const_iterator vec_it;
 
     d_vtk_file << "X_COORDINATES " << d_nx << " double\n";
-    for ( vec_it = partitioner->getMesh()->getLocalEdges().first.begin();
-	  vec_it != partitioner->getMesh()->getLocalEdges().first.end();
+    for ( vec_it = d_partitioner->getMesh()->getLocalEdges().first.begin();
+	  vec_it != d_partitioner->getMesh()->getLocalEdges().first.end();
 	  ++vec_it )
     {
 	d_vtk_file << *vec_it << " ";
@@ -65,8 +68,8 @@ VTKOutput::VTKOutput( const RCP_Comm &comm,
     d_vtk_file << "\n";
 
     d_vtk_file << "Y_COORDINATES " << d_ny << " double\n";
-    for ( vec_it = partitioner->getMesh()->getLocalEdges().second.begin();
-	  vec_it != partitioner->getMesh()->getLocalEdges().second.end();
+    for ( vec_it = d_partitioner->getMesh()->getLocalEdges().second.begin();
+	  vec_it != d_partitioner->getMesh()->getLocalEdges().second.end();
 	  ++vec_it )
     {
 	d_vtk_file << *vec_it << " ";
@@ -92,13 +95,23 @@ void VTKOutput::addField( const int field_type,
 			  const RCP_Vector &field,
 			  const std::string &name )
 {
-    // Setup.
+    // Import the field so all local cells/vertices have data.
     int num_components = 1;
-    int local_length = field->getLocalLength();
     Teuchos::ArrayView<const int> local_rows = 
 	field->getMap()->getNodeElementList();
+    Teuchos::ArrayView<int> ghost_local_rows =
+	d_partitioner->getGhostLocalRows();
+
+    Teuchos::RCP<const Tpetra::Map<int,int> > ghost_map = 
+	Tpetra::createNonContigMap<int,int>( ghost_local_rows, d_comm );
+
+    RCP_Vector ghost_field = Tpetra::createVector<double>( ghost_map );
+
+    Tpetra::Import<int,int> import( field->getMap(), ghost_field->getMap() );
+    ghost_field->doImport( *field, import, Tpetra::INSERT );
 
     // Field header.
+    int local_length = ghost_field->getLocalLength();
     if ( field_type == VERTEX_FIELD )
     {
 	d_vtk_file << "POINT_DATA " << local_length << "\n";
@@ -114,7 +127,7 @@ void VTKOutput::addField( const int field_type,
     // Write to file.
     for ( int i = 0; i < local_length; ++i )
     {
-	d_vtk_file << field->get1dView()[i] << "\n";
+	d_vtk_file << ghost_field->get1dView()[i] << "\n";
     }
 }
 
