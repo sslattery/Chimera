@@ -33,8 +33,7 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
     unsigned int my_size = comm->getSize();
 
     // Check that the block specification and communicator are consistent.
-    testPrecondition( d_num_blocks.first * d_num_blocks.second == my_size,
-		      "I_BLOCKS*J_BLOCKS != number of processors" );
+    testPrecondition( d_num_blocks.first * d_num_blocks.second == my_size );
 
     // Block indices.
     int my_j_block = std::floor( my_rank / d_num_blocks.first );
@@ -58,6 +57,8 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 	// Cell widths.
 	double width_i = (global_i_max - global_i_min) / global_num_i;
 	double width_j = (global_j_max - global_j_min) / global_num_j;
+	d_cell_size.first = width_i;
+	d_cell_size.second = width_j;
 
 	// Number of local vertices.
 	int i_edges_size = std::floor( global_num_i / d_num_blocks.first ) + 1;
@@ -125,71 +126,11 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 	    j_edge_val += width_j;
 	}
     }
-    
-    // Nonuniform grid case. Currently not supported until I figure out how to
-    // pass std::vector through the parameter list.
-    // else if ( plist->get<std::string>("GRID_TYPE") == "NONUNIFORM" )
-    // {
-    // 	std::vector<double> global_i_edges = 
-    // 	    plist->get< std::vector<double> >("X_EDGES");
-    // 	std::vector<double> global_j_edges 
-    // 	    = plist->get< std::vector<double> >("Y_EDGES");
-
-    // 	global_i_min = global_i_edges.front();
-    // 	global_i_max = global_i_edges.back();
-    // 	global_j_min = global_j_edges.front();
-    // 	global_j_max = global_j_edges.back();
-    // 	global_num_i = global_i_edges.size() - 1;
-    // 	global_num_j = global_j_edges.size() - 1;
-
-    // 	int i_edges_size = std::floor( global_num_i / d_num_blocks.first ) + 1;
-    // 	int j_edges_size = std::floor( global_num_j / d_num_blocks.second ) + 1;
-
-    // 	int i_remainder = global_num_i % d_num_blocks.first;
-    // 	int j_remainder = global_num_j % d_num_blocks.second;
-
-    // 	int i_edge_idx;
-    // 	for ( int i = 0; i < i_edges_size; ++i )
-    // 	{
-    // 	    i_edges.push_back( 
-    // 		i_edges[ my_rank*(i_edges_size-1) + i_edge_idx ] );
-    // 	    ++i_edge_idx;
-    // 	}
-    // 	if ( d_num_blocks.first )
-    // 	{
-    // 	    for ( int i = 0; i < i_remainder; ++i )
-    // 	    {
-    // 		i_edges.push_back( 
-    // 		    i_edges[ my_rank*(i_edges_size-1) + i_edge_idx ] );
-    // 		++i_edge_idx;
-    // 	    }
-    // 	}
-    // 	comm->barrier();
-
-    // 	int j_edge_idx;
-    // 	for ( int j = 0; j < j_edges_size; ++j )
-    // 	{
-    // 	    j_edges.push_back( 
-    // 		j_edges[ my_rank*(j_edges_size-1) + j_edge_idx ] );
-    // 	    ++j_edge_idx;
-    // 	}
-    // 	if ( my_j_block == d_num_blocks.second )
-    // 	{
-    // 	    for ( int j = 0; j < j_remainder; ++j )
-    // 	    {
-    // 		j_edges.push_back( 
-    // 		    j_edges[ my_rank*(j_edges_size-1) + j_edge_idx ] );
-    // 		++j_edge_idx;
-    // 	    }
-    // 	}
-    // 	comm->barrier();
-    // }
 
     // Unsupported cases.
     else
     {
-	testPrecondition( plist->get<std::string>("GRID_TYPE") == "UNIFORM",
-			  "Grid type not supported" );
+	testPrecondition( plist->get<std::string>("GRID_TYPE") == "UNIFORM" );
     }
 
     // Create th mesh.
@@ -199,8 +140,55 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 				     my_i_block, my_j_block,
 				     i_edges, j_edges ) );
 
-    testPostcondition( d_mesh != Teuchos::null,
-		       "Error partitioning mesh." );
+    testPostcondition( d_mesh != Teuchos::null );
+
+    // Set the local rows.
+    int row_idx, idx_i, idx_j;
+    for ( int j = 0; j < (int) j_edges.size()-1; ++j )
+    {
+	for ( int i = 0; i < (int) i_edges.size()-1; ++i )
+	{
+	    idx_i = my_i_block*d_mesh->getLocalNumCells().first + i;
+	    idx_j = my_j_block*d_mesh->getLocalNumCells().second + j;
+	    row_idx = idx_i + idx_j*d_global_edges.first.size();
+	    d_local_rows.push_back( row_idx );
+	}
+    }
+    if ( my_j_block == (int) d_num_blocks.second-1 )
+    {
+	int j = j_edges.size() - 1;
+
+	for ( int i = 0; i < (int) i_edges.size()-1; ++i )
+	{
+	    idx_i = my_i_block*d_mesh->getLocalNumCells().first + i;
+	    idx_j = my_j_block*d_mesh->getLocalNumCells().second + j;
+	    row_idx = idx_i + idx_j*d_global_edges.first.size();
+	    d_local_rows.push_back( row_idx );
+	}
+    }
+    if ( my_i_block == (int) d_num_blocks.first-1 )
+    {
+	int i = i_edges.size() - 1;
+
+	for ( int j = 0; j < (int) j_edges.size()-1; ++j )
+	{
+	    idx_i = my_i_block*d_mesh->getLocalNumCells().first + i;
+	    idx_j = my_j_block*d_mesh->getLocalNumCells().second + j;
+	    row_idx = idx_i + idx_j*d_global_edges.first.size();
+	    d_local_rows.push_back( row_idx );
+	}
+    }
+    if ( my_i_block == (int) d_num_blocks.first-1 &&
+	 my_j_block == (int) d_num_blocks.second-1 )
+    {
+	int i = i_edges.size() - 1;
+	int j = j_edges.size() - 1;
+
+	idx_i = my_i_block*d_mesh->getLocalNumCells().first + i;
+	idx_j = my_j_block*d_mesh->getLocalNumCells().second + j;
+	row_idx = idx_i + idx_j*d_global_edges.first.size();
+	d_local_rows.push_back( row_idx );
+    }
 }
 
 //---------------------------------------------------------------------------//
@@ -210,7 +198,11 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 Partitioner::~Partitioner()
 { /* ... */ }
 
-} // end namespace Chimera
+//---------------------------------------------------------------------------//
+
+} 
+
+// end namespace Chimera
 
 //---------------------------------------------------------------------------//
 // end Partitioner.cpp

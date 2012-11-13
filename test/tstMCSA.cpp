@@ -44,7 +44,7 @@ TEUCHOS_UNIT_TEST( MCSA, mcsa_test )
 	Teuchos::DefaultComm<int>::getComm();
 
     // Build the linear operator - this is a 2D Transient Diffusion operator.
-    int N = 50;
+    int N = 10;
     int problem_size = N*N;
     double dx = 0.01;
     double dy = 0.01;
@@ -195,8 +195,8 @@ TEUCHOS_UNIT_TEST( MCSA, mcsa_test )
     plist->set<std::string>( "SPLIT TYPE",          "JACOBI"  );
     plist->set<std::string>( "MC TYPE",             "ADJOINT" );
     plist->set<double>(      "WEIGHT CUTOFF",       1.0e-4    );
-    plist->set<int>(         "HISTORIES PER STAGE", 10000     );
-    plist->set<int>(         "NUM OVERLAP",         20        );
+    plist->set<int>(         "HISTORIES PER STAGE", 1000      );
+    plist->set<int>(         "NUM OVERLAP",         10        );
 
     // Build the solver.
     Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =

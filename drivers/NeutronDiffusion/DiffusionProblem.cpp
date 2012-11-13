@@ -8,7 +8,9 @@
 
 #include "DiffusionProblem.hpp"
 
-#include <Teuchos_Array.hpp>
+#include <Chimera_Assertion.hpp>
+
+#include <Teuchos_ArrayView.hpp>
 
 #include <Tpetra_Map.hpp>
 #include <Tpetra_CrsMatrix.hpp>
@@ -25,83 +27,219 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 				    const RCP_Partitioner& partitioner,
 				    const RCP_ParameterList& plist )
 {
-    // Build the linear operator - this is a 2D Transient Diffusion operator.
-    int N = 10;
-    int problem_size = N*N;
-    double dx = 0.01;
-    double dy = 0.01;
-    double dt = 0.05;
-    double alpha = 0.001;
-    Teuchos::RCP<const Tpetra::Map<int> > row_map = 
-	Tpetra::createUniformContigMap<int,int>( problem_size, comm );
-    Teuchos::RCP<Tpetra::CrsMatrix<double,int,int> > A = 
-	Tpetra::createCrsMatrix<double,int,int>( row_map, 3 );
+    // Get the local rows from the partitioner.
+    Teuchos::ArrayView<int> local_rows = partitioner->getLocalRows();
 
-    Teuchos::Array<double> diag( 1, 1.0 + 2*dt*alpha*( 1/(dx*dx) + 1/(dy*dy) ) );
-    Teuchos::Array<double> i_minus( 1, -dt*alpha/(dx*dx) );
-    Teuchos::Array<double> i_plus( 1, -dt*alpha/(dx*dx) );
-    Teuchos::Array<double> j_minus( 1, -dt*alpha/(dy*dy) );
-    Teuchos::Array<double> j_plus( 1, -dt*alpha/(dy*dy) );
+    // Build the map.
+    Teuchos::RCP<const Tpetra::Map<int> > row_map = 
+	    Tpetra::createNonContigMap<int,int>( local_rows, comm );
+
+    // Build the operator.
+    Teuchos::RCP<Tpetra::CrsMatrix<double,int,int> > A = 
+	Tpetra::createCrsMatrix<double,int,int>( row_map );
+
+    int N = partitioner->getGlobalEdges().first.size();
+    double dx = partitioner->getCellSizes().first;
+    double dy = partitioner->getCellSizes().second;
+    double xs_s = plist->get<double>("SCATTERING XS");
+    double xs_a = plist->get<double>("ABSORPTION XS");
+    double D = 1.0 / ( 3.0*(xs_a+xs_s) );
+
+    Teuchos::Array<double> diag( 1, xs_a + D*10.0/(3.0*dx*dx) );
+    Teuchos::Array<double> iminus1( 1, -2.0*D/(3.0*dx*dx) );
+    Teuchos::Array<double> iplus1( 1, -2.0*D/(3.0*dx*dx) );
+    Teuchos::Array<double> jminus1( 1, -2.0*D/(3.0*dy*dy) );
+    Teuchos::Array<double> jplus1( 1, -2.0*D/(3.0*dy*dy) );
+    Teuchos::Array<double> iminus1jminus1( 1, -D/(6.0*dx*dx) );
+    Teuchos::Array<double> iplus1jminus1( 1, -D/(6.0*dx*dx) );
+    Teuchos::Array<double> iminus1jplus1( 1, -D/(6.0*dy*dy) );
+    Teuchos::Array<double> iplus1jplus1( 1, -D/(6.0*dy*dy) );
 
     Teuchos::Array<int> idx(1);
-    Teuchos::Array<int> idx_iminus(1);
-    Teuchos::Array<int> idx_iplus(1);
-    Teuchos::Array<int> idx_jminus(1);
-    Teuchos::Array<int> idx_jplus(1);
-    Teuchos::Array<double> one(1,1.0);
+    Teuchos::Array<int> idx_iminus1(1);
+    Teuchos::Array<int> idx_iplus1(1);
+    Teuchos::Array<int> idx_jminus1(1);
+    Teuchos::Array<int> idx_jplus1(1);
+    Teuchos::Array<int> idx_iminus1jminus1(1);
+    Teuchos::Array<int> idx_iplus1jminus1(1);
+    Teuchos::Array<int> idx_iminus1jplus1(1);
+    Teuchos::Array<int> idx_iplus1jplus1(1);
 
+    // Fill the operator from global data on proc 0.
     if ( comm->getRank() == 0 )
     {
-	// Min X boundary Dirichlet.
+	// Min X boundary vacuum (nonreentrant current).
 	for ( int j = 1; j < N-1; ++j )
 	{
 	    int i = 0;
-	    idx[0] = i + j*N;
-	    A->insertGlobalValues( idx[0], idx(), one() );
+
+	    idx[0]                = i + j*N;
+	    idx_iplus1[0]         = (i+1) + j*N;
+	    idx_jminus1[0]        = i + (j-1)*N;
+	    idx_jplus1[0]         = i + (j+1)*N;
+	    idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
+	    idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+
+	    A->insertGlobalValues( idx[0], idx(),                diag() );
+	    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
+	    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+	    A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
+	    A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
 	}
 
-	// Max X boundary Dirichlet.
+	// Max X boundary vacuum (nonreentrant current).
 	for ( int j = 1; j < N-1; ++j )
 	{
 	    int i = N-1;
-	    idx[0] = i + j*N;
-	    A->insertGlobalValues( idx[0], idx(), one() );
+
+	    idx[0]                = i + j*N;
+	    idx_iminus1[0]        = (i-1) + j*N;
+	    idx_jminus1[0]        = i + (j-1)*N;
+	    idx_jplus1[0]         = i + (j+1)*N;
+	    idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
+	    idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
+
+	    A->insertGlobalValues( idx[0], idx(),                diag() );
+	    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+	    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+	    A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
+	    A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
 	}
 
-	// Min Y boundary Dirichlet.
-	for ( int i = 0; i < N; ++i )
+	// Min Y boundary vacuum (nonreentrant current).
+	for ( int i = 1; i < N-1; ++i )
 	{
 	    int j = 0;
-	    idx[0] = i + j*N;
-	    A->insertGlobalValues( idx[0], idx(), one() );
+
+	    idx[0]                = i + j*N;
+	    idx_iminus1[0]        = (i-1) + j*N;
+	    idx_iplus1[0]         = (i+1) + j*N;
+	    idx_jplus1[0]         = i + (j+1)*N;
+	    idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
+	    idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+
+	    A->insertGlobalValues( idx[0], idx(),                diag() );
+	    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+	    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
+	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+	    A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
+	    A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
 	}
 
-	// Max Y boundary Dirichlet.
-	for ( int i = 0; i < N; ++i )
+	// Max Y boundary vacuum (nonreentrant current).
+	for ( int i = 1; i < N-1; ++i )
 	{
 	    int j = N-1;
-	    idx[0] = i + j*N;
-	    A->insertGlobalValues( idx[0], idx(), one() );
+
+	    idx[0]                = i + j*N;
+	    idx_iminus1[0]        = (i-1) + j*N;
+	    idx_iplus1[0]         = (i+1) + j*N;
+	    idx_jminus1[0]        = i + (j-1)*N;
+	    idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
+	    idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
+
+	    A->insertGlobalValues( idx[0], idx(),                diag() );
+	    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+	    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+	    A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
+	    A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
 	}
 
-	// Central grid points.
+	// Lower left boundary vacuum (nonreentrant current).
+	{
+	    int i = 0;
+	    int j = 0;
+
+	    idx[0]                = i + j*N;
+	    idx_iplus1[0]         = (i+1) + j*N;
+	    idx_jplus1[0]         = i + (j+1)*N;
+	    idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+
+	    A->insertGlobalValues( idx[0], idx(),                diag() );
+	    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
+	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+	    A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
+	}
+
+	// Lower right boundary vacuum (nonreentrant current).
+	{
+	    int i = N-1;
+	    int j = 0;
+
+	    idx[0]                = i + j*N;
+	    idx_iminus1[0]        = (i-1) + j*N;
+	    idx_jplus1[0]         = i + (j+1)*N;
+	    idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
+
+	    A->insertGlobalValues( idx[0], idx(),                diag() );
+	    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+	    A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
+	}
+
+	// Upper left boundary vacuum (nonreentrant current).
+	{
+	    int i = 0;
+	    int j = N-1;
+
+	    idx[0]                = i + j*N;
+	    idx_iplus1[0]         = (i+1) + j*N;
+	    idx_jminus1[0]        = i + (j-1)*N;
+	    idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
+
+	    A->insertGlobalValues( idx[0], idx(),                diag() );
+	    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
+	    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+	    A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
+	}
+
+	// Upper right boundary vacuum (nonreentrant current).
+	for ( int i = 1; i < N-1; ++i )
+	{
+	    int i = N-1;
+	    int j = N-1;
+
+	    idx[0]                = i + j*N;
+	    idx_iminus1[0]        = (i-1) + j*N;
+	    idx_jminus1[0]        = i + (j-1)*N;
+	    idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
+
+	    A->insertGlobalValues( idx[0], idx(),                diag() );
+	    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+	    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+	    A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
+	}
+
+	// Central grid points
 	for ( int i = 1; i < N-1; ++i )
 	{
 	    for ( int j = 1; j < N-1; ++j )
 	    {
-		idx[0] = i + j*N;
-		idx_iminus[0] = (i-1) + j*N;
-		idx_iplus[0] = (i+1) + j*N;
-		idx_jminus[0] = i + (j-1)*N;
-		idx_jplus[0] = i + (j+1)*N;
-	    
-		A->insertGlobalValues( idx[0], idx_jminus(), j_minus() );
-		A->insertGlobalValues( idx[0], idx_iminus(), i_minus() );
-		A->insertGlobalValues( idx[0], idx(),        diag()    );
-		A->insertGlobalValues( idx[0], idx_iplus(),  i_plus()  );
-		A->insertGlobalValues( idx[0], idx_jplus(),  j_plus()  );
+		idx[0]                = i + j*N;
+		idx_iminus1[0]        = (i-1) + j*N;
+		idx_iplus1[0]         = (i+1) + j*N;
+		idx_jminus1[0]        = i + (j-1)*N;
+		idx_jplus1[0]         = i + (j+1)*N;
+		idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
+		idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
+		idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
+		idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+
+		A->insertGlobalValues( idx[0], idx(),                diag() );
+		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+		A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
+		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+		A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
+		A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
+		A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
+		A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
 	    }
 	}
+
     }
     comm->barrier();
 
@@ -114,57 +252,14 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
     X->putScalar( X_val );
 
     // Build the right hand side.
-    double B_val = 0.0;
+    double B_val = plist->get<double>("SOURCE STRENGTH");
     Teuchos::RCP<Tpetra::Vector<double,int> > B = 
 	Tpetra::createVector<double,int>( row_map );
     B->putScalar( B_val );
 
-    // Set dirichlet boundary conditions.
-    int row;
-    // left
-    for ( int j = 1; j < N-1; ++j )
-    {
-	int i = 0;
-	row = i + j*N;
-	if ( row_map->isNodeGlobalElement( row ) )
-	{
-	    B->replaceGlobalValue( row, 5.0 );
-	}
-    }
-    // right
-    for ( int j = 1; j < N-1; ++j )
-    {
-	int i = N-1;
-	row = i + j*N;
-	if ( row_map->isNodeGlobalElement( row ) )
-	{
-	    B->replaceGlobalValue( row, 5.0 );
-	}
-    }
-    // bottom
-    for ( int i = 0; i < N; ++i )
-    {
-	int j = 0;
-	row = i + j*N;
-	if ( row_map->isNodeGlobalElement( row ) )
-	{
-	    B->replaceGlobalValue( row, 0.0 );
-	}
-    }
-    // top
-    for ( int i = 0; i < N; ++i )
-    {
-	int j = N-1;
-	row = i + j*N;
-	if ( row_map->isNodeGlobalElement( row ) )
-	{
-	    B->replaceGlobalValue( row, 0.0 );
-	}
-    }
-
     // Build the linear problem.
     comm->barrier();
-    d_linear_problem = Teuchos::rcp( new RCP_LinearProblem( A, X, B ) );
+    d_linear_problem = Teuchos::rcp( new LinearProblemType( A, X, B ) );
 }
 
 //---------------------------------------------------------------------------//

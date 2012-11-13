@@ -14,6 +14,8 @@
 #include <Teuchos_RCP.hpp>
 #include <Teuchos_Comm.hpp>
 #include <Teuchos_ParameterList.hpp>
+#include <Teuchos_Array.hpp>
+#include <Teuchos_ArrayView.hpp>
 
 namespace Chimera
 {
@@ -50,6 +52,14 @@ class Partitioner
     const RCP_Mesh& getMesh() const
     { return d_mesh; }
 
+    //! Get the local rows (vertex-based global ids).
+    Teuchos::ArrayView<int> getLocalRows()
+    { return d_local_rows(); }
+
+    //! Get the cell sizes.
+    std::pair<double,double> getCellSizes()
+    { return d_cell_size; }
+
   private:
 
     // Number of blocks.
@@ -60,6 +70,12 @@ class Partitioner
 
     // Mesh.
     RCP_Mesh d_mesh;
+
+    // Cell size.
+    std::pair<double,double> d_cell_size;
+
+    // Local rows (vertex-based global ids).
+    Teuchos::Array<int> d_local_rows;
 };
 
 } // end namespace Chimera

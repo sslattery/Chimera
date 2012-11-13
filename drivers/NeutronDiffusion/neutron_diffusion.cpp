@@ -21,6 +21,7 @@
 
 #include <Chimera_LinearSolver.hpp>
 #include <Chimera_LinearSolverFactory.hpp>
+#include <Chimera_OperatorTools.hpp>
 
 #include <Teuchos_GlobalMPISession.hpp>
 #include <Teuchos_FancyOStream.hpp>
@@ -33,6 +34,8 @@
 #include <Teuchos_TypeTraits.hpp>
 #include <Teuchos_Tuple.hpp>
 #include <Teuchos_ParameterList.hpp>
+#include "Teuchos_CommandLineProcessor.hpp"
+#include "Teuchos_XMLParameterListCoreHelpers.hpp"
 
 #include <Tpetra_Map.hpp>
 #include <Tpetra_CrsMatrix.hpp>
@@ -49,38 +52,20 @@ int main( int argc, char * argv[] )
     out.setOutputToRootOnly( 0 );
     out.setShowProcRank( true );
 
-    // Build the parameter list.
+    // Read in command line options.
+    std::string xml_input_filename;
+    Teuchos::CommandLineProcessor clp(false);
+    clp.setOption( "xml-in-file",
+		   &xml_input_filename,
+		   "The XML file to read into a parameter list" );
+    Teuchos::CommandLineProcessor::EParseCommandLineReturn
+      parse_return = clp.parse(argc,argv);
+
+    // Build the parameter list from the xml input.
     Teuchos::RCP<Teuchos::ParameterList> plist =
 	Teuchos::rcp( new Teuchos::ParameterList() );
-
-    // Mesh.
-    plist->set<int>(         "I_BLOCKS",            1         );
-    plist->set<int>(         "J_BLOCKS",            1         );
-    plist->set<double>(      "X_MIN",               0.0       );
-    plist->set<double>(      "X_MAX",               1.0       );
-    plist->set<double>(      "Y_MIN",               0.0       );
-    plist->set<double>(      "Y_MAX",               1.0       );
-    plist->set<int>(         "X_NUM_CELLS",         10        );
-    plist->set<int>(         "Y_NUM_CELLS",         10        );
-    plist->set<std::string>( "GRID_TYPE",           "UNIFORM" );
-
-    // Physics.
-    plist->set<double>(      "ABSORPTION XS"        0.5       );
-    plist->set<double>(      "SCATTERING XS"        0.5       );
-
-    // Solver.
-    plist->set<std::string>( "SOLVER TYPE",         "MCSA"    );
-    plist->set<std::string>( "RNG TYPE",            "MT19937" );
-    plist->set<double>(      "TOLERANCE",           1.0e-8    );
-    plist->set<int>(         "MAX ITERS",           100       );
-    plist->set<std::string>( "SPLIT TYPE",          "JACOBI"  );
-    plist->set<std::string>( "MC TYPE",             "ADJOINT" );
-    plist->set<double>(      "WEIGHT CUTOFF",       1.0e-4    );
-    plist->set<int>(         "HISTORIES PER STAGE", 100       );
-    plist->set<int>(         "NUM OVERLAP",         0         );
-
-    // Output.
-    plist->set<std::string>( "OUTPUT_FILENAME", "diffusion_out.vtk" );
+    Teuchos::updateParametersFromXmlFile(
+	xml_input_filename, Teuchos::inoutArg(*plist) );
 
     // Build and partition the mesh.
     Teuchos::RCP<Chimera::Partitioner> partitioner = Teuchos::rcp(
@@ -95,12 +80,16 @@ int main( int argc, char * argv[] )
 	Chimera::LinearSolverFactory::create( 
 	    plist, diffusion_problem->getProblem() );
 
+    // Check the iteration matrix spectral radius.
+    std::cout << "SPEC RAD: " << Chimera::OperatorTools::spectralRadius(
+	solver->linearOperatorSplit()->iterationMatrix() ) << std::endl;
+
     // Solve.
     solver->iterate();
 
     // Write the solution to VTK.
     Chimera::VTKOutput vtk_output( comm, partitioner, plist );
-    vtk_output.addField( Chimera::VERTEX_FIELD,
+    vtk_output.addField( Chimera::VTKOutput::VERTEX_FIELD,
 			 diffusion_problem->getProblem()->getLHS(),
 			 "NEUTRON_FLUX" );
     vtk_output.write();

@@ -16,7 +16,7 @@
 
 #include <Teuchos_RCP.hpp>
 
-#include <Tpetra_MultiVector.hpp>
+#include <Tpetra_Vector.hpp>
 
 namespace Chimera
 {
@@ -33,8 +33,8 @@ class VTKOutput
     typedef Partitioner::RCP_Comm            RCP_Comm;
     typedef Partitioner::RCP_ParameterList   RCP_ParameterList;
     typedef Teuchos::RCP<Partitioner>        RCP_Partitioner;
-    typedef Tpetra::MultiVector<double>      MultiVectorType;
-    typedef Teuchos::RCP<MultiVectorType>    RCP_MultiVector;
+    typedef Tpetra::Vector<double>           VectorType;
+    typedef Teuchos::RCP<VectorType>         RCP_Vector;
     //@}
 
     //! Field topology enum.
@@ -50,7 +50,7 @@ class VTKOutput
 
     // Add a field to the file.
     void addField( const int field_type,
-		   const RCP_MultiVector &field,
+		   const RCP_Vector &field,
 		   const std::string &name );
 
     // Write the file.
