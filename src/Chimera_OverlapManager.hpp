@@ -89,6 +89,13 @@ class OverlapManager
     // Determine if a global state is in the overlap owned by this proc.
     bool isOverlapGlobalElement( const GO global_state );
 
+    // Get the local row in the overlap corresponding to the given global row.
+    LO getLocalRow( const GO global_row );
+
+    // Get the global column in the overlap corresponding to the given local
+    // column.
+    GO getGlobalColumn( const LO local_column );
+
     //! Get the number of overlapping states.
     GO getNumOverlap() const
     { return d_num_overlap; }

@@ -201,7 +201,6 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 	    d_ghost_local_rows.push_back( row_idx );
 	}
     }
-    std::cout << comm->getRank() << ": " << d_local_rows << std::endl;
 }
 
 //---------------------------------------------------------------------------//

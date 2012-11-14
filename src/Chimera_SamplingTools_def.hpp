@@ -175,21 +175,19 @@ LO SamplingTools::sampleLocalDiscretePDF(
 		    Teuchos::as<Scalar>(RNGTraits<RNG>::max(*rng)) );
 
     Scalar cdf = 0.0;
-    LO new_state_index = 0;
     typename Teuchos::ArrayView<const Scalar>::const_iterator value_begin =
 	pdf_values.begin();
     typename Teuchos::ArrayView<const Scalar>::const_iterator value_iterator;
-    for ( value_iterator = pdf_values.begin();
+    typename Teuchos::ArrayView<const LO>::const_iterator index_iterator;
+    for ( value_iterator = pdf_values.begin(), 
+	  index_iterator = pdf_indices.begin();
 	  value_iterator != pdf_values.end();
-	  ++value_iterator )
+	  ++value_iterator, ++index_iterator )
     {
 	cdf += *value_iterator;
 	if ( zeta <= cdf )
 	{
-	    new_state_index = Teuchos::as<LO>(
-		std::distance( value_begin, value_iterator ) );
-
-	    return pdf_indices[ new_state_index ];
+	    return *index_iterator;
 	}
     }
 

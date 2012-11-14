@@ -150,20 +150,24 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	{
 	    // Get the current history state.
 	    global_state = bank.top().globalState();
-	    local_state = state_map->getLocalElement( global_state );
 
 	    // Check if the current state is in the overlap.
 	    state_in_overlap = 
 		d_overlap_manager->isOverlapGlobalElement( global_state );
 
-	    // Update LHS tally.
+	    // Update the local state and LHS tally.
 	    if ( state_in_overlap )
 	    {
+		local_state = 
+		    d_overlap_manager->getLocalRow( global_state );
+
 		d_overlap_manager->getOverlapLHS()->sumIntoGlobalValue( 
 		    global_state, bank.top().weight() );
 	    }
 	    else
 	    {
+		local_state = state_map->getLocalElement( global_state );
+
 		this->b_linear_problem->getLHS()->sumIntoGlobalValue( 
 		    global_state, bank.top().weight() );
 	    }
@@ -180,9 +184,19 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    // The new state is valid.
 	    else
 	    {
-		new_global_state = col_map->getGlobalElement( new_local_state );
+		// Get the new global state.
+		if ( state_in_overlap )
+		{
+		    new_global_state = 
+			d_overlap_manager->getGlobalColumn( new_local_state );
+		}
+		else
+		{
+		    new_global_state = 
+			col_map->getGlobalElement( new_local_state );
+		}
 
-		// Check if the new state is on process.
+		// Check if the new state is in the local data.
 		new_state_is_local = 
 		    state_map->isNodeGlobalElement( new_global_state );
 

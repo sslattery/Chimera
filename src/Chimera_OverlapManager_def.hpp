@@ -127,6 +127,30 @@ bool OverlapManager<Scalar,LO,GO>::isOverlapGlobalElement(
 }
 
 //---------------------------------------------------------------------------//
+/*!
+ * \brief Get the local row in the overlap corresponding to the given global
+    row.  
+*/
+template<class Scalar, class LO, class GO>
+LO OverlapManager<Scalar,LO,GO>::getLocalRow( const GO global_row )
+{
+    return d_overlap_probability_matrix->getRowMap()->getLocalElement(
+	global_row );
+}
+
+//---------------------------------------------------------------------------//
+/*!
+ * \brief Get the global column in the overlap corresponding to the given
+    local column.
+  */
+template<class Scalar, class LO, class GO>
+GO OverlapManager<Scalar,LO,GO>::getGlobalColumn( const LO local_column )
+{
+    return d_overlap_probability_matrix->getColMap()->getGlobalElement(
+	local_column );
+}
+
+//---------------------------------------------------------------------------//
 /*
  * \brief Build the overlap.
  */
