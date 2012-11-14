@@ -79,9 +79,14 @@ int main( int argc, char * argv[] )
 	Chimera::LinearSolverFactory::create( 
 	    plist, diffusion_problem->getProblem() );
 
-    // Check the iteration matrix spectral radius.
-    std::cout << "SPEC RAD: " << Chimera::OperatorTools::spectralRadius(
-	solver->linearOperatorSplit()->iterationMatrix() ) << std::endl;
+    // Compute the iteration matrix spectral radius.
+    double spec_rad = Chimera::OperatorTools::spectralRadius(
+	solver->linearOperatorSplit()->iterationMatrix() );
+    if ( comm->getRank() == 0 )
+    {
+	std::cout << "SPECTRAL RADIUS: " << spec_rad << std::endl; 
+    }
+    comm->barrier();
 
     // Solve.
     solver->iterate();

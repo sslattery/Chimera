@@ -197,7 +197,6 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 	}
 
 	// Upper right boundary vacuum (nonreentrant current).
-	for ( int i = 1; i < N-1; ++i )
 	{
 	    int i = N-1;
 	    int j = N-1;
