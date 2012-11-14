@@ -246,8 +246,6 @@ Teuchos::ArrayRCP<GO> SamplingTools::randomSampleGlobalPDF(
     
     // Return the number of histories to be generated in each local bin of the
     // PDF.
-    std::cout << local_values() << std::endl;
-    std::cout << bin_histories() << std::endl;
     return bin_histories;
 }
 
