@@ -224,10 +224,8 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 		}
 	    }
 
-	    // We want to check this to insure the weight is decreasing for
-	    // convergence.
-	    testInvariant( 1.0 > transition_weight && 
-			   transition_weight >= 0.0 );
+	    // Check the we computed a positive weight.
+	    testInvariant( transition_weight >= 0.0 );
 
 	    // Update the history for the transition.
 	    bank.top().setGlobalState( new_global_state );
