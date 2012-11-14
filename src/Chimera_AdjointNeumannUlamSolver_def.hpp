@@ -224,9 +224,6 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 		}
 	    }
 
-	    // Check the we computed a positive weight.
-	    testInvariant( transition_weight >= 0.0 );
-
 	    // Update the history for the transition.
 	    bank.top().setGlobalState( new_global_state );
 	    bank.top().multiplyWeight( transition_weight );

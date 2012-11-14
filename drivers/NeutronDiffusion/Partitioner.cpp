@@ -33,7 +33,7 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
     unsigned int my_size = comm->getSize();
 
     // Check that the block specification and communicator are consistent.
-    testPrecondition( d_num_blocks.first * d_num_blocks.second == my_size );
+    testAssertion( d_num_blocks.first * d_num_blocks.second == my_size );
 
     // Block indices.
     int my_j_block = std::floor( my_rank / d_num_blocks.first );
@@ -73,7 +73,7 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 	for ( int i = 0; i < i_edges_size; ++i )
 	{
 	    i_edges.push_back( 
-		my_rank*width_i*(i_edges_size-1) + i_edge_val + global_i_min );
+		my_i_block*width_i*(i_edges_size-1) + i_edge_val + global_i_min );
 
 	    i_edge_val += width_i;
 	}
@@ -82,7 +82,7 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 	    for ( int i = 0; i < i_remainder; ++i )
 	    {
 		i_edges.push_back( 
-		    my_rank*width_i*(i_edges_size-1) + i_edge_val 
+		    my_i_block*width_i*(i_edges_size-1) + i_edge_val 
 		    + global_i_min );
 
 		i_edge_val += width_i;
@@ -94,7 +94,7 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 	for ( int j = 0; j < j_edges_size; ++j )
 	{
 	    j_edges.push_back( 
-		my_rank*width_j*(j_edges_size-1) + j_edge_val + global_j_min );
+		my_j_block*width_j*(j_edges_size-1) + j_edge_val + global_j_min );
 
 	    j_edge_val += width_j;
 	}
@@ -103,7 +103,7 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 	    for ( int j = 0; j < j_remainder; ++j )
 	    {
 		j_edges.push_back( 
-		    my_rank*width_j*(j_edges_size-1) + j_edge_val 
+		    my_j_block*width_j*(j_edges_size-1) + j_edge_val 
 		    + global_j_min );
 
 		j_edge_val += width_j;
@@ -201,7 +201,7 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 	    d_ghost_local_rows.push_back( row_idx );
 	}
     }
-
+    std::cout << comm->getRank() << ": " << d_local_rows << std::endl;
 }
 
 //---------------------------------------------------------------------------//
