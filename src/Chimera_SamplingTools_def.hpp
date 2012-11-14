@@ -115,7 +115,7 @@ Teuchos::ArrayRCP<GO> SamplingTools::stratifySampleGlobalPDF(
 
     // Second, stratify sample the local pdf to get the number of histories to
     // be generated in each local state.
-    typename Teuchos::ArrayRCP<GO> bin_histories( local_values.size() );
+    Teuchos::ArrayRCP<GO> bin_histories( local_values.size(), 0 );
     typename Teuchos::ArrayRCP<GO>::iterator bin_histories_it;
     for ( bin_histories_it = bin_histories.begin(),
 	   local_values_it = local_values.begin();
@@ -160,6 +160,99 @@ Teuchos::ArrayRCP<GO> SamplingTools::stratifySampleGlobalPDF(
 
 //---------------------------------------------------------------------------//
 /*!
+ * \brief Random sample a global defined PDF to get the number of histories
+ * required for each local state.
+ */
+template<class Scalar, class LO, class GO, class RNG>
+Teuchos::ArrayRCP<GO> SamplingTools::randomSampleGlobalPDF( 
+    const GO global_num_histories,
+    const Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& pdf,
+    const Teuchos::RCP<RNG>& rng )
+{
+    Teuchos::ArrayRCP<const Scalar> local_values = pdf->get1dView();
+    typename Teuchos::ArrayRCP<const Scalar>::const_iterator local_values_it;
+    typename Teuchos::ScalarTraits<Scalar>::magnitudeType local_sum = 0.0;
+    for ( local_values_it = local_values.begin();
+	  local_values_it != local_values.end();
+	  ++local_values_it )
+    {
+	local_sum += std::abs( *local_values_it );
+    }
+
+    typename Teuchos::ScalarTraits<Scalar>::magnitudeType global_sum =
+	pdf->norm1();
+
+    GO local_num_histories = std::floor( global_num_histories * 
+					 local_sum / global_sum );
+
+    // First, stratify sample the global pdf to get the number of histories
+    // each local proc will generate.
+    Teuchos::RCP<const Teuchos::Comm<int> > comm = pdf->getMap()->getComm();
+    GO global_sum_check = 0;
+    Teuchos::reduceAll( *comm, Teuchos::REDUCE_SUM, local_num_histories, 
+			Teuchos::Ptr<GO>(&global_sum_check) );
+    
+    GO global_remainder = global_num_histories - global_sum_check;
+    if ( global_remainder > 0 )
+    {
+	if ( Teuchos::as<GO>(comm->getRank()) < global_remainder )
+	{
+	    ++local_num_histories;
+	}
+    }
+    else if ( global_remainder < 0 )
+    {
+	if ( Teuchos::as<GO>(comm->getRank()) < std::abs(global_remainder) )
+	{
+	    --local_num_histories;
+	}
+    }
+    comm->barrier();
+
+    // Check that we maintained the global number of histories requested.
+    remember( 
+	global_sum_check = 0;
+	Teuchos::reduceAll( *comm, Teuchos::REDUCE_SUM, local_num_histories, 
+			    Teuchos::Ptr<GO>(&global_sum_check) );
+	);
+    testPostcondition( global_sum_check == global_num_histories );
+
+    // Second, random sample the local pdf to get the number of histories to
+    // be generated in each local state.
+    Teuchos::ArrayRCP<GO> bin_histories( local_values.size(), 0 );
+    typename Teuchos::ArrayRCP<GO>::iterator bin_histories_it;
+    Scalar cdf = 0.0;
+    for ( GO i = 0; i < local_num_histories; ++i )
+    {
+	cdf = 0.0;
+
+	Scalar zeta = local_sum *
+		      ( Teuchos::as<Scalar>(RNGTraits<RNG>::generate(*rng)) /
+			Teuchos::as<Scalar>(RNGTraits<RNG>::max(*rng)) );
+
+	for ( bin_histories_it = bin_histories.begin(),
+		  local_values_it = local_values.begin();
+	      local_values_it != local_values.end();
+	      ++bin_histories_it, ++local_values_it )
+	{
+	    cdf += std::abs(*local_values_it);
+	    if ( zeta <= cdf )
+	    {
+		++(*bin_histories_it);
+		break;
+	    }
+	}
+    }
+    
+    // Return the number of histories to be generated in each local bin of the
+    // PDF.
+    std::cout << local_values() << std::endl;
+    std::cout << bin_histories() << std::endl;
+    return bin_histories;
+}
+
+//---------------------------------------------------------------------------//
+/*!
  * \brief Random sample a local discrete PDF for a new local state index. The
  * local PDF can sum to less than 1. If the case between the PDF sum and 1 is
  * sampled then an invalid ordinal is achieved, signaling the end of a
@@ -175,8 +268,6 @@ LO SamplingTools::sampleLocalDiscretePDF(
 		    Teuchos::as<Scalar>(RNGTraits<RNG>::max(*rng)) );
 
     Scalar cdf = 0.0;
-    typename Teuchos::ArrayView<const Scalar>::const_iterator value_begin =
-	pdf_values.begin();
     typename Teuchos::ArrayView<const Scalar>::const_iterator value_iterator;
     typename Teuchos::ArrayView<const LO>::const_iterator index_iterator;
     for ( value_iterator = pdf_values.begin(), 

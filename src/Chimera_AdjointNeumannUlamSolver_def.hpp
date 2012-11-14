@@ -368,10 +368,11 @@ AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::sampleSource()
     Teuchos::ArrayRCP<const Scalar> local_source_view =
 	source->get1dView();
 
-    // Stratify sample the source.
+    // Random sample the source.
     Teuchos::ArrayRCP<GO> starting_states = 
-	SamplingTools::stratifySampleGlobalPDF( 
-	    this->b_histories_per_stage, source );
+	SamplingTools::randomSampleGlobalPDF( 
+	    this->b_histories_per_stage, source, this->b_rng );
+
     testInvariant( local_source_view.size() == starting_states.size() );
 
     // Get the starting source weight.

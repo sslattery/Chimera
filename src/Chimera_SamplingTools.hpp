@@ -73,6 +73,13 @@ class SamplingTools
 	const GO global_num_histories,
 	const Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& pdf );
 
+    // Random sample a global PDF.
+    template<class Scalar, class LO, class GO, class RNG>
+    static Teuchos::ArrayRCP<GO> randomSampleGlobalPDF( 
+	const GO global_num_histories,
+	const Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& pdf,
+	const Teuchos::RCP<RNG>& rng );
+
     // Random sample a local discrete PDF for a new state index.
     template<class Scalar, class LO, class RNG>
     static LO sampleLocalDiscretePDF( 
