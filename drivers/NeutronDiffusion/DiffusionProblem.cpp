@@ -250,11 +250,23 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 	Tpetra::createVector<double,int>( row_map );
     X->putScalar( X_val );
 
-    // Build the right hand side.
-    double B_val = plist->get<double>("SOURCE STRENGTH");
+    // Build the source.
+    double source_strength = plist->get<double>("SOURCE STRENGTH");
     Teuchos::RCP<Tpetra::Vector<double,int> > B = 
 	Tpetra::createVector<double,int>( row_map );
-    B->putScalar( B_val );
+
+    if ( plist->get<std::string>("SOURCE TYPE") == "UNIFORM" )
+    {
+	B->putScalar( source_strength );
+    }
+    else if ( plist->get<std::string>("SOURCE TYPE") == "POINT" )
+    {
+	int source_location = plist->get<int>("SOURCE LOCATION");
+	if ( row_map->isNodeGlobalElement( source_location ) )
+	{
+	    B->replaceGlobalValue( source_location, source_strength );
+	}
+    }
 
     // Build the linear problem.
     comm->barrier();
