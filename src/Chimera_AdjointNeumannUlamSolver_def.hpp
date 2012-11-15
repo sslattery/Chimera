@@ -41,6 +41,8 @@
 #ifndef Chimera_ADJOINTNEUMANNULAMSOLVER_DEF_HPP
 #define Chimera_ADJOINTNEUMANNULAMSOLVER_DEF_HPP
 
+#include <ctime>
+
 #include "Chimera_Assertion.hpp"
 #include "Chimera_SamplingTools.hpp"
 #include "Chimera_OperatorTools.hpp"
@@ -139,7 +141,8 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     bool new_state_is_local = false;
     bool state_in_overlap = false;
     bool walk = true;
-
+    GO num_transitions = 0;
+    std::clock_t walk_start = clock();
     // Random walk until all global histories in the stage are terminated.
     while ( walk )
     {
@@ -252,6 +255,8 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    {
 		buffer.pushBack( bank.pop() );
 	    }
+
+	    ++num_transitions;
 	}
 
 	// Check if the banks are empty.
@@ -269,6 +274,7 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
 	    }
 	}
     }
+    std::clock_t walk_end = clock();
 
     // Export the overlap LHS to the base decomposition LHS. Sum the tallies.
     d_overlap_manager->exportOverlapLHS();
@@ -277,6 +283,13 @@ void AdjointNeumannUlamSolver<Scalar,LO,GO,RNG>::walk()
     Scalar solution_scaling = 
 	1.0 / Teuchos::as<Scalar>(this->b_histories_per_stage);
     this->b_linear_problem->getLHS()->scale( solution_scaling );
+
+    std::cout << "AVERAGE TRANSITIONS PER HISTORY: " 
+	      << num_transitions * solution_scaling << std::endl;
+
+    std::cout << "CPU TIME TO WALK: " << 
+    	(double)(walk_end - walk_start) / CLOCKS_PER_SEC << std::endl;
+
 }
 
 //---------------------------------------------------------------------------//

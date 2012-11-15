@@ -207,6 +207,59 @@ Scalar OperatorTools::spectralRadius(
 }
 
 //---------------------------------------------------------------------------//
+/*!
+ * \brief Compute the condition number of an operator.
+ */
+template<class Scalar,class LO, class GO>
+Scalar OperatorTools::conditionNumber( 
+    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix )
+{
+    typedef Tpetra::MultiVector<Scalar,LO,GO> MV;
+    typedef Tpetra::Operator<Scalar,LO,GO> OP;
+
+    const int nev = matrix->getGlobalNumRows();
+    const int block_size = 1;
+    const int num_blocks = nev;
+    const int max_restarts = 100;
+    const Scalar tol = 1.0e-4;
+
+    Teuchos::ParameterList krylovschur_params;
+    krylovschur_params.set( "Which", "LM" );
+    krylovschur_params.set( "Block Size", block_size );
+    krylovschur_params.set( "Num Blocks", num_blocks );
+    krylovschur_params.set( "Maximum Restarts", max_restarts );
+    krylovschur_params.set( "Convergence Tolerance", tol );
+
+    Teuchos::RCP<MV> vec = 
+	Teuchos::rcp( new MV(matrix->getRowMap(), block_size) );
+    vec->randomize();
+
+    Teuchos::RCP<Anasazi::BasicEigenproblem<Scalar,MV,OP> > eigen_problem =
+	Teuchos::rcp( new Anasazi::BasicEigenproblem<Scalar,MV,OP>(
+			  Teuchos::rcp_implicit_cast<OP>(matrix), vec ) );
+    eigen_problem->setNEV( nev );
+    eigen_problem->setProblem();
+
+    Anasazi::BlockKrylovSchurSolMgr<Scalar,MV,OP> solver_manager(
+	eigen_problem, krylovschur_params );
+    solver_manager.solve();
+
+    Anasazi::Eigensolution<Scalar,MV > sol = eigen_problem->getSolution();
+    std::vector<Anasazi::Value<Scalar> > evals = sol.Evals;
+    Teuchos::RCP<MV> evecs = sol.Evecs;
+
+    testPostcondition( sol.numVecs > 0 );
+    
+    Scalar max_ev = std::pow( evals[0].realpart*evals[0].realpart +
+			      evals[0].imagpart*evals[0].imagpart, 0.5 );
+
+    Scalar min_ev = std::pow( evals[nev-1].realpart*evals[nev-1].realpart +
+			      evals[nev-1].imagpart*evals[nev-1].imagpart, 0.5 );
+
+    return std::abs( max_ev / min_ev );
+}
+
+//---------------------------------------------------------------------------//
 
 } // end namespace Chimera
 

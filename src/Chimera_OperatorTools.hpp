@@ -87,6 +87,11 @@ class OperatorTools
     template<class Scalar, class LO, class GO>
     static Scalar spectralRadius( 
 	const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix );
+
+    // Compute the condition number of an operator.
+    template<class Scalar, class LO, class GO>
+    static Scalar conditionNumber( 
+	const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix );
 };
 
 } // end namespace Chimera
