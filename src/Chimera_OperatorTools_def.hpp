@@ -217,14 +217,14 @@ Scalar OperatorTools::conditionNumber(
     typedef Tpetra::MultiVector<Scalar,LO,GO> MV;
     typedef Tpetra::Operator<Scalar,LO,GO> OP;
 
-    const int nev = matrix->getGlobalNumRows();
+    const int nev = 1;
     const int block_size = 1;
-    const int num_blocks = nev;
+    const int num_blocks = 10;
     const int max_restarts = 100;
     const Scalar tol = 1.0e-4;
 
     Teuchos::ParameterList krylovschur_params;
-    krylovschur_params.set( "Which", "LM" );
+    krylovschur_params.set( "Which", "SM" );
     krylovschur_params.set( "Block Size", block_size );
     krylovschur_params.set( "Num Blocks", num_blocks );
     krylovschur_params.set( "Maximum Restarts", max_restarts );
@@ -250,13 +250,8 @@ Scalar OperatorTools::conditionNumber(
 
     testPostcondition( sol.numVecs > 0 );
     
-    Scalar max_ev = std::pow( evals[0].realpart*evals[0].realpart +
-			      evals[0].imagpart*evals[0].imagpart, 0.5 );
-
-    Scalar min_ev = std::pow( evals[nev-1].realpart*evals[nev-1].realpart +
-			      evals[nev-1].imagpart*evals[nev-1].imagpart, 0.5 );
-
-    return std::abs( max_ev / min_ev );
+    return std::pow( evals[0].realpart*evals[0].realpart +
+		     evals[0].imagpart*evals[0].imagpart, 0.5 );
 }
 
 //---------------------------------------------------------------------------//
