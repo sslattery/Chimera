@@ -88,24 +88,6 @@ int main( int argc, char * argv[] )
     }
     comm->barrier();
 
-    // Compute the iteration matrix condition number.
-    double it_cn = Chimera::OperatorTools::conditionNumber(
-	solver->linearOperatorSplit()->iterationMatrix() );
-    if ( comm->getRank() == 0 )
-    {
-	std::cout << "ITERATION MATRIX CN: " << it_cn << std::endl; 
-    }
-    comm->barrier();
-
-    // Compute the linear operator condition number.
-    double op_cn = Chimera::OperatorTools::conditionNumber(
-	diffusion_problem->getProblem()->getOperator() );
-    if ( comm->getRank() == 0 )
-    {
-	std::cout << "OPERATOR CN: " << op_cn << std::endl; 
-    }
-    comm->barrier();
-
     // Solve.
     solver->iterate();
 
