@@ -60,7 +60,7 @@ urlcolor = blue
 }
 
 \date{\today}
-\title{A Spectral Analysis of the Domain-Decomposed Adjoint
+\title{A Spectral Analysis of the Domain Decomposed Adjoint
   Neumann-Ulam Method}
 \begin{document}
 \maketitle
@@ -68,17 +68,17 @@ urlcolor = blue
 %%---------------------------------------------------------------------------%%
 \begin{abstract}
 
-  The serial and parallel behavior of the adjoint Neumann-Ulam method
+  The domain decomposed behavior of the adjoint Neumann-Ulam method
   for solving linear operator equations is analyzed using the spectral
   properties of the linear operator. Relationships for the average
-  length of the random walks and the fraction of histories leaking
-  from a parallel domain are made with respect to the eigenvalues of
+  length of the adjoint random walks and the fraction of histories
+  leaking from a domain are made with respect to the eigenvalues of
   the linear operator. The one-speed, two-dimensional neutron
   diffusion equation is used as a model problem to test the spectral
   theory for symmetric operators. These relationships will serve as
-  guidelines for selecting an appropriate parallel decomposition
-  stratagy and provide a basis for performance models for future
-  implementations of a parallel adjoint Neumann-Ulam method.
+  guidelines for selecting an appropriate parallel algorithm strategy
+  and provide a basis for performance models for future parallel
+  implementations of the adjoint Neumann-Ulam method.
 
 \end{abstract}
 
@@ -89,7 +89,7 @@ We seek solutions of the general linear problem in the following form:
   \ve{A} \ve{x} = \ve{b}\:,
   \label{eq:linear_problem}
 \end{equation}
-where $\ve{A} \in \mathbb{R}^{N \times N}$ is a matrix operator such
+where $\ve{A} \in \mathbb{R}^{N \times N}$ is a linear operator such
 that $\ve{A} : \mathbb{R}^{N} \rightarrow \mathbb{R}^{N}$, $\ve{x} \in
 \mathbb{R}^N$ is the solution vector, and $\ve{b} \in \mathbb{R}^N$ is
 the forcing term. We choose the adjoint method Monte Carlo method to
@@ -242,6 +242,9 @@ walk will then be terminated after $m$ steps if $W_m < W_f$ as tally
 contributions become increasingly small.
 
 %%---------------------------------------------------------------------------%%
+\section{Domain Decomposition}
+
+%%---------------------------------------------------------------------------%%
 \section{Model Problem}
 For our numerical experiments, we choose the one-speed,
 two-dimensional neutron diffusion equation as the model problem
@@ -252,7 +255,7 @@ two-dimensional neutron diffusion equation as the model problem
   \label{eq:diffusion_eq}
 \end{equation}
 where $\phi$ is the neutron flux, $\Sigma_a$ is the absorption cross
-section, $S$ is the source of neutrons and $D$ is the diffusion
+section, $S$ is the source of neutrons. In addition, $D$ is the diffusion
 coefficient defined as:
 \begin{equation}
   D = \frac{1}{3 ( \Sigma_t - \bar{\mu}\Sigma_s )}\:,
@@ -260,11 +263,11 @@ coefficient defined as:
 \end{equation}
 where $\Sigma_s$ is the scattering cross section, $\Sigma_t = \Sigma_a
 + \Sigma_s$ is the total cross section, and $\bar{\mu}$ is the cosine
-of the average scattering angle. For simplification, we will take
+of the average scattering angle. For simplicity, we will take
 $\bar{\mu} = 0$ for our analysis giving $D=(3 \Sigma_t)^{-1}$. In
 addition, to further simplify we will assume a homogenous domain such
 that the cross sections remain constant throughout. Doing this permits
-us to simplify Eq~(\ref{eq:diffusion_eq}):
+us to rewrite Eq~(\ref{eq:diffusion_eq}) as:
 \begin{equation}
   -D \boldsymbol{\nabla}^2 \phi + \Sigma_a \phi = S\:.
   \label{eq:diffusion_eq_simple}
@@ -305,7 +308,7 @@ vector form and $\boldsymbol{\phi}$ is the vector of unkown fluxes. We
 note here that the diffusion operator is symmetric.
 
 To close the system a non-reentrant current condition is applied to
-all boundaries of the domain. For our problems, we choose the
+all global boundaries of the domain. For our problems, we choose the
 formulation of Duderstadt by assuming the flux is zero at some ghost
 point beyond the grid. Consider for example the equations on the $i=0$
 boundary of the domain:
@@ -317,7 +320,7 @@ boundary of the domain:
   \label{eq:x_min_bnd}
 \end{multline}
 Here we note some terms where $i=-1$ and therefore are representative
-of grid points beyond the boundary of the grid. We set the flux at
+of grid points beyond the boundary of the domain. We set the flux at
 these points to be zero, giving a valid set of equations for the $i=0$
 boundary:
 \begin{multline}
@@ -326,6 +329,7 @@ boundary:
   + \Sigma_a \phi_{0,j} = s_{0,j}\:.
   \label{eq:x_min_bnd}
 \end{multline}
+We repeat this procedure for the other boundaries of the domain.
 
 %%---------------------------------------------------------------------------%%
 \section{Spectral Analysis}
