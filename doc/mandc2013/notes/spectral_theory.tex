@@ -60,7 +60,7 @@ urlcolor = blue
 }
 
 \date{\today}
-\title{A Spectral Theory for the Domain-Decomposed Adjoint
+\title{A Spectral Analysis of the Domain-Decomposed Adjoint
   Neumann-Ulam Method}
 \begin{document}
 \maketitle
@@ -71,7 +71,7 @@ urlcolor = blue
   The serial and parallel behavior of the adjoint Neumann-Ulam method
   for solving linear operator equations is analyzed using the spectral
   properties of the linear operator. Relationships for the average
-  length of the Markov chains and the fraction of histories leaking
+  length of the random walks and the fraction of histories leaking
   from a parallel domain are made with respect to the eigenvalues of
   the linear operator. The one-speed, two-dimensional neutron
   diffusion equation is used as a model problem to test the spectral
@@ -241,7 +241,6 @@ where $W_c$ is defined as in the direct method. The adjoint random
 walk will then be terminated after $m$ steps if $W_m < W_f$ as tally
 contributions become increasingly small.
 
-
 %%---------------------------------------------------------------------------%%
 \section{Model Problem}
 For our numerical experiments, we choose the one-speed,
@@ -302,16 +301,37 @@ and in operator form:
   \label{eq:operator_system}
 \end{equation}
 where $\ve{D}$ is the diffusion operator, $\ve{S}$ is the source in
-vector form and $\boldsymbol{\phi}$ is the vector of unkown fluxes.
+vector form and $\boldsymbol{\phi}$ is the vector of unkown fluxes. We
+note here that the diffusion operator is symmetric.
 
-To close the system a non-reentrant current condition is applied
-to all boundaries of the domain.
+To close the system a non-reentrant current condition is applied to
+all boundaries of the domain. For our problems, we choose the
+formulation of Duderstadt by assuming the flux is zero at some ghost
+point beyond the grid. Consider for example the equations on the $i=0$
+boundary of the domain:
+\begin{multline}
+  -\frac{1}{6\Delta^2}[4 \phi_{-1,j} + 4 \phi_{1,j}
+    + 4 \phi_{0,j-1} + 4 \phi_{0,j+1} + \phi_{-1,j-1}\\ +
+    \phi_{-1,j+1} + \phi_{1,j-1} + \phi_{1,j+1} - 20
+    \phi_{0,j}] + \Sigma_a \phi_{0,j} = s_{0,j}\:.
+  \label{eq:x_min_bnd}
+\end{multline}
+Here we note some terms where $i=-1$ and therefore are representative
+of grid points beyond the boundary of the grid. We set the flux at
+these points to be zero, giving a valid set of equations for the $i=0$
+boundary:
+\begin{multline}
+  -\frac{1}{6\Delta^2}[4 \phi_{1,j} + 4 \phi_{0,j-1} + 4 \phi_{0,j+1}
+    \\ + \phi_{-1,j+1} + \phi_{1,j-1} + \phi_{1,j+1} - 20 \phi_{0,j}]
+  + \Sigma_a \phi_{0,j} = s_{0,j}\:.
+  \label{eq:x_min_bnd}
+\end{multline}
 
 %%---------------------------------------------------------------------------%%
 \section{Spectral Analysis}
 
 %%---------------------------------------------------------------------------%%
-\section{Length of Random Walks}
+\section{Random Walk Lengths}
 
 %%---------------------------------------------------------------------------%%
 \section{Domain Leakage}
