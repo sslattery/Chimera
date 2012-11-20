@@ -281,7 +281,13 @@ stencil shown in Figure~\ref{fig:stencil} \cite{leveque_finite_2007}:
     \phi_{i,j}]\:.
   \label{eq:nine_point_stencil}
 \end{multline}
-
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{1.25}{\input{stencil.pdftex_t}}
+  \end{center}
+  \caption{\textbf{Nine-point Laplacian stencil.}}
+  \label{fig:stencil}
+\end{figure}
 We then have the following linear system to solve:
 \begin{multline}
   -\frac{1}{6\Delta^2}[4 \phi_{i-1,j} + 4 \phi_{i+1,j}
