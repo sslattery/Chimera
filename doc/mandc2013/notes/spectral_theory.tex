@@ -92,39 +92,28 @@ We seek solutions of the general linear problem in the following form:
 where $\ve{A} \in \mathbb{R}^{N \times N}$ is a linear operator such
 that $\ve{A} : \mathbb{R}^{N} \rightarrow \mathbb{R}^{N}$, $\ve{x} \in
 \mathbb{R}^N$ is the solution vector, and $\ve{b} \in \mathbb{R}^N$ is
-the forcing term. We choose the adjoint method Monte Carlo method to
-invert the linear operator. We begin by defining the linear system
+the forcing term. Choosing the adjoint method Monte Carlo method to
+invert the linear operator, we begin by defining the linear system
 adjoint to Eq~(\ref{eq:linear_problem}):
 \begin{equation}
   \ve{A}^T \ve{y} = \ve{d}\:,
   \label{eq:adjoint_linear_problem}
 \end{equation}
 where $\ve{y}$ and $\ve{d}$ are the adjoint solution and source
-respectively and $\ve{A}^T$ is the adjoint operator. We can split this
-equation by defining the following inner product equivalence
-\cite{spanier_monte_1969}:
+respectively and $\ve{A}^T$ is the adjoint operator.  With this
+statement we can then define the split equation:
 \begin{equation}
-  \langle \ve{A}^T \ve{x}, \ve{y} \rangle = \langle \ve{x}, \ve{A}
-  \ve{y} \rangle\:.
-  \label{eq:adjoint_operator_product}
-\end{equation}
-With this statement we can then define the split equation:
-\begin{equation}
-  \ve{y} = \ve{H}^T \ve{y} + \ve{d}\:.
+  \ve{y} = \ve{H}^T \ve{y} + \ve{d}\:,
   \label{eq:adjoint_split_system}
 \end{equation}
-For convergence, we require that the spectral radius of $\ve{H}$ must
+where $\ve{H}$ is defined as the \textit{iteration matrix}.  For
+convergence, we require that the spectral radius of $\ve{H}$ must
 remain less than 1 as $\ve{H}^T$ contains the same eigenvalues and
-therefore has the same spectral radius. From this definition it
-follows that:
-\begin{equation}
-  \langle \ve{x}, \ve{d} \rangle = \langle \ve{y}, \ve{b} \rangle\:.
-  \label{eq:adjoint_vector_relation}
-\end{equation}
-Using these definitions, we can derive an estimator from the adjoint
-method that will also give the solution vector, $\ve{x}$. As with the
-direct method, we can acquire the adjoint solution by forming the
-Neumann series by writing Eq~(\ref{eq:adjoint_split_system}) as:
+therefore has the same spectral radius.  Using these definitions, we
+can derive an estimator from the adjoint method that will also give
+the solution vector, $\ve{x}$. As with the direct method, we can
+acquire the adjoint solution by forming the Neumann series by writing
+Eq~(\ref{eq:adjoint_split_system}) as:
 \begin{equation}
   \ve{y} = (\ve{I} - \ve{H}^T)^{-1} \ve{d}\:,
   \label{eq:adjoint_split_system_2}
@@ -143,11 +132,23 @@ forming the Neumann series in reverse order:
   \label{eq:adjoint_neumann_solution}
 \end{equation}
 We can readily build an estimator for the adjoint solution from this
-series expansion, but we instead desire the direct solution. We
-achieve this by using Eq~(\ref{eq:adjoint_vector_relation}) as a
-constraint. Here we have 2 unknowns, $\ve{y}$ and $\ve{d}$ and
-therefore we require a second constraint to close the system. As a
-second constraint we select:
+series expansion, but we instead desire the direct solution. The
+adjoint estimator can be related to the solution by defining the
+following inner product equivalence \cite{spanier_monte_1969}:
+\begin{equation}
+  \langle \ve{A}^T \ve{x}, \ve{y} \rangle = \langle \ve{x}, \ve{A}
+  \ve{y} \rangle\:.
+  \label{eq:adjoint_operator_product}
+\end{equation}
+From this definition it follows that:
+\begin{equation}
+  \langle \ve{x}, \ve{d} \rangle = \langle \ve{y}, \ve{b} \rangle\:.
+  \label{eq:adjoint_vector_relation}
+\end{equation}
+ Here we have 2 unknowns, $\ve{y}$ and $\ve{d}$ and therefore we
+ require two constraints to close the system. We use
+ Eq~(\ref{eq:adjoint_vector_relation}) as the first constraint and as
+ a second constraint we select:
 \begin{equation}
   \ve{d} = \boldsymbol{\delta}_i\:,
   \label{eq:adjoint_second_constraint}
@@ -164,7 +165,7 @@ outcome:
 \end{equation}
 meaning that if we compute the inner product of the direct source and
 the adjoint solution using a delta function source, we recover the
-direct solution we are looking for 
+direct solution we are looking for
 
 In terms of particle transport, this adjoint method is equivalent to a
 traditional forward method. As a result of using the adjoint system,
@@ -221,8 +222,8 @@ recovers the exact solution:
 \begin{equation}
   \begin{split}
     E\{X_j\} &=\sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-    \sum_{i_k}^{N} b_{i_0} h_{i_0,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}
-    \delta_{i_k,j} \\ &= x_{j}\:,
+    \sum_{i_k}^{N} b_{i_0} h_{i_0,i_1}h_{i_1,i_2}\ldots
+    h_{i_{k-1},i_k} \delta_{i_k,j} \\ &= x_{j}\:,
   \end{split}
   \label{eq:adjoint_expectation_expansion}
 \end{equation}
@@ -243,20 +244,42 @@ contributions become increasingly small.
 
 %%---------------------------------------------------------------------------%%
 \section{Domain Decomposition}
+For very large linear systems, two things are likely to occur: a
+single compute node does not contain enough memory to hold the entire
+problem or a single compute node takes a prohibitively long time to
+solve the system. Domain decomposition methods permit the global
+computational domain to be subdivided into smaller regions. These
+smaller regions require less memory to store and fewer computational
+resources to solve as compared to the global problem. Typically, these
+smaller regions are then represented separately in indiviudal compute
+nodes. Therefore, in order to solve large scale problems with the
+Neumann-Ulam method, we must explore its behavior in a domain
+decomposed evironment.
+
+For reactor physics Monte Carlo simulations, domain decomposition has
+been identified as a key principle in moving forward in high
+performance computing
+\cite{brunner_comparison_2006,siegel_analysis_2012}. To accomplish
+this, we recognize from the literature that stochastic histories must
+be transported from domain to domain as the simulation progress and
+they transition to states that are not in the local domain. Because we
+have chosen a domain decomposition strategy in a parallel environment,
+this means that communication of these histories must occur between
+compute nodes owning neighboring pieces of the global domain.
 
 %%---------------------------------------------------------------------------%%
 \section{Model Problem}
 For our numerical experiments, we choose the one-speed,
 two-dimensional neutron diffusion equation as the model problem
-\cite{duderstadt_nuclear_1976}: 
+\cite{duderstadt_nuclear_1976}:
 \begin{equation}
   -\boldsymbol{\nabla} \cdot D \boldsymbol{\nabla} \phi + \Sigma_a
   \phi = S\:,
   \label{eq:diffusion_eq}
 \end{equation}
 where $\phi$ is the neutron flux, $\Sigma_a$ is the absorption cross
-section, $S$ is the source of neutrons. In addition, $D$ is the diffusion
-coefficient defined as:
+section, $S$ is the source of neutrons. In addition, $D$ is the
+diffusion coefficient defined as:
 \begin{equation}
   D = \frac{1}{3 ( \Sigma_t - \bar{\mu}\Sigma_s )}\:,
   \label{eq:diffusion_coeff}
@@ -292,10 +315,10 @@ stencil shown in Figure~\ref{fig:stencil} \cite{leveque_finite_2007}:
 \end{figure}
 We then have the following linear system to solve:
 \begin{multline}
-  -\frac{1}{6\Delta^2}[4 \phi_{i-1,j} + 4 \phi_{i+1,j}
-    + 4 \phi_{i,j-1} + 4 \phi_{i,j+1} + \phi_{i-1,j-1}\\ +
-    \phi_{i-1,j+1} + \phi_{i+1,j-1} + \phi_{i+1,j+1} - 20
-    \phi_{i,j}] + \Sigma_a \phi_{i,j} = s_{i,j}\:,
+  -\frac{1}{6\Delta^2}[4 \phi_{i-1,j} + 4 \phi_{i+1,j} + 4
+    \phi_{i,j-1} + 4 \phi_{i,j+1} + \phi_{i-1,j-1}\\ + \phi_{i-1,j+1}
+    + \phi_{i+1,j-1} + \phi_{i+1,j+1} - 20 \phi_{i,j}] + \Sigma_a
+  \phi_{i,j} = s_{i,j}\:,
   \label{eq:fd_system}
 \end{multline}
 and in operator form:
@@ -313,10 +336,9 @@ formulation of Duderstadt by assuming the flux is zero at some ghost
 point beyond the grid. Consider for example the equations on the $i=0$
 boundary of the domain:
 \begin{multline}
-  -\frac{1}{6\Delta^2}[4 \phi_{-1,j} + 4 \phi_{1,j}
-    + 4 \phi_{0,j-1} + 4 \phi_{0,j+1} + \phi_{-1,j-1}\\ +
-    \phi_{-1,j+1} + \phi_{1,j-1} + \phi_{1,j+1} - 20
-    \phi_{0,j}] + \Sigma_a \phi_{0,j} = s_{0,j}\:.
+  -\frac{1}{6\Delta^2}[4 \phi_{-1,j} + 4 \phi_{1,j} + 4 \phi_{0,j-1} +
+    4 \phi_{0,j+1} + \phi_{-1,j-1}\\ + \phi_{-1,j+1} + \phi_{1,j-1} +
+    \phi_{1,j+1} - 20 \phi_{0,j}] + \Sigma_a \phi_{0,j} = s_{0,j}\:.
   \label{eq:x_min_bnd}
 \end{multline}
 Here we note some terms where $i=-1$ and therefore are representative
