@@ -1,0 +1,322 @@
+%        File: latexdoc.tex
+%     Created: Friday March 4 12:24:15 2011
+% Last Change: Friday March 4 12:24:20 2011
+%
+\documentclass[letterpaper,12pt]{article}
+\usepackage[top=1.0in,bottom=1.0in,left=1.25in,right=1.25in]{geometry}
+\usepackage{verbatim}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage[mathcal]{euscript}
+\usepackage{tabularx}
+\usepackage{cite}
+\usepackage{c++}
+\usepackage{tmadd,tmath}
+\usepackage[usenames]{color}
+\usepackage[
+naturalnames = true, 
+colorlinks = true, 
+linkcolor = black,
+anchorcolor = black,
+citecolor = black,
+menucolor = black,
+urlcolor = blue
+]{hyperref}
+\usepackage{listings}
+\usepackage{textcomp}
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\lstset{
+  backgroundcolor=\color{lbcolor},
+  tabsize=4,
+  rulecolor=,
+  language=c++,
+  basicstyle=\scriptsize,
+  upquote=true,
+  aboveskip={1.5\baselineskip},
+  columns=fixed,
+  showstringspaces=false,
+  extendedchars=true,
+  breaklines=true,
+  prebreak =
+  \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+  frame=single,
+  showtabs=false,
+  showspaces=false,
+  showstringspaces=false,
+  identifierstyle=\ttfamily,
+  keywordstyle=\color[rgb]{0,0,1},
+  commentstyle=\color[rgb]{0.133,0.545,0.133},
+  stringstyle=\color[rgb]{0.627,0.126,0.941},
+}
+
+%%---------------------------------------------------------------------------%%
+\author{Stuart R. Slattery
+\\ \href{mailto:sslattery@wisc.edu}{\texttt{sslattery@wisc.edu}}
+}
+
+\date{\today}
+\title{A Spectral Theory for the Domain-Decomposed Adjoint
+  Neumann-Ulam Method}
+\begin{document}
+\maketitle
+
+%%---------------------------------------------------------------------------%%
+\begin{abstract}
+
+  The serial and parallel behavior of the adjoint Neumann-Ulam method
+  for solving linear operator equations is analyzed using the spectral
+  properties of the linear operator. Relationships for the average
+  length of the Markov chains and the fraction of histories leaking
+  from a parallel domain are made with respect to the eigenvalues of
+  the linear operator. The one-speed, two-dimensional neutron
+  diffusion equation is used as a model problem to test the spectral
+  theory for symmetric operators. These relationships will serve as
+  guidelines for selecting an appropriate parallel decomposition
+  stratagy and provide a basis for performance models for future
+  implementations of a parallel adjoint Neumann-Ulam method.
+
+\end{abstract}
+
+%%---------------------------------------------------------------------------%%
+\section{The Adjoint Neumann-Ulam Method}
+We seek solutions of the general linear problem in the following form:
+\begin{equation}
+  \ve{A} \ve{x} = \ve{b}\:,
+  \label{eq:linear_problem}
+\end{equation}
+where $\ve{A} \in \mathbb{R}^{N \times N}$ is a matrix operator such
+that $\ve{A} : \mathbb{R}^{N} \rightarrow \mathbb{R}^{N}$, $\ve{x} \in
+\mathbb{R}^N$ is the solution vector, and $\ve{b} \in \mathbb{R}^N$ is
+the forcing term. We choose the adjoint method Monte Carlo method to
+invert the linear operator. We begin by defining the linear system
+adjoint to Eq~(\ref{eq:linear_problem}):
+\begin{equation}
+  \ve{A}^T \ve{y} = \ve{d}\:,
+  \label{eq:adjoint_linear_problem}
+\end{equation}
+where $\ve{y}$ and $\ve{d}$ are the adjoint solution and source
+respectively and $\ve{A}^T$ is the adjoint operator. We can split this
+equation by defining the following inner product equivalence
+\cite{spanier_monte_1969}:
+\begin{equation}
+  \langle \ve{A}^T \ve{x}, \ve{y} \rangle = \langle \ve{x}, \ve{A}
+  \ve{y} \rangle\:.
+  \label{eq:adjoint_operator_product}
+\end{equation}
+With this statement we can then define the split equation:
+\begin{equation}
+  \ve{y} = \ve{H}^T \ve{y} + \ve{d}\:.
+  \label{eq:adjoint_split_system}
+\end{equation}
+For convergence, we require that the spectral radius of $\ve{H}$ must
+remain less than 1 as $\ve{H}^T$ contains the same eigenvalues and
+therefore has the same spectral radius. From this definition it
+follows that:
+\begin{equation}
+  \langle \ve{x}, \ve{d} \rangle = \langle \ve{y}, \ve{b} \rangle\:.
+  \label{eq:adjoint_vector_relation}
+\end{equation}
+Using these definitions, we can derive an estimator from the adjoint
+method that will also give the solution vector, $\ve{x}$. As with the
+direct method, we can acquire the adjoint solution by forming the
+Neumann series by writing Eq~(\ref{eq:adjoint_split_system}) as:
+\begin{equation}
+  \ve{y} = (\ve{I} - \ve{H}^T)^{-1} \ve{d}\:,
+  \label{eq:adjoint_split_system_2}
+\end{equation}
+which in turn yields the Neumann series using the adjoint operator:
+\begin{equation}
+  \ve{y} = \sum_{k=0}^{\infty} (\ve{H}^T)^k\ve{d}\:.
+  \label{eq:adjoint_neumann_series}
+\end{equation}
+We expand this summation to again yield a series of transitions that
+can be approximated by a Monte Carlo random walk sequence, this time
+forming the Neumann series in reverse order:
+\begin{equation}
+  y_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}h_{i_k,i_{k-1}}\ldots h_{i_2,i_1} h_{i_1,i} d_{i_k}\:.
+  \label{eq:adjoint_neumann_solution}
+\end{equation}
+We can readily build an estimator for the adjoint solution from this
+series expansion, but we instead desire the direct solution. We
+achieve this by using Eq~(\ref{eq:adjoint_vector_relation}) as a
+constraint. Here we have 2 unknowns, $\ve{y}$ and $\ve{d}$ and
+therefore we require a second constraint to close the system. As a
+second constraint we select:
+\begin{equation}
+  \ve{d} = \boldsymbol{\delta}_i\:,
+  \label{eq:adjoint_second_constraint}
+\end{equation}
+where the $k^{th}$ component of the vector $\boldsymbol{\delta}_i$ is
+the Dirac delta function $\delta_{i_k,i}$. If we apply
+Eq~(\ref{eq:adjoint_second_constraint}) to our first constraint
+Eq~(\ref{eq:adjoint_vector_relation}), we get the following convenient
+outcome:
+\begin{equation}
+  \langle \ve{y}, \ve{b} \rangle = \langle \ve{x},
+  \boldsymbol{\delta}_i \rangle = x_i \:,
+  \label{eq:inner_product_constraint}
+\end{equation}
+meaning that if we compute the inner product of the direct source and
+the adjoint solution using a delta function source, we recover the
+direct solution we are looking for 
+
+In terms of particle transport, this adjoint method is equivalent to a
+traditional forward method. As a result of using the adjoint system,
+we modify our probabilities and weights using the \textit{adjoint
+  Neumann-Ulam decomposition} of $\ve{H}$:
+\begin{equation}
+  \ve{H}^{T} = \ve{P} \circ \ve{W}\:,
+  \label{eq:adjoint_neumann_ulam}
+\end{equation}
+where now we are forming the decomposition with respect to the
+transpose of $\ve{H}$. We then follow the same procedure as the direct
+method for forming the probability and weight matrices in the
+decomposition. Using the adjoint form, probabilities should instead be
+column-scaled:
+\begin{equation}
+  p_{ij} = \frac{|h_{ji}|}{\sum_j |h_{ji}|}\:,
+  \label{eq:adjoint_probability}
+\end{equation}
+such that we expect to select a new state $j$ from the current state
+in the random walk $j$ by sampling column-wise. Per
+Eq~(\ref{eq:adjoint_neumann_ulam}), the transition weight is then
+defined as:
+\begin{equation}
+  w_{ij} = \frac{h_{ji}}{p_{ij}}\:.
+  \label{eq:adjoint_weight}
+\end{equation}
+Using the decomposition we can then define an expectation value for
+the adjoint method. Using our result from
+Eq~(\ref{eq:inner_product_constraint}) generated by applying the
+adjoint constraints, the contribution to the solution in state $i$
+from a particular random walk permutation is then:
+\begin{equation}
+  X_{\nu} = \sum_{m=0}^k W_{m} \delta_{i,i_m}\:,
+  \label{eq:adjoint_permutation_contribution}
+\end{equation}
+where the Kronecker delta indicates that the tally contributes only in
+the current state and $b_{i_0}$ will be the sampled source starting
+weight. Note here that the estimator in
+Eq~(\ref{eq:adjoint_permutation_contribution}) does not have a
+dependency on the source state as in
+Eq~(\ref{eq:adjoint_permutation_contribution}), providing a remedy for
+the situation in the direct method where we must start a random walk
+in each source state for every permutation such that we may compute a
+contribution for that state. In the adjoint method, we instead tally
+in all states and those of lesser importance will not be visited as
+frequently by the random walk. Finally, the expectation value using
+all permutations is:
+\begin{equation}
+  E\{X\} = \sum_{\nu} P_{\nu} X_{\nu}\:
+  \label{eq:adjoint_expectation_value}
+\end{equation}
+which, if expanded in the same way as the direct method, directly
+recovers the exact solution:
+\begin{equation}
+  \begin{split}
+    E\{X_j\} &=\sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+    \sum_{i_k}^{N} b_{i_0} h_{i_0,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}
+    \delta_{i_k,j} \\ &= x_{j}\:,
+  \end{split}
+  \label{eq:adjoint_expectation_expansion}
+\end{equation}
+therefore also providing an unbiased Monte Carlo estimate of the
+solution.
+
+Like the direct method, we also desire a criteria for random walk
+termination for problems where only an approximate solution is
+necessary. For the adjoint method, we utilize a \textit{relative
+  weight cutoff}:
+\begin{equation}
+  W_f = W_c b_{i_0}\:,
+  \label{eq:relative_weight_cutoff}
+\end{equation}
+where $W_c$ is defined as in the direct method. The adjoint random
+walk will then be terminated after $m$ steps if $W_m < W_f$ as tally
+contributions become increasingly small.
+
+
+%%---------------------------------------------------------------------------%%
+\section{Model Problem}
+For our numerical experiments, we choose the one-speed,
+two-dimensional neutron diffusion equation as the model problem
+\cite{duderstadt_nuclear_1976}: 
+\begin{equation}
+  -\boldsymbol{\nabla} \cdot D \boldsymbol{\nabla} \phi + \Sigma_a
+  \phi = S\:,
+  \label{eq:diffusion_eq}
+\end{equation}
+where $\phi$ is the neutron flux, $\Sigma_a$ is the absorption cross
+section, $S$ is the source of neutrons and $D$ is the diffusion
+coefficient defined as:
+\begin{equation}
+  D = \frac{1}{3 ( \Sigma_t - \bar{\mu}\Sigma_s )}\:,
+  \label{eq:diffusion_coeff}
+\end{equation}
+where $\Sigma_s$ is the scattering cross section, $\Sigma_t = \Sigma_a
++ \Sigma_s$ is the total cross section, and $\bar{\mu}$ is the cosine
+of the average scattering angle. For simplification, we will take
+$\bar{\mu} = 0$ for our analysis giving $D=(3 \Sigma_t)^{-1}$. In
+addition, to further simplify we will assume a homogenous domain such
+that the cross sections remain constant throughout. Doing this permits
+us to simplify Eq~(\ref{eq:diffusion_eq}):
+\begin{equation}
+  -D \boldsymbol{\nabla}^2 \phi + \Sigma_a \phi = S\:.
+  \label{eq:diffusion_eq_simple}
+\end{equation}
+
+We choose a finite difference scheme on a square Cartesian grid to
+discretize the problem. For the Laplacian, we choose the 9-point
+stencil shown in Figure~\ref{fig:stencil} \cite{leveque_finite_2007}:
+\begin{multline}
+  \nabla^2_9\phi = \frac{1}{6\Delta^2}[4 \phi_{i-1,j} + 4 \phi_{i+1,j}
+    + 4 \phi_{i,j-1} + 4 \phi_{i,j+1} + \phi_{i-1,j-1}\\ +
+    \phi_{i-1,j+1} + \phi_{i+1,j-1} + \phi_{i+1,j+1} - 20
+    \phi_{i,j}]\:.
+  \label{eq:nine_point_stencil}
+\end{multline}
+
+We then have the following linear system to solve:
+\begin{multline}
+  -\frac{1}{6\Delta^2}[4 \phi_{i-1,j} + 4 \phi_{i+1,j}
+    + 4 \phi_{i,j-1} + 4 \phi_{i,j+1} + \phi_{i-1,j-1}\\ +
+    \phi_{i-1,j+1} + \phi_{i+1,j-1} + \phi_{i+1,j+1} - 20
+    \phi_{i,j}] + \Sigma_a \phi_{i,j} = s_{i,j}\:,
+  \label{eq:fd_system}
+\end{multline}
+and in operator form:
+\begin{equation}
+  \ve{D}\boldsymbol{\phi}=\ve{S}\:,
+  \label{eq:operator_system}
+\end{equation}
+where $\ve{D}$ is the diffusion operator, $\ve{S}$ is the source in
+vector form and $\boldsymbol{\phi}$ is the vector of unkown fluxes.
+
+To close the system a non-reentrant current condition is applied
+to all boundaries of the domain.
+
+%%---------------------------------------------------------------------------%%
+\section{Spectral Analysis}
+
+%%---------------------------------------------------------------------------%%
+\section{Length of Random Walks}
+
+%%---------------------------------------------------------------------------%%
+\section{Domain Leakage}
+
+%%---------------------------------------------------------------------------%%
+\section{Conclusion}
+
+%%---------------------------------------------------------------------------%%
+\pagebreak
+\bibliographystyle{ieeetr}
+\bibliography{references}
+\end{document}
+
+
