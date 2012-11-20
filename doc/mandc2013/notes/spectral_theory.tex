@@ -325,7 +325,7 @@ stencil shown in Figure~\ref{fig:stencil} over a grid of size $h$
     \phi_{i,j}]\:.
   \label{eq:nine_point_stencil}
 \end{multline}
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \scalebox{1.25}{\input{stencil.pdftex_t}}
   \end{center}
@@ -391,8 +391,10 @@ assuming Eigenfunctions of the form \cite{leveque_finite_2007}:
 where different combinations of $p$ and $q$ represent the different
 Eigenmodes of the solution. As these are valid forms of the solution,
 then the action of the linear operator on these Eigenfunctions should
-give the Eigenvalues of the matrix. 
+give the Eigenvalues of the matrix as they lie on the unit circle in
+the complex plane.
 
+\subsection{Diffusion Operator Spectrum}
 For the model problem, we first compute the Eigenvalues for the
 diffusion operator $\ve{D}$ by applying the operator the
 Eigenfunctions and noting that $x=ih$ and $y=jh$:
@@ -456,17 +458,39 @@ system, we must therefore compute the minimum and maximum Eigenvalues
 of the diffusion operator. Per Leveque's text
 \cite{leveque_finite_2007}, we expect to find these minimum and
 maximum eigenvalues when $p=q$. To find these values,
-Eq~(\ref{eq:deriv_diff_2}) is plotted as a function of $p$ with $p=q$
-in Figure~\ref{fig:diffusion_spectrum} without the scaling.
+Eq~(\ref{eq:preconditioned_eigenvalues}) is plotted as a function of
+$p$ with $p=q$ in Figure~\ref{fig:diffusion_spectrum} for various
+values of $\Sigma_a$.
 
+We see a minimum eigenvalue at $p=0$ and a maximum at $p=10$, letting
+us compute the condition number for the Jacobi preconditioned
+diffusion operator:
+\begin{equation}
+  \kappa(\ve{M}^{-1} \ve{D}) =
+  \frac{\frac{D}{6h^2}\Sigma_a}{\frac{D}{3h^2}[8 \cos(\pi 10 h) + 2
+      \cos^2(\pi 10 h) - 10] + \Sigma_a}\:.
+  \label{eq:diffusion_condition}
+\end{equation}
+Visually we can also see how increasing the absorption in the problem
+creates a more well conditioned system as less diffusion is
+expected. If we have a problem with only scattering, $\Sigma_a = 0$
+and we observe an infinite condition number as $\lambda_{min}
+\rightarrow 0$. We note also that the diffusion operator contains
+purely positive Eigenvalues and can therefore be classified as
+symmetric positive definite (SPD).
+
+\subsection{Iteration Matrix Spectrum}
+
+\subsection{Neumann Series Convergence}
+
+\subsection{The Wigner Rational Approximation}
 
 %%---------------------------------------------------------------------------%%
 \section{Numerical Experiments}
 
-\subsection{Random Walk Lengths}
+\subsection{Random Walk Length}
 
 \subsection{Domain Leakage}
-
 
 %%---------------------------------------------------------------------------%%
 \section{Conclusion}
