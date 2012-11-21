@@ -74,7 +74,7 @@ urlcolor = blue
   length of the adjoint random walks and the fraction of histories
   leaking from a domain are made with respect to the Eigenvalues of
   the linear operator. In addition, a formal definition of the optical
-  thickness of a linear operator is presented based in the spectral
+  thickness of a linear operator is presented based on the spectral
   analysis. The one-speed, two-dimensional neutron diffusion equation
   is used as a model problem to test the spectral theory for symmetric
   operators. In general, the spectral theory shows good agreement with
@@ -91,10 +91,10 @@ solve the system. Domain decomposition methods permit the global
 computational domain to be subdivided into smaller regions. These
 smaller regions require less memory to store and fewer computational
 resources to solve as compared to the global problem. Typically, these
-smaller regions are then represented separately in indiviudal compute
+smaller regions are then represented separately in individual compute
 nodes. Therefore, in order to solve large scale problems with the
 adjoint Neumann-Ulam method, we must explore its behavior in a domain
-decomposed evironment.
+decomposed environment.
 
 For reactor physics Monte Carlo simulations, domain decomposition has
 been identified as a key principle in moving forward in high
@@ -315,7 +315,7 @@ where $\Sigma_s$ is the scattering cross section, $\Sigma_t = \Sigma_a
 + \Sigma_s$ is the total cross section, and $\bar{\mu}$ is the cosine
 of the average scattering angle. For simplicity, we will take
 $\bar{\mu} = 0$ for our analysis giving $D=(3 \Sigma_t)^{-1}$. In
-addition, to further simplify we will assume a homogenous domain such
+addition, to further simplify we will assume a homogeneous domain such
 that the cross sections remain constant throughout. Doing this permits
 us to rewrite Eq~(\ref{eq:diffusion_eq}) as:
 \begin{equation}
@@ -355,7 +355,7 @@ and in operator form:
   \label{eq:operator_system}
 \end{equation}
 where $\ve{D}$ is the diffusion operator, $\ve{s}$ is the source in
-vector form and $\boldsymbol{\phi}$ is the vector of unkown fluxes. We
+vector form and $\boldsymbol{\phi}$ is the vector of unknown fluxes. We
 note here that the diffusion operator is symmetric.
 
 To close the system, a set of boundary conditions is required. In the
@@ -409,12 +409,13 @@ For the model problem, we first compute the Eigenvalues for the
 diffusion operator $\ve{D}$ by applying the operator to the
 Eigenfunctions and noting that $x=ih$ and $y=jh$:
 \begin{multline}
-  \ve{D}\Phi_{p,q}(x,y) = \lambda_{p,q}(\ve{D}) =\\ -\frac{D}{6h^2}[4
-    e^{-2 \pi \imath p h} + 4 e^{2 \pi \imath p h} + 4 e^{-2 \pi
-      \imath q h} + 4 e^{2 \pi \imath q h} + e^{-2 \pi \imath p h} e^{-2
-      \pi \imath q h} \\ + e^{-2 \pi \imath p h} e^{2 \pi \imath q q} +
-    e^{2 \pi \imath p h} e^{-2 \pi \imath q h} + e^{2 \pi \imath p h}
-    e^{2 \pi \imath q h} - 20] + \Sigma_a \:.
+  \ve{D}\Phi_{p,q}(x,y) = \lambda_{p,q}(\ve{D})
+  =\\ -\frac{D}{6h^2}\Big[4 e^{-2 \pi \imath p h} + 4 e^{2 \pi \imath
+      p h} + 4 e^{-2 \pi \imath q h} + 4 e^{2 \pi \imath q h} + e^{-2
+      \pi \imath p h} e^{-2 \pi \imath q h} \\ + e^{-2 \pi \imath p h}
+    e^{2 \pi \imath q h} + e^{2 \pi \imath p h} e^{-2 \pi \imath q h}
+    + e^{2 \pi \imath p h} e^{2 \pi \imath q h} - 20\Big] + \Sigma_a
+  \:.
   \label{eq:deriv_diff_1}
 \end{multline}
 Using Euler's formula, we can collapse the exponentials to
@@ -436,11 +437,11 @@ diag(\ve{D})$ such that we are solving the following linear system:
 \end{equation}
 The operator $\ve{M}^{-1} \ve{D}$ is merely the original diffusion
 operator with each row scaled by the diagonal component. As we have
-defined a homogenous domain, the scaling factor is the same for all
+defined a homogeneous domain, the scaling factor is the same for all
 rows in the operator. This scaling factor, $\alpha$, is then defined
 as the $\phi_{i,j}$ coefficient from Eq~(\ref{eq:fd_system}):
 \begin{equation}
-  \alpha = [\frac{10 D}{3 h^2} + \Sigma_a]^{-1}\:.
+  \alpha = \Bigg[\frac{10 D}{3 h^2} + \Sigma_a\Bigg]^{-1}\:.
   \label{eq:jacobi_scaling}
 \end{equation}
 Using this coefficient, we then have the following spectrum of
@@ -504,20 +505,21 @@ preconditioned spectral radius is $\ve{H} = \ve{I} -
 \ve{M}^{-1}\ve{D}$, the we expect all terms on the diagonal of the
 iteration matrix to be zero such that we have the following stencil:
 \begin{equation}
-  \ve{H}\boldsymbol{\phi} = -\frac{\alpha D}{6h^2}[4 \phi_{i-1,j} + 4
-    \phi_{i+1,j} + 4 \phi_{i,j-1} + 4 \phi_{i,j+1} + \phi_{i-1,j-1}\\ +
-    \phi_{i-1,j+1} + \phi_{i+1,j-1} + \phi_{i+1,j+1}]\:.
+  \ve{H}\boldsymbol{\phi} = -\frac{\alpha D}{6h^2}[4 \phi_{i-1,j}
+    + 4 \phi_{i+1,j} + 4 \phi_{i,j-1} + 4 \phi_{i,j+1} +
+    \phi_{i-1,j-1}\\ + \phi_{i-1,j+1} + \phi_{i+1,j-1} +
+    \phi_{i+1,j+1}]\:.
   \label{eq:iteration_stencil}
 \end{equation}
 Inserting the Eigenfunctions defined by Eq~\ref{eq:eigenfunction_form}
 we get:
 \begin{multline}
-  \lambda_{p,q}(\ve{H}) = -\frac{\alpha D}{6h^2}[4 e^{-2 \pi \imath p
+  \lambda_{p,q}(\ve{H}) = -\frac{\alpha D}{6h^2}\Big[4 e^{-2 \pi \imath p
       h} + 4 e^{2 \pi \imath p h} + 4 e^{-2 \pi \imath q h} + 4 e^{2
       \pi \imath q h} + e^{-2 \pi \imath p h} e^{-2 \pi \imath q h}
     \\ + e^{-2 \pi \imath p h} e^{2 \pi \imath q q} + e^{2 \pi \imath
       p h} e^{-2 \pi \imath q h} + e^{2 \pi \imath p h} e^{2 \pi
-      \imath q h}]\:,
+      \imath q h}\Big]\:,
   \label{eq:iteration_deriv}
 \end{multline}
 which simplifies to:
@@ -652,7 +654,7 @@ operator splitting chosen) and based on the weight cutoff parameter
 used in the Neumann-Ulam method
 
 \subsection{Wigner Rational Approximation}
-In a domain decomposed situtation, not all histories will remain
+In a domain decomposed situation, not all histories will remain
 within the domain they started in and must instead be
 communicated. This communication, expected to be expensive, was
 analyzed by Siegel and colleagues for idealized, load balanced
@@ -667,25 +669,25 @@ they define a leakage fraction, $\lambda$, as:
 For their studies, they assumed that the value of $\lambda$ was
 dependent on the total cross section of the system via the Wigner
 rational approximation. This approximation was developed by Wigner to
-compute the neutron leakage probability from as a simple interpolation
-between the small and large fuel lump cases, approximately
-characterizing the leakage behavior of many common geometries.
-\cite{duderstadt_nuclear_1976}. Outlined more thoroughly by Hwang's
-chapter in \cite{azmy_nuclear_2010}, we begin the derivation of
-Wigner's approximation by defining $l$ to be the average chord length
-across the domain, and $\Sigma_t$ to be the total cross section in the
-domain. We then bound the behavior for the leakage fraction in terms
-of the optical thickness, $\Sigma_t l$, of the local domain. In the
-case of a small domain or a small cross section (and therefore small
-probabilty of absorption or scatter), $\Sigma_t l \rightarrow 0,
-\lambda \rightarrow 1$. For a large domain or large cross section,
-$\Sigma_t l \rightarrow \infty, \lambda \rightarrow (\Sigma_t
-l)^{-1}$, where $(\Sigma_t l)^{-1}$ is effectively the number of
-interactions that will occur over the length of the coord. Using
-Wigner's simple interpolation, we then have a simple formula for the
-domain leakage, $\lambda = 1/(1+\Sigma_t l)$. This provides a leakage
-estimate, valid over the entire range of $\Sigma_t l$, in terms of the
-optical thicknes of the system.
+compute the neutron leakage probability from the fuel in a reactor as
+a simple interpolation between the small and large fuel lump cases,
+approximately characterizing the leakage behavior of many common
+geometries.  \cite{duderstadt_nuclear_1976}. Outlined more thoroughly
+by Hwang's chapter in \cite{azmy_nuclear_2010}, we begin the
+derivation of Wigner's approximation by defining $l$ to be the average
+chord length across the domain, and $\Sigma_t$ to be the total cross
+section in the domain. We then bound the behavior for the leakage
+fraction in terms of the optical thickness, $\Sigma_t l$, of the local
+domain. In the case of a small domain or a small cross section (and
+therefore small probability of absorption or scatter), $\Sigma_t l
+\rightarrow 0, \lambda \rightarrow 1$. For a large domain or large
+cross section, $\Sigma_t l \rightarrow \infty, \lambda \rightarrow
+(\Sigma_t l)^{-1}$, where $(\Sigma_t l)^{-1}$ is effectively the
+number of interactions that will occur over the length of the
+chord. Using Wigner's simple interpolation, we then have a simple
+formula for the domain leakage, $\lambda = 1/(1+\Sigma_t l)$. This
+provides a leakage estimate, valid over the entire range of $\Sigma_t
+l$, in terms of the optical thickness of the system.
 
 In the case of domain decomposed linear operator equations, the chord
 length can be interpreted as the number of discrete states spanning a
@@ -695,7 +697,7 @@ using our model diffusion problem). We then seek the equivalent of the
 total cross section, $\Sigma_t$ in terms of the discrete random walk
 behavior. The total cross section can also be interpreted as the
 inverse of the mean free path of particles in the system. In the
-Neumann-Ulam method, this is analagous to the length of the Markov
+Neumann-Ulam method, this is analogous to the length of the Markov
 chains (and therefore the number of state-to-state transitions)
 generated while sampling the Neumann series. In the previous section,
 we determined this length with Eq~(\ref{eq:analytic_k}) to be
@@ -729,8 +731,8 @@ of a domain for the adjoint Neumann-Ulam method:
   \lambda = \frac{1}{1+\tau}\:.
   \label{eq:analytic_domain_leakage}
 \end{equation}
-Here the fraction is explictly bound to the Eigenvalues of the
-iteration matrix, the size of the domain, the content of the
+Here, the leakage fraction is explicitly bound to the Eigenvalues of
+the iteration matrix, the size of the domain, the content of the
 discretization stencil, and the weight cutoff selected to terminate
 low weight histories.  We also note here an interesting consequence of
 this approximation: no matter how optically thick a domain may be, the
@@ -742,17 +744,140 @@ Neumann-Ulam method.
 
 %%---------------------------------------------------------------------------%%
 \section{Numerical Experiments}
+To test the relationships developed by the spectral analysis, we form
+two simple numerical experiments using the diffusion model problem:
+one to measure the length of the random walks as a function of the
+iteration matrix Eigenvalues, and one to measure the domain leakage
+fraction as a function of the iteration matrix Eigenvalues. Before
+doing this, we verify our spectral model for the spectral radius of
+the iteration matrix by numerically computing the largest Eigenvalue
+of the diffusion operator using an Eigenvalue solver. For this
+verification, a $100 \times 100$ square grid with $h=0.1$ and
+non-reentrant current boundary conditions was used and the absorption
+cross varied from 0 to 100 while the scattering cross section was
+fixed at unity. Figure~\ref{fig:measured_spec_rad} gives the measured
+spectral radius of the iteration matrix and the computed spectral
+radius for the preconditioned diffusion operator using
+Eq~(\ref{eq:iteration_radius}) as function of the absorption to
+scattering ratio $(\Sigma_a / \Sigma_s)$. We note here that although
+there is excellent agreement between the measured and analytic
+results, slight differences likely arise due to the non-reentrant
+current condition not being included in the spectral analysis. To
+verify this (and serve as a better testing environment), reflecting
+boundary conditions must be implemented.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=5in,clip]{measured_spec_rad.png}
+  \end{center}
+  \caption{\textbf{Measured and analytic preconditioned diffusion
+      operator spectral radius as a function of the absorption cross
+      section to scattering cross section ratio.} \textit{The blue
+      data was computed numerically by an Eigensolver while the red
+      data was generated by Eq~(\ref{eq:iteration_radius}).}}
+  \label{fig:measured_spec_rad}
+\end{figure}
 
 \subsection{Random Walk Length}
+With the spectral data in hand, we can go about setting up an
+experiment to measure the length of the random walks generated by the
+adjoint Neumann-Ulam solver. To do this, we again use a $100 \times
+100$ square grid with $h=0.1$ and non-reentrant current boundary
+conditions was used and the absorption cross varied from 0 to 100
+while the scattering cross section was fixed at unity. A weight cutoff
+of \sn{1}{-4} was used with 10,000 histories generated by a point
+source source of strength 1 in the center of the domain such that the
+vacuum boundary conditions will have less of an effect on the length
+of the random walks. For each of the histories, the number of
+transitions made was tallied to provide an effective value of $k$ for
+each history. This value was then averaged over all histories to get a
+measured value of $k$ for the particular
+operator. Figure~\ref{fig:measured_length} gives these measurements as
+well as the analytic result computed by Eq~(\ref{eq:analytic_k}) as a
+function of the absorption to scattering ratio $(\Sigma_a /
+\Sigma_s)$. Again, we note here that although there is excellent
+agreement between the measured and analytic results, slight
+differences likely arise due to the non-reentrant current condition
+not being included in the spectral analysis.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=5in,clip]{measured_length.png}
+  \end{center}
+  \caption{\textbf{Measured and analytic random walk length as a
+      function of the absorption cross section to scattering cross
+      section ratio.} \textit{The blue data was computed numerically
+      by an adjoint Neumann-Ulam implementation while the red data was
+      generated by Eq~(\ref{eq:analytic_k}).}}
+  \label{fig:measured_length}
+\end{figure}
 
 \subsection{Domain Leakage}
+Finally, we seek to measure the leakage from a domain in a domain
+decomposed Monte Carlo calculation and assess the quality of our
+analytic relation for the optical thickness of domain and the
+associated Wigner approximation. For this experiment, we again use a
+$100 \times 100$ square grid with $h=0.1$ and non-reentrant current
+boundary conditions. The grid is then decomposed into 100 square
+domains, 10 in each cardinal direction. For the cross sections, the
+absorption cross was varied from 1 to 100 while the scattering cross
+section was set to zero to create a purely absorbing environment. The
+optical thickness of these domains will vary as a function of the
+absorption cross section if the other parameters are fixed. To compute
+the optical thickness, along with the spectral radius as given by
+Eq~(\ref{eq:iteration_radius}), we also need the parameters $n_i$ and
+$n_s$ which respectively describe the typical domain length and the
+average number of states moved along that typical length per history
+transition. For our grid above, the domains are of size $10 \times 10$
+cells and therefore choosing the $i$ direction there are $n_i=11$ grid
+points or states along the typical length of the domain. Looking at
+the Laplacian stencil in Figure~\ref{fig:stencil}, we see that all
+history transitions will only move a single state in either the $i$ or
+$j$ directions due to the symmetry of the problem. We therefore will
+move on average 1 state along the typical length of the domain per
+history transition, giving $n_s=1$.Figure~\ref{fig:optical_thickness})
+gives the domain optical thickness as a function of $Sigma_a$ as
+specified by Eq~(\ref{eq:matrix_optical_thickness_2}) using the above
+parameters. Here we note that as the domains become more optically
+thick, this relationship becomes exponential as expected.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=5in,clip]{optical_thickness.png}
+  \end{center}
+  \caption{\textbf{Analytic domain optical thickness as a function of
+      the absorption cross section.} \textit{The data was
+      generated by Eq~(\ref{eq:matrix_optical_thickness_2}).}}
+  \label{fig:optical_thickness}
+\end{figure}
+
+To compute the leakage fraction numerically, over the global domain,
+500,000 histories were sampled from a uniform source of unity. At the
+start of a stage of histories, the number of histories starting in the
+domain was computed and as the stage progressed, the number of
+histories that exited the domain were tallied with the ratio of the
+two providing a numerical measure for the leakage
+fraction. Figure~\ref{fig:measured_length} gives the domain leakage
+measurements for the domain in the center of the global grid as well
+as the analytic result computed by
+Eq~(\ref{eq:analytic_domain_leakage}) as a function of the absorption
+cross section. Again, we note good qualitative agreement between the
+measured and analytic quantities.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=5in,clip]{measured_leakage.png}
+  \end{center}
+  \caption{\textbf{Measured and analytic domain leakage as a function
+      of the absorption cross section.} \textit{The blue data was
+      computed numerically by a domain-decomposed adjoint Neumann-Ulam
+      implementation while the red data was generated by
+      Eq~(\ref{eq:analytic_domain_leakage}).}}
+  \label{fig:measured_leakage.}
+\end{figure}
 
 %%---------------------------------------------------------------------------%%
 \section{Conclusion}
-These relationships will serve as guidelines for
-selecting an appropriate parallel algorithm strategy and provide a
-basis for performance models for future parallel implementations of
-the adjoint Neumann-Ulam method.
+These relationships will serve as guidelines for selecting an
+appropriate parallel algorithm strategy and provide a basis for
+performance models for future parallel implementations of the adjoint
+Neumann-Ulam method.
 
 %%---------------------------------------------------------------------------%%
 \pagebreak
