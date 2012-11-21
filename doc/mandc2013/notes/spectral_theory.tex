@@ -72,13 +72,13 @@ urlcolor = blue
   for solving linear operator equations is analyzed using the spectral
   properties of the linear operator. Relationships for the average
   length of the adjoint random walks and the fraction of histories
-  leaking from a domain are made with respect to the eigenvalues of
-  the linear operator. The one-speed, two-dimensional neutron
-  diffusion equation is used as a model problem to test the spectral
-  theory for symmetric operators. These relationships will serve as
-  guidelines for selecting an appropriate parallel algorithm strategy
-  and provide a basis for performance models for future parallel
-  implementations of the adjoint Neumann-Ulam method.
+  leaking from a domain are made with respect to the Eigenvalues of
+  the linear operator. In addition, a formal definition of the optical
+  thickness of a linear operator is presented based in the spectral
+  analysis. The one-speed, two-dimensional neutron diffusion equation
+  is used as a model problem to test the spectral theory for symmetric
+  operators. In general, the spectral theory shows good agreement with
+  measured computational results.
 
 \end{abstract}
 
@@ -108,16 +108,17 @@ this means that communication of these histories must occur between
 compute nodes owning neighboring pieces of the global domain. We wish
 to characterize this communication not only because communication is
 in general expensive, but also because nearest-neighbor communication
-sequences have poor algorithmic strong scaling \cite{gropp_cfd_2001}.
-We observe this because nearest neighbor communication patterns scale
-with the volume and surface sizes of the local domains. The larger the
-volume, the more compute time is spent within the local volume and
-therefore at some point you are limited by the latency of the system,
-or the time it takes to receive the data to operate on. However, at a
-certain point, when the surface of those volumes becomes large enough,
-the amount of data that must be communicated grows large enough that
-it may overcome the bandwidth limitations of the system, resulting in
-a decrease in performance.
+sequences have poor algorithmic strong scaling
+\cite{gropp_high-performance_2001}.  We observe this because nearest
+neighbor communication patterns scale with the volume and surface
+sizes of the local domains. The larger the volume, the more compute
+time is spent within the local volume and therefore at some point you
+are limited by the latency of the system, or the time it takes to
+receive the data to operate on. However, at a certain point, when the
+surface of those volumes becomes large enough, the amount of data that
+must be communicated grows large enough that it may overcome the
+bandwidth limitations of the system, resulting in a decrease in
+performance.
 
 For problems where the linear operator is symmetric, a host of
 analytic theories exist based on the eigenvalue spectrum of the
@@ -618,7 +619,7 @@ iteration matrix will not cause the error to grow in
 Eq~(\ref{eq:linear_k_iter_norm3}). 
 
 In the adjoint Neumann-Ulam method, $k$ iterations, equivalent to $k$
-applications of the iteration matrix, is effectively approximated by a
+applications of the iteration matrix, are approximated by a
 random walk of length $k$ to yield the summation in
 Eq~(\ref{eq:adjoint_neumann_solution}). This random walk length, or
 the number of transitions before the termination of a history (either
@@ -632,10 +633,10 @@ iterations, a stationary method is terminated as the error has reached
 some fraction, $\epsilon$, of the initial error:
 \begin{equation}
   ||\ve{e}^{k}||_2 = \epsilon ||\ve{e}^0||_2\:.
-  \label{eq:linear_k_iter_norm3}
+  \label{eq:linear_k_iter_norm4}
 \end{equation}
 Per Eq~(\ref{eq:linear_k_iter_norm3}), we see that this fraction is
-equivalent to $\epsilon = \rho(\ve{H})$. For the adjoint Neumann-Ulam
+equivalent to $\epsilon = \rho(\ve{H})^k$. For the adjoint Neumann-Ulam
 method, if we take this fraction to be the weight cutoff, a measure of
 how accurately the contributions of a particular history to the
 solution are tallied, we then have the following empirical relation
@@ -645,12 +646,12 @@ for $k$:
   \label{eq:analytic_k}
 \end{equation}
 This then gives us a means to estimate the length of the random walks
-derived from a particular linear operator based on the Eigenvalues of
-its iteration matrix (independent of the linear operator splitting
-chosen) and based on the weight cutoff parameter used in the
-Neumann-Ulam method
+that will be generated from a particular linear operator based on the
+Eigenvalues of its iteration matrix (independent of the linear
+operator splitting chosen) and based on the weight cutoff parameter
+used in the Neumann-Ulam method
 
-\subsection{The Wigner Rational Approximation}
+\subsection{Wigner Rational Approximation}
 In a domain decomposed situtation, not all histories will remain
 within the domain they started in and must instead be
 communicated. This communication, expected to be expensive, was
@@ -664,12 +665,80 @@ they define a leakage fraction, $\lambda$, as:
   \label{eq:leakage_fraction}
 \end{equation}
 For their studies, they assumed that the value of $\lambda$ was
-dependent on the total cross section via the Wigner rational
-approximation. The approximation was developed to compute the neutron
-leakage probability from by Wigner as a simple interpolation between
-the small and large fuel lump cases.
+dependent on the total cross section of the system via the Wigner
+rational approximation. This approximation was developed by Wigner to
+compute the neutron leakage probability from as a simple interpolation
+between the small and large fuel lump cases, approximately
+characterizing the leakage behavior of many common geometries.
+\cite{duderstadt_nuclear_1976}. Outlined more thoroughly by Hwang's
+chapter in \cite{azmy_nuclear_2010}, we begin the derivation of
+Wigner's approximation by defining $l$ to be the average chord length
+across the domain, and $\Sigma_t$ to be the total cross section in the
+domain. We then bound the behavior for the leakage fraction in terms
+of the optical thickness, $\Sigma_t l$, of the local domain. In the
+case of a small domain or a small cross section (and therefore small
+probabilty of absorption or scatter), $\Sigma_t l \rightarrow 0,
+\lambda \rightarrow 1$. For a large domain or large cross section,
+$\Sigma_t l \rightarrow \infty, \lambda \rightarrow (\Sigma_t
+l)^{-1}$, where $(\Sigma_t l)^{-1}$ is effectively the number of
+interactions that will occur over the length of the coord. Using
+Wigner's simple interpolation, we then have a simple formula for the
+domain leakage, $\lambda = 1/(1+\Sigma_t l)$. This provides a leakage
+estimate, valid over the entire range of $\Sigma_t l$, in terms of the
+optical thicknes of the system.
 
-
+In the case of domain decomposed linear operator equations, the chord
+length can be interpreted as the number of discrete states spanning a
+domain, $n_i$, along the typical length of that domain (e.g. the
+number of discrete states in the $i$ direction in a square domain
+using our model diffusion problem). We then seek the equivalent of the
+total cross section, $\Sigma_t$ in terms of the discrete random walk
+behavior. The total cross section can also be interpreted as the
+inverse of the mean free path of particles in the system. In the
+Neumann-Ulam method, this is analagous to the length of the Markov
+chains (and therefore the number of state-to-state transitions)
+generated while sampling the Neumann series. In the previous section,
+we determined this length with Eq~(\ref{eq:analytic_k}) to be
+dependent on the Eigenvalues of the operator. In addition, we must
+also consider the number of states that may be traversed in a given
+transition, $n_s$, along the path of the typical length of the
+system. For our diffusion model problem, $n_s$ would equate to the
+number of states in the $i$ (or $j$ as the problem is symmetric)
+direction that a history could potentially move and is dependent on
+the stencil used for the discretization. We then have the following
+relation for the \textit{optical thickness}, $\tau$, of a linear
+operator equation domain:
+\begin{equation}
+  \tau = \frac{n_i n_s}{k}\:,
+  \label{eq:matrix_optical_thickness}
+\end{equation}
+and inserting Eq~(\ref{eq:analytic_k}) gives:
+\begin{equation}
+  \tau = \frac{n_i n_s \log(\rho(\ve{H}))}{\log(W_c)}\:.
+  \label{eq:matrix_optical_thickness_2}
+\end{equation}
+Using this optical thickness, we can then complete the Wigner rational
+approximation by defining the bounds of $\tau \rightarrow 0, \lambda
+\rightarrow 1$ and $\tau \rightarrow \infty, \lambda \rightarrow
+\tau^{-1}$. We expect this behavior as optically thin domains will
+communicate most of their histories while optically thick domains will
+leak the fraction of histories that did not interact within. Using
+the Wigner approximation, we can then define the leakage fraction out
+of a domain for the adjoint Neumann-Ulam method:
+\begin{equation}
+  \lambda = \frac{1}{1+\tau}\:.
+  \label{eq:analytic_domain_leakage}
+\end{equation}
+Here the fraction is explictly bound to the Eigenvalues of the
+iteration matrix, the size of the domain, the content of the
+discretization stencil, and the weight cutoff selected to terminate
+low weight histories.  We also note here an interesting consequence of
+this approximation: no matter how optically thick a domain may be, the
+domain is still expected to leak some histories and thus communicate
+them. Therefore, no matter how large the domains are made, if they do
+not encapsulate the entire global domain they require some
+communication in order to implement a domain decomposed adjoint
+Neumann-Ulam method.
 
 %%---------------------------------------------------------------------------%%
 \section{Numerical Experiments}
@@ -680,6 +749,10 @@ the small and large fuel lump cases.
 
 %%---------------------------------------------------------------------------%%
 \section{Conclusion}
+These relationships will serve as guidelines for
+selecting an appropriate parallel algorithm strategy and provide a
+basis for performance models for future parallel implementations of
+the adjoint Neumann-Ulam method.
 
 %%---------------------------------------------------------------------------%%
 \pagebreak
