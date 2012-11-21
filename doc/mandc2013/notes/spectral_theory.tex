@@ -56,7 +56,7 @@ urlcolor = blue
 
 %%---------------------------------------------------------------------------%%
 \author{Stuart R. Slattery
-\\ \href{mailto:sslattery@wisc.edu}{\texttt{sslattery@wisc.edu}}
+  \\ \href{mailto:sslattery@wisc.edu}{\texttt{sslattery@wisc.edu}}
 }
 
 \date{\today}
@@ -101,7 +101,7 @@ been identified as a key principle in moving forward in high
 performance computing
 \cite{brunner_comparison_2006,siegel_analysis_2012}. To accomplish
 this, we recognize from the literature that stochastic histories must
-be transported from domain to domain as the simulation progress and
+be transported from domain to domain as the simulation progresses and
 they transition to states that are not in the local domain. Because we
 have chosen a domain decomposition strategy in a parallel environment,
 this means that communication of these histories must occur between
@@ -109,6 +109,15 @@ compute nodes owning neighboring pieces of the global domain. We wish
 to characterize this communication not only because communication is
 in general expensive, but also because nearest-neighbor communication
 sequences have poor algorithmic strong scaling \cite{gropp_cfd_2001}.
+We observe this because nearest neighbor communication patterns scale
+with the volume and surface sizes of the local domains. The larger the
+volume, the more compute time is spent within the local volume and
+therefore at some point you are limited by the latency of the system,
+or the time it takes to receive the data to operate on. However, at a
+certain point, when the surface of those volumes becomes large enough,
+the amount of data that must be communicated grows large enough that
+it may overcome the bandwidth limitations of the system, resulting in
+a decrease in performance.
 
 For problems where the linear operator is symmetric, a host of
 analytic theories exist based on the eigenvalue spectrum of the
@@ -149,13 +158,10 @@ statement we can then define the split equation:
   \ve{y} = \ve{H}^T \ve{y} + \ve{d}\:,
   \label{eq:adjoint_split_system}
 \end{equation}
-where $\ve{H}$ is defined as the \textit{iteration matrix}.  For
-convergence, we require that the spectral radius of $\ve{H}$ must
-remain less than 1 as $\ve{H}^T$ contains the same eigenvalues and
-therefore has the same spectral radius.  Using these definitions, we
-can derive an estimator from the adjoint method that will also give
-the solution vector, $\ve{x}$. As with the direct method, we can
-acquire the adjoint solution by forming the Neumann series by writing
+where $\ve{H}$ is defined as the \textit{iteration matrix}.  Using
+these definitions, we can derive an estimator from the adjoint method
+that will also give the solution vector, $\ve{x}$. We can acquire the
+adjoint solution by forming the Neumann series by writing
 Eq~(\ref{eq:adjoint_split_system}) as:
 \begin{equation}
   \ve{y} = (\ve{I} - \ve{H}^T)^{-1} \ve{d}\:,
@@ -166,9 +172,12 @@ which in turn yields the Neumann series using the adjoint operator:
   \ve{y} = \sum_{k=0}^{\infty} (\ve{H}^T)^k\ve{d}\:.
   \label{eq:adjoint_neumann_series}
 \end{equation}
-We expand this summation to again yield a series of transitions that
-can be approximated by a Monte Carlo random walk sequence, this time
-forming the Neumann series in reverse order:
+For this series to converge, we require that the spectral radius of
+$\ve{H}$ must remain less than 1 as $\ve{H}^T$ contains the same
+eigenvalues and therefore has the same spectral radius. We expand this
+summation to again yield a series of transitions that can be
+approximated by a Monte Carlo random walk sequence, this time forming
+the Neumann series in reverse order:
 \begin{equation}
   y_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
   \sum_{i_k}^{N}h_{i_k,i_{k-1}}\ldots h_{i_2,i_1} h_{i_1,i} d_{i_k}\:.
@@ -188,10 +197,10 @@ From this definition it follows that:
   \langle \ve{x}, \ve{d} \rangle = \langle \ve{y}, \ve{b} \rangle\:.
   \label{eq:adjoint_vector_relation}
 \end{equation}
- Here we have 2 unknowns, $\ve{y}$ and $\ve{d}$ and therefore we
- require two constraints to close the system. We use
- Eq~(\ref{eq:adjoint_vector_relation}) as the first constraint and as
- a second constraint we select:
+Here we have 2 unknowns, $\ve{y}$ and $\ve{d}$ and therefore we
+require two constraints to close the system. We use
+Eq~(\ref{eq:adjoint_vector_relation}) as the first constraint and as
+a second constraint we select:
 \begin{equation}
   \ve{d} = \boldsymbol{\delta}_i\:,
   \label{eq:adjoint_second_constraint}
@@ -273,10 +282,9 @@ recovers the exact solution:
 therefore also providing an unbiased Monte Carlo estimate of the
 solution.
 
-Like the direct method, we also desire a criteria for random walk
-termination for problems where only an approximate solution is
-necessary. For the adjoint method, we utilize a \textit{relative
-  weight cutoff}:
+We also desire a criteria for random walk termination for problems
+where only an approximate solution is necessary. For the adjoint
+method, we utilize a \textit{relative weight cutoff}:
 \begin{equation}
   W_f = W_c b_{i_0}\:,
   \label{eq:relative_weight_cutoff}
@@ -288,7 +296,7 @@ contributions become increasingly small.
 %%---------------------------------------------------------------------------%%
 \section{Model Problem}
 For our numerical experiments, we choose the one-speed,
-two-dimensional neutron diffusion equation as the model problem
+two-dimensional neutron diffusion equation as a model problem
 \cite{duderstadt_nuclear_1976}:
 \begin{equation}
   -\boldsymbol{\nabla} \cdot D \boldsymbol{\nabla} \phi + \Sigma_a
@@ -296,7 +304,7 @@ two-dimensional neutron diffusion equation as the model problem
   \label{eq:diffusion_eq}
 \end{equation}
 where $\phi$ is the neutron flux, $\Sigma_a$ is the absorption cross
-section, $S$ is the source of neutrons. In addition, $D$ is the
+section, and $S$ is the source of neutrons. In addition, $D$ is the
 diffusion coefficient defined as:
 \begin{equation}
   D = \frac{1}{3 ( \Sigma_t - \bar{\mu}\Sigma_s )}\:,
@@ -345,7 +353,7 @@ and in operator form:
   \ve{D}\boldsymbol{\phi}=\ve{s}\:,
   \label{eq:operator_system}
 \end{equation}
-where $\ve{D}$ is the diffusion operator, $\ve{S}$ is the source in
+where $\ve{D}$ is the diffusion operator, $\ve{s}$ is the source in
 vector form and $\boldsymbol{\phi}$ is the vector of unkown fluxes. We
 note here that the diffusion operator is symmetric.
 
@@ -378,7 +386,8 @@ is zero.
 
 %%---------------------------------------------------------------------------%%
 \section{Spectral Analysis}
-The convergence of the Neumann series approximated by the Monte Carlo
+The convergence of the Neumann series in
+Eq~(\ref{eq:adjoint_neumann_series}) approximated by the Monte Carlo
 solver is dependent on the Eigenvalues of the iteration matrix. In
 addition, the Eigenvalues of the linear operator from which the
 iteration matrix was derived allow for further analysis of convergence
@@ -396,7 +405,7 @@ the complex plane.
 
 \subsection{Diffusion Operator Spectrum}
 For the model problem, we first compute the Eigenvalues for the
-diffusion operator $\ve{D}$ by applying the operator the
+diffusion operator $\ve{D}$ by applying the operator to the
 Eigenfunctions and noting that $x=ih$ and $y=jh$:
 \begin{multline}
   \ve{D}\Phi_{p,q}(x,y) = \lambda_{p,q}(\ve{D}) =\\ -\frac{D}{6h^2}[4
@@ -417,8 +426,8 @@ trigonometric functions:
 
 As Eq~(\ref{eq:diffusion_eq}) is diagonally dominant, Jacobi
 preconditioning is sufficient to reduce the spectral radius of the
-operator below unity and therefore ensure convergence of the Neumann
-series. The preconditioner in this case is then $\ve{M} =
+iteration matrix below unity and therefore ensure convergence of the
+Neumann series. The preconditioner in this case is then $\ve{M} =
 diag(\ve{D})$ such that we are solving the following linear system:
 \begin{equation}
   \ve{M}^{-1} \ve{D} \boldsymbol{\phi} = \ve{M}^{-1} \ve{s}\:.
@@ -426,7 +435,7 @@ diag(\ve{D})$ such that we are solving the following linear system:
 \end{equation}
 The operator $\ve{M}^{-1} \ve{D}$ is merely the original diffusion
 operator with each row scaled by the diagonal component. As we have
-defined a homogenous domain, this scaling factor is the same for all
+defined a homogenous domain, the scaling factor is the same for all
 rows in the operator. This scaling factor, $\alpha$, is then defined
 as the $\phi_{i,j}$ coefficient from Eq~(\ref{eq:fd_system}):
 \begin{equation}
@@ -440,7 +449,7 @@ preconditioned eigenvalues:
   \label{eq:preconditioned_eigenvalues}
 \end{equation}
 
-A good measure of how well-conditioned a linear system is can be
+A good measure of how well-conditioned is a linear system can be
 obtained by computing the condition number for the linear operator
 defined as:
 \begin{equation}
@@ -461,14 +470,20 @@ maximum eigenvalues when $p=q$. To find these values,
 Eq~(\ref{eq:preconditioned_eigenvalues}) is plotted as a function of
 $p$ with $p=q$ in Figure~\ref{fig:diffusion_spectrum} for various
 values of $\Sigma_a$.
-
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=5in,clip]{diffusion_spectrum.png}
+  \end{center}
+  \caption{\textbf{Eigenvalue spectra for the diffusion equation.}}
+  \label{fig:diffusion_spectrum}
+\end{figure}
 We see a minimum eigenvalue at $p=0$ and a maximum at $p=10$, letting
 us compute the condition number for the Jacobi preconditioned
 diffusion operator:
 \begin{equation}
   \kappa(\ve{M}^{-1} \ve{D}) =
-  \frac{\frac{D}{6h^2}\Sigma_a}{\frac{D}{3h^2}[8 \cos(\pi 10 h) + 2
-      \cos^2(\pi 10 h) - 10] + \Sigma_a}\:.
+  \frac{\frac{D}{6h^2}\Sigma_a}{\frac{D}{3h^2}[8 \cos(10 \pi h) + 2
+      \cos^2(10 \pi h) - 10] + \Sigma_a}\:.
   \label{eq:diffusion_condition}
 \end{equation}
 Visually we can also see how increasing the absorption in the problem
@@ -480,10 +495,181 @@ purely positive Eigenvalues and can therefore be classified as
 symmetric positive definite (SPD).
 
 \subsection{Iteration Matrix Spectrum}
+The spectral radius of the iteration matrix is obtained by seeking its
+largest Eigenvalue. As with the diffusion operator, we can use the
+same analysis techniques to find the Eigenvalues for the iteration
+matrix. We use a few simplifications by noting that if the Jacobi
+preconditioned spectral radius is $\ve{H} = \ve{I} -
+\ve{M}^{-1}\ve{D}$, the we expect all terms on the diagonal of the
+iteration matrix to be zero such that we have the following stencil:
+\begin{equation}
+  \ve{H}\boldsymbol{\phi} = -\frac{\alpha D}{6h^2}[4 \phi_{i-1,j} + 4
+    \phi_{i+1,j} + 4 \phi_{i,j-1} + 4 \phi_{i,j+1} + \phi_{i-1,j-1}\\ +
+    \phi_{i-1,j+1} + \phi_{i+1,j-1} + \phi_{i+1,j+1}]\:.
+  \label{eq:iteration_stencil}
+\end{equation}
+Inserting the Eigenfunctions defined by Eq~\ref{eq:eigenfunction_form}
+we get:
+\begin{multline}
+  \lambda_{p,q}(\ve{H}) = -\frac{\alpha D}{6h^2}[4 e^{-2 \pi \imath p
+      h} + 4 e^{2 \pi \imath p h} + 4 e^{-2 \pi \imath q h} + 4 e^{2
+      \pi \imath q h} + e^{-2 \pi \imath p h} e^{-2 \pi \imath q h}
+    \\ + e^{-2 \pi \imath p h} e^{2 \pi \imath q q} + e^{2 \pi \imath
+      p h} e^{-2 \pi \imath q h} + e^{2 \pi \imath p h} e^{2 \pi
+      \imath q h}]\:,
+  \label{eq:iteration_deriv}
+\end{multline}
+which simplifies to:
+\begin{equation}
+  \lambda_{p,q}(\ve{H}) = -\frac{\alpha D}{6h^2}[ 8 \cos(\pi p h) + 8
+    \cos(\pi q h) + 4 \cos(\pi p h) \cos(\pi q h)]\:,
+  \label{eq:iteration_spectrum}
+\end{equation}
+giving the Eigenvalue spectrum for the Jacobi preconditioned iteration
+matrix. As with the linear operator, we expect the maximum Eigenvalue
+to exist when $p=q$. In addition, we note that we have the same cosine
+form of the spectrum as for the linear operator expect that the
+spectra will be shifted by 10 in the $-p$ direction. We therefore
+expect the maximum Eigenvalues to be found when $p=q=0$, giving the
+following for the spectral radius of the Jacobi precondition iteration
+matrix:
+\begin{equation}
+  \rho(\ve{H}) = \frac{10 \alpha D}{3 h^2}\:.
+  \label{eq:iteration_radius}
+\end{equation}
 
 \subsection{Neumann Series Convergence}
+The Neumann-Ulam method for matrix inversion is effectively an
+approximation to a stationary method (the Jacobi method in the case
+of the preconditioning above). Stationary methods for linear systems arise from splitting the
+operator in Eq~(\ref{eq:linear_problem}):
+\begin{equation}
+  \ve{A} = \ve{M} - \ve{N}\:,
+  \label{eq:split_linear_operator}
+\end{equation}
+where the choice of $\ve{M}$ and $\ve{N}$ will be dictated by the
+particular method chosen. Using this split definition of the operator
+we can then write:
+\begin{equation}
+  \ve{M}\ve{x} - \ve{N}\ve{x} = \ve{b}\:.
+  \label{eq:linear_split_equation1}
+\end{equation}
+By rearranging, we can generate a form more useful for analysis:
+\begin{equation}
+  \ve{x} = \ve{H}\ve{x} + \ve{c}\:,
+  \label{eq:linear_split_equation2}
+\end{equation}
+where $\ve{H}=\ve{M}^{-1}\ve{N}$ is defined as the \textit{iteration
+  matrix} and $\ve{c}=\ve{M}^{-1}\ve{b}$. With the solution vector on
+both the left and right hand sides, an iterative method can then be
+formed:
+\begin{equation}
+  \ve{x}^{k+1} = \ve{H}\ve{x}^k + \ve{c}\:,
+  \label{eq:linear_iterative_method}
+\end{equation}
+with $k \in \mathbb{Z}^+$ defined as the \textit{iteration
+  index}. Given this, we can then generate a few statements regarding
+the convergence of such stationary methods. Defining $\ve{e}^k =
+\ve{u}^k - \ve{u}$ as the solution error at the $k^{th}$ iterate, we
+can subtract Eq~(\ref{eq:linear_split_equation2}) from
+Eq~(\ref{eq:linear_iterative_method}) to arrive at an error form of
+the linear problem:
+\begin{equation}
+  \ve{e}^{k+1} = \ve{H}\ve{e}^k\:. 
+  \label{eq:linear_iterative_error}
+\end{equation}
+Our error after $k$ iterations is then:
+\begin{equation}
+  \ve{e}^{k} = \ve{H}^k\ve{e}^0\:. 
+  \label{eq:linear_k_iter_error}
+\end{equation}
+In other words, successive application of the iteration matrix is the
+mechanism driving down the error in a stationary method. We can then
+place restrictions on the iteration matrix by assuming $\ve{H}$ is
+diagonalizable \cite{saad_iterative_2003}, we then have:
+\begin{equation}
+  \ve{e}^{k} =
+  \ve{R}\boldsymbol{\Lambda}^k\ve{R}^{-1}\ve{e}^0\:,
+  \label{eq:linear_k_iter_error_diag}
+\end{equation}
+where $\boldsymbol{\Lambda}$ contains the Eigenvalues of $\ve{H}$ on
+its diagonal and the columns of $\ve{R}$ contain the Eigenvectors of
+$\ve{H}$. Computing the 2-norm of the above form then gives:
+\begin{equation}
+  ||\ve{e}^{k}||_2 \leq ||\boldsymbol{\Lambda}^k||_2\ 
+  ||\ve{R}||_2\ ||\ve{R}^{-1}||_2\ ||\ve{e}^0||_2\:,
+  \label{eq:linear_k_iter_norm1}
+\end{equation}
+which gives:
+\begin{equation}
+  ||\ve{e}^{k}||_2 \leq \rho(\ve{H})^k \kappa(\ve{R})
+  ||\ve{e}^0||_2\:.
+  \label{eq:linear_k_iter_norm2}
+\end{equation}
+For iteration matrices where the Eigenvectors are orthogonal,
+$\kappa(\ve{R})=1$ and the error bound reduces to:
+\begin{equation}
+  ||\ve{e}^{k}||_2 \leq \rho(\ve{H})^k ||\ve{e}^0||_2\:.
+  \label{eq:linear_k_iter_norm3}
+\end{equation}
+We can now restrict $\ve{H}$ by asserting that $\rho(\ve{H}) < 1$
+for a stationary method to converge such that $k$ applications of the
+iteration matrix will not cause the error to grow in
+Eq~(\ref{eq:linear_k_iter_norm3}). 
+
+In the adjoint Neumann-Ulam method, $k$ iterations, equivalent to $k$
+applications of the iteration matrix, is effectively approximated by a
+random walk of length $k$ to yield the summation in
+Eq~(\ref{eq:adjoint_neumann_solution}). This random walk length, or
+the number of transitions before the termination of a history (either
+by the weight cutoff, absorption, or exiting the domain) is therefore
+bound to the number of stationary iterations required to converge to
+the specified tolerance. In the case of the adjoint Neumann-Ulam
+method, no such tolerance exists, however, we have specified a weight
+cutoff $W_c$ under which low-weight histories will be prematurely
+terminated as their contributions are deemed minute. After $k$
+iterations, a stationary method is terminated as the error has reached
+some fraction, $\epsilon$, of the initial error:
+\begin{equation}
+  ||\ve{e}^{k}||_2 = \epsilon ||\ve{e}^0||_2\:.
+  \label{eq:linear_k_iter_norm3}
+\end{equation}
+Per Eq~(\ref{eq:linear_k_iter_norm3}), we see that this fraction is
+equivalent to $\epsilon = \rho(\ve{H})$. For the adjoint Neumann-Ulam
+method, if we take this fraction to be the weight cutoff, a measure of
+how accurately the contributions of a particular history to the
+solution are tallied, we then have the following empirical relation
+for $k$:
+\begin{equation}
+  k = \frac{ \log(W_c) }{ \log( \rho(\ve{H}) ) }\:.
+  \label{eq:analytic_k}
+\end{equation}
+This then gives us a means to estimate the length of the random walks
+derived from a particular linear operator based on the Eigenvalues of
+its iteration matrix (independent of the linear operator splitting
+chosen) and based on the weight cutoff parameter used in the
+Neumann-Ulam method
 
 \subsection{The Wigner Rational Approximation}
+In a domain decomposed situtation, not all histories will remain
+within the domain they started in and must instead be
+communicated. This communication, expected to be expensive, was
+analyzed by Siegel and colleagues for idealized, load balanced
+situations for full-core Monte Carlo\cite{siegel_analysis_2012}.  To
+quantify the number of particles that leak out of the local domain
+they define a leakage fraction, $\lambda$, as:
+\begin{equation}
+  \lambda = \frac{average\ \#\ of\ particles\ leaving\ local\ domain}
+          {total\ of\ \#\ of\ particles\ starting\ in\ local\ domain}\:.
+  \label{eq:leakage_fraction}
+\end{equation}
+For their studies, they assumed that the value of $\lambda$ was
+dependent on the total cross section via the Wigner rational
+approximation. The approximation was developed to compute the neutron
+leakage probability from by Wigner as a simple interpolation between
+the small and large fuel lump cases.
+
+
 
 %%---------------------------------------------------------------------------%%
 \section{Numerical Experiments}
