@@ -683,12 +683,12 @@ the stencil used for the discretization. We then have the following
 relation for the \textit{optical thickness}, $\tau$, of a domain in
 the decomposition:
 \begin{equation}
-  \tau = \frac{n_i n_s}{k}\:,
+  \tau = \frac{n_i}{n_s k}\:,
   \label{eq:matrix_optical_thickness}
 \end{equation}
 and inserting Eq~(\ref{eq:analytic_k}) gives:
 \begin{equation}
-  \tau = \frac{n_i n_s \log(\rho(\ve{H}))}{\log(W_c)}\:.
+  \tau = \frac{n_i \log(\rho(\ve{H}))}{n_s \log(W_c)}\:.
   \label{eq:matrix_optical_thickness_2}
 \end{equation}
 Using this optical thickness, we can then complete the Wigner rational
