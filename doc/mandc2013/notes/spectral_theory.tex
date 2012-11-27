@@ -678,10 +678,10 @@ also consider the number of states that may be traversed in a given
 transition, $n_s$, along the path of the typical length of the
 system. For our diffusion model problem, $n_s$ would equate to the
 number of states in the $i$ (or $j$ as the problem is symmetric)
-direction that a history could potentially move and is dependent on
-the stencil used for the discretization. We then have the following
-relation for the \textit{optical thickness}, $\tau$, of a domain in
-the decomposition:
+direction that a history could potentially move in a single transition
+and is dependent on the stencil used for the discretization. We then
+have the following relation for the \textit{optical thickness},
+$\tau$, of a domain in the decomposition:
 \begin{equation}
   \tau = \frac{n_i}{n_s k}\:,
   \label{eq:matrix_optical_thickness}
