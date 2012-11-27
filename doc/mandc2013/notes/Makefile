@@ -29,4 +29,4 @@ clean:
 	-rm -f TAGS
 
 realclean: clean
-	-rm -f dissertation.pdf
+	-rm -f spectral_theory.pdf
