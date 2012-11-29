@@ -623,20 +623,20 @@ Eigenvalues of its iteration matrix (independent of the linear
 operator splitting chosen) and based on the weight cutoff parameter
 used in the Neumann-Ulam method
 
-\subsection{Wigner Rational Approximation}
+\subsection{Domain Leakage Approximations}
 In a domain decomposed situation, not all histories will remain
 within the domain they started in and must instead be
 communicated. This communication, expected to be expensive, was
 analyzed by Siegel and colleagues for idealized, load balanced
 situations for full-core Monte Carlo\cite{siegel_analysis_2012}.  To
 quantify the number of particles that leak out of the local domain
-they define a leakage fraction, $\lambda$, as:
+they define a leakage fraction, $\Lambda$, as:
 \begin{equation}
-  \lambda = \frac{average\ \#\ of\ particles\ leaving\ local\ domain}
+  \Lambda = \frac{average\ \#\ of\ particles\ leaving\ local\ domain}
           {total\ of\ \#\ of\ particles\ starting\ in\ local\ domain}\:.
   \label{eq:leakage_fraction}
 \end{equation}
-For their studies, they assumed that the value of $\lambda$ was
+For their studies, they assumed that the value of $\Lambda$ was
 dependent on the total cross section of the system via the Wigner
 rational approximation. This approximation was developed by Wigner to
 compute the neutron leakage probability from the fuel in a reactor as
@@ -652,57 +652,91 @@ domain. We then bound the behavior for the leakage fraction in terms
 of the optical thickness, $\Sigma_t l$, of the local domain. In the
 case of a small domain or a small cross section (and therefore small
 probability of absorption or scatter), $\Sigma_t l \rightarrow 0,
-\lambda \rightarrow 1$. For a large domain or large cross section,
-$\Sigma_t l \rightarrow \infty, \lambda \rightarrow (\Sigma_t
+\Lambda \rightarrow 1$. For a large domain or large cross section,
+$\Sigma_t l \rightarrow \infty, \Lambda \rightarrow (\Sigma_t
 l)^{-1}$, where $(\Sigma_t l)^{-1}$ is effectively the number of
 interactions that will occur over the length of the chord. Using
 Wigner's simple interpolation, we then have a simple formula for the
-domain leakage, $\lambda = 1/(1+\Sigma_t l)$. This provides a leakage
+domain leakage, $\Lambda = 1/(1+\Sigma_t l)$. This provides a leakage
 estimate, valid over the entire range of $\Sigma_t l$, in terms of the
-optical thickness of the system.
+optical thickness of the system. In addition to Wigner's
+approximation, Hwang also defines the mean-chord approximation based
+on the same numerical limits with $\Lambda = (1-e^{-\Sigma_t
+  l})/\Sigma_t l$.
 
-In the case of domain decomposed linear operator equations, the chord
-length can be interpreted as the number of discrete states spanning a
-domain, $n_i$, along the typical length of that domain (e.g. the
-number of discrete states in the $i$ direction in a square domain
-using our model diffusion problem). We then seek the equivalent of the
-total cross section, $\Sigma_t$ in terms of the discrete random walk
-behavior. The total cross section can also be interpreted as the
-inverse of the mean free path of particles in the system. In the
-Neumann-Ulam method, this is analogous to the length of the Markov
-chains (and therefore the number of state-to-state transitions)
-generated while sampling the Neumann series. In the previous section,
-we determined this length with Eq~(\ref{eq:analytic_k}) to be
-dependent on the Eigenvalues of the operator. In addition, we must
-also consider the number of states that may be traversed in a given
-transition, $n_s$, along the path of the typical length of the
-system. For our diffusion model problem, $n_s$ would equate to the
+In the case of domain decomposed linear operator equations, we can use
+diffusion theory to estimate the optical thickness of a region and the
+corresponding leakage fraction in terms of properties of the linear
+operator and the discretization. To begin we must first calculate the
+mean distance a Monte Carlo history will move in the grid by computing
+the mean squared distance of its movement along the chord defined
+across the domain of length $l$. After a single transition a history
+will have moved a mean squared distance of:
+\begin{equation}
+  \langle \bar{r_1^2} \rangle = (n_s h)^2\:,
+  \label{eq:step_1_length}
+\end{equation}
+where $h$ is the size of the grid along the chord and $n_s$ is the
+number of grid elements a history will move on average every
+transition. For our diffusion model problem, $n_s$ would equate to the
 number of states in the $i$ (or $j$ as the problem is symmetric)
 direction that a history could potentially move in a single transition
-and is dependent on the stencil used for the discretization. We then
-have the following relation for the \textit{optical thickness},
-$\tau$, of a domain in the decomposition:
+and is dependent on the stencil used for the discretization. After $k$
+transitions in the random walk, the history will have moved a mean
+squared distance of:
 \begin{equation}
-  \tau = \frac{n_i}{n_s k}\:,
-  \label{eq:matrix_optical_thickness}
+  \langle \bar{r_k^2} \rangle = k (n_s h)^2\:.
+  \label{eq:step_k_length}
 \end{equation}
-and inserting Eq~(\ref{eq:analytic_k}) gives:
+If our our chord is of length $l$ and there are $n_i$ grid points (or
+states to which a history may transition along that chord), then $h =
+l / n_i$ giving:
 \begin{equation}
-  \tau = \frac{n_i \log(\rho(\ve{H}))}{n_s \log(W_c)}\:.
-  \label{eq:matrix_optical_thickness_2}
+  \langle \bar{r_k^2} \rangle = k \Bigg(\frac{n_s l}{n_i}\Bigg)^2\:.
+  \label{eq:step_k_length_sub}
 \end{equation}
-Using this optical thickness, we can then complete the Wigner rational
-approximation by defining the bounds of $\tau \rightarrow 0, \lambda
-\rightarrow 1$ and $\tau \rightarrow \infty, \lambda \rightarrow
+From diffusion theory, we expect the average number of interactions
+along the chord to be:
+\begin{equation}
+  \tau = \frac{l}{2 d \sqrt{\langle \bar{r_k^2} \rangle}}\:,
+  \label{eq:optical_thickness_1}
+\end{equation}
+where $d$ is the dimension of the problem and $\sqrt{\langle
+  \bar{r_k^2} \rangle}$ is effectively the mean free path of the Monte
+Carlo history in the domain. We can readily interperet $\tau$ to be
+the \textit{effective optical thickness} of the domain of length
+$l$. Inserting Eq~(\ref{eq:step_k_length_sub}) we arrive at:
+\begin{equation}
+  \tau = \frac{n_i}{2 d n_s \sqrt{k}}\:,
+  \label{eq:optical_thickness_2}
+\end{equation}
+which if expanded with Eq~(\ref{eq:analytic_k}) gives us the final
+relation for the effective optical thickness:
+\begin{equation}
+  \tau = \frac{n_i}{2 d n_s}
+  \sqrt{\frac{\log(\rho(\ve{H}))}{\log(W_c)}}\:.
+  \label{eq:optical_thickness_3}
+\end{equation}
+
+Using this optical thickness, we can then complete the leakage
+approximations by defining the bounds of $\tau \rightarrow 0, \Lambda
+\rightarrow 1$ and $\tau \rightarrow \infty, \Lambda \rightarrow
 \tau^{-1}$. We expect this behavior as optically thin domains will
 communicate most of their histories while optically thick domains will
-leak the fraction of histories that did not interact within. Using
-the Wigner approximation, we can then define the leakage fraction out
-of a domain for the adjoint Neumann-Ulam method:
+leak the fraction of histories that did not interact within. With
+these bounds, we can then define the leakage fraction out of a domain
+for the adjoint Neumann-Ulam method using the Wigner rational
+approximation:
 \begin{equation}
-  \lambda = \frac{1}{1+\tau}\:.
-  \label{eq:analytic_domain_leakage}
+  \Lambda = \frac{1}{1+\tau}\:,
+  \label{eq:wigner_domain_leakage}
 \end{equation}
+and using the mean-chord approximation:
+\begin{equation}
+  \Lambda = \frac{1-e^{-\tau}}{\tau}\:.
+  \label{eq:wigner_domain_leakage}
+\end{equation}
+
 Here, the leakage fraction is explicitly bound to the Eigenvalues of
 the iteration matrix, the size of the domain, the content of the
 discretization stencil, and the weight cutoff selected to terminate
@@ -734,10 +768,8 @@ the preconditioned diffusion operator using
 Eq~(\ref{eq:iteration_radius}) as function of the absorption to
 scattering ratio $(\Sigma_a / \Sigma_s)$. We note here that although
 there is excellent agreement between the measured and analytic
-results, slight differences likely arise due to the non-reentrant
-current condition not being included in the spectral analysis. To
-verify this (and serve as a better testing environment), reflecting
-boundary conditions must be implemented.
+results, slight differences arise due to the non-reentrant
+current condition not being included in the spectral analysis.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=5in,clip]{measured_spec_rad.png}
@@ -758,21 +790,21 @@ experiment to measure the length of the random walks generated by the
 adjoint Neumann-Ulam solver. To do this, we again use a $100 \times
 100$ square grid with $h=0.1$ and non-reentrant current boundary
 conditions was used and the absorption cross varied from 0 to 100
-while the scattering cross section was fixed at unity. A weight cutoff
-of \sn{1}{-4} was used with 10,000 histories generated by a point
-source source of strength 1 in the center of the domain such that the
-vacuum boundary conditions will have less of an effect on the length
-of the random walks. For each of the histories, the number of
-transitions made was tallied to provide an effective value of $k$ for
-each history. This value was then averaged over all histories to get a
-measured value of $k$ for the particular
-operator. Figure~\ref{fig:measured_length} gives these measurements as
-well as the analytic result computed by Eq~(\ref{eq:analytic_k}) as a
-function of the iteration matrix spectral radius,
-$\rho(\ve{H})$. Again, we note here that although there is excellent
-agreement between the measured and analytic results, slight
-differences likely arise due to the non-reentrant current condition
-not being included in the spectral analysis.
+while the scattering cross section was fixed at unity. Three weight
+cutoff values of \sn{1}{-2}, \sn{1}{-4}, and \sn{1}{-8} were used with
+10,000 histories generated by a point source source of strength 1 in
+the center of the domain such that the vacuum boundary conditions will
+have less of an effect on the length of the random walks. For each of
+the histories, the number of transitions made was tallied to provide
+an effective value of $k$ for each history. This value was then
+averaged over all histories to get a measured value of $k$ for the
+particular operator. Figure~\ref{fig:measured_length} gives these
+measurements as well as the analytic result computed by
+Eq~(\ref{eq:analytic_k}) as a function of the iteration matrix
+spectral radius, $\rho(\ve{H})$. Again, we note here that although
+there is excellent agreement between the measured and analytic
+results, slight differences arise due to the non-reentrant current
+condition not being included in the spectral analysis.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=5in,clip]{measured_length.png}
