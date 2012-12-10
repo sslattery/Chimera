@@ -6,6 +6,11 @@
 \usepackage{longtable}
 \usepackage{amsfonts}
 \usepackage{amsmath}
+\usepackage{tabls}
+\usepackage{afterpage}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[mathcal]{euscript}
 \usepackage[usenames]{color}
 \usepackage[
 naturalnames = true, 
@@ -22,19 +27,129 @@ urlcolor = blue
 \\ \href{mailto:sslattery@wisc.edu}{\texttt{sslattery@wisc.edu}}
 }
 
-\date{\today} \title{An Overlapping-Domain Decomposed Monte Carlo
-  Synthetic Acceleration Method for Linear Systems}
+\date{\today} 
+\title{A Multiple-Set Overlapping-Domain Decomposed Monte Carlo
+  Synthetic Acceleration Method for Linear Systems} 
 \begin{document}
 \maketitle
 
+\abstract
+{
+We present a novel multiple-set overlapping-domain decomposed strategy
+for parallelizing the Monte Carlo Synthetic Acceleration (MCSA)
+method. MCSA methods use the Neumann-Ulam class of Monte Carlo solvers
+for linear systems to accelerate the fixed point method upon which
+the Neumann-Ulam solvers are based. To effectively parallelize MCSA
+methods requires the parallelization of the Neumann-Ulam solvers. To
+do this in a domain decomposed environment, we borrow strategies
+traditionally implemented in reactor physics to parallelize the
+problem. The multiple-set overlapping-domain decomposition algorithm
+is presented along with preliminary scaling results.
+}
+
 %%---------------------------------------------------------------------------%%
 \section{Introduction}
+As leadership class machines move towards the exascale, new algorithms
+must be developed that leverage their strengths and adapt to their
+shortcomings. Basic research is required now to advance methods in
+time for these new machines to become operational. We can identify key
+issues for which a set of robust, massively parallel Monte Carlo
+solvers could provide a solution. As machines begin to operate at
+hundreds of petaflops peak performance and beyond, trends toward
+reduced energy consumption will require incredibly high levels of
+concurrency to achieve the desired computation rates. Furthermore,
+this drop in power consumption will mean increased pressure on memory
+as memory per node is expected to stagnate while cores per node is
+expected to increase. As the number of cores increases, their clock
+speed is expected to stagnate or even decrease to further reduce power
+consumption and manufacturing costs. 
+
+The end result of these hardware changes is that the larger numbers of
+low-powered processors will be prone to both soft failures such as bit
+errors in floating point operations and hard failures where the data
+owned by that processor cannot be recovered. Because these failures
+are predicted to be common, resilient solver technologies are required
+to overcome these events. With linear solvers based on Monte Carlo
+techniques, such issues are alleviated by statistical arguments. In
+the case of soft failures, isolated floating point errors in Monte
+Carlo simulation are absorbed within tally statistics while completely
+losing hardware during a hard failure is manifested as a high variance
+event where some portion of the Monte Carlo histories are lost.
 
 %%---------------------------------------------------------------------------%%
 \section{Monte Carlo Synthetic Acceleration}
 
+An alternative approach to approximate matrix inversion is to employ
+Monte Carlo methods that sample a distribution with an expectation
+value equivalent to that of the inverted operator. Such methods have
+been in existence for decades with the earliest reference noted here
+an enjoyable manuscript published in 1950 by Forsythe and Leibler
+\cite{forsythe_matrix_1950}. In their outline, Forsythe and Liebler
+in fact credit the creation of this technique to J. Von Neumann and
+S.M. Ulam some years earlier than its publication. In 1952 Wasow
+provided a more formal explanation of Von Neumann and Ulam's method
+\cite{wasow_note_1952} and Hammersley and Handscomb's 1964 monograph
+\cite{hammersley_monte_1964} and Spanier and Gelbard's 1969 book
+\cite{spanier_monte_1969} present additional detail on this topic
+using a collection of references from the 1950's and early 1960's.
+
+Using the ideas of Halton, Evans and Mosher recently developed a Monte
+Carlo solution method that was not prohibited severely by the quality
+of the initial guess for the system \cite{evans_monte_2009} and later
+applied it more rigorously as a solution mechanism for the radiation
+diffusion equation \cite{evans_monte_2012}. With their new methods,
+they achieved identical numerical results as and marginally better
+performance than conventional Krylov solvers. Their approach was
+instead to use residual Monte Carlo as a synthetic acceleration for a
+stationary method. The \textit{Fixed-Point Monte Carlo
+  Synthetic-Acceleration} (MCSA) method is defined as:
+\begin{subequations}
+  \begin{gather}
+    \ve{x}^{k+1/2} = (\ve{I} - \ve{A})\ve{x}^k + \ve{b}\:,\\
+    \ve{r}^{k+1/2} = \ve{b} - \ve{A}\ve{x}^{k+1/2}\:,\\
+    \ve{A}\delta\ve{x}^{k+1/2} = \ve{r}^{k+1/2}\:,\\
+    \ve{x}^{k+1} = \ve{x}^{k+1/2} + \delta \ve{x}^{k+1/2}\:,
+  \end{gather}
+  \label{eq:mcsa}
+\end{subequations}
+where the adjoint Monte Carlo method is used to generate the solution
+correction from the residual. Using Monte Carlo in this way achieves
+the same effect as Halton's method, decoupling its convergence rate
+from the overall convergence rate of the method. Here, the approximate
+Monte Carlo solution is not driven to a particular convergence as it
+merely supplies a correction for the initial guess generated by
+Richardson's iteration. Rather, only a set number of histories are
+required using the adjoint method to generate the correction.
+
 %%---------------------------------------------------------------------------%%
-\section{Domain Decomposition and Overlap}
+\section{Multiple-Set Overlapping-Domain Decomposition}
+
+In 2010, Wagner and colleagues developed the \textit{multiple-set
+  overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
+applications for full-core light water reactor analysis
+\cite{wagner_hybrid_2010}. In their work, an extension of Brunner's,
+their scheme employed the similar parallel algorithms for particle
+transport but a certain amount of overlap between adjacent domains was
+used to decrease the number of particles leaving the local domain. In
+addition, Wagner utilized a level of replication of the domain such
+that the domain was only decomposed on $O(100)$ processors and if
+replicated $O(1,000)$ times achieves simulation on $O(100,000)$
+processors, thus providing spatial and particle parallelism. Each
+collection of processors that constitutes a representation of the
+entire domain is referred to as a set, and within a set overlap occurs
+among its sub-domains. The original motivation was to decompose the
+domain in a way that it remained in a physical cabinet in a large
+distributed machine, thus reducing latency costs during
+communication. A multiple set scheme is also motivated by the fact
+that communication during particle transport only occurs within a set,
+limiting communications during the transport procedure to a group of
+$O(100)$ processors, a number that was shown to have excellent
+parallel efficiencies in Brunner's work and therefore will scale well
+in this algorithm. The overlapping domains within each set also
+demonstrated reduced communication costs. On each processor, the
+source is sampled in the local domain that would exist if no overlap
+was used while tallies can be made over the entire overlapping domain.
+
 
 %%---------------------------------------------------------------------------%%
 \section{Results}
