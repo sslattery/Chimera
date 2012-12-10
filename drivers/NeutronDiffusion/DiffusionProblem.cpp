@@ -68,177 +68,240 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
     // Fill the operator from global data on proc 0.
     if ( comm->getRank() == 0 )
     {
-	// Min X boundary vacuum (nonreentrant current).
-	for ( int j = 1; j < N-1; ++j )
+
+	// Vacuum boundaries.
+	if ( plist->get<std::string>("BC TYPE") == "VACUUM" )
 	{
-	    int i = 0;
-
-	    idx[0]                = i + j*N;
-	    idx_iplus1[0]         = (i+1) + j*N;
-	    idx_jminus1[0]        = i + (j-1)*N;
-	    idx_jplus1[0]         = i + (j+1)*N;
-	    idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
-	    idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
-
-	    A->insertGlobalValues( idx[0], idx(),                diag() );
-	    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
-	    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-	    A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
-	    A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
-	}
-
-	// Max X boundary vacuum (nonreentrant current).
-	for ( int j = 1; j < N-1; ++j )
-	{
-	    int i = N-1;
-
-	    idx[0]                = i + j*N;
-	    idx_iminus1[0]        = (i-1) + j*N;
-	    idx_jminus1[0]        = i + (j-1)*N;
-	    idx_jplus1[0]         = i + (j+1)*N;
-	    idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
-	    idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
-
-	    A->insertGlobalValues( idx[0], idx(),                diag() );
-	    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-	    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-	    A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
-	    A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
-	}
-
-	// Min Y boundary vacuum (nonreentrant current).
-	for ( int i = 1; i < N-1; ++i )
-	{
-	    int j = 0;
-
-	    idx[0]                = i + j*N;
-	    idx_iminus1[0]        = (i-1) + j*N;
-	    idx_iplus1[0]         = (i+1) + j*N;
-	    idx_jplus1[0]         = i + (j+1)*N;
-	    idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
-	    idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
-
-	    A->insertGlobalValues( idx[0], idx(),                diag() );
-	    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-	    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
-	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-	    A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
-	    A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
-	}
-
-	// Max Y boundary vacuum (nonreentrant current).
-	for ( int i = 1; i < N-1; ++i )
-	{
-	    int j = N-1;
-
-	    idx[0]                = i + j*N;
-	    idx_iminus1[0]        = (i-1) + j*N;
-	    idx_iplus1[0]         = (i+1) + j*N;
-	    idx_jminus1[0]        = i + (j-1)*N;
-	    idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
-	    idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
-
-	    A->insertGlobalValues( idx[0], idx(),                diag() );
-	    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-	    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-	    A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
-	    A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
-	}
-
-	// Lower left boundary vacuum (nonreentrant current).
-	{
-	    int i = 0;
-	    int j = 0;
-
-	    idx[0]                = i + j*N;
-	    idx_iplus1[0]         = (i+1) + j*N;
-	    idx_jplus1[0]         = i + (j+1)*N;
-	    idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
-
-	    A->insertGlobalValues( idx[0], idx(),                diag() );
-	    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
-	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-	    A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
-	}
-
-	// Lower right boundary vacuum (nonreentrant current).
-	{
-	    int i = N-1;
-	    int j = 0;
-
-	    idx[0]                = i + j*N;
-	    idx_iminus1[0]        = (i-1) + j*N;
-	    idx_jplus1[0]         = i + (j+1)*N;
-	    idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
-
-	    A->insertGlobalValues( idx[0], idx(),                diag() );
-	    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-	    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-	    A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
-	}
-
-	// Upper left boundary vacuum (nonreentrant current).
-	{
-	    int i = 0;
-	    int j = N-1;
-
-	    idx[0]                = i + j*N;
-	    idx_iplus1[0]         = (i+1) + j*N;
-	    idx_jminus1[0]        = i + (j-1)*N;
-	    idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
-
-	    A->insertGlobalValues( idx[0], idx(),                diag() );
-	    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
-	    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-	    A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
-	}
-
-	// Upper right boundary vacuum (nonreentrant current).
-	{
-	    int i = N-1;
-	    int j = N-1;
-
-	    idx[0]                = i + j*N;
-	    idx_iminus1[0]        = (i-1) + j*N;
-	    idx_jminus1[0]        = i + (j-1)*N;
-	    idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
-
-	    A->insertGlobalValues( idx[0], idx(),                diag() );
-	    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-	    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-	    A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
-	}
-
-	// Central grid points
-	for ( int i = 1; i < N-1; ++i )
-	{
+	    // Min X boundary vacuum (nonreentrant current).
 	    for ( int j = 1; j < N-1; ++j )
 	    {
+		int i = 0;
+
 		idx[0]                = i + j*N;
-		idx_iminus1[0]        = (i-1) + j*N;
 		idx_iplus1[0]         = (i+1) + j*N;
 		idx_jminus1[0]        = i + (j-1)*N;
 		idx_jplus1[0]         = i + (j+1)*N;
-		idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
 		idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
+		idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+
+		A->insertGlobalValues( idx[0], idx(),                diag() );
+		A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
+		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+		A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
+		A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
+	    }
+
+	    // Max X boundary vacuum (nonreentrant current).
+	    for ( int j = 1; j < N-1; ++j )
+	    {
+		int i = N-1;
+
+		idx[0]                = i + j*N;
+		idx_iminus1[0]        = (i-1) + j*N;
+		idx_jminus1[0]        = i + (j-1)*N;
+		idx_jplus1[0]         = i + (j+1)*N;
+		idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
+		idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
+
+		A->insertGlobalValues( idx[0], idx(),                diag() );
+		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+		A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
+		A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
+	    }
+
+	    // Min Y boundary vacuum (nonreentrant current).
+	    for ( int i = 1; i < N-1; ++i )
+	    {
+		int j = 0;
+
+		idx[0]                = i + j*N;
+		idx_iminus1[0]        = (i-1) + j*N;
+		idx_iplus1[0]         = (i+1) + j*N;
+		idx_jplus1[0]         = i + (j+1)*N;
 		idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
 		idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
 
 		A->insertGlobalValues( idx[0], idx(),                diag() );
 		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
 		A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
+		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+		A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
+		A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
+	    }
+
+	    // Max Y boundary vacuum (nonreentrant current).
+	    for ( int i = 1; i < N-1; ++i )
+	    {
+		int j = N-1;
+
+		idx[0]                = i + j*N;
+		idx_iminus1[0]        = (i-1) + j*N;
+		idx_iplus1[0]         = (i+1) + j*N;
+		idx_jminus1[0]        = i + (j-1)*N;
+		idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
+		idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
+
+		A->insertGlobalValues( idx[0], idx(),                diag() );
+		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
 		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
 		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
 		A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
 		A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
-		A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
+	    }
+
+	    // Lower left boundary vacuum (nonreentrant current).
+	    {
+		int i = 0;
+		int j = 0;
+
+		idx[0]                = i + j*N;
+		idx_iplus1[0]         = (i+1) + j*N;
+		idx_jplus1[0]         = i + (j+1)*N;
+		idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+
+		A->insertGlobalValues( idx[0], idx(),                diag() );
+		A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
+		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
 		A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
+	    }
+
+	    // Lower right boundary vacuum (nonreentrant current).
+	    {
+		int i = N-1;
+		int j = 0;
+
+		idx[0]                = i + j*N;
+		idx_iminus1[0]        = (i-1) + j*N;
+		idx_jplus1[0]         = i + (j+1)*N;
+		idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
+
+		A->insertGlobalValues( idx[0], idx(),                diag() );
+		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+		A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
+	    }
+
+	    // Upper left boundary vacuum (nonreentrant current).
+	    {
+		int i = 0;
+		int j = N-1;
+
+		idx[0]                = i + j*N;
+		idx_iplus1[0]         = (i+1) + j*N;
+		idx_jminus1[0]        = i + (j-1)*N;
+		idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
+
+		A->insertGlobalValues( idx[0], idx(),                diag() );
+		A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
+		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+		A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
+	    }
+
+	    // Upper right boundary vacuum (nonreentrant current).
+	    {
+		int i = N-1;
+		int j = N-1;
+
+		idx[0]                = i + j*N;
+		idx_iminus1[0]        = (i-1) + j*N;
+		idx_jminus1[0]        = i + (j-1)*N;
+		idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
+
+		A->insertGlobalValues( idx[0], idx(),                diag() );
+		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+		A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
+	    }
+
+	    // Central grid points
+	    for ( int i = 1; i < N-1; ++i )
+	    {
+		for ( int j = 1; j < N-1; ++j )
+		{
+		    idx[0]                = i + j*N;
+		    idx_iminus1[0]        = (i-1) + j*N;
+		    idx_iplus1[0]         = (i+1) + j*N;
+		    idx_jminus1[0]        = i + (j-1)*N;
+		    idx_jplus1[0]         = i + (j+1)*N;
+		    idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
+		    idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
+		    idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
+		    idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+
+		    A->insertGlobalValues( idx[0], idx(),                diag() );
+		    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+		    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
+		    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+		    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+		    A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
+		    A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
+		    A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
+		    A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
+		}
 	    }
 	}
 
+	// Periodic boundaries.
+	if ( plist->get<std::string>("BC TYPE") == "PERIODIC" )
+	{
+	    for ( int i = 0; i < N; ++i )
+	    {
+		for ( int j = 0; j < N; ++j )
+		{
+		    idx[0]                = i + j*N;
+		    idx_iminus1[0]        = (i-1) + j*N;
+		    idx_iplus1[0]         = (i+1) + j*N;
+		    idx_jminus1[0]        = i + (j-1)*N;
+		    idx_jplus1[0]         = i + (j+1)*N;
+
+		    idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
+		    idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
+		    idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
+		    idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+
+		    if ( i == 0 )
+		    {
+			idx_iminus1[0]        = (N-1) + j*N;
+			idx_iminus1jminus1[0] = (N-1) + (j-1)*N;
+			idx_iminus1jplus1[0]  = (N-1) + (j+1)*N;
+		    }
+
+		    if ( i == N-1 )
+		    {
+			idx_iplus1[0]         = j*N;
+			idx_iplus1jminus1[0]  = (j-1)*N;
+			idx_iplus1jplus1[0]   = (j+1)*N;
+		    }
+
+		    if ( j == 0 )
+		    {
+			idx_jminus1[0]        = i + (N-1)*N;
+			idx_iminus1jminus1[0] = (i-1) + (N-1)*N;
+			idx_iplus1jminus1[0]  = (i+1) + (N-1)*N;
+		    }
+
+		    if ( j == N-1 )
+		    {
+			idx_jplus1[0]         = i;
+			idx_iminus1jplus1[0]  = (i-1);
+			idx_iplus1jplus1[0]   = (i+1);
+		    }
+
+		    A->insertGlobalValues( idx[0], idx(),                diag() );
+		    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+		    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
+		    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
+		    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
+		    A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
+		    A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
+		    A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
+		    A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
+		}
+	    }
+	}
     }
     comm->barrier();
 
