@@ -245,7 +245,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 	}
 
 	// Periodic boundaries.
-	if ( plist->get<std::string>("BC TYPE") == "PERIODIC" )
+	else if ( plist->get<std::string>("BC TYPE") == "PERIODIC" )
 	{
 	    for ( int i = 0; i < N; ++i )
 	    {
@@ -288,6 +288,26 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 			idx_jplus1[0]         = i;
 			idx_iminus1jplus1[0]  = (i-1);
 			idx_iplus1jplus1[0]   = (i+1);
+		    }
+
+		    if ( i == 0 && j == 0 )
+		    {
+			idx_iminus1jminus1[0] = (N-1) + (N-1)*N;
+		    }
+
+		    if ( i == 0 && j == N-1 )
+		    {
+			idx_iminus1jplus1[0] = (N-1);			
+		    }
+
+		    if ( i == N-1 && j == 0 )
+		    {
+			idx_iplus1jminus1[0] = (N-1)*N;
+		    }
+
+		    if ( i == N-1 && j == N-1 )
+		    {
+			idx_iplus1jplus1[0] = 0;
 		    }
 
 		    A->insertGlobalValues( idx[0], idx(),                diag() );
