@@ -1,26 +1,23 @@
-TEX    := latex
-BIB    := bibtex
-PDFTEX := pdflatex
-PDF    := dvipdf
+# Name of manuscript
+manuscript = slattery_wilson_evans
 
-all:
-	$(PDFTEX) sna_abstract
-	$(BIB) sna_abstract
-	$(PDFTEX) sna_abstract
-	$(PDFTEX) sna_abstract
-	$(PDFTEX) sna_abstract
+#=================================================================
+# Generate PDF of manuscript using PdfLaTeX
+#=================================================================
+
+all: $(manuscript).pdf
+
+$(manuscript).pdf: $(manuscript).tex references.bib
+	pdflatex $(manuscript)
+	bibtex -terse $(manuscript)
+	pdflatex $(manuscript)
+	pdflatex $(manuscript)
+
+#=================================================================
+# Other
+#=================================================================
 
 clean:
-	-rm -f *~
-	-rm -f *.log
-	-rm -f *.aux
-	-rm -f *.dvi
-	-rm -f *.rel
-	-rm -f *.bbl
-	-rm -f *.blg
-	-rm -f *.out
-	-rm -f *.toc *.lof *.lot
-	-rm -f *.bak
-	-rm -f *.pdftex_t
-	-rm -f TAGS
-	-rm -f *.pdf
+	@rm -f *.aux *.bbl *.blg *.log *.out *.spl $(manuscript).pdf
+
+.PHONY: all clean

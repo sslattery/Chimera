@@ -1,56 +1,47 @@
-\documentclass[letterpaper,10pt]{article}
-\usepackage[top=1.0in,bottom=1.0in,left=0.5in,right=0.5in]{geometry}
-\usepackage{verbatim}
-\usepackage{amssymb}
-\usepackage{graphicx}
-\usepackage{longtable}
-\usepackage{amsfonts}
-\usepackage{amsmath}
-\usepackage{tabls}
-\usepackage{afterpage}
-\usepackage{amssymb}
-\usepackage{amsthm}
-\usepackage[mathcal]{euscript}
-\usepackage{tmadd,tmath}
-\usepackage[usenames]{color}
-\usepackage[
-naturalnames = true, 
-colorlinks = true, 
-linkcolor = black,
-anchorcolor = black,
-citecolor = black,
-menucolor = black,
-urlcolor = blue
-]{hyperref}
+\documentclass{snamc2013}
 
-%%---------------------------------------------------------------------------%%
-\author{Stuart R. Slattery, Thomas M. Evans, Paul P.H. Wilson
-\\ \href{mailto:sslattery@wisc.edu}{\texttt{sslattery@wisc.edu}}
-}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}  % allows inclusion of graphics
+\usepackage{booktabs}  % nice rules (thick lines) for tables
+\usepackage{microtype} % improves typography for PDF
+\usepackage[breaklinks=true,colorlinks=true,linkcolor=black,citecolor=black]{hyperref}
 
-\date{\today} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \title{A Multiple-Set Overlapping-Domain Decomposed Monte Carlo
-  Synthetic Acceleration Method for Linear Systems} 
-\begin{document}
-\maketitle
+  Synthetic Acceleration Method for Linear Systems}
 
-\abstract
-We present a novel multiple-set overlapping-domain decomposed strategy
-for parallelizing the Monte Carlo Synthetic Acceleration (MCSA)
-method. MCSA methods use the Neumann-Ulam class of Monte Carlo solvers
-for linear systems to accelerate the fixed point method upon which
-the Neumann-Ulam solvers are based. To effectively parallelize MCSA
-methods requires the parallelization of the Neumann-Ulam solvers. To
-do this in a domain decomposed environment, we borrow strategies
-traditionally implemented in reactor physics to parallelize the
-problem. The multiple-set overlapping-domain decomposition algorithm
-is presented along with preliminary parallel scaling results.
+\author[1]{Stuart R. Slattery}
+\author[1]{Paul P.H. Wilson}
+\author[2]{Thomas M. Evans}
+
+\affil[1]{University of Wisconsin - Madison, Engineering Physics
+  Department, 1500 Engineering Drive, Madison, WI 53706}
+\affil[2]{Oak Ridge National Laboratory, One Bethel Valley Road, Oak
+  Ridge, TN 37830}
+
+\abstract{We present a novel multiple-set overlapping-domain
+  decomposed strategy for parallelizing the Monte Carlo Synthetic
+  Acceleration (MCSA) method. MCSA methods use the Neumann-Ulam class
+  of Monte Carlo solvers for linear systems to accelerate the fixed
+  point method upon which the Neumann-Ulam solvers are based. To
+  effectively parallelize MCSA methods requires the parallelization of
+  the Neumann-Ulam solvers. To do this in a domain decomposed
+  environment, we borrow strategies traditionally implemented in
+  reactor physics to parallelize the problem. The multiple-set
+  overlapping-domain decomposition algorithm will be presented in the
+  submission along with parallel scaling results.}
+
+\keywords{MCSA, Monte Carlo, domain decomposition, linear solvers,
+  parallel computing}
+
+\begin{document}
 
 %%---------------------------------------------------------------------------%%
 \section{Introduction}
+
 As leadership class machines move towards the exascale, new algorithms
 must be developed that leverage their strengths and adapt to their
-shortcomings. Looking towards machines begin operating at hundreds of
+shortcomings. Looking towards machines operating at hundreds of
 petaflops peak performance and beyond, trends toward reduced energy
 consumption will require incredibly high levels of concurrency to
 achieve the desired computation rates \cite{kogge_using_2011}. The end
@@ -90,33 +81,21 @@ radiation diffusion equation \cite{evans_monte_2012}. With their new
 methods, they achieved identical numerical results as and marginally
 better performance than conventional Krylov solvers. Their approach
 was instead to use residual Monte Carlo as a synthetic acceleration
-for a stationary method. The \textit{Fixed-Point Monte Carlo
-  Synthetic-Acceleration} (MCSA) method is defined as:
-\begin{subequations}
-  \begin{gather}
-    \ve{x}^{k+1/2} = (\ve{I} - \ve{A})\ve{x}^k + \ve{b}\:,\\
-    \ve{r}^{k+1/2} = \ve{b} - \ve{A}\ve{x}^{k+1/2}\:,\\
-    \hat{\ve{A}}\delta\ve{x}^{k+1/2} = \ve{r}^{k+1/2}\:,
-    \label{eq:residual_correction}\\
-    \ve{x}^{k+1} = \ve{x}^{k+1/2} + \delta \ve{x}^{k+1/2}\:,
-  \end{gather}
-  \label{eq:mcsa}
-\end{subequations}
-where the adjoint Neumann-Ulam Monte Carlo method is used to generate
-the solution correction from the residual in
-Eq~(\ref{eq:residual_correction}). Using Monte Carlo in this way
-achieves the same effect as Halton's method, decoupling its
-convergence rate from the overall convergence rate of the
-method. Here, the approximate Monte Carlo solution is not driven to a
-particular convergence as it merely supplies a correction for the
-initial guess generated by Richardson's iteration. Rather, only a set
-number of histories are required using the adjoint method to generate
-the correction.
+for a stationary method. Using Monte Carlo in this way achieves the
+same effect as Halton's method, decoupling its convergence rate from
+the overall convergence rate of the method. Here, the approximate
+Monte Carlo solution is not driven to a particular convergence as it
+merely supplies a correction for the initial guess generated by
+Richardson's iteration. Rather, only a set number of histories are
+required using the adjoint method to generate the correction.
 
 %%---------------------------------------------------------------------------%%
 \section{Multiple-Set Overlapping-Domain Decomposition}
 
-At the 2010 SNA+MC meeting, Wagner and colleagues developed the
+Current implementations of parallel Neumann-Ulam methods have been
+limited to full domain replication with parallelism exploited through
+individual histories \cite{alexandrov_efficient_1998}. At the 2010
+SNA+MC meeting, Wagner and colleagues developed the
 \textit{multiple-set overlapping-domain} (MSOD) decomposition for
 parallel Monte Carlo applications for full-core light water reactor
 analysis \cite{wagner_hybrid_2010}. In their work, overlap between
@@ -135,26 +114,19 @@ also motivated by the fact that communication during particle
 transport only occurs within a set, limiting communications during the
 transport procedure to a group of $O(100)$ processors, a number that
 was shown to have excellent parallel efficiencies in Brunner's work
-and therefore will scale well in this algorithm. The overlapping
-domains within each set also demonstrated reduced communication costs.
+\cite{brunner_efficient_2009} and therefore will scale well in this
+algorithm. The overlapping domains within each set also demonstrated
+reduced communication costs.
 
 %%---------------------------------------------------------------------------%%
-\section{Results}
+\section{Submission Outline}
+
+With our submission we will present the following: a presentation of
+the Neumann-Ulam and MCSA methods, a presentation of the MSOD scheme
+as implemented for MCSA, and the results of parallel scaling studies
+for the implementation.
 
 %%---------------------------------------------------------------------------%%
-\section{Conclusion}
-
-%%---------------------------------------------------------------------------%%
-\section*{Acknowledgments}
-
-This work was performed under appointment to the Nuclear Regulatory
-Commission Fellowship program at the University of Wisconsin - Madison
-Engineering Physics Department.
-
-%%---------------------------------------------------------------------------%%
-\pagebreak
-\bibliographystyle{ieeetr}
+\bibliographystyle{ans}
 \bibliography{references}
 \end{document}
-
-
