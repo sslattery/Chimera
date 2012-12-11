@@ -394,11 +394,9 @@ vector form and $\boldsymbol{\phi}$ is the vector of unknown fluxes.
 
 The convergence of the Neumann series in
 Eq~(\ref{eq:adjoint_neumann_series}) approximated by the Monte Carlo
-solver is dependent on the Eigenvalues of the iteration matrix. In
-addition, the Eigenvalues of the linear operator from which the
-iteration matrix was derived allow for further analysis of convergence
-properties. We will compute the Eigenvalues of these matrices by
-assuming Eigenfunctions of the form \cite{leveque_finite_2007}:
+solver is dependent on the Eigenvalues of the iteration matrix. We
+will compute these Eigenvalues by assuming Eigenfunctions of the form
+\cite{leveque_finite_2007}:
 \begin{equation}
   \Phi_{p,q}(x,y) = e^{2 \pi \imath p x} e^{2 \pi \imath q y}\:,
   \label{eq:eigenfunction_form}
@@ -592,21 +590,21 @@ of:
   \langle \bar{r_1^2} \rangle = (n_s h)^2\:,
   \label{eq:step_1_length}
 \end{equation}
-where $h$ is the size of the grid along the chord and $n_s$ is the
-number of grid elements a history will move on average every
-transition. For our diffusion model problem, $n_s$ would equate to the
-number of states in the $i$ (or $j$ as the problem is symmetric)
-direction that a history could potentially move in a single transition
-and is dependent on the stencil used for the discretization. After $k$
-transitions in the random walk, the history will have moved a mean
-squared distance of:
+where $h$ is the size of the discrete grid elements along the chord
+and $n_s$ is the number of grid elements a history will move on
+average every transition. For our diffusion model problem, $n_s$ would
+equate to the number of states in the $i$ (or $j$ as the problem is
+symmetric) direction that a history could potentially move in a single
+transition and is dependent on the stencil used for the
+discretization. After $k$ transitions in the random walk, the history
+will have moved a mean squared distance of:
 \begin{equation}
   \langle \bar{r_k^2} \rangle = k (n_s h)^2\:.
   \label{eq:step_k_length}
 \end{equation}
-If our our chord is of length $l$ and there are $n_i$ grid points (or
-states to which a history may transition) along that chord, then $h =
-l / n_i$ giving:
+If our our chord is of length $l$ and there are $n_i$ grid elements
+(or states to which a history may transition) along that chord, then
+$h = l / n_i$ giving:
 \begin{equation}
   \langle \bar{r_k^2} \rangle = k \Bigg(\frac{n_s l}{n_i}\Bigg)^2\:.
   \label{eq:step_k_length_sub}
