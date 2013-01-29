@@ -25,7 +25,8 @@ namespace Chimera
  */
 DiffusionProblem::DiffusionProblem( const RCP_Comm& comm, 
 				    const RCP_Partitioner& partitioner,
-				    const RCP_ParameterList& plist )
+				    const RCP_ParameterList& plist,
+				    bool jacobi_precondition )
 {
     // Get the local rows from the partitioner.
     Teuchos::ArrayView<int> local_rows = partitioner->getLocalRows();
@@ -325,6 +326,10 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
     }
     comm->barrier();
 
+    if ( jacobi_precondition )
+    {
+	A->scale( 1/diag[0] );
+    }
     A->fillComplete();
 
     // Build the solution vector.
@@ -349,6 +354,12 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 	{
 	    B->replaceGlobalValue( source_location, source_strength );
 	}
+    }
+
+    // Jacobi precondition if necessary.
+    if ( jacobi_precondition )
+    {
+	B->scale( 1/diag[0] );
     }
 
     // Build the linear problem.

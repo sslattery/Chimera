@@ -23,6 +23,11 @@
 #include <Chimera_LinearSolverFactory.hpp>
 #include <Chimera_OperatorTools.hpp>
 
+#include <MCLS_SolverFactory.hpp>
+#include <MCLS_SolverManager.hpp>
+#include <MCLS_LinearProblem.hpp>
+#include <MCLS_TpetraAdapter.hpp>
+
 #include <Teuchos_GlobalMPISession.hpp>
 #include <Teuchos_FancyOStream.hpp>
 #include <Teuchos_DefaultComm.hpp>
@@ -72,30 +77,55 @@ int main( int argc, char * argv[] )
 
     // Build the diffusion problem.
     Teuchos::RCP<Chimera::DiffusionProblem> diffusion_problem = Teuchos::rcp(
-	new Chimera::DiffusionProblem( comm, partitioner, plist ) );
+	new Chimera::DiffusionProblem( comm, partitioner, plist, true ) );
 
-    // Build the solver.
-    Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =
-	Chimera::LinearSolverFactory::create( 
-	    plist, diffusion_problem->getProblem() );
+    // // CHIMERA SOLVE
+    // // Build the solver.
+    // Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =
+    // 	Chimera::LinearSolverFactory::create( 
+    // 	    plist, diffusion_problem->getProblem() );
 
-    // Compute the iteration matrix spectral radius.
-    double spec_rad = Chimera::OperatorTools::spectralRadius(
-	solver->linearOperatorSplit()->iterationMatrix() );
-    if ( comm->getRank() == 0 )
-    {
-	std::cout << "SPECTRAL RADIUS: " << spec_rad << std::endl; 
-    }
-    comm->barrier();
+    // // Compute the iteration matrix spectral radius.
+    // double spec_rad = Chimera::OperatorTools::spectralRadius(
+    // 	solver->linearOperatorSplit()->iterationMatrix() );
+    // if ( comm->getRank() == 0 )
+    // {
+    // 	std::cout << "SPECTRAL RADIUS: " << spec_rad << std::endl; 
+    // }
+    // comm->barrier();
 
-    // Solve.
-    solver->iterate();
+    // // Solve.
+    // solver->iterate();
+
+    // // Write the solution to VTK.
+    // Chimera::VTKOutput vtk_output( comm, partitioner, plist );
+    // vtk_output.addField( Chimera::VTKOutput::VERTEX_FIELD,
+    // 			 diffusion_problem->getProblem()->getLHS(),
+    // 			 "NEUTRON_FLUX" );
+    // vtk_output.write();
+
+
+    // MCLS SOLVE
+    typedef Tpetra::Vector<double,int,int> Vector;
+    typedef Tpetra::CrsMatrix<double,int,int> Matrix;
+
+    Teuchos::RCP<MCLS::LinearProblem<Vector,Matrix> > linear_problem =
+	Teuchos::rcp( new MCLS::LinearProblem<Vector,Matrix>(
+			  diffusion_problem->getProblem()->getOperator(),
+			  diffusion_problem->getProblem()->getLHS(),
+			  diffusion_problem->getProblem()->getRHS() ) );
+
+    MCLS::SolverFactory<Vector,Matrix> factory;
+    Teuchos::RCP<MCLS::SolverManager<Vector,Matrix> > solver_manager =
+ 	factory.create( "Adjoint MC", comm, plist );
+    solver_manager->setProblem( linear_problem );
+    solver_manager->solve();
 
     // Write the solution to VTK.
     Chimera::VTKOutput vtk_output( comm, partitioner, plist );
     vtk_output.addField( Chimera::VTKOutput::VERTEX_FIELD,
-			 diffusion_problem->getProblem()->getLHS(),
-			 "NEUTRON_FLUX" );
+    			 linear_problem->getLHS(),
+    			 "NEUTRON_FLUX" );
     vtk_output.write();
 
     return 0;
