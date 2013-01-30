@@ -37,7 +37,8 @@ class DiffusionProblem
     // Constructor.
     DiffusionProblem( const RCP_Comm& comm, 
 		      const RCP_Partitioner& partitioner,
-		      const RCP_ParameterList& plist );
+		      const RCP_ParameterList& plist,
+		      bool jacobi_precondition = false );
 
     // Destructor.
     ~DiffusionProblem();

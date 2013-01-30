@@ -7,9 +7,11 @@
   <Parameter name="Y_MAX" type="double" value="1.0"/>
   <Parameter name="X_NUM_CELLS" type="int" value="10"/>
   <Parameter name="Y_NUM_CELLS" type="int" value="10"/>
+  <Parameter name="BC TYPE" type="string" value="VACUUM"/>
   <Parameter name="GRID_TYPE" type="string" value="UNIFORM"/>
   <Parameter name="ABSORPTION XS" type="double" value="0.5"/>
   <Parameter name="SCATTERING XS" type="double" value="0.5"/>
+  <Parameter name="SOURCE TYPE" type="string" value="UNIFORM"/>
   <Parameter name="SOURCE STRENGTH" type="double" value="1.0"/>
   <Parameter name="SOLVER TYPE" type="string" value="MCSA"/>
   <Parameter name="RNG TYPE" type="string" value="MT19937"/>
@@ -21,4 +23,13 @@
   <Parameter name="HISTORIES PER STAGE" type="int" value="100"/>
   <Parameter name="NUM OVERLAP" type="int" value="100"/>
   <Parameter name="OUTPUT_FILENAME" type="string" value="diffusion_out.vtk"/>
+  <Parameter name="MC Type" type="string" value="Adjoint"/>
+  <Parameter name="Convergence Tolerance" type="double" value="1.0e-8"/>
+  <Parameter name="Max Number of Iterations" type="int" value="10"/>
+  <Parameter name="Weight Cutoff" type="double" value="1.0e-4"/>
+  <Parameter name="MC Check Frequency" type="int" value="100"/>
+  <Parameter name="Reproducible MC Mode" type="bool" value="true"/>
+  <Parameter name="Overlap Size" type="int" value="0"/>
+  <Parameter name="Number of Sets" type="int" value="1"/>
+  <Parameter name="Set Number of Histories" type="int" value="10000"/>
 </ParameterList>
