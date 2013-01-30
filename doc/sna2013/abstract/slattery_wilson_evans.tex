@@ -129,16 +129,16 @@ implement domain decomposition strategy for Monte Carlo solvers in a
 parallel environment, communication of these histories must occur
 between compute nodes owning neighboring pieces of the global domain.
 
-At the 2010 SNA+MC meeting, Wagner and colleagues developed the
-\textit{multiple-set overlapping-domain} (MSOD) decomposition for
-parallel Monte Carlo applications for full-core light water reactor
-analysis \cite{wagner_hybrid_2010}. In their work, overlap between
-adjacent domains in the decomposition was used to decrease the number
-of particles leaving the local domain. In addition, Wagner utilized a
-level of replication of the domain such that the domain was only
-decomposed on $O(100)$ processors and if replicated $O(1,000)$ times
-achieves simulation on $O(100,000)$ processors, thus providing spatial
-and particle parallelism. Each collection of processors that
+At the 2010 SNA+MC meeting, Wagner and colleagues presented the
+\textit{multiple-set overlapping-domain} (MSOD) decomposition method
+for parallel Monte Carlo applications for full-core light water
+reactor analysis \cite{wagner_hybrid_2010}. In their work, overlap
+between adjacent domains in the decomposition was used to decrease the
+number of particles leaving the local domain. In addition, Wagner
+utilized a level of replication of the domain such that the domain was
+only decomposed on $O(100)$ processors and if replicated $O(1,000)$
+times achieves simulation on $O(100,000)$ processors, thus providing
+spatial and particle parallelism. Each collection of processors that
 constitutes a representation of the entire domain is referred to as a
 set, and within a set overlap occurs among its sub-domains. The
 original motivation was to decompose the domain in a way that it
