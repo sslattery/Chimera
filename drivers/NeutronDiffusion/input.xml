@@ -23,13 +23,14 @@
   <Parameter name="HISTORIES PER STAGE" type="int" value="100"/>
   <Parameter name="NUM OVERLAP" type="int" value="100"/>
   <Parameter name="OUTPUT_FILENAME" type="string" value="diffusion_out.vtk"/>
+  <Parameter name="Solver Type" type="string" value="Adjoint MC"/>
   <Parameter name="MC Type" type="string" value="Adjoint"/>
   <Parameter name="Convergence Tolerance" type="double" value="1.0e-8"/>
-  <Parameter name="Max Number of Iterations" type="int" value="10"/>
+  <Parameter name="Max Number of Iterations" type="int" value="100"/>
   <Parameter name="Weight Cutoff" type="double" value="1.0e-4"/>
   <Parameter name="MC Check Frequency" type="int" value="100"/>
   <Parameter name="Reproducible MC Mode" type="bool" value="true"/>
   <Parameter name="Overlap Size" type="int" value="0"/>
   <Parameter name="Number of Sets" type="int" value="1"/>
-  <Parameter name="Set Number of Histories" type="int" value="1000"/>
+  <Parameter name="Set Number of Histories" type="int" value="10000"/>
 </ParameterList>

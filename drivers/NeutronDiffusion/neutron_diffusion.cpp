@@ -115,9 +115,11 @@ int main( int argc, char * argv[] )
 			  diffusion_problem->getProblem()->getLHS(),
 			  diffusion_problem->getProblem()->getRHS() ) );
 
+    std::string solver_type = plist->get<std::string>("Solver Type");
+
     MCLS::SolverFactory<Vector,Matrix> factory;
     Teuchos::RCP<MCLS::SolverManager<Vector,Matrix> > solver_manager =
- 	factory.create( "Adjoint MC", comm, plist );
+ 	factory.create( solver_type, comm, plist );
     solver_manager->setProblem( linear_problem );
     solver_manager->solve();
 
