@@ -323,13 +323,15 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 		}
 	    }
 	}
+
+	// Apply preconditioning.
+	if ( jacobi_precondition )
+	{
+	    A->scale( 1/diag[0] );
+	}
     }
     comm->barrier();
 
-    if ( jacobi_precondition )
-    {
-	A->scale( 1/diag[0] );
-    }
     A->fillComplete();
 
     // Build the solution vector.
