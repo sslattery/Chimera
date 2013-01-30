@@ -56,6 +56,22 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
     Teuchos::Array<double> iminus1jplus1( 1, -D/(6.0*dy*dy) );
     Teuchos::Array<double> iplus1jplus1( 1, -D/(6.0*dy*dy) );
 
+
+    // Apply preconditioning.
+    double jacobi_scale = diag[0];
+    if ( jacobi_precondition )
+    {
+	iminus1[0] /= jacobi_scale;
+	iplus1[0] /= jacobi_scale;
+	jminus1[0] /= jacobi_scale;
+	jplus1[0] /= jacobi_scale;
+	iminus1jminus1[0] /= jacobi_scale;
+	iplus1jminus1[0] /= jacobi_scale;
+	iminus1jplus1[0] /= jacobi_scale;
+	iplus1jplus1[0] /= jacobi_scale;
+	diag[0] /= jacobi_scale;
+    }
+
     Teuchos::Array<int> idx(1);
     Teuchos::Array<int> idx_iminus1(1);
     Teuchos::Array<int> idx_iplus1(1);
@@ -323,12 +339,6 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 		}
 	    }
 	}
-
-	// Apply preconditioning.
-	if ( jacobi_precondition )
-	{
-	    A->scale( 1/diag[0] );
-	}
     }
     comm->barrier();
 
@@ -361,7 +371,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
     // Jacobi precondition if necessary.
     if ( jacobi_precondition )
     {
-	B->scale( 1/diag[0] );
+	B->scale( 1.0/jacobi_scale );
     }
 
     // Build the linear problem.
