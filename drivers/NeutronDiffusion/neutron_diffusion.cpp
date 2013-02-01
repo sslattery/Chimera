@@ -79,7 +79,7 @@ int main( int argc, char * argv[] )
     Teuchos::RCP<Chimera::DiffusionProblem> diffusion_problem = Teuchos::rcp(
 	new Chimera::DiffusionProblem( comm, partitioner, plist, true ) );
 
-    // // CHIMERA SOLVE
+    // // // CHIMERA SOLVE
     // // Build the solver.
     // Teuchos::RCP<Chimera::LinearSolver<double,int,int> > solver =
     // 	Chimera::LinearSolverFactory::create( 
@@ -110,16 +110,16 @@ int main( int argc, char * argv[] )
     typedef Tpetra::CrsMatrix<double,int,int> Matrix;
 
     Teuchos::RCP<MCLS::LinearProblem<Vector,Matrix> > linear_problem =
-	Teuchos::rcp( new MCLS::LinearProblem<Vector,Matrix>(
-			  diffusion_problem->getProblem()->getOperator(),
-			  diffusion_problem->getProblem()->getLHS(),
-			  diffusion_problem->getProblem()->getRHS() ) );
+    	Teuchos::rcp( new MCLS::LinearProblem<Vector,Matrix>(
+    			  diffusion_problem->getProblem()->getOperator(),
+    			  diffusion_problem->getProblem()->getLHS(),
+    			  diffusion_problem->getProblem()->getRHS() ) );
 
     std::string solver_type = plist->get<std::string>("Solver Type");
 
     MCLS::SolverFactory<Vector,Matrix> factory;
     Teuchos::RCP<MCLS::SolverManager<Vector,Matrix> > solver_manager =
- 	factory.create( solver_type, comm, plist );
+    	factory.create( solver_type, comm, plist );
     solver_manager->setProblem( linear_problem );
     solver_manager->solve();
 

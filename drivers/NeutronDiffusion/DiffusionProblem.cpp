@@ -37,7 +37,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 
     // Build the operator.
     Teuchos::RCP<Tpetra::CrsMatrix<double,int,int> > A = 
-	Tpetra::createCrsMatrix<double,int,int>( row_map );
+	Tpetra::createCrsMatrix<double,int,int>( row_map, 9 );
 
     int N = partitioner->getGlobalEdges().first.size();
     double dx = partitioner->getCellSizes().first;
@@ -234,9 +234,9 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 	    }
 
 	    // Central grid points
-	    for ( int i = 1; i < N-1; ++i )
+	    for ( int j = 1; j < N-1; ++j )
 	    {
-		for ( int j = 1; j < N-1; ++j )
+		for ( int i = 1; i < N-1; ++i )
 		{
 		    idx[0]                = i + j*N;
 		    idx_iminus1[0]        = (i-1) + j*N;
