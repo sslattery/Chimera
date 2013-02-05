@@ -1,12 +1,12 @@
 <ParameterList name="Neutron Diffusion">
-  <Parameter name="I_BLOCKS" type="int" value="2"/>
-  <Parameter name="J_BLOCKS" type="int" value="2"/>
+  <Parameter name="I_BLOCKS" type="int" value="1"/>
+  <Parameter name="J_BLOCKS" type="int" value="1"/>
   <Parameter name="X_MIN" type="double" value="0.0"/>
   <Parameter name="X_MAX" type="double" value="1.0"/>
   <Parameter name="Y_MIN" type="double" value="0.0"/>
   <Parameter name="Y_MAX" type="double" value="1.0"/>
-  <Parameter name="X_NUM_CELLS" type="int" value="20"/>
-  <Parameter name="Y_NUM_CELLS" type="int" value="20"/>
+  <Parameter name="X_NUM_CELLS" type="int" value="4"/>
+  <Parameter name="Y_NUM_CELLS" type="int" value="4"/>
   <Parameter name="BC TYPE" type="string" value="VACUUM"/>
   <Parameter name="GRID_TYPE" type="string" value="UNIFORM"/>
   <Parameter name="ABSORPTION XS" type="double" value="10.0"/>

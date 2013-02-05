@@ -163,8 +163,8 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 
 		A->insertGlobalValues( idx[0], idx(),                diag() );
 		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
+		A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1()  );
 		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
 		A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
 		A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
 	    }
