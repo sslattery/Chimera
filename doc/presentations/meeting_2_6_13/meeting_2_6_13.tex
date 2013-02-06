@@ -230,13 +230,15 @@
 \begin{frame}{Parallelization of Monte Carlo Methods}
 
   \begin{itemize}
-  \item No literature observed for parallel Neumann-Ulam solvers
+  \item No literature observed for domain decomposed Neumann-Ulam
+    solvers; parallelism over histories only (domain replication)
     \medskip \medskip
   \item Numerous references for modern parallel Monte Carlo methods in
     reactor physics
     \medskip \medskip
   \item Build a strategy for applying modern methods to the
     Neumann-Ulam method
+  \item New implementation based on the Shift Monte Carlo code
   \end{itemize}
 
 \end{frame}
@@ -248,40 +250,77 @@
   \item Each parallel process owns a piece of the domain
   \item Random walks must be transported across domains through
     communication
+  \item Brunner and Brantley, \textit{An efficient, robust, domain
+    decomposition algorithm for particle Monte Carlo}, Journal of
+    Computational Physics, 2009
   \end{itemize}
 
-  \medskip \medskip
-  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
-    {Brunner's Work (2006 and 2009)}
-
-    \begin{itemize}
-    \item Looked at 4 communication patterns:
-      \begin{itemize}
-      \item Fully-locking synchronous
-      \item Asynchronous-send/synchronous-receive
-      \item Master/slave
-      \item Binary tree master/slave
-      \end{itemize}
-    \item Binary tree master/slave performed best but race conditions observed
-    \item A later improvement to their work showed a fully asynchronous
-      pattern to work best
-    \item Poor scaling for unbalanced problems for all schemes
-    \end{itemize}
-    
-  \end{beamerboxesrounded}
+  \begin{figure}[htpb!]
+    \begin{center}
+      \scalebox{1.0}{ \input{procassini_example.pdftex_t} }
+    \end{center}
+  \end{figure}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Domain Decomposition}
+\begin{frame}{Domain Decomposition Parallelism}
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=3.75in]{domain_comm.png}
+    \end{center}
+  \end{figure}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Fully Synchronous Algorithm}
+
+  Do until all histories completed on all procs:
+
+  \begin{enumerate}
+  \item All local histories transported to local completion
+    \begin{itemize}
+    \item Histories are buffered in the send buffer
+    \item The send buffer has no size limit
+    \end{itemize}
+  \item Fully locking communication to determine the end of local
+    transport
+    \medskip
+    \begin{itemize}
+    \item If send buffers are not empty: fully locking communication
+      of send buffers to receive buffers
+    \item If they are empty, fully locking communication to end transport
+    \end{itemize}
+  \end{enumerate}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Fully Asynchronous Algorithm}
+
+  Do until all histories completed on all procs:
+
+  \begin{enumerate}
+  \item Specified number of histories transported to local completion
+    (check frequency)
+    \begin{itemize}
+    \item If at check frequency, non-locking receive buffers
+    \item Any locally terminated histories non-locking communicated to
+      the master
+    \item Histories are buffered in the send buffers as needed
+    \item The send buffer has a size limit (max buffer size)
+    \item If any buffer is full, non-locking send it
+    \end{itemize}
+    \medskip
+  \item Master non-locking check for completed histories
+    \begin{itemize}
+    \item If completed total on master sums to total source
+      histories, send non-locking complete message
+    \end{itemize}
+  \end{enumerate}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%

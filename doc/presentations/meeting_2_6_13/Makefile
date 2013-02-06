@@ -20,5 +20,4 @@ clean:
 	-rm -f *.bak
 	-rm -f *.nav
 	-rm -f *.snm
-	-rm -f *.pdftex_t
 	-rm -f TAGS
