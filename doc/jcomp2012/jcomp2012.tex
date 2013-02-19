@@ -548,7 +548,7 @@ Figure~\ref{fig:poisson_iterations} gives the number of iterations
 needed for each case to converge relative to the problem size.
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=5in,clip]{Adjoint_Direct_CPU_Time_2.pdf}
+  \includegraphics[width=5in,clip]{dir_adj_cpu.pdf}
   \caption{\sl CPU Time (s) to converge vs. Problem Size ($N$ for an
     $N \times N$ square mesh). Both the adjoint and direct solvers are
     used with the five point and nine point stencils. A CPU time
@@ -559,7 +559,7 @@ needed for each case to converge relative to the problem size.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=5in,clip]{Adjoint_Direct_Iterations_2.pdf}
+  \includegraphics[width=5in,clip]{dir_adj_iterations.pdf}
   \caption{\sl Iterations to converge vs. Problem Size ($N$ for an $N
     \times N$ square mesh). Both the adjoint and direct solvers are
     used with the five-point and nine-point stencils. }
@@ -611,7 +611,7 @@ iteration gives a faster rate of converge for the same reasons as
 above.
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=5in,clip]{Adjoint_Direct_Convergence_2.pdf}
+  \includegraphics[width=5in,clip]{dir_adj_convergence.pdf}
   \caption{\sl Infinity norm of the solution residual vs. iteration
     number for a problem of size $N=500$. Both the adjoint and direct
     solvers are used with the five point and nine point stencils. A
@@ -649,7 +649,7 @@ achieve the same level of convergence in the residual.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=5in,clip]{Sequential_CPU_Time.pdf}
+  \includegraphics[width=5in,clip]{seq_cpu.pdf}
   \caption{\sl CPU Time (s) to converge vs. Problem Size ($N$ for an
     $N \times N$ square mesh). Both the Sequential Monte Carlo and
     MCSA solvers are used with the five point stencils and the adjoint
@@ -661,7 +661,7 @@ achieve the same level of convergence in the residual.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=5in,clip]{Sequential_Iterations.pdf}
+  \includegraphics[width=5in,clip]{seq_iterations.pdf}
   \caption{\sl Iterations to converge vs. Problem Size ($N$ for an $N
     \times N$ square mesh). Both the Sequential Monte Carlo and MCSA
     solvers are used with the five point stencils and the adjoint
@@ -681,7 +681,7 @@ higher than that computed by Halton's method.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=5in,clip]{Sequential_Convergence.pdf}
+  \includegraphics[width=5in,clip]{seq_conv_100.pdf}
   \caption{\sl Infinity norm of the solution residual vs. iteration
     number for a problem of size $N=100$. Both the Sequential Monte
     Carlo and MCSA solvers are used with the five point stencils and
@@ -691,7 +691,7 @@ higher than that computed by Halton's method.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=5in,clip]{Sequential_Convergence.pdf}
+  \includegraphics[width=5in,clip]{seq_conv_500.pdf}
   \caption{\sl Infinity norm of the solution residual vs. iteration
     number for a problem of size $N=500$. Both the Sequential Monte
     Carlo and MCSA solvers are used with the five point stencils and

@@ -84,7 +84,7 @@
 @timestamp rot 0
 @timestamp font 0
 @timestamp char size 1.000000
-@timestamp def "Tue Feb 19 10:25:59 2013"
+@timestamp def "Tue Feb 19 10:14:54 2013"
 @r0 off
 @link r0 to g0
 @r0 type above
@@ -131,7 +131,7 @@
 @g0 fixedpoint format general general
 @g0 fixedpoint prec 6, 6
 @with g0
-@    world 0, 0, 550, 55
+@    world 0, 5, 550, 20
 @    stack world 0, 0, 0, 0
 @    znorm 1
 @    view 0.150000, 0.150000, 1.150000, 0.850000
@@ -205,7 +205,7 @@
 @    yaxis  bar color 1
 @    yaxis  bar linestyle 1
 @    yaxis  bar linewidth 1.0
-@    yaxis  label "CPU Time (s)"
+@    yaxis  label "Iterations"
 @    yaxis  label layout para
 @    yaxis  label place auto
 @    yaxis  label char size 1.000000
@@ -253,7 +253,7 @@
 @    altyaxis  off
 @    legend on
 @    legend loctype view
-@    legend 0.25, 0.8
+@    legend 0.2, 0.35
 @    legend box color 1
 @    legend box pattern 1
 @    legend box linewidth 1.0
@@ -274,295 +274,295 @@
 @    frame pattern 1
 @    frame background color 0
 @    frame background pattern 0
-@    s0 hidden false
-@    s0 type xy
-@    s0 symbol 0
-@    s0 symbol size 1.000000
-@    s0 symbol color 2
-@    s0 symbol pattern 1
-@    s0 symbol fill color 2
-@    s0 symbol fill pattern 0
-@    s0 symbol linewidth 1.0
-@    s0 symbol linestyle 1
-@    s0 symbol char 65
-@    s0 symbol char font 0
-@    s0 symbol skip 0
-@    s0 line type 1
-@    s0 line linestyle 1
-@    s0 line linewidth 2.0
-@    s0 line color 2
-@    s0 line pattern 1
-@    s0 baseline type 0
-@    s0 baseline off
-@    s0 dropline off
-@    s0 fill type 0
-@    s0 fill rule 0
-@    s0 fill color 1
-@    s0 fill pattern 1
-@    s0 avalue off
-@    s0 avalue type 2
-@    s0 avalue char size 1.000000
-@    s0 avalue font 0
-@    s0 avalue color 1
-@    s0 avalue rot 0
-@    s0 avalue format general
-@    s0 avalue prec 3
-@    s0 avalue prepend ""
-@    s0 avalue append ""
-@    s0 avalue offset 0.000000 , 0.000000
-@    s0 errorbar on
-@    s0 errorbar place both
-@    s0 errorbar color 2
-@    s0 errorbar pattern 1
-@    s0 errorbar size 1.000000
-@    s0 errorbar linewidth 1.0
-@    s0 errorbar linestyle 1
-@    s0 errorbar riser linewidth 1.0
-@    s0 errorbar riser linestyle 1
-@    s0 errorbar riser clip off
-@    s0 errorbar riser clip length 0.100000
-@    s0 comment "/home/stuart/software/Trilinos/Chimera/doc/jcomp2012/dir_adj_cpu_iters.dat"
-@    s0 legend  "Direct 5-Point"
-@    s2 hidden false
-@    s2 type xy
-@    s2 symbol 0
-@    s2 symbol size 1.000000
-@    s2 symbol color 2
-@    s2 symbol pattern 1
-@    s2 symbol fill color 2
-@    s2 symbol fill pattern 0
-@    s2 symbol linewidth 1.0
-@    s2 symbol linestyle 1
-@    s2 symbol char 65
-@    s2 symbol char font 0
-@    s2 symbol skip 0
-@    s2 line type 1
-@    s2 line linestyle 3
-@    s2 line linewidth 2.0
-@    s2 line color 2
-@    s2 line pattern 1
-@    s2 baseline type 0
-@    s2 baseline off
-@    s2 dropline off
-@    s2 fill type 0
-@    s2 fill rule 0
-@    s2 fill color 1
-@    s2 fill pattern 1
-@    s2 avalue off
-@    s2 avalue type 2
-@    s2 avalue char size 1.000000
-@    s2 avalue font 0
-@    s2 avalue color 1
-@    s2 avalue rot 0
-@    s2 avalue format general
-@    s2 avalue prec 3
-@    s2 avalue prepend ""
-@    s2 avalue append ""
-@    s2 avalue offset 0.000000 , 0.000000
-@    s2 errorbar on
-@    s2 errorbar place both
-@    s2 errorbar color 2
-@    s2 errorbar pattern 1
-@    s2 errorbar size 1.000000
-@    s2 errorbar linewidth 1.0
-@    s2 errorbar linestyle 1
-@    s2 errorbar riser linewidth 1.0
-@    s2 errorbar riser linestyle 1
-@    s2 errorbar riser clip off
-@    s2 errorbar riser clip length 0.100000
-@    s2 comment "/home/stuart/software/Trilinos/Chimera/doc/jcomp2012/dir_adj_cpu_iters.dat"
-@    s2 legend  "Direct 9-Point"
-@    s4 hidden false
-@    s4 type xy
-@    s4 symbol 0
-@    s4 symbol size 1.000000
-@    s4 symbol color 1
-@    s4 symbol pattern 1
-@    s4 symbol fill color 1
-@    s4 symbol fill pattern 0
-@    s4 symbol linewidth 1.0
-@    s4 symbol linestyle 1
-@    s4 symbol char 65
-@    s4 symbol char font 0
-@    s4 symbol skip 0
-@    s4 line type 1
-@    s4 line linestyle 1
-@    s4 line linewidth 2.0
-@    s4 line color 1
-@    s4 line pattern 1
-@    s4 baseline type 0
-@    s4 baseline off
-@    s4 dropline off
-@    s4 fill type 0
-@    s4 fill rule 0
-@    s4 fill color 1
-@    s4 fill pattern 1
-@    s4 avalue off
-@    s4 avalue type 2
-@    s4 avalue char size 1.000000
-@    s4 avalue font 0
-@    s4 avalue color 1
-@    s4 avalue rot 0
-@    s4 avalue format general
-@    s4 avalue prec 3
-@    s4 avalue prepend ""
-@    s4 avalue append ""
-@    s4 avalue offset 0.000000 , 0.000000
-@    s4 errorbar on
-@    s4 errorbar place both
-@    s4 errorbar color 1
-@    s4 errorbar pattern 1
-@    s4 errorbar size 1.000000
-@    s4 errorbar linewidth 1.0
-@    s4 errorbar linestyle 1
-@    s4 errorbar riser linewidth 1.0
-@    s4 errorbar riser linestyle 1
-@    s4 errorbar riser clip off
-@    s4 errorbar riser clip length 0.100000
-@    s4 comment "/home/stuart/software/Trilinos/Chimera/doc/jcomp2012/dir_adj_cpu_iters.dat"
-@    s4 legend  "Adjoint 5-Point"
-@    s6 hidden false
-@    s6 type xy
-@    s6 symbol 0
-@    s6 symbol size 1.000000
-@    s6 symbol color 1
-@    s6 symbol pattern 1
-@    s6 symbol fill color 1
-@    s6 symbol fill pattern 0
-@    s6 symbol linewidth 1.0
-@    s6 symbol linestyle 1
-@    s6 symbol char 65
-@    s6 symbol char font 0
-@    s6 symbol skip 0
-@    s6 line type 1
-@    s6 line linestyle 3
-@    s6 line linewidth 2.0
-@    s6 line color 1
-@    s6 line pattern 1
-@    s6 baseline type 0
-@    s6 baseline off
-@    s6 dropline off
-@    s6 fill type 0
-@    s6 fill rule 0
-@    s6 fill color 1
-@    s6 fill pattern 1
-@    s6 avalue off
-@    s6 avalue type 2
-@    s6 avalue char size 1.000000
-@    s6 avalue font 0
-@    s6 avalue color 1
-@    s6 avalue rot 0
-@    s6 avalue format general
-@    s6 avalue prec 3
-@    s6 avalue prepend ""
-@    s6 avalue append ""
-@    s6 avalue offset 0.000000 , 0.000000
-@    s6 errorbar on
-@    s6 errorbar place both
-@    s6 errorbar color 1
-@    s6 errorbar pattern 1
-@    s6 errorbar size 1.000000
-@    s6 errorbar linewidth 1.0
-@    s6 errorbar linestyle 1
-@    s6 errorbar riser linewidth 1.0
-@    s6 errorbar riser linestyle 1
-@    s6 errorbar riser clip off
-@    s6 errorbar riser clip length 0.100000
-@    s6 comment "/home/stuart/software/Trilinos/Chimera/doc/jcomp2012/dir_adj_cpu_iters.dat"
-@    s6 legend  "Adjoint 9-Point"
-@target G0.S0
+@    s1 hidden false
+@    s1 type xy
+@    s1 symbol 0
+@    s1 symbol size 1.000000
+@    s1 symbol color 2
+@    s1 symbol pattern 1
+@    s1 symbol fill color 2
+@    s1 symbol fill pattern 0
+@    s1 symbol linewidth 1.0
+@    s1 symbol linestyle 1
+@    s1 symbol char 65
+@    s1 symbol char font 0
+@    s1 symbol skip 0
+@    s1 line type 1
+@    s1 line linestyle 1
+@    s1 line linewidth 2.0
+@    s1 line color 2
+@    s1 line pattern 1
+@    s1 baseline type 0
+@    s1 baseline off
+@    s1 dropline off
+@    s1 fill type 0
+@    s1 fill rule 0
+@    s1 fill color 1
+@    s1 fill pattern 1
+@    s1 avalue off
+@    s1 avalue type 2
+@    s1 avalue char size 1.000000
+@    s1 avalue font 0
+@    s1 avalue color 1
+@    s1 avalue rot 0
+@    s1 avalue format general
+@    s1 avalue prec 3
+@    s1 avalue prepend ""
+@    s1 avalue append ""
+@    s1 avalue offset 0.000000 , 0.000000
+@    s1 errorbar on
+@    s1 errorbar place both
+@    s1 errorbar color 2
+@    s1 errorbar pattern 1
+@    s1 errorbar size 1.000000
+@    s1 errorbar linewidth 1.0
+@    s1 errorbar linestyle 1
+@    s1 errorbar riser linewidth 1.0
+@    s1 errorbar riser linestyle 1
+@    s1 errorbar riser clip off
+@    s1 errorbar riser clip length 0.100000
+@    s1 comment "/home/stuart/software/Trilinos/Chimera/doc/jcomp2012/adjdir2.dat"
+@    s1 legend  "Direct 5-Point"
+@    s3 hidden false
+@    s3 type xy
+@    s3 symbol 0
+@    s3 symbol size 1.000000
+@    s3 symbol color 2
+@    s3 symbol pattern 1
+@    s3 symbol fill color 2
+@    s3 symbol fill pattern 0
+@    s3 symbol linewidth 1.0
+@    s3 symbol linestyle 1
+@    s3 symbol char 65
+@    s3 symbol char font 0
+@    s3 symbol skip 0
+@    s3 line type 1
+@    s3 line linestyle 3
+@    s3 line linewidth 2.0
+@    s3 line color 2
+@    s3 line pattern 1
+@    s3 baseline type 0
+@    s3 baseline off
+@    s3 dropline off
+@    s3 fill type 0
+@    s3 fill rule 0
+@    s3 fill color 1
+@    s3 fill pattern 1
+@    s3 avalue off
+@    s3 avalue type 2
+@    s3 avalue char size 1.000000
+@    s3 avalue font 0
+@    s3 avalue color 1
+@    s3 avalue rot 0
+@    s3 avalue format general
+@    s3 avalue prec 3
+@    s3 avalue prepend ""
+@    s3 avalue append ""
+@    s3 avalue offset 0.000000 , 0.000000
+@    s3 errorbar on
+@    s3 errorbar place both
+@    s3 errorbar color 2
+@    s3 errorbar pattern 1
+@    s3 errorbar size 1.000000
+@    s3 errorbar linewidth 1.0
+@    s3 errorbar linestyle 1
+@    s3 errorbar riser linewidth 1.0
+@    s3 errorbar riser linestyle 1
+@    s3 errorbar riser clip off
+@    s3 errorbar riser clip length 0.100000
+@    s3 comment "/home/stuart/software/Trilinos/Chimera/doc/jcomp2012/adjdir2.dat"
+@    s3 legend  "Direct 9-Point"
+@    s5 hidden false
+@    s5 type xy
+@    s5 symbol 0
+@    s5 symbol size 1.000000
+@    s5 symbol color 1
+@    s5 symbol pattern 1
+@    s5 symbol fill color 1
+@    s5 symbol fill pattern 0
+@    s5 symbol linewidth 1.0
+@    s5 symbol linestyle 1
+@    s5 symbol char 65
+@    s5 symbol char font 0
+@    s5 symbol skip 0
+@    s5 line type 1
+@    s5 line linestyle 1
+@    s5 line linewidth 2.0
+@    s5 line color 1
+@    s5 line pattern 1
+@    s5 baseline type 0
+@    s5 baseline off
+@    s5 dropline off
+@    s5 fill type 0
+@    s5 fill rule 0
+@    s5 fill color 1
+@    s5 fill pattern 1
+@    s5 avalue off
+@    s5 avalue type 2
+@    s5 avalue char size 1.000000
+@    s5 avalue font 0
+@    s5 avalue color 1
+@    s5 avalue rot 0
+@    s5 avalue format general
+@    s5 avalue prec 3
+@    s5 avalue prepend ""
+@    s5 avalue append ""
+@    s5 avalue offset 0.000000 , 0.000000
+@    s5 errorbar on
+@    s5 errorbar place both
+@    s5 errorbar color 1
+@    s5 errorbar pattern 1
+@    s5 errorbar size 1.000000
+@    s5 errorbar linewidth 1.0
+@    s5 errorbar linestyle 1
+@    s5 errorbar riser linewidth 1.0
+@    s5 errorbar riser linestyle 1
+@    s5 errorbar riser clip off
+@    s5 errorbar riser clip length 0.100000
+@    s5 comment "/home/stuart/software/Trilinos/Chimera/doc/jcomp2012/adjdir2.dat"
+@    s5 legend  "Adjoint 5-Point"
+@    s7 hidden false
+@    s7 type xy
+@    s7 symbol 0
+@    s7 symbol size 1.000000
+@    s7 symbol color 1
+@    s7 symbol pattern 1
+@    s7 symbol fill color 1
+@    s7 symbol fill pattern 0
+@    s7 symbol linewidth 1.0
+@    s7 symbol linestyle 1
+@    s7 symbol char 65
+@    s7 symbol char font 0
+@    s7 symbol skip 0
+@    s7 line type 1
+@    s7 line linestyle 3
+@    s7 line linewidth 2.0
+@    s7 line color 1
+@    s7 line pattern 1
+@    s7 baseline type 0
+@    s7 baseline off
+@    s7 dropline off
+@    s7 fill type 0
+@    s7 fill rule 0
+@    s7 fill color 1
+@    s7 fill pattern 1
+@    s7 avalue off
+@    s7 avalue type 2
+@    s7 avalue char size 1.000000
+@    s7 avalue font 0
+@    s7 avalue color 1
+@    s7 avalue rot 0
+@    s7 avalue format general
+@    s7 avalue prec 3
+@    s7 avalue prepend ""
+@    s7 avalue append ""
+@    s7 avalue offset 0.000000 , 0.000000
+@    s7 errorbar on
+@    s7 errorbar place both
+@    s7 errorbar color 1
+@    s7 errorbar pattern 1
+@    s7 errorbar size 1.000000
+@    s7 errorbar linewidth 1.0
+@    s7 errorbar linestyle 1
+@    s7 errorbar riser linewidth 1.0
+@    s7 errorbar riser linestyle 1
+@    s7 errorbar riser clip off
+@    s7 errorbar riser clip length 0.100000
+@    s7 comment "/home/stuart/software/Trilinos/Chimera/doc/jcomp2012/adjdir2.dat"
+@    s7 legend  "Adjoint 9-Point"
+@target G0.S1
 @type xy
-11 0.01
-21 0.04
-31 0.13
-41 0.25
-51 0.39
-61 0.59
-71 0.86
-81 1.15
-91 1.46
-101 1.83
-121 2.68
-141 3.67
-161 4.86
-181 6.21
-201 7.6833333
-251 12.123333
-301 17.526667
-351 24.033333
-401 31.416667
-451 39.97
-501 49.743333
+11 16
+21 18
+31 18
+41 18
+51 17
+61 17
+71 18
+81 18
+91 18
+101 18
+121 18
+141 18
+161 18
+181 18
+201 18
+251 18
+301 18
+351 18
+401 18
+451 18
+501 18
 &
-@target G0.S2
+@target G0.S3
 @type xy
-11 0.01
-21 0.05
-31 0.13
-41 0.25
-51 0.41
-61 0.61333333
-71 0.85
-81 1.1333333
-91 1.43
-101 1.85
-121 2.7
-141 3.73
-161 4.91
-181 6.26
-201 7.8233333
-251 12.21
-301 17.816667
-351 25.813333
-401 31.976667
-451 40.446667
-501 50.396667
+11 15
+21 15
+31 15
+41 15
+51 15
+61 15
+71 15
+81 15
+91 15
+101 15
+121 15
+141 15
+161 15
+181 15
+201 15
+251 15
+301 15
+351 16
+401 15
+451 15
+501 15
 &
-@target G0.S4
+@target G0.S5
 @type xy
-11 0.01
-21 0.06
-31 0.14
-41 0.26
-51 0.4
-61 0.56
-71 0.77
-81 1.01
-91 1.18
-101 1.6
-121 2.16
-141 2.7
-161 3.23
-181 4.1966667
-201 5.23
-251 7.6633333
-301 10.293333
-351 14.56
-401 17.06
-451 22.176667
-501 28.176667
+11 16
+21 17
+31 18
+41 17
+51 17
+61 16
+71 16
+81 16
+91 15
+101 15
+121 14
+141 13
+161 12
+181 12
+201 12
+251 11
+301 10
+351 10
+401 9
+451 9
+501 9
 &
-@target G0.S6
+@target G0.S7
 @type xy
-11 0.01
-21 0.06
-31 0.15
-41 0.25
-51 0.39
-61 0.58
-71 0.723
-81 0.95
-91 1.223
-101 1.397
-121 2.06
-141 2.5266667
-161 3.37
-181 3.94
-201 4.9066667
-251 8.2233333
-301 10.87
-351 15.386667
-401 17.803333
-451 23.14
-501 29.54
+11 15
+21 15
+31 15
+41 14
+51 14
+61 14
+71 13
+81 13
+91 13
+101 12
+121 12
+141 11
+161 11
+181 10
+201 10
+251 10
+301 9
+351 9
+401 8
+451 8
+501 8
 &
