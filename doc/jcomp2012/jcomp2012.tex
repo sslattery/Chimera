@@ -546,7 +546,7 @@ memory. Figure~\ref{fig:poisson_cpu_time} gives the CPU time needed
 for each case to converge in seconds, and
 Figure~\ref{fig:poisson_iterations} gives the number of iterations
 needed for each case to converge relative to the problem size.
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{dir_adj_cpu.pdf}
   \caption{\sl CPU Time (s) to converge vs. Problem Size ($N$ for an
@@ -557,7 +557,7 @@ needed for each case to converge relative to the problem size.
   \label{fig:poisson_cpu_time}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{dir_adj_iterations.pdf}
   \caption{\sl Iterations to converge vs. Problem Size ($N$ for an $N
@@ -609,9 +609,9 @@ MCSA with both Monte Carlo solvers. Second, we note that using the
 adjoint method with the same number of stochastic histores per MCSA
 iteration gives a faster rate of converge for the same reasons as
 above.
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
-  \includegraphics[width=5in,clip]{dir_adj_convergence.pdf}
+  \includegraphics[width=5in,clip]{dir_adj_conv.pdf}
   \caption{\sl Infinity norm of the solution residual vs. iteration
     number for a problem of size $N=500$. Both the adjoint and direct
     solvers are used with the five point and nine point stencils. A
@@ -646,7 +646,7 @@ a better converged residual source to use with the Monte Carlo
 calculation while the Sequential method requires more iterations to
 achieve the same level of convergence in the residual.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{seq_cpu.pdf}
   \caption{\sl CPU Time (s) to converge vs. Problem Size ($N$ for an
@@ -658,7 +658,7 @@ achieve the same level of convergence in the residual.
   \label{fig:seq_cpu_time}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{seq_iterations.pdf}
   \caption{\sl Iterations to converge vs. Problem Size ($N$ for an $N
@@ -669,22 +669,21 @@ achieve the same level of convergence in the residual.
 \end{figure}
 
 The benefits of using a synthetic acceleration scheme are also noted
-when the infinity norm of the residual computed computed at each
-iteration for both methods was collected at each iteration for a fixed
-problem sizes of $N=100$ and $N=500$ as shown in figures
-Figure~\ref{fig:seq_100} and \ref{fig:seq_500} respectively. In both
-cases, the Sequential method is subject to two regimes of exponential
-convergence with the later regime converging the slowest while the
-MCSA method exhibits a single rate of exponential convergence, much
-higher than that computed by Halton's method. Even with the doubling
-of the number of stochastic histories computed per time step in order
-to ensure convergence for the Sequential method, we still see
-robustness issues with a non-monotonically decreasing residual
-observed in both cases and more pronounced for the $N=100$ case. In
-both cases the MCSA solver is observed to be robust with a
+when the infinity norm of the residual computed at each iteration for
+both methods was collected at each iteration for a fixed problem sizes
+of $N=100$ and $N=500$ as shown in figures Figure~\ref{fig:seq_100}
+and \ref{fig:seq_500} respectively. In both cases, the Sequential
+method is subject to two regimes of exponential convergence with the
+later regime converging the slowest while the MCSA method exhibits a
+single rate of exponential convergence, much higher than that computed
+by Halton's method. Even with the doubling of the number of stochastic
+histories computed per time step in order to ensure convergence for
+the Sequential method, we still see robustness issues with a
+non-monotonically decreasing residual observed for the $N=100$
+case. In both cases the MCSA solver is observed to be robust with a
 monotonically decreasing residual.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{seq_conv_100.pdf}
   \caption{\sl Infinity norm of the solution residual vs. iteration
@@ -694,7 +693,7 @@ monotonically decreasing residual.
   \label{fig:seq_100}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{seq_conv_500.pdf}
   \caption{\sl Infinity norm of the solution residual vs. iteration
@@ -804,7 +803,7 @@ Figure~\ref{fig:cell} gives
   \label{eq:flux-balance-vol-integral}
 \end{equation}
 and $V_{ijk} = \Delta_i\Delta_j\Delta_k$.
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centerline{ \includegraphics[clip]{mesh_cell.pdf} }
   \caption{Orthogonal 3D mesh cell.}
   \label{fig:cell}
@@ -1204,7 +1203,7 @@ where $m$ is the step-index in the particle history.  We also note that, for
 the 3D Cartesian mesh considered in this work, the maximum number of non-zero
 entries in columns of the iteration matrix is 6, generating a sparse system.
 Cells along the problem boundary can have fewer than six entries.
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centerline{ \includegraphics[clip]{3D_mesh_segment.pdf}}
   \caption{3D mesh-segment.  The particle's current cell (in blue) is
     connected to 6 adjacent cells.  The cell numbers are plotted
@@ -1261,7 +1260,7 @@ numerical accuracy is determined by the stopping criterion shown in
 Eq.~(\ref{eq:stopping-criteria}).  Also, the MCSA method is not bound by the
 Central Limit Theorem so convergence is not restricted to
 $1/\sqrt{N}$~\cite{halton_1994,evans_2003}.
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{marshak_10.pdf}}
   \caption{ Solution of the Marshak wave problem at $t=100$~ns.  The analytic
     solution is compared to the MCSA solution.  The MCSA, PCG, and PFIXED
@@ -1276,7 +1275,7 @@ $\ve{H} = (\vI - \ve{M}^{-1}\ve{D})$.  The spectral radius for the Marshak
 problem is plotted in Figure~\ref{fig:marshak_spectral}.  As described in
 \S~\ref{sec:preconditioning}, the preconditioning effectively reduces the
 spectral radius of $\ve{H}$ to less than 1.
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{spectral_radius.pdf}}
   \caption{Spectral radius of the iteration matrix, $\ve{H}$, for the
     Marshak Wave problem as a function of elapsed problem time.}
@@ -1294,7 +1293,7 @@ figures shows that increasing the number of particles per stage reduces the
 number of iterations required to converge the solution.  However, the cost of
 the Monte Carlo transport is high; thus, better performance is attained by
 running more stages with fewer particles per stage \cite{evans_2003}.
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{mrshk_np_CPU.pdf}}
   \caption{CPU time versus number of particles per stage for the
     Marshak problem.  The number of particles is the requested number.
@@ -1303,7 +1302,7 @@ running more stages with fewer particles per stage \cite{evans_2003}.
   \label{fig:CPU_Np}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{mrshk_np_Ns.pdf}}
   \caption{ Maximum number of stages per cycle versus number of
     particles per stage for the Marshak problem.  The number of
@@ -1319,7 +1318,7 @@ relatively insensitive to the weight cutoff.  This is especially true when
 running small numbers of particles per stage.  The weight cutoff has a more
 pronounced effect on the efficiency of the method when larger numbers of
 particles are used.
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{mrshk_wc_CPU.pdf}}
   \caption{ CPU time versus relative weight cutoff for the Marshak
     problem.  Results are shown for 10 and 50 requested particles per
@@ -1337,7 +1336,7 @@ efficient method, although the PCG results are nearly as fast.  More
 importantly, the MCSA method clearly accelerates Richardson iteration, as
 indicated by the fact that MCSA is 42\% faster than Richardson iteration
 alone.
-\begin{table}[h!]
+\begin{table}[ht!]
   \caption{Comparison of solution methods for the Marshak problem. All
     methods were run with a stopping criterion of $\sn{1}{-8}$.  The
     MCSA method used $N_p=10$ and $W_c = \sn{1}{-4}$.  The CPU time is
@@ -1385,23 +1384,24 @@ Figure~\ref{fig:multi-mat_T}.  The time evolution of the temperature is shown at
 four edit points in Figure~\ref{fig:edit-points}.  All three methods, PCG, PFIX,
 and MCSA, give numerically identical answers when using a stopping criterion
 of $\sn{1}{-8}$.
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{mesh.pdf}}
   \caption{Multi-material problem mesh.  The duct region is blue.  The wall is
     red.  The foil is green.  The mesh is $60\times 60\times 60$.}
   \label{fig:multi-mat-mesh}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{T_multi_mat.pdf}}
-  \caption{ Two-dimensional plot of the temperature in keV at 1000~ns on a
-    cut-plane positioned at the mid-point of the $z$-axis.  The positions of
-    the edit points where the time evolution of the temperature is plotted in
-    Figure~\re{fig:edit-points} are indicated by the black disks.}
+  \caption{ Two-dimensional plot of the temperature in keV at 1000~ns
+    on a cut-plane positioned at the mid-point of the $z$-axis.  The
+    positions of the edit points where the time evolution of the
+    temperature is plotted in Figure~\ref{fig:edit-points} are
+    indicated by the black disks.}
   \label{fig:multi-mat_T}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \begin{center}
     \includegraphics[width=5in,clip]{edit_points.pdf}
   \end{center}
