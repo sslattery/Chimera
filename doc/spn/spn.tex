@@ -46,22 +46,99 @@ urlcolor = blue
 }
 
 \author{Stuart R. Slattery
-\\ \href{mailto:sslattery@wisc.edu}{\texttt{sslattery@wisc.edu}}
+  \\ \href{mailto:sslattery@wisc.edu}{\texttt{sslattery@wisc.edu}}
 }
 
 \date{\today}
-\title{Monte Carlo Solutions for the SPn Equations}
+\title{Monte Carlo Solutions for the $SP_N$ Equations}
 \begin{document}
 \maketitle
-\section{Introduction}
-\section{Derivation of the SPn Equations}
-\section{Spectral Analysis of the SPn Equations}
-\section{Monte Carlo Solutions for the SPn Equations}
-\section{Conclusion}
 
+%%---------------------------------------------------------------------------%%
+\section{Introduction}
+\label{sec:introduction}
+
+%%---------------------------------------------------------------------------%%
+\section{Derivation of the $SP_N$ Equations}
+\label{sec:derivation}
+In this section, we derive the $SP_N$ equations. We begin by stating the
+general time-independent neutron transport equation followed by a
+derivation of the $P_N$ equations in planar geometry for multiple energy
+groups. From these equations, we then apply a set of approximations to
+yield the multi-dimensional, multi-group $SP_N$ equations.
+
+\subsection{The Neutron Transport Equation}
+\label{subsec:transport_eq}
+As a starting point we define the time-independent neutron transport
+equation \cite{lewis_computational_1993}:
+\begin{equation}
+  \hat{\Omega} \cdot \vec{\nabla} \psi(\vec{r},\hat{\Omega},E) +
+  \sigma(\vec{r},E) \psi(\vec{r},\hat{\Omega},E) = \int dE' \int
+  d\Omega' \sigma_s(\vec{r},E' \rightarrow E,\hat{\Omega}' \rightarrow
+  \hat{\Omega}) \psi(\vec{r},\hat{\Omega}',E') +
+  q(\vec{r},\hat{\Omega},E)\:,
+  \label{eq:general_transport}
+\end{equation}
+with the variables defined as:
+\begin{itemize}
+\item $\vec{r}$ - neutron spatial position
+\item $\hat{\Omega}$ - neutron streaming direction with radial
+  component $\mu$ and azimuthal component $\omega$
+\item $E$ - neutron energy
+\item $\psi(\vec{r},\hat{\Omega},E)$ - angular flux
+\item $\sigma(\vec{r},E)$ - total interaction cross section
+\item $\sigma_s(\vec{r},E' \rightarrow E,\hat{\Omega}'$ - probability
+  of scattering from direction $\hat{\Omega}'$ into an angular domain
+  $d\hat{\Omega}'$ about the direction $\hat{\Omega}$ and from energy
+  $E'$ to an energy domain $dE'$ about energy $E$
+\item $q(\vec{r},\hat{\Omega},E)$ - external source of neutrons.
+\end{itemize}
+For this work, it is sufficient to formulate
+Eq~(\ref{eq:general_transport}) in 1-dimensonal Cartesian geometry:
+\begin{equation}
+  \mu \frac{\partial}{\partial x} \psi(x,\mu,E) + \sigma(x,E)
+  \psi(x,\mu,E) = \int dE' \int d\Omega' \sigma_s(x,E' \rightarrow
+  E,\hat{\Omega}' \rightarrow \hat{\Omega})
+  \psi(\vec{r},\hat{\Omega}',E') + \frac{q(x,E)}{4 \pi}\:,
+  \label{eq:general_transport}
+\end{equation}
+where the angular component of the solution is no longer dependent on
+the azimuthal direction of travel and an isotropic source of neutrons
+is assumed.
+
+\subsection{Derivation of the $P_N$ Equations}
+\label{subsec:pn_equations}
+Next, we derive the $P_N$ equations, a simplified form of the general
+transport equation where Legendre polynomials are used to expand the
+angular flux and scattering cross section variables as a means of
+capturing the angular structure of the solution. Before deriving this
+form of the transport equation, we briefly discuss a few properties of
+Legendre polynomials that we will find useful in the derivation.
+
+\subsubsection{Legendre Polynomials}
+\label{subsubsec:legendre_polys}
+
+\subsubsection{Planar $P_N$ Equations}
+\label{subsubsec:planar_pn}
+
+\subsubsection{Boundary Conditions for the $P_N$ Equations}
+
+%%---------------------------------------------------------------------------%%
+\section{Spectral Analysis of the $SP_N$ Equations}
+\label{sec:spectral_analysis}
+
+%%---------------------------------------------------------------------------%%
+\section{Monte Carlo Solutions for the $SP_N$ Equations}
+\label{sec:monte_carlo}
+
+%%---------------------------------------------------------------------------%%
+\section{Conclusion}
+\label{sec:conclusion}
+
+%%---------------------------------------------------------------------------%%
 \pagebreak
 \bibliographystyle{ieeetr}
-\bibliography{paper}
+\bibliography{references}
 \end{document}
 
 
