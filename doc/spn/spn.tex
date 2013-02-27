@@ -85,6 +85,8 @@ with the variables defined as:
 \item $\vec{r}$ - neutron spatial position
 \item $\hat{\Omega}$ - neutron streaming direction with radial
   component $\mu$ and azimuthal component $\omega$
+\item $\hat{\Omega}' \cdot \hat{\Omega} = \mu_0$ is the angle of
+  scattering
 \item $E$ - neutron energy
 \item $\psi(\vec{r},\hat{\Omega},E)$ - angular flux
 \item $\sigma(\vec{r},E)$ - total interaction cross section
@@ -127,7 +129,7 @@ following form \cite{lewis_computational_1993}:
 \end{equation}
 These functions have several nice properties including orthogonality:
 \begin{equation}
-  \int_{-1}^{1} P_l(\mu) P_{l'}(\mu) d\mu = \frac{2}{2l+1}\delta_{l l'}\:,
+  \int_{-1}^{1} P_l(\mu) P_{l'}(\mu) d\mu = \frac{1}{2l+1}\delta_{l l'}\:,
   \label{eq:legendre_orthog}
 \end{equation}
 a recurrence relation:
@@ -209,6 +211,182 @@ moment of the neutron flux and is given by:
   \phi_n(x) = \int_{-1}^1 P_n(\mu)\psi(x,\mu)d\mu\:.
   \label{eq:legendre_moments}
 \end{equation}
+We first insert the expansions given by Eq~(\ref{eq:flux_expansion})
+and (\ref{eq:scattering_expansion}) into the planar transport equation
+given by Eq~(\ref{eq:mono_transport}):
+\begin{equation}
+  \frac{\partial}{\partial x}\Big[\sum_{n=0}^\infty (2n+1) \phi_n \mu
+    P_n(\mu) \Big] + \sigma \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu) =
+  \int_{-1}^1 \sum_{m=0}^\infty (2m+1) \sigma_{sm} P_m(\mu_0)
+  \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu') d \mu' + q\:,
+  \label{eq:pn_deriv_1}
+\end{equation}
+where the dependence on the spatial variable, $x$, has been
+supressed. To arrive at the $P_N$ equations we multiply
+Eq~(\ref{eq:pn_deriv_1}) by $P_m(\mu)$ and integrate over the angular
+domain $\int_{-1}^1 d \mu$. We will look at each term in
+Eq~(\ref{eq:pn_deriv_1}) individually.
+
+\paragraph{Streaming Term}
+We first apply the multiplication and integration as prescribed above:
+\begin{equation}
+  \frac{\partial}{\partial x}\Bigg[\sum_{n=0}^\infty (2n+1) \mu \phi_n
+    P_n(\mu) \Bigg] \rightarrow \int_{-1}^1 \frac{\partial}{\partial
+    x}\Bigg[\sum_{n=0}^\infty (2n+1) \phi_n \mu P_n(\mu) P_m(\mu) \Bigg]
+  d \mu\:.
+  \label{eq:pn_deriv_2}
+\end{equation}
+The $\mu P_n(\mu)$ term can be eliminated via the recurrence relation
+given by Eq~(\ref{eq:legendre_recurrence}):
+\begin{equation}
+\int_{-1}^1 \frac{\partial}{\partial x}\Bigg[\sum_{n=0}^\infty (2n+1)
+  \frac{\phi_n}{2n+1}[(n+1)P_{n+1}(\mu) + n P_{n-1}(\mu)] P_m(\mu)
+  \Bigg] d\mu\:,
+\label{eq:pn_deriv_3}
+\end{equation}
+which expands to:
+\begin{equation}
+  \sum_{n=0}^\infty \frac{\partial}{\partial
+    x}\phi_n\Bigg[(n+1)\int_{-1}^1 P_{n+1}(\mu)P_m(\mu) d\mu + n
+    \int_{-1}^1 P_{n-1}(\mu) P_m(\mu) d\mu \Bigg] \:.
+  \label{eq:pn_deriv_4}
+\end{equation}
+This reveals the orthogonality relation given by
+Eq~(\ref{eq:legendre_orthog}) that when inserted into
+Eq~(\ref{eq:pn_deriv_3}):
+\begin{equation}
+  \sum_{n=0}^\infty \frac{\partial}{\partial
+    x}\phi_n\Bigg[(n+1)\frac{1}{2n+1}\delta_{n,n+1} +
+    n\frac{1}{2n+1}\delta_{n,n-1} \Bigg] \:.
+  \label{eq:pn_deriv_5}
+\end{equation}
+We can then distribute the Legendre moment to arrive at the final form
+of the streaming term:
+\begin{equation}
+  \sum_{n=0}^\infty \frac{\partial}{\partial x} \frac{1}{n+1} \Big[
+    (n+1) \phi_{n+1} + n \phi_{n-1} \Big] \:.
+  \label{eq:pn_deriv_6}
+\end{equation}
+
+\paragraph{Removal Term}
+To reduce the removal term, the orthogonality relation is again
+applied after the integration:
+\begin{equation}
+  \sigma \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu) \rightarrow
+  \int_{-1}^1 \sigma \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu) P_m(\mu)
+  d\mu\:,
+  \label{eq:pn_deriv_7}
+\end{equation}
+\begin{equation}
+  \sigma \sum_{n=0}^\infty (2n+1) \phi_n \frac{1}{2n+1}\:,
+  \label{eq:pn_deriv_8}
+\end{equation}
+giving for the final removal term:
+\begin{equation}
+  \sum_{n=0}^\infty \sigma \phi_n \:.
+  \label{eq:pn_deriv_9}
+\end{equation}
+
+\paragraph{Scattering Term}
+For the scattering term:
+\begin{equation}
+  \int_{-1}^1 \sum_{m=0}^\infty (2m+1) \sigma_{sm} P_m(\mu_0)
+  \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu') d\mu' \rightarrow
+  \int_{-1}^1 \int_{-1}^1 \sum_{m=0}^\infty (2m+1) \sigma_{sm} P_m(\mu)
+  P_m(\mu_0) \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu') d\mu' d\mu\:.
+  \label{eq:pn_deriv_10}
+\end{equation}
+The addition thereom from Eq~(\ref{eq:legendre_addition_3}) is applied
+to give:
+\begin{equation}
+  \int_{-1}^1 \int_{-1}^1 \sum_{m=0}^\infty (2m+1) \sigma_{sm} P_m(\mu)
+  P_m(\mu)P_m(\mu') \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu') d\mu' d\mu\:,
+  \label{eq:pn_deriv_11}
+\end{equation}
+which can be rearranged as:
+\begin{equation}
+  \sum_{m=0}^\infty \sum_{n=0}^\infty (2m+1) \sigma_{sm} (2n+1) \phi_n
+  \int_{-1}^1 P_m(\mu') P_n(\mu') d\mu' \int_{-1}^1 P_m(\mu) P_m(\mu)
+  d\mu\:.
+  \label{eq:pn_deriv_12}
+\end{equation}
+Again we can apply orthogonality to eliminate the Legendre polynomials:
+\begin{equation}
+  \sum_{m=0}^\infty \sum_{n=0}^\infty (2m+1) \sigma_{sm} (2n+1) \phi_n
+  \frac{1}{2n+1}\delta_{nm}\frac{1}{2m+1}\delta_{mm}\:,
+  \label{eq:pn_deriv_13}
+\end{equation}
+which is reduced to:
+\begin{equation}
+  \sum_{n=0}^\infty \sigma_{sn} \phi_n\:,
+  \label{eq:pn_deriv_14}
+\end{equation}
+with the dependence on the index $m$ eliminated.
+
+\paragraph{Source Term}
+The laste term we are concerned with in Eq~(\ref{eq:pn_deriv_1}) is
+the source term:
+\begin{equation}
+  q \rightarrow \int_{-1}^1 q P_n(\mu) d\mu \:.
+  \label{eq:pn_deriv_15}
+\end{equation}
+We can leverage orthogonality by multiplying by $P_0(\mu) = 1$:
+\begin{equation}
+  \int_{-1}^1 q P_0 P_n(\mu) d\mu = \frac{q}{2*0+1}\delta_{n0}\:,
+  \label{eq:pn_deriv_16}
+\end{equation}
+giving a final source term of:
+\begin{equation}
+  q\delta_{n0}\:.
+  \label{eq:pn_deriv_17}
+\end{equation}
+
+Now that we have expanded all angular dependent terms in
+Eq~(\ref{eq:pn_deriv_1}) and reduced them appropriately, we can
+combine them to generate the $P_N$ equations:
+\begin{equation}
+    \sum_{n=0}^\infty \frac{\partial}{\partial x} \frac{1}{n+1} \Big[
+      (n+1) \phi_{n+1} + n \phi_{n-1} \Big] + \sum_{n=0}^\infty \sigma
+    \phi_n = \sum_{n=0}^\infty \sigma_{sn} \phi_n + q\delta_{n0}\:.
+  \label{eq:pn_deriv_18}
+\end{equation}
+More formally, the $P_N$ equations are written as:
+\begin{equation}
+   \frac{1}{n+1} \frac{\partial}{\partial x}\Big[ (n+1) \phi_{n+1} + n
+     \phi_{n-1} \Big] + \Sigma_n \phi_n = q\delta_{n0} \:,
+  \label{eq:final_pn_equations}
+\end{equation}
+where $\Sigma_n = \sigma-\sigma_{sn}$ and the summations are truncated
+at some level of approximation such that $n = 0,1,\dotsc,N$. This
+yields a set of $N+1$ equations for $N+2$ flux moments. We therefore
+require an additional equation to close the system. In accordance with
+the series truncation as an approximation we choose:
+\begin{equation}
+  \phi_{N+1} = 0\:.
+  \label{eq:pn_closure}
+\end{equation}
+As an example, we will construct the P5 equations from
+Eq~(\ref{eq:final_pn_equations}) and the closure given by
+Eq~(\ref{eq:pn_closure}):
+\begin{subequations}
+  \begin{gather}
+   \frac{\partial}{\partial x}\phi_{1} + \Sigma_0 \phi_0 = q\:,\\ 
+   \frac{1}{2} \frac{\partial}{\partial x}\Big[ 2
+     \phi_{2} + \phi_{0} \Big] + \Sigma_1 \phi_1 = 0\:,\\
+   \frac{1}{3} \frac{\partial}{\partial x}\Big[ 3 \phi_{3} + 2
+     \phi_{1} \Big] + \Sigma_2 \phi_2 = 0 \:,\\
+   \frac{1}{4} \frac{\partial}{\partial x}\Big[ 4 \phi_{4} + 3
+     \phi_{2} \Big] + \Sigma_3 \phi_3 = 0 \:,\\
+   \frac{1}{5} \frac{\partial}{\partial x}\Big[ 5 \phi_{5} + 4
+     \phi_{3} \Big] + \Sigma_4 \phi_4 = 0 \:,\\
+   \frac{1}{n+1} \frac{\partial}{\partial x} 5 \phi_{4} + \Sigma_5
+   \phi_5 = 0 \:.
+  \end{gather}
+  \label{eq:p5_equations}
+\end{subequations}
+This gives us a set of 6 coupled equations for the six Legendre
+moments requested defined over the entire spatial domain for a single
+energy group.
 
 \subsubsection{Boundary Conditions for the $P_N$ Equations}
 \label{subsbusec:bcs_pn}
@@ -230,8 +408,5 @@ moment of the neutron flux and is given by:
 
 %%---------------------------------------------------------------------------%%
 \pagebreak
-\bibliographystyle{ieeetr}
-\bibliography{references}
+\bibliographystyle{ieeetr} \bibliography{references}
 \end{document}
-
-
