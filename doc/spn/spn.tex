@@ -66,7 +66,7 @@ the general time-independent neutron transport equation followed by a
 derivation of the $P_N$ equations in planar geometry for multiple
 energy groups. From these equations, we then apply a set of
 approximations to yield the multi-dimensional, multi-group $SP_N$
-equations for fixed source problemsd
+equations for fixed source problems.
 
 \subsection{The Neutron Transport Equation}
 \label{subsec:transport_eq}
@@ -140,7 +140,7 @@ a recurrence relation:
 and an addition theorem:
 \begin{equation}
   P_l(\hat{\Omega} \cdot \hat{\Omega}') = \frac{1}{2n+1}\sum_{m=-l}^l
-  Y_{lm}(\hat{\Omega})Y^*_{lm}(\hat{\Omega}')\:.
+  Y_{lm}(\hat{\Omega})Y^*_{lm}(\hat{\Omega}')\:,
   \label{eq:legendre_addition}
 \end{equation}
 where the functions $Y_{lm}(\hat{\Omega})$ are the spherical
@@ -263,7 +263,7 @@ Eq~(\ref{eq:pn_deriv_3}):
 We can then distribute the Legendre moment to arrive at the final form
 of the streaming term:
 \begin{equation}
-  \sum_{n=0}^\infty \frac{\partial}{\partial x} \frac{1}{n+1} \Big[
+  \sum_{n=0}^\infty \frac{\partial}{\partial x} \frac{1}{2n+1} \Big[
     (n+1) \phi_{n+1} + n \phi_{n-1} \Big] \:.
   \label{eq:pn_deriv_6}
 \end{equation}
@@ -289,13 +289,13 @@ giving for the final removal term:
 
 \paragraph{Scattering Term}
 For the scattering term:
-\begin{equation}
+\begin{multline}
   \int_{-1}^1 \sum_{m=0}^\infty (2m+1) \sigma_{sm} P_m(\mu_0)
-  \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu') d\mu' \rightarrow
+  \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu') d\mu' \rightarrow\\
   \int_{-1}^1 \int_{-1}^1 \sum_{m=0}^\infty (2m+1) \sigma_{sm} P_m(\mu)
   P_m(\mu_0) \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu') d\mu' d\mu\:.
   \label{eq:pn_deriv_10}
-\end{equation}
+\end{multline}
 The addition thereom from Eq~(\ref{eq:legendre_addition_3}) is applied
 to give:
 \begin{equation}
@@ -324,8 +324,8 @@ which is reduced to:
 with the dependence on the index $m$ eliminated.
 
 \paragraph{Source Term}
-The laste term we are concerned with in Eq~(\ref{eq:pn_deriv_1}) is
-the source term:
+The last term we are concerned with in Eq~(\ref{eq:pn_deriv_1}) is the
+source term:
 \begin{equation}
   q \rightarrow \int_{-1}^1 q P_n(\mu) d\mu \:.
   \label{eq:pn_deriv_15}
@@ -345,22 +345,23 @@ Now that we have expanded all angular dependent terms in
 Eq~(\ref{eq:pn_deriv_1}) and reduced them appropriately, we can
 combine them to generate the $P_N$ equations:
 \begin{equation}
-    \sum_{n=0}^\infty \frac{\partial}{\partial x} \frac{1}{n+1} \Big[
+    \sum_{n=0}^\infty \frac{\partial}{\partial x} \frac{1}{2n+1} \Big[
       (n+1) \phi_{n+1} + n \phi_{n-1} \Big] + \sum_{n=0}^\infty \sigma
     \phi_n = \sum_{n=0}^\infty \sigma_{sn} \phi_n + q\delta_{n0}\:.
   \label{eq:pn_deriv_18}
 \end{equation}
 More formally, the $P_N$ equations are written as:
 \begin{equation}
-   \frac{1}{n+1} \frac{\partial}{\partial x}\Big[ (n+1) \phi_{n+1} + n
+   \frac{1}{2n+1} \frac{\partial}{\partial x}\Big[ (n+1) \phi_{n+1} + n
      \phi_{n-1} \Big] + \Sigma_n \phi_n = q\delta_{n0} \:,
   \label{eq:final_pn_equations}
 \end{equation}
 where $\Sigma_n = \sigma-\sigma_{sn}$ and the summations are truncated
-at some level of approximation such that $n = 0,1,\dotsc,N$. This
+at some level of approximation $N$ such that $n = 0,1,\dotsc,N$. This
 yields a set of $N+1$ equations for $N+2$ flux moments. We therefore
 require an additional equation to close the system. In accordance with
-the series truncation as an approximation we choose:
+the series truncation as an approximation we choose the last moment in
+the expansion to be zero:
 \begin{equation}
   \phi_{N+1} = 0\:.
   \label{eq:pn_closure}
@@ -371,28 +372,114 @@ Eq~(\ref{eq:pn_closure}):
 \begin{subequations}
   \begin{gather}
    \frac{\partial}{\partial x}\phi_{1} + \Sigma_0 \phi_0 = q\:,\\ 
-   \frac{1}{2} \frac{\partial}{\partial x}\Big[ 2
+   \frac{1}{3} \frac{\partial}{\partial x}\Big[ 2
      \phi_{2} + \phi_{0} \Big] + \Sigma_1 \phi_1 = 0\:,\\
-   \frac{1}{3} \frac{\partial}{\partial x}\Big[ 3 \phi_{3} + 2
+   \frac{1}{5} \frac{\partial}{\partial x}\Big[ 3 \phi_{3} + 2
      \phi_{1} \Big] + \Sigma_2 \phi_2 = 0 \:,\\
-   \frac{1}{4} \frac{\partial}{\partial x}\Big[ 4 \phi_{4} + 3
+   \frac{1}{7} \frac{\partial}{\partial x}\Big[ 4 \phi_{4} + 3
      \phi_{2} \Big] + \Sigma_3 \phi_3 = 0 \:,\\
-   \frac{1}{5} \frac{\partial}{\partial x}\Big[ 5 \phi_{5} + 4
+   \frac{1}{9} \frac{\partial}{\partial x}\Big[ 5 \phi_{5} + 4
      \phi_{3} \Big] + \Sigma_4 \phi_4 = 0 \:,\\
-   \frac{1}{n+1} \frac{\partial}{\partial x} 5 \phi_{4} + \Sigma_5
+   \frac{1}{11} \frac{\partial}{\partial x} 5 \phi_{4} + \Sigma_5
    \phi_5 = 0 \:.
   \end{gather}
   \label{eq:p5_equations}
 \end{subequations}
 This gives us a set of 6 coupled equations for the six Legendre
 moments requested defined over the entire spatial domain for a single
-energy group.
+energy group. In practice, only odd-numbered $P_N$ orders are
+generally used \cite{lewis_computational_1993}. This is due to the
+fact that using odd $N$ yields an even number of $N+1$ equations which
+can be split evenly on the left and right boundaries of the problem to
+facilitate the description of boundary conditions. We will choose this
+convention when deriving the boundary conditions.
 
 \subsubsection{Boundary Conditions for the $P_N$ Equations}
 \label{subsbusec:bcs_pn}
+Per the analysis in \cite{lewis_computational_1993}, two types of
+boundary conditions will be discussed: reflecting and Marshak. Marshak
+boundary conditions can be used to specify both vacuum conditions and
+isotropic source conditions on the boundary.
 
-\subsection{Formulation of the  $SP_N$ Equations}
+\paragraph{Reflecting Boundary Conditions}
+In this case, the incoming flux should be equivalent to the outgoing
+flux at the boundary point $x_b$:
+\begin{equation}
+  \psi(x_b,\mu) = \psi(x_b,-\mu)\:.
+  \label{eq:reflecting_condition}
+\end{equation}
+Given the legendre expansion for the flux defined in
+Eq~(\ref{eq:flux_expansion}) and the Legendre polynomial property that
+$P_n(\mu) = (-1)^n P_n(-\mu)$, the condition specified by
+Eq~(\ref{eq:reflecting_condition}) can be satisfied if
+\begin{equation}
+  \phi_n = 0,\ \forall \ \text{odd}\ n\:,
+  \label{eq:reflecting_condition_odd}
+\end{equation}
+as all even $n$ yield $P_n(\mu) = P_n(-\mu)$ and therefore an
+equivalent reflecting condition for the flux moments.
+
+\paragraph{Marshak Boundary Conditions}
+The Marshak conditions come directly from the Legendre moments of the
+flux:
+\begin{equation}
+  \int_{\mu_b} P_i(\mu) \psi(\mu) d\mu = \int_{\mu_b} P_i(\mu)
+  \psi_b(\mu) d\mu\ \ \ \ \ \ \ \ \ \ \text{for $i=1,3,...,N$}\:,
+  \label{eq:general_marshak}
+\end{equation}
+where $\psi_b(\mu)$ is the prescribed angular flux on the boundary of
+interest and $\mu_b$ the angular domain defined by the boundary. To
+discretize this condition, we again insert the angular flux expansions
+from Eq~(\ref{eq:flux_expansion}) for the fluxes defined in the
+domain:
+\begin{equation}
+  \int_{\mu_b} P_i(\mu) \sum_{n=0}^N (2n+1) \phi_n P_n(\mu) d\mu =
+  \int_{\mu_b} P_i(\mu) \psi_b(\mu) d\mu\:.
+  \label{eq:marshak_expanded}
+\end{equation}
+The boundary flux, $\phi_b(\mu)$ is assumed to known and therefore
+Eq~(\ref{eq:marshak_expanded}) defines a set of $(N+1)/2$ equations to
+be solved on each boundary in the planar case, closing the system in
+the spatial domain.
+
+As an example of applying the Marshak conditions, consider the $P_3$
+case with an isotropic boundary source $\phi_b$ on the left side of
+the domain. In this case, the angular domain over which the boundary
+flux is defined will be $\mu_b \in [0,1]$, giving the bounds of
+integration. We first expand the summation for $i=1$:
+\begin{equation}
+  \int_0^1 \mu \Bigg[ \phi_0 + 3\phi_1\mu +
+    \frac{5}{2}\phi_2(3\mu^2-1) + \frac{7}{2}\phi_3(5\mu^3-3\mu)
+    \Bigg] d\mu = \int_0^1 \mu \phi_b d\mu\:,
+  \label{eq:marshak_p1_deriv_1}
+\end{equation}
+and then $i=3$:
+\begin{equation}
+  \int_0^1 \frac{1}{2}(5\mu^3-3\mu) \Bigg[ \phi_0 + 3\phi_1\mu +
+    \frac{5}{2}\phi_2(3\mu^2-1) + \frac{7}{2}\phi_3(5\mu^3-3\mu)
+    \Bigg] d\mu = \int_0^1 \frac{1}{2}(5\mu^3-3\mu) \phi_b d\mu\:.
+  \label{eq:marshak_p3_deriv_1}
+\end{equation}
+Expanding the polynomials in $\mu$ and carrying out the simple
+integration then gives 2 equations for the left hand boundary:
+\begin{equation}
+  \phi_0 + 2\phi_1 + \frac{5}{4}\phi_2 = \phi_b\:,
+  \label{eq:marshak_p1_deriv_2}
+\end{equation}
+\begin{equation}
+  \phi_0 - 5\phi_1 - 8\phi_2 = \phi_b\:.
+  \label{eq:marshak_p1_deriv_3}
+\end{equation}
+The right hand side boundary condition will yield 2 complementary
+equations if Marshak conditions are used or 2 non-zero moments to be
+solved for if reflected conditions are used. The formulation above
+also holds for vacuum conditions where $\phi_b = 0$.
+
+\subsection{Formulation of the $SP_N$ Equations}
 \label{subsec:spn_equations}
+
+\subsection{Formulation of the Multigroup $SP_N$ Equations}
+\label{subsec:mg_spn_equations}
 
 %%---------------------------------------------------------------------------%%
 \section{Spectral Analysis of the $SP_N$ Equations}
