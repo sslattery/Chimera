@@ -124,13 +124,20 @@ applicability of our work in discrete Monte Carlo methods for linear
 systems as a possible solution method for the $SP_N$ equations. If
 formulated correctly, we hypothesis that signficant improvement in
 usage of computational resources may be observed compared to modern
-solution techniques such as those suggested.
+solution techniques such as those suggested. In addition, solving the
+$SP_N$ equations in this way also breaks away from the $S_N$ forms of
+parallelism where spatial parallelism is achieved by an efficient
+parallel sweep, angular efficiency achieved by pipelining, and energy
+parallelism achieved by decoupling the groups. With the $SP_N$
+equations as a full matrix system, we now can parallelize the problem
+as prescribed by the linear solver, which may be significantly more
+scalable than current $S_N$ transport practices.
 
 In this document we derive the multigroup $SP_N$ equations from the
 Boltzmann transport equation. We then perform a spectral analysis on
 the resulting system of equations to determine its potential
 performance with both modern Krylov methods and Monte Carlo methods
-for asymmetric systems. Following this, we devise a Monte Carlo
+for asymmetric linear systems. Following this, we devise a Monte Carlo
 synthetic acceleration method as a proposed solution scheme.
 
 %%---------------------------------------------------------------------------%%
@@ -267,7 +274,7 @@ equation:
   \label{eq:mono_transport}
 \end{equation}
 The $P_N$ equations introduce the approximation that the angular
-dependence of the scattering cross section, $sigma_s$, and the angular
+dependence of the scattering cross section, $\sigma_s$, and the angular
 flux $\psi$, can be discretized by expanding them in Legendre
 polynomials as follows:
 \begin{equation}
@@ -343,8 +350,8 @@ of the streaming term:
   \label{eq:pn_deriv_6}
 \end{equation}
 
-\paragraph{Removal Term}
-To reduce the removal term, the orthogonality relation is again
+\paragraph{Collision Term}
+To reduce the collision term, the orthogonality relation is again
 applied after the integration:
 \begin{equation}
   \sigma \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu) \rightarrow
@@ -356,7 +363,7 @@ applied after the integration:
   \sigma \sum_{n=0}^\infty (2n+1) \phi_n \frac{1}{2n+1}\:,
   \label{eq:pn_deriv_8}
 \end{equation}
-giving for the final removal term:
+giving for the final collision term:
 \begin{equation}
   \sum_{n=0}^\infty \sigma \phi_n \:.
   \label{eq:pn_deriv_9}
