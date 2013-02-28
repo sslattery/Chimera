@@ -50,13 +50,88 @@ urlcolor = blue
 }
 
 \date{\today}
-\title{Monte Carlo Solutions for the $SP_N$ Equations}
+\title{Monte Carlo Synthetic Acceleration Solutions for the $SP_N$ Equations}
 \begin{document}
 \maketitle
 
 %%---------------------------------------------------------------------------%%
 \section{Introduction}
 \label{sec:introduction}
+The neutron tranpsort problem is complicated. Solutions cover a large
+phase space and the problems of interest are often geometry complex,
+very large, or both requiring tremendous computational resources to
+generate an adequate solution. Modern deterministic methods for large
+scale problems are commonly variants on the discrete ordinates ($S_N$)
+method \cite{evans_denovo:_2010}. For full reactor core neutronics
+simulations, the $S_N$ method requires potentially trillions of
+unknown angular flux moments to be computed to achieve good accuracy
+for the repsonses to be computed. Other forms of the transport
+problem, including the $P_N$ method, take on a simpler form than the
+more common $S_N$ methods but lack in accuracy when compared while
+still requiring considerable computational resources for solutions in
+multiple dimensions.
+
+In the 1960's, Gelbard developed an ad-hoc multidimensional extension
+of the simple single dimension planar $P_N$ equations that created a
+system of coupled, diffusion-like equations known as the $SP_N$
+equations. Up until around the 1990's, the $SP_N$ methods was either
+widely unknown, widely unused, or combination of both even though
+numerical studies showed promising results with better solutions than
+diffusion theory and a significant reduction in computational time
+over more accurate methods such as discrete ordinates. Why did this
+happen? A significant problem, pointed out by Larsen, was that little
+rigor had been applied to the formulation of the $SP_N$ equations
+since their derivation through primarily heuristic arguments. Instead,
+studies at that time focused on simply comparing the results of the
+method to other contemporary transport solution strategies. In
+addition, many problems of interest from the literature at the time
+were either solved using nodal-type methods for reactor-sized problems
+are $S_N$-type methods for benchmark problems with intricate material
+configurations and potentially large flux gradients over small spatial
+domains. 
+
+So why reconsider the $SP_N$ equations? Starting in the 1990's and
+primarily due to Larsen and his colleagues, the $SP_N$ equations have
+been given a more rigorous treatment with both variational and
+asymptotic derivations performed as a means of verification. In
+addition, these equations have been more rigorously studied as
+solution methods to MOX fuel problems and have been shown to provide
+accurate solutions. With this mathematical literature to provide a
+solid numerical footing for the method, we look at its application to
+today's challenge problems in full reactor core transport. The
+reduction in numerical complexity of current full core deterministic
+solution methods using the $S_N$ approximation could mean significant
+savings in both compute time and memory required. In addition, the
+characteristics of the solution to the transport problem for a steady
+state reactor core permit diffusion theory to be used; a staple of the
+nuclear industry since its inception. Therefore, if diffusion theory
+is applicable, then finer grained solutions that capture more of the
+physics contained in the transport equation should be possible with
+the $SP_N$ method. In doing so, we also expect from the literature to
+obtain computed responses on the order of accuracy we would expect
+from an appropriately discretized $S_N$ method at a fraction of the
+cost. 
+
+To further motivate moving in this direction, recent developments in
+the Exnihilo neutronics package at Oak Ridge National Laboratory have
+permitted generation of the $SP_N$ system of equations for detailed
+full core reactor models. By fully forming these equations and
+formulating them as a linear algebra problem, we now have access to
+all of the modern advancements in computational linear algebra
+including Krylov solvers for asymmetric systems and preconditioning
+methods such as algebraic multigrid. This leads us to then explore the
+applicability of our work in discrete Monte Carlo methods for linear
+systems as a possible solution method for the $SP_N$ equations. If
+formulated correctly, we hypothesis that signficant improvement in
+usage of computational resources may be observed compared to modern
+solution techniques such as those suggested.
+
+In this document we derive the multigroup $SP_N$ equations from the
+Boltzmann transport equation. We then perform a spectral analysis on
+the resulting system of equations to determine its potential
+performance with both modern Krylov methods and Monte Carlo methods
+for asymmetric systems. Following this, we devise a Monte Carlo
+synthetic acceleration method as a proposed solution scheme.
 
 %%---------------------------------------------------------------------------%%
 \section{Derivation of the $SP_N$ Equations}
