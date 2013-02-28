@@ -1,6 +1,6 @@
 %        File: spn.tex
-\documentclass[letterpaper]{article}
-\usepackage[top=1.0in,bottom=1.0in,left=1.0in,right=1.0in]{geometry}
+\documentclass[letterpaper,12pt]{article}
+\usepackage[top=1.0in,bottom=1.0in,left=1.25in,right=1.25in]{geometry}
 \usepackage{verbatim}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -50,14 +50,14 @@ urlcolor = blue
 }
 
 \date{\today}
-\title{Monte Carlo Synthetic Acceleration Solutions for the $SP_N$ Equations}
+\title{A Monte Carlo Synthetic Acceleration Method for the $SP_N$ Equations}
 \begin{document}
 \maketitle
 
 %%---------------------------------------------------------------------------%%
 \section{Introduction}
 \label{sec:introduction}
-The neutron tranpsort problem is complicated. Solutions cover a large
+The neutron transport problem is complicated. Solutions cover a large
 phase space and the problems of interest are often geometry complex,
 very large, or both requiring tremendous computational resources to
 generate an adequate solution. Modern deterministic methods for large
@@ -86,9 +86,9 @@ studies at that time focused on simply comparing the results of the
 method to other contemporary transport solution strategies. In
 addition, many problems of interest from the literature at the time
 were either solved using nodal-type methods for reactor-sized problems
-are $S_N$-type methods for benchmark problems with intricate material
+or $S_N$-type methods for benchmark problems with intricate material
 configurations and potentially large flux gradients over small spatial
-domains. 
+domains.
 
 So why reconsider the $SP_N$ equations? Starting in the 1990's and
 primarily due to Larsen and his colleagues, the $SP_N$ equations have
@@ -147,14 +147,14 @@ equations for fixed source problems.
 \label{subsec:transport_eq}
 As a starting point we define the time-independent neutron transport
 equation \cite{lewis_computational_1993}:
-\begin{equation}
+\begin{multline}
   \hat{\Omega} \cdot \vec{\nabla} \psi(\vec{r},\hat{\Omega},E) +
-  \sigma(\vec{r},E) \psi(\vec{r},\hat{\Omega},E) = \int dE' \int
+  \sigma(\vec{r},E) \psi(\vec{r},\hat{\Omega},E) = \\ \int dE' \int
   d\Omega' \sigma_s(\vec{r},E' \rightarrow E,\hat{\Omega}' \rightarrow
   \hat{\Omega}) \psi(\vec{r},\hat{\Omega}',E') +
   q(\vec{r},\hat{\Omega},E)\:,
   \label{eq:general_transport}
-\end{equation}
+\end{multline}
 with the variables defined as:
 \begin{itemize}
 \item $\vec{r}$ - neutron spatial position
@@ -165,7 +165,7 @@ with the variables defined as:
 \item $E$ - neutron energy
 \item $\psi(\vec{r},\hat{\Omega},E)$ - angular flux
 \item $\sigma(\vec{r},E)$ - total interaction cross section
-\item $\sigma_s(\vec{r},E' \rightarrow E,\hat{\Omega}'$ - probability
+\item $\sigma_s(\vec{r},E' \rightarrow E,\hat{\Omega}')$ - probability
   of scattering from direction $\hat{\Omega}'$ into an angular domain
   $d\hat{\Omega}'$ about the direction $\hat{\Omega}$ and from energy
   $E'$ to an energy domain $dE'$ about energy $E$
@@ -173,13 +173,13 @@ with the variables defined as:
 \end{itemize}
 For this work, it is sufficient to formulate
 Eq~(\ref{eq:general_transport}) in 1-dimensonal Cartesian geometry:
-\begin{equation}
+\begin{multline}
   \mu \frac{\partial}{\partial x} \psi(x,\mu,E) + \sigma(x,E)
-  \psi(x,\mu,E) = \int dE' \int d\Omega' \sigma_s(x,E' \rightarrow
+  \psi(x,\mu,E) = \\ \int dE' \int d\Omega' \sigma_s(x,E' \rightarrow
   E,\hat{\Omega}' \rightarrow \hat{\Omega})
   \psi(\vec{r},\hat{\Omega}',E') + \frac{q(x,E)}{4 \pi}\:,
   \label{eq:cart_1d_transport}
-\end{equation}
+\end{multline}
 where the angular component of the solution is no longer dependent on
 the azimuthal direction of travel and an isotropic source of neutrons
 is assumed.
@@ -289,13 +289,13 @@ moment of the neutron flux and is given by:
 We first insert the expansions given by Eq~(\ref{eq:flux_expansion})
 and (\ref{eq:scattering_expansion}) into the planar transport equation
 given by Eq~(\ref{eq:mono_transport}):
-\begin{equation}
+\begin{multline}
   \frac{\partial}{\partial x}\Big[\sum_{n=0}^\infty (2n+1) \phi_n \mu
     P_n(\mu) \Big] + \sigma \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu) =
-  \int_{-1}^1 \sum_{m=0}^\infty (2m+1) \sigma_{sm} P_m(\mu_0)
+  \\ \int_{-1}^1 \sum_{m=0}^\infty (2m+1) \sigma_{sm} P_m(\mu_0)
   \sum_{n=0}^\infty (2n+1) \phi_n P_n(\mu') d \mu' + q\:,
   \label{eq:pn_deriv_1}
-\end{equation}
+\end{multline}
 where the dependence on the spatial variable, $x$, has been
 supressed. To arrive at the $P_N$ equations we multiply
 Eq~(\ref{eq:pn_deriv_1}) by $P_m(\mu)$ and integrate over the angular
@@ -561,7 +561,7 @@ also holds for vacuum conditions where $\phi_b = 0$.
 \label{sec:spectral_analysis}
 
 %%---------------------------------------------------------------------------%%
-\section{Monte Carlo Solutions for the $SP_N$ Equations}
+\section{Monte Carlo Synthetic Acceleration for the $SP_N$ Equations}
 \label{sec:monte_carlo}
 
 %%---------------------------------------------------------------------------%%
