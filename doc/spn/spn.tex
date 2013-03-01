@@ -73,22 +73,22 @@ multiple dimensions.
 
 In the 1960's, Gelbard developed an ad-hoc multidimensional extension
 of the simple single dimension planar $P_N$ equations that created a
-system of coupled, diffusion-like equations known as the $SP_N$
-equations. Up until around the 1990's, the $SP_N$ methods was either
-widely unknown, widely unused, or combination of both even though
-numerical studies showed promising results with better solutions than
-diffusion theory and a significant reduction in computational time
-over more accurate methods such as discrete ordinates. Why did this
-happen? A significant problem, pointed out by Larsen, was that little
-rigor had been applied to the formulation of the $SP_N$ equations
-since their derivation through primarily heuristic arguments. Instead,
-studies at that time focused on simply comparing the results of the
-method to other contemporary transport solution strategies. In
-addition, many problems of interest from the literature at the time
-were either solved using nodal-type methods for reactor-sized problems
-or $S_N$-type methods for benchmark problems with intricate material
-configurations and potentially large flux gradients over small spatial
-domains.
+system of coupled, diffusion-like equations known as the simplified
+$P_N$ ($SP_N$) equations. Up until around the 1990's, the $SP_N$
+methods was either widely unknown, widely unused, or combination of
+both even though numerical studies showed promising results with
+better solutions than diffusion theory and a significant reduction in
+computational time over more accurate methods such as discrete
+ordinates. Why did this happen? A significant problem, pointed out by
+Larsen, was that little rigor had been applied to the formulation of
+the $SP_N$ equations since their derivation through primarily
+heuristic arguments. Instead, studies at that time focused on simply
+comparing the results of the method to other contemporary transport
+solution strategies. In addition, many problems of interest from the
+literature at the time were either solved using nodal-type methods for
+reactor-sized problems or $S_N$-type methods for benchmark problems
+with intricate material configurations and potentially large flux
+gradients over small spatial domains.
 
 So why reconsider the $SP_N$ equations? Starting in the 1990's and
 primarily due to Larsen and his colleagues, the $SP_N$ equations have
@@ -559,7 +559,7 @@ also holds for vacuum conditions where $\phi_b = 0$.
 
 \subsection{Formulation of the $SP_N$ Equations}
 \label{subsec:spn_equations}
-The $SP_N$ equations give $N+1$ coupled first-order equations
+The $P_N$ equations give $N+1$ coupled first-order equations
 capturing the spatial and angular-dependence of the solution. In
 multiple dimensions, the equation set becomes large and coupled not
 only through angular moments but also through the spatial
@@ -572,7 +572,63 @@ while maintaining the angular character of the flux, making them
 amenable to solutions with modern diffusion methods.
 
 First, the $P_N$ equations can be simplified to $(N+1)/2$ second-order
-equations by the following procedure:
+equations by solving for the $n^th$ Legendre flux moment in the
+odd-order equations:
+\begin{equation}
+  \phi_n = \frac{1}{\Sigma_n}\Bigg[ q \delta_{no} -
+    \frac{\partial}{\partial x}\Big(\frac{n}{2n+1}\phi_{n-1} +
+    \frac{n+1}{2n+1} \phi_{n+1} \Big) \Bigg]\:, 
+  \label{eq:odd_moments}
+\end{equation}
+for $n = 1,3,\cdots,N$ and $\delta_{no} = 0\ \forall n \neq 0$. We can
+insert the odd moments into Eq~(\ref{eq:final_pn_equations}) to get a
+reduced group of equations for the even moments:
+\begin{multline}
+  -\frac{\partial}{\partial x}
+  \Bigg[\frac{n}{2n+1}\frac{1}{\Sigma_{n-1}} \frac{\partial}{\partial
+      x} \Big(\frac{n-1}{2n-1} \phi_{n-2} + \frac{n}{2n-1}\phi_n \Big)
+    \\+ \frac{n+1}{2n+1}\frac{1}{\Sigma_{n+1}} \frac{\partial}{\partial
+      x} \Big(\frac{n+1}{2n+3}\phi_n + \frac{n+2}{2n+3}\phi_{n+2}\Big)
+    \Bigg] \\+ \Sigma_n \phi_n = q \delta_{n0}\ \ \ \ \ \ \ \ \ n =
+  0,2,4,\cdots,N\:.
+  \label{eq:reduced_pn}
+\end{multline}
+Immediately, we note the diffusion-like nature of
+Eq~(\ref{eq:reduced_pn}) as compared to the original $P_N$
+equations. To extend these equations to multiple dimensions, gelbard
+simple replaced the x-plane spatial derivatives in the reduced set of
+equations with general multidimensional gradient operators:
+\begin{multline}
+  -\nabla \cdot \Bigg[\frac{n}{2n+1}\frac{1}{\Sigma_{n-1}} \nabla
+    \Big(\frac{n-1}{2n-1} \phi_{n-2} + \frac{n}{2n-1}\phi_n \Big) \\+
+    \frac{n+1}{2n+1}\frac{1}{\Sigma_{n+1}} \nabla
+    \Big(\frac{n+1}{2n+3}\phi_n + \frac{n+2}{2n+3}\phi_{n+2}\Big)
+    \Bigg] \\+ \Sigma_n \phi_n = q \delta_{n0}\ \ \ \ \ \ \ \ \ n =
+  0,2,4,\cdots,N\:,
+  \label{eq:spn_equations}
+\end{multline}
+yielding a multidimensional set of $(N+1)/1$ angular coupled equations
+known as the $SP_N$. Again, we provide closure to this set of
+equations with $\phi_{N+1} = 0$. As a further modification to these
+equations, we can use a change of variables to create a new group of
+equations such that the gradients are operating on a single vector. As
+a concrete example, we will consider the $SP_7$ equations:
+\begin{subequations}
+  \begin{gather}
+    -\nabla \cdot \frac{1}{3 \Sigma_1} \nabla ( \phi_0 + \phi_2 ) +
+    \Sigma_0 \phi_0 = q \\ 
+    -\nabla \cdot \Bigg[ \frac{2}{15 \Sigma_1} \nabla ( \phi_0 + \phi_2
+      ) + \frac{3}{35 \Sigma_3}( 3\phi_2 + 4\phi_4)\Bigg] + \Sigma_2
+    \phi_2 = 0\\
+    -\nabla \cdot \Bigg[ \frac{4}{63 \Sigma_3} \nabla ( 3\phi_2 +
+      4\phi_4 ) + \frac{5}{99 \Sigma_5}( 5\phi_4 + 6\phi_6)\Bigg] +
+    \Sigma_4 \phi_4 = 0\\
+    -\nabla \cdot \Bigg[ \frac{6}{143 \Sigma_5} \nabla ( 5\phi_4 +
+      6\phi_6 ) + \frac{7}{195 \Sigma_7}( 7\phi_6)\Bigg] + \Sigma_6
+    \phi_6 = 0 
+  \end{gather}
+  \label{eq:sp7_equations}
+\end{subequations}
 
 \subsection{Formulation of the Multigroup $SP_N$ Equations}
 \label{subsec:mg_spn_equations}
