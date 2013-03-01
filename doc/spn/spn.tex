@@ -192,8 +192,8 @@ equation:
   \label{eq:mono_transport}
 \end{equation}
 The $P_N$ equations introduce the approximation that the angular
-dependence of the scattering cross section, $sigma_s$, and the angular
-flux $\psi$, can be discretized by expanding them in Legendre
+dependence of the scattering cross section, $\sigma_s$, and the
+angular flux $\psi$, can be discretized by expanding them in Legendre
 polynomials as follows:
 \begin{equation}
   \psi(x,\mu) = \sum_{n=0}^\infty (2n+1)P_n(\mu)\phi_n(x)\:,
@@ -467,7 +467,7 @@ integration then gives 2 equations for the left hand boundary:
   \label{eq:marshak_p1_deriv_2}
 \end{equation}
 \begin{equation}
-  \phi_0 - 5\phi_1 - 8\phi_2 = \phi_b\:.
+  \phi_0 - 5\phi_2 - 8\phi_3 = \phi_b\:.
   \label{eq:marshak_p1_deriv_3}
 \end{equation}
 The right hand side boundary condition will yield 2 complementary
@@ -477,6 +477,20 @@ also holds for vacuum conditions where $\phi_b = 0$.
 
 \subsection{Formulation of the $SP_N$ Equations}
 \label{subsec:spn_equations}
+The $SP_N$ equations give $N+1$ coupled first-order equations
+capturing the spatial and angular-dependence of the solution. In
+multiple dimensions, the equation set becomes large and coupled not
+only through angular moments but also through the spatial
+variables. As a simpler alternative to multidimensional $P_N$
+solutions, Gelbard recognized in 1960 that the planar $P_N$ equations
+could be simplified and applied an ad-hoc method to extend them to
+multiple dimensions, yielding the $SP_N$ equations. These equations
+are not only fewer in number, but also take on a diffusion-like form
+while maintaining the angular character of the flux, making them
+amenable to solutions with modern diffusion methods.
+
+First, the $P_N$ equations can be simplified to $(N+1)/2$ second-order
+equations by the following procedure:
 
 \subsection{Formulation of the Multigroup $SP_N$ Equations}
 \label{subsec:mg_spn_equations}
