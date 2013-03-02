@@ -157,9 +157,9 @@ As a starting point we define the time-independent neutron transport
 equation \cite{lewis_computational_1993}:
 \begin{multline}
   \hat{\Omega} \cdot \vec{\nabla} \psi(\vec{r},\hat{\Omega},E) +
-  \sigma(\vec{r},E) \psi(\vec{r},\hat{\Omega},E) = \\ \int dE' \int
-  d\Omega' \sigma_s(\vec{r},E' \rightarrow E,\hat{\Omega}' \rightarrow
-  \hat{\Omega}) \psi(\vec{r},\hat{\Omega}',E') +
+  \sigma(\vec{r},E) \psi(\vec{r},\hat{\Omega},E) = \\ \int \int
+  \sigma_s(\vec{r},E' \rightarrow E,\hat{\Omega}' \rightarrow
+  \hat{\Omega}) \psi(\vec{r},\hat{\Omega}',E') d\Omega' dE' +
   q(\vec{r},\hat{\Omega},E)\:,
   \label{eq:general_transport}
 \end{multline}
@@ -183,9 +183,9 @@ For this work, it is sufficient to formulate
 Eq~(\ref{eq:general_transport}) in 1-dimensonal Cartesian geometry:
 \begin{multline}
   \mu \frac{\partial}{\partial x} \psi(x,\mu,E) + \sigma(x,E)
-  \psi(x,\mu,E) = \\ \int dE' \int d\Omega' \sigma_s(x,E' \rightarrow
-  E,\hat{\Omega}' \rightarrow \hat{\Omega})
-  \psi(\vec{r},\hat{\Omega}',E') + \frac{q(x,E)}{4 \pi}\:,
+  \psi(x,\mu,E) = \\ \int \int \sigma_s(x,E') \rightarrow
+  E,\hat{\Omega}' \rightarrow \hat{\Omega}) \psi(x,\hat{\Omega}',E')
+  d\Omega' dE' + \frac{q(x,E)}{4 \pi}\:,
   \label{eq:cart_1d_transport}
 \end{multline}
 where the angular component of the solution is no longer dependent on
@@ -210,7 +210,8 @@ following form \cite{lewis_computational_1993}:
   P_l(\mu) = \frac{1}{2^l l!}\frac{d^l}{d \mu^l}(\mu^2-1)^l\:.
   \label{eq:general_legendre_poly}
 \end{equation}
-These functions have several nice properties including orthogonality:
+These functions have several useful properties including
+orthogonality:
 \begin{equation}
   \int_{-1}^{1} P_l(\mu) P_{l'}(\mu) d\mu = \frac{1}{2l+1}\delta_{l l'}\:,
   \label{eq:legendre_orthog}
@@ -644,7 +645,7 @@ or equivalently:
 \begin{subequations}
   \begin{gather}
     \phi_0 = u_1 - \frac{2}{3}u_2 + \frac{8}{15}u_3 -
-    \frac{16}{35}u_4\\
+    \frac{16}{35}u_4 \\
     \phi_2 = \frac{1}{3}u_2 - \frac{4}{15}u_3 + \frac{8}{35}u_4\\ 
     \phi_4 = \frac{1}{5}u_3 - \frac{6}{35}u_4\\
     \phi_6 = \frac{1}{7}u_4\:.
@@ -790,16 +791,216 @@ equations:
     \frac{81}{128}\phi_4 + \phi_5 + \frac{325}{512}\phi_6 =
     \frac{1}{16}\phi_{b}\\ -\frac{5}{128}\phi_0 + \frac{7}{64}\phi_2 -
     \frac{105}{512}\phi_4 + \frac{325}{512}\phi_6 + \phi_7 =
-    -\frac{5}{128}\phi_{b}\:,\\
+    -\frac{5}{128}\phi_{b}\:,
   \end{gather}
   \label{eq:spn_bnd_integrated}
 \end{subequations}
 where $\phi_b$ is again an isotropic source prescribed on the planar
 boundary. For the odd moment in each boundary equation, we insert
-Eq~(\ref{eq:odd_moments}) to remove them, leaving only the even moments:
+Eq~(\ref{eq:odd_moments}) to remove them, leaving only the even
+moments and a set of differential equations:
+\begin{subequations}
+  \begin{gather}
+    \frac{1}{2}\phi_0 + \frac{1}{3\Sigma_1}\frac{\partial}{\partial
+      x}(\phi_0+2\phi_2) + \frac{5}{8}\phi_2 - \frac{3}{16}\phi_4 +
+    \frac{13}{128}\phi_6 = \frac{1}{2}\phi_{b}\\ -\frac{1}{8}\phi_0 +
+    \frac{5}{8}\phi_2 + \frac{1}{7\Sigma_3}\frac{\partial}{\partial
+      x}(3\phi_2 + 4\phi_4) + \frac{81}{128}\phi_4 -
+    \frac{13}{64}\phi_6 = -\frac{1}{8}\phi_{b}\\ \frac{1}{16}\phi_0 -
+    \frac{25}{128}\phi_2 + \frac{81}{128}\phi_4 +
+    \frac{1}{11\Sigma_5}\frac{\partial}{\partial x}(5\phi_4 + 6\phi_6)
+    + \frac{325}{512}\phi_6 =
+    \frac{1}{16}\phi_{b}\\ -\frac{5}{128}\phi_0 + \frac{7}{64}\phi_2 -
+    \frac{105}{512}\phi_4 + \frac{325}{512}\phi_6 +
+    \frac{1}{15\Sigma_7}\frac{\partial}{\partial x}(7\phi_6)
+    = -\frac{5}{128}\phi_{b}\:.
+  \end{gather}
+  \label{eq:spn_bnd_subs}
+\end{subequations}
+We can again make the substitution of variables given by
+Eqs~(\ref{eq:spn7_subs}) and (\ref{eq:spn7_subs_inverse}) for
+consitency with the equations defined on the domain. In addition, we
+apply the $SP_N$ approximation to the derivatives by assuming they are
+instead multidimensional gradients on the boundary such that
+$\frac{\partial}{\partial x} \rightarrow
+\hat{\mathbf{n}}\cdot\nabla$. Doing this gives:
+\begin{multline}
+    \frac{1}{2}\Big(u_1 - \frac{2}{3}u_2 + \frac{8}{15}u_3 -
+    \frac{16}{35}u_4\Big) +
+    \frac{1}{3\Sigma_1}\hat{\mathbf{n}}\cdot\nabla\Big(\Big(u_1 -
+    \frac{2}{3}u_2 + \frac{8}{15}u_3 -
+    \frac{16}{35}u_4\Big)+\\2\Big(\frac{1}{3}u_2 - \frac{4}{15}u_3 +
+    \frac{8}{35}u_4\Big)\Big) + \frac{5}{8}\Big(\frac{1}{3}u_2 -
+    \frac{4}{15}u_3 + \frac{8}{35}u_4\Big)
+    -\\ \frac{3}{16}\Big(\frac{1}{5}u_3 - \frac{6}{35}u_4\Big) +
+    \frac{13}{128}\Big(\frac{1}{7}u_4\Big) = \frac{1}{2}\phi_{b}\:,
+\end{multline}
+\begin{multline}
+    -\frac{1}{8}\Big(u_1 - \frac{2}{3}u_2 + \frac{8}{15}u_3 -
+    \frac{16}{35}u_4\Big) + \frac{5}{8}\Big(\frac{1}{3}u_2 -
+    \frac{4}{15}u_3 + \frac{8}{35}u_4\Big)
+    +\\ \frac{1}{7\Sigma_3}\hat{\mathbf{n}}\cdot\nabla\Big(3\Big(\frac{1}{3}u_2
+    - \frac{4}{15}u_3 + \frac{8}{35}u_4\Big) + 4\Big(\frac{1}{5}u_3 -
+    \frac{6}{35}u_4\Big)\Big) + \frac{81}{128}\Big(\frac{1}{5}u_3
+    -\\ \frac{6}{35}u_4\Big) - \frac{13}{64}\Big(\frac{1}{7}u_4\Big) =
+    -\frac{1}{8}\phi_{b}\:,
+\end{multline}
+\begin{multline}
+    \frac{1}{16}\Big(u_1 - \frac{2}{3}u_2 + \frac{8}{15}u_3 -
+    \frac{16}{35}u_4\Big) - \frac{25}{128}\Big(\frac{1}{3}u_2 -
+    \frac{4}{15}u_3 +\\ \frac{8}{35}u_4\Big) +
+    \frac{81}{128}\Big(\frac{1}{5}u_3 - \frac{6}{35}u_4\Big) +
+    \frac{1}{11\Sigma_5}\hat{\mathbf{n}}\cdot\nabla\Big(5\Big(\frac{1}{5}u_3
+    -\\ \frac{6}{35}u_4\Big) + 6\Big(\frac{1}{7}u_4\Big)\Big) +
+    \frac{325}{512}\Big(\frac{1}{7}u_4\Big) = \frac{1}{16}\phi_{b}\:,
+\end{multline}
+\begin{multline}
+    -\frac{5}{128}\Big(u_1 - \frac{2}{3}u_2 + \frac{8}{15}u_3 -
+    \frac{16}{35}u_4\Big) + \frac{7}{64}\Big(\frac{1}{3}u_2 -
+    \frac{4}{15}u_3 + \frac{8}{35}u_4\Big)
+    -\\ \frac{105}{512}\Big(\frac{1}{5}u_3 - \frac{6}{35}u_4\Big) +
+    \frac{325}{512}\Big(\frac{1}{7}u_4\Big)
+    +\\ \frac{1}{15\Sigma_7}\hat{\mathbf{n}}\cdot\nabla\Big(7\Big(\frac{1}{7}u_4\Big)\Big)
+    = -\frac{5}{128}\phi_{b}\:.
+\end{multline}
+By rearranging the system such that we have a single gradient operator
+in each equation, we again have a matrix system:
+\begin{equation}
+  \hat{\mathbf{n}} \cdot \mathbf{D} \nabla \mathbf{u} + \mathbf{B}
+  \mathbf{u} = \mathbf{s}\:,
+  \label{eq:spn_bnd_matrix}
+\end{equation}
+where $\mathbf{D}$ and $\mathbf{u}$ are defined as before and:
+\begin{equation}
+  \mathbf{s} = \Big(\frac{1}{2}\phi_b\ -\frac{1}{8}\phi_b\
+  \frac{1}{16}\phi_b\ -\frac{5}{128}\phi_b \Big)^T\:,
+  \label{eq:spn_bnd_source}
+\end{equation}
+is the source vector on the boundary and
+%% I grabbed this matrix from Tom's tech note again.
+\begin{equation}
+  \mathbf{B} = \begin{bmatrix}
+    \frac{1}{2} &
+    -\frac{1}{8} &
+    \frac{1}{16} &
+    -\frac{5}{128} \\
+    %%
+    &&&\\
+    %%
+    -\frac{1}{8} &
+    \frac{7}{24} &
+    -\frac{41}{384} &
+    \frac{1}{16} \\
+    %%
+    &&&\\
+    %%
+    \frac{1}{16} &
+    -\frac{41}{384} &
+    \frac{407}{1920} &
+    -\frac{233}{2560} \\
+    %%
+    &&&\\
+    %%
+    -\frac{5}{128} &
+    \frac{1}{16} &
+    -\frac{233}{2560} &
+    \frac{3023}{17920}
+  \end{bmatrix}\:,
+  \label{eq:B}
+\end{equation}
+is a dense matrix of coefficients. Again, as pointed out by Evans, the
+$SP_1$ approximation reduces this boundary condition to the standard
+Marshak diffusion boundary condition. For reflecting boundary
+conditions, we use the same procedure as the $P_N$ equations where the
+odd-moments are zero such that Eq~(\ref{eq:reflecting_condition}) is
+true. From setting Eq~(\ref{eq:odd_moments}) to zero for odd $\phi_n$
+and again substituting Eq~(\ref{eq:spn7_subs}) we immediately find
+that:
+\begin{equation}
+  \nabla \mathbf{u} = 0
+  \label{eq:spn_reflecting}
+\end{equation}
+for reflecting $SP_N$ boundaries, providing enough equations to close
+the system.
 
 \subsection{Formulation of the Multigroup $SP_N$ Equations}
 \label{subsec:mg_spn_equations}
+Up to this point, we have formulated the $P_N$ and subsequently the
+$SP_N$ equations for a single neutron energy. To expand these
+equations for multiple energies, we start by stating the multigroup
+neutron transport equation for a single dimension for planar geometry:
+\begin{multline}
+  \mu \frac{\partial}{\partial x} \psi^g(x,\mu) + \sigma^g(x)
+  \psi^g(x,\mu) = \\ \sum_{g'=0}^{G} \int
+  \sigma_s^{gg'}(x,\hat{\Omega}' \rightarrow \hat{\Omega})
+  \psi^{g'}(x,\hat{\Omega}') d\Omega' + \frac{q^g(x)}{4 \pi}\:,
+  \label{eq:cart_1d_multigroup}
+\end{multline}
+where $g$ denotes the group index of $0$ to $G$ groups where $G=N_g-1$
+and the integration of the scattering emission term of energy has been
+replaced by a discrete summation. For scattering, $\sigma_s^{gg'}$
+provides the probability of scattering at a particular angle from
+group $g$ to $g'$. The result is an equation nearly identical in form
+to Eq~(\ref{eq:cart_1d_transport}) where now instead of forming the
+$P_N$ and $SP_N$ equations for a single energy group, we form them for
+each of the energy groups with group coupling occuring through the
+scattering term. The multigroup $P_N$ equations are then:
+\begin{equation}
+   \frac{1}{2n+1} \frac{\partial}{\partial x}\Big[ (n+1) \phi^g_{n+1}
+     + n \phi^g_{n-1} \Big] +
+   \sum_{g'}(\sigma^g\delta_{gg'}-\sigma^{gg'}_{sn}) \phi^g_n =
+   q\delta_{n0} \:,
+  \label{eq:multigroup_pn_equations}
+\end{equation}
+for $n = 0,1,\dotsc,N$ where the flux and scattering moments are
+defined in a group. We observe that a $N_g \times N_g$ scattering
+matrix is formed:
+\begin{equation}
+  \mathbf{\Sigma}_n =
+  \sum_{g'}(\sigma^g\delta_{gg'}-\sigma^{gg'}_{sn})\:,
+  \label{eq:scattering_matrix}
+\end{equation}
+or expanded:
+%% Also grabbed this matrix from Tom's tech note.
+\begin{equation}
+  \mathbf{\Sigma}_n =
+  \begin{bmatrix}
+    (\sigma^0-\sigma_{sn}^{00}) & -\sigma_{sn}^{01} & \dots &
+    -\sigma_{sn}^{0G} \\ &&&\\ -\sigma_{sn}^{10} &
+    (\sigma^1-\sigma_{sn}^{11}) & \dots & -\sigma_{sn}^{1G}
+    \\ &&&\\ \vdots & \vdots & \ddots & \vdots
+    \\ &&&\\ -\sigma_{sn}^{G0} & -\sigma_{sn}^{G1} & \dots &
+    (\sigma^G-\sigma_{sn}^{GG})
+  \end{bmatrix}\:.
+\end{equation}
+It is also useful to combine the group flux moments and sources into a
+single vector for more compact notation:
+\begin{equation}
+  \mathbf{\Phi_n} = (\phi^0_n\ \phi^1_n\ \cdots \phi^G_n )^T\:, 
+  \label{eq:group_flux_vector}
+\end{equation}
+\begin{equation}
+  \mathbf{q} = (q^0\ q^1\ \cdots q^G )^T\:.
+  \label{eq:group_source_vector}
+\end{equation}
+Next, we apply the $SP_N$ approximation to
+Eq~(\ref{eq:multigroup_pn_equations}) in identical fashion to the
+monoenergetic case. This gives:
+\begin{multline}
+  -\nabla \cdot \Bigg[\frac{n}{2n+1}\mathbf{\Sigma_{n-1}}^{-1} \nabla
+    \Big(\frac{n-1}{2n-1} \mathbf{\Phi_{n-2}} +
+    \frac{n}{2n-1}\mathbf{\Phi_n} \Big) \\+
+    \frac{n+1}{2n+1}\mathbf{\Sigma_{n+1}}^{-1} \nabla
+    \Big(\frac{n+1}{2n+3}\mathbf{\Phi_n} +
+    \frac{n+2}{2n+3}\mathbf{\Phi_{n+2}}\Big) \Bigg] \\+
+  \mathbf{\Sigma_n} \mathbf{\Phi_n} = \mathbf{q}
+  \delta_{n0}\ \ \ \ \ \ \ \ \ n = 0,2,4,\cdots,N\:.
+  \label{eq:multigroup_spn_equations}
+\end{multline}
+This adds more complexity than the monoenergetic formulation in that
+all unknowns in this group of equations are now vector quantities and
+scattering relationships are contained in matrices rather than a
+scalar quantity.
 
 %%---------------------------------------------------------------------------%%
 \section{Spectral Analysis of the $SP_N$ Equations}
