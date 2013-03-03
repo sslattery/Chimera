@@ -732,6 +732,7 @@ and $\mathbf{A}$ a matrix of angular scattering terms:
     (\frac{256}{1225}\Sigma_0 + \frac{64}{245}\Sigma_2 +
     \frac{324}{1225}\Sigma_4 + \frac{13}{49}\Sigma_6)
   \end{bmatrix}\:.
+  \label{eq:A_matrix}
 \end{equation}
 This completes the derivation of the $SP_7$ equations for a single
 energy group. As noted by Evans, lower order $SP_N$ approximations can
@@ -906,7 +907,7 @@ is the source vector on the boundary and
     -\frac{233}{2560} &
     \frac{3023}{17920}
   \end{bmatrix}\:,
-  \label{eq:B}
+  \label{eq:B_matrix}
 \end{equation}
 is a dense matrix of coefficients. Again, as pointed out by Evans, the
 $SP_1$ approximation reduces this boundary condition to the standard
@@ -1000,7 +1001,25 @@ monoenergetic case. This gives:
 This adds more complexity than the monoenergetic formulation in that
 all unknowns in this group of equations are now vector quantities and
 scattering relationships are contained in matrices rather than a
-scalar quantity.
+scalar quantity. Because of this, the same sequence of variable
+changes and algebra can be used to build a set of matrix equations,
+this time in a block formulation:
+\begin{equation}
+  -\nabla \cdot \mathbb{D} \nabla \mathbb{U} + \mathbb{A} \mathbb{U} =
+  \mathbb{Q}\:,
+  \label{eq:spn_multigroup_system}
+\end{equation}
+where the definition of all quantities are the same with internal
+scalar values replaced by the group-vector values. In addition,
+$\mathbb{A}$ is now a block matrix of $N_g \times N_g$ submatrices
+generated from the moment scattering matrices. Analogously, on the
+boundaries we have:
+\begin{equation}
+  \hat{\mathbf{n}} \cdot \mathbb{D} \nabla \mathbb{U} + \mathbb{B}
+  \mathbb{U} = \mathbb{S}\:.
+  \label{eq:spn_multigroup_bnd}
+\end{equation}
+
 
 %%---------------------------------------------------------------------------%%
 \section{Spectral Analysis of the $SP_N$ Equations}
