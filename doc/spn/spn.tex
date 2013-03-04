@@ -59,18 +59,18 @@ urlcolor = blue
 \section{Introduction}
 \label{sec:introduction}
 The neutron transport problem is complicated. Solutions cover a large
-phase space and the problems of interest are often geometry complex,
-very large, or both requiring tremendous computational resources to
-generate an adequate solution. Modern deterministic methods for large
-scale problems are commonly variants on the discrete ordinates ($S_N$)
-method \cite{evans_denovo:_2010}. For full reactor core neutronics
-simulations, the $S_N$ method requires potentially trillions of
-unknown angular flux moments to be computed to achieve good accuracy
-for the repsonses to be computed. Other forms of the transport
-problem, including the $P_N$ method, take on a simpler form than the
-more common $S_N$ methods but lack in accuracy when compared while
-still requiring considerable computational resources for solutions in
-multiple dimensions.
+phase space and the problems of interest are often geometrically
+complex, very large, or both, requiring tremendous computational
+resources to generate an adequate solution. Modern deterministic
+methods for large scale problems are commonly variants on the discrete
+ordinates ($S_N$) method \cite{evans_denovo:_2010}. For full reactor
+core neutronics simulations, the $S_N$ method requires potentially
+trillions of unknown angular flux moments to be computed to achieve
+good accuracy for the repsonses of interest. Other forms of the
+transport problem, including the $P_N$ method, take on a simpler form
+than the more common $S_N$ methods but lack in accuracy when compared
+while still requiring considerable computational resources for
+solutions in multiple dimensions.
 
 In the 1960's, Gelbard developed an ad-hoc multidimensional extension
 of the simple single dimension planar $P_N$ equations that created a
@@ -123,7 +123,7 @@ including Krylov solvers for asymmetric systems and preconditioning
 methods such as algebraic multigrid. This leads us to then explore the
 applicability of our work in discrete Monte Carlo methods for linear
 systems as a possible solution method for the $SP_N$ equations. If
-formulated correctly, we hypothesis that signficant improvement in
+formulated correctly, we hypothesize that signficant improvement in
 usage of computational resources may be observed compared to modern
 solution techniques such as those suggested. In addition, solving the
 $SP_N$ equations in this way also breaks away from the $S_N$ forms of
@@ -144,12 +144,13 @@ synthetic acceleration method as a proposed solution scheme.
 %%---------------------------------------------------------------------------%%
 \section{Derivation of the $SP_N$ Equations}
 \label{sec:derivation}
-In this section, we derive the $SP_N$ equations. We begin by stating
-the general time-independent neutron transport equation followed by a
-derivation of the $P_N$ equations in planar geometry for multiple
-energy groups. From these equations, we then apply a set of
-approximations to yield the multi-dimensional, multi-group $SP_N$
-equations for fixed source problems.
+In this section, we derive the $SP_N$ equations, closely following the
+work of Evans. We begin by stating the general time-independent
+neutron transport equation followed by a derivation of the $P_N$
+equations in planar geometry for multiple energy groups. From these
+equations, we then apply a set of approximations to yield the
+multi-dimensional, multi-group $SP_N$ equations for fixed source
+problems.
 
 \subsection{The Neutron Transport Equation}
 \label{subsec:transport_eq}
@@ -929,7 +930,7 @@ the system.
 Up to this point, we have formulated the $P_N$ and subsequently the
 $SP_N$ equations for a single neutron energy. To expand these
 equations for multiple energies, we start by stating the multigroup
-neutron transport equation for a single dimension for planar geometry:
+neutron transport equation for a single dimension in planar geometry:
 \begin{multline}
   \mu \frac{\partial}{\partial x} \psi^g(x,\mu) + \sigma^g(x)
   \psi^g(x,\mu) = \\ \sum_{g'=0}^{G} \int
@@ -937,8 +938,8 @@ neutron transport equation for a single dimension for planar geometry:
   \psi^{g'}(x,\hat{\Omega}') d\Omega' + \frac{q^g(x)}{4 \pi}\:,
   \label{eq:cart_1d_multigroup}
 \end{multline}
-where $g$ denotes the group index of $0$ to $G$ groups where $G=N_g-1$
-and the integration of the scattering emission term of energy has been
+where $g$ denotes the group index of $0$ to $G$ groups, $G=N_g-1$, and
+the integration of the scattering emission term of energy has been
 replaced by a discrete summation. For scattering, $\sigma_s^{gg'}$
 provides the probability of scattering at a particular angle from
 group $g$ to $g'$. The result is an equation nearly identical in form
@@ -961,7 +962,7 @@ matrix is formed:
   \sum_{g'}(\sigma^g\delta_{gg'}-\sigma^{gg'}_{sn})\:,
   \label{eq:scattering_matrix}
 \end{equation}
-or expanded:
+and when expanded gives:
 %% Also grabbed this matrix from Tom's tech note.
 \begin{equation}
   \mathbf{\Sigma}_n =
