@@ -1324,7 +1324,8 @@ the $SP_N$ system:
 \item For GMRES:
   \begin{itemize}
   \item Chebyshev polynomial norm using eigenvalues of $\mathbb{L}$
-    for a fixed number of iterations
+    for a fixed number of iterations determined by stationary method
+    convergence
   \end{itemize}
 \end{itemize}
 In addition, the following parameters may be varied in the $SP_N$
@@ -1339,16 +1340,19 @@ system in Denovo:
   \item Number of mesh elements
   \item Source of neutrons (Uniform or Point)
 \end{itemize}
-We will restrict the problem description in Denovo to one similar
+We will restrict the problem description in Denovo to one similar to
 Brantley and Larsen's $SP_N$ work where the spectral radius was
 computed for convergence analysis a several proposed solution
 methods. From this definition we choose a single material problem with
 a uniform source of unity. For the boundary conditions, we choose
 reflecting conditions on all six sides of the cubic domain for an
 effectively homogenous infinite medium problem which we will mesh with
-a $5\times 5\times 5$ grid. In Brantley and Larsen's work, however, a
-single energy group was used an therefore we may not use their cross
-sections in our computations.
+a $5\times 5\times 5$ grid with $\Delta=0.1$. We are then left to vary
+the angular and energy compoenents of the system in our parameter
+studies: the $SP_N$ order, the number of energy groups, and their
+cross sections. In Brantley and Larsen's work, a single energy group
+was used and therefore we may not use their cross sections in our
+computations.
 
 %%---------------------------------------------------------------------------%%
 \section{Monte Carlo Synthetic Acceleration for the $SP_N$ Equations}
