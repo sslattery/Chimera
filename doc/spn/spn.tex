@@ -1331,7 +1331,8 @@ the $SP_N$ system:
 In addition, the following parameters may be varied in the $SP_N$
 system in Denovo:
 \begin{itemize}
-  \item $SP_N$ order
+  \item $SP_N$ (angular flux expansion) order
+  \item $P_N$ (scattering cross section expansion) order
   \item Number of energy groups $N_g$
   \item Total cross sections $\sigma^g$
   \item Scattering cross sections $\sigma_{sn}^{gg'}$
@@ -1344,15 +1345,15 @@ We will restrict the problem description in Denovo to one similar to
 Brantley and Larsen's $SP_N$ work where the spectral radius was
 computed for convergence analysis a several proposed solution
 methods. From this definition we choose a single material problem with
-a uniform source of unity. For the boundary conditions, we choose
-reflecting conditions on all six sides of the cubic domain for an
-effectively homogenous infinite medium problem which we will mesh with
-a $5\times 5\times 5$ grid with $\Delta=0.1$. We are then left to vary
-the angular and energy compoenents of the system in our parameter
-studies: the $SP_N$ order, the number of energy groups, and their
-cross sections. In Brantley and Larsen's work, a single energy group
-was used and therefore we may not use their cross sections in our
-computations.
+a uniform source of unity in all energy groups. For the boundary
+conditions, we choose reflecting conditions on all six sides of the
+cubic domain for an effectively homogenous infinite medium problem
+which we will mesh with a $5\times 5\times 5$ grid with
+$\Delta=0.1$. We are then left to vary the angular and energy
+compoenents of the system in our parameter studies: the $SP_N$ order,
+the number of energy groups, and their cross sections. In Brantley and
+Larsen's work, a single energy group was used and therefore we may not
+use their cross sections in our computations.
 
 %%---------------------------------------------------------------------------%%
 \section{Monte Carlo Synthetic Acceleration for the $SP_N$ Equations}
