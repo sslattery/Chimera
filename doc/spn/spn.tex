@@ -1335,7 +1335,7 @@ system in Denovo:
   \item $P_N$ (scattering cross section expansion) order
   \item Number of energy groups $N_g$
   \item Total cross sections $\sigma^g$
-  \item Scattering cross sections $\sigma_{sn}^{gg'}$
+  \item Scattering cross section matrix $\sigma_{sn}^{gg'}$
   \item Boundary conditions (Marshak or reflecting)
   \item Finite volume mesh size ($\Delta$ in all directions)
   \item Number of mesh elements
@@ -1343,17 +1343,36 @@ system in Denovo:
 \end{itemize}
 We will restrict the problem description in Denovo to one similar to
 Brantley and Larsen's $SP_N$ work where the spectral radius was
-computed for convergence analysis a several proposed solution
+computed for convergence analysis of several proposed solution
 methods. From this definition we choose a single material problem with
 a uniform source of unity in all energy groups. For the boundary
 conditions, we choose reflecting conditions on all six sides of the
 cubic domain for an effectively homogenous infinite medium problem
 which we will mesh with a $5\times 5\times 5$ grid with
 $\Delta=0.1$. We are then left to vary the angular and energy
-compoenents of the system in our parameter studies: the $SP_N$ order,
-the number of energy groups, and their cross sections. In Brantley and
-Larsen's work, a single energy group was used and therefore we may not
-use their cross sections in our computations.
+components of the system in our parameter studies: the $SP_N$ order,
+the number of energy groups, and their cross sections of order
+$P_N$. In Brantley and Larsen's work, a single energy group was used
+and therefore we may not use their cross sections in our multigroup
+computations. For our work, we will always choose a total cross
+section of unity for all groups and all flux moments. For the
+scattering matrix, two classes will be chosen: one with upscatter and
+one without. For the downscatter only case, all groups may scatter
+within the group and to all groups of lower energy (yielding a lower
+triangular scattering matrix) with a cross section of 0.5. For the
+upscatter case, all groups may scatter within the group and to all
+groups of lower energy given a cross section of 0.5 and for upscatter,
+all groups may scatter up to two groups higher in energy with a cross
+section of 0.25. All cross section matrices will be equivalent for
+each scattering moment. For these cross sections, the $P_N$ order will
+be varied with $N=0,1,3$. Both 1 and 10 energy groups will be used
+with the 10 energy group case using the scattering matrices specified
+above. For the angular flux, the $SP_N$ order will be varied with
+$N=1,3,5,7$. This gives a total of 36 linear system variations for the
+spectral analysis.
+
+\subsection{Spectral Analysis Results}
+\label{subsec:analysis_results}
 
 %%---------------------------------------------------------------------------%%
 \section{Monte Carlo Synthetic Acceleration for the $SP_N$ Equations}
