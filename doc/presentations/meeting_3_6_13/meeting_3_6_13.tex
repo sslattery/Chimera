@@ -58,8 +58,8 @@
   \item M \& C paper accepted - recommended for journal
   \item Corresponding with MOOSE team lead at INL
     \begin{itemize}
-    \item Happy with DTK performance for Geometry/Mesh code-to-code
-      coupling
+    \item Really happy with DTK performance for Geometry/Mesh
+      code-to-code coupling
     \item Building new solver framework around DTK in MOOSE
     \item Includes moving data between hierarchies in hierarchal
       solve system
@@ -77,7 +77,7 @@
   \begin{itemize}
   \item M \& C paper accepted for domain leakage approximations for
     Markov chains
-  \item Linear solver abstract numerical algorithm interfaces
+  \item Trilinos linear solver abstract numerical algorithm interfaces
     completed and tested
   \item Incorporated into Exnihilo with tests - can now be used as a
     linear solver
@@ -591,6 +591,60 @@ source has now been distributed through the system:
     \end{column}
 
   \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Oh No!}
+
+  \begin{itemize}
+    \item The Jacobi method won't converge - all that stuff I said in
+      my prelim won't work
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Some solutions}
+
+  There are some solutions to this problem...
+
+  \begin{itemize}
+  \item Use Gauss-Seidel for the outer stationary iteration in MCSA
+  \item Alternative matrix scalings - Dimov 1998
+  \item Resolvent Monte Carlo
+    \begin{itemize}
+    \item Spectral mapping of the Neumann series into the unit circle of
+      the complex plane
+    \item Requires some a priori knowledge about the linear system
+    \item Many Dimov papers including 2001
+      \end{itemize}
+  \item Stochastic projection methods
+    \begin{itemize}
+      \item Simple forms always converge for nonsingular systems
+      \item Simple forms yield a stationary methods
+      \item Stationary methods yield Neumann series
+      \item The matrices are more complicated
+    \end{itemize}
+  \item All of these options fit in the MCLS framework
+  \item Focusing on studying them to solve the above problems for the
+    $SP_N$ equations
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Conclusions}
+
+  \begin{itemize}
+  \item The $SP_N$ equations are a great system to use for my work
+    (assymetry, have to make some system-specific convergence
+    adjustments)
+  \item Recent results using convential Krylov and multigrid methods
+    suggest we can perform better
+  \item Real implications for full-core neutron transport solutions
+  \item A much better challenge problem
+  \end{itemize}
 
 \end{frame}
 
