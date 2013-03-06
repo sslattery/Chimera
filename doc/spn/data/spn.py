@@ -70,32 +70,32 @@ for m in xrange(pn_order+1):
     ingroup_xs.append(1.0)
     down_xs.append(0.25)
     
-dg0 = [moment_xs]
-dg1 = [down_xs], [moment_xs]
-dg2 = [down_xs], [down_xs], [moment_xs]
-dg3 = [down_xs], [down_xs], [down_xs], [moment_xs]
-dg4 = [down_xs], [down_xs], [down_xs], [down_xs], [moment_xs]
-dg5 = [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [moment_xs]
-dg6 = [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [moment_xs]
-dg7 = [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [moment_xs]
-dg8 = [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [moment_xs]
-dg9 = [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [down_xs], [moment_xs]
+dg0 = [ingroup_xs]
+dg1 = [down_xs],    [ingroup_xs]
+dg2 = [down_xs],    [down_xs],    [ingroup_xs]
+dg3 = [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
+dg4 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
+dg5 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
+dg6 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
+dg7 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
+dg8 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
+dg9 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
 
 # upscatter cross sections.
 up_xs = []
 for m in xrange(pn_order+1):
     up_xs.append(0.1)
 
-ug0 = [moment_xs], [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs]
-ug1 = [down_xs],   [moment_xs], [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs]
-ug2 = [down_xs],   [down_xs],   [moment_xs], [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs]
-ug3 = [down_xs],   [down_xs],   [down_xs],   [moment_xs], [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs]
-ug4 = [down_xs],   [down_xs],   [down_xs],   [down_xs],   [moment_xs], [up_xs],     [up_xs],     [up_xs],     [up_xs],     [up_xs]
-ug5 = [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [moment_xs], [up_xs],     [up_xs],     [up_xs],     [up_xs]
-ug6 = [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [moment_xs], [up_xs],     [up_xs],     [up_xs]
-ug7 = [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [moment_xs], [up_xs],     [up_xs]
-ug8 = [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [moment_xs], [up_xs]
-ug9 = [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [down_xs],   [moment_xs]
+ug0 = [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs]
+ug1 = [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs]
+ug2 = [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs]
+ug3 = [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs]
+ug4 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs]
+ug5 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs]
+ug6 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs]
+ug7 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs]
+ug8 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs]
+ug9 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
 
 sigma_t = 1.0
 
