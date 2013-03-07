@@ -14,7 +14,7 @@ initialize(sys.argv)
 pn_order = 1
 spn_order = 1
 num_groups = 10
-upscatter = False
+upscatter = True
 ##---------------------------------------------------------------------------##
 
 
@@ -30,7 +30,7 @@ entries = {
     "boundary"    : "reflect",
     "boundary_db" : {"reflect" : [1,1,1,1,1,1]},
     "Pn_order"    : pn_order,
-    "downscatter" : True
+    "downscatter" : False
     }
 
 db = DB.from_dict(entries)
@@ -87,61 +87,35 @@ for g in xrange(num_groups):
     dsxs.append(local_dsxs)
     local_dsxs = []
 
-dg0 = [ingroup_xs]
-dg1 = [down_xs,    ingroup_xs]
-dg2 = [down_xs,    down_xs,    ingroup_xs]
-dg3 = [down_xs,    down_xs,    down_xs,    ingroup_xs]
-dg4 = [down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
-dg5 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
-dg6 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
-dg7 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
-dg8 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
-dg9 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
-
-mdown = [dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7, dg8, dg9]
-print dsxs
-print mdown
-# upscatter cross sections.
+# upscatter cross sections
 up_xs = []
 for m in xrange(pn_order+1):
     up_xs.append(0.1)
 
 usxs = []
+local_usxs = []
 cup = []
 local_cup = []
 for g in xrange(num_groups):
     for j in xrange(num_groups-g-1):
-        local_cup.append(j)
+        local_cup.append(j+g+1)
     cup.append(local_cup)
     local_cup = []
     for i in xrange(num_groups):
         if i == g:
-            usxs.append(ingroup_xs)
+            local_usxs.append(ingroup_xs)
         elif i < g :
-            usxs.append(down_xs)
+            local_usxs.append(down_xs)
         else:
-            usxs.append(up_xs)
-
-ug0 = [ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs]
-ug1 = [down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs]
-ug2 = [down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs]
-ug3 = [down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs]
-ug4 = [down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs,      up_xs]
-ug5 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs]
-ug6 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs]
-ug7 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs]
-ug8 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs]
-ug9 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
-
-mup = [ug0, ug1, ug2, ug3, ug4, ug5, ug6, ug7, ug8, ug9]
-cup = [[1,2,3,4,5,6,7,8,9],[1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7],[1,2,3,4,5,6],[1,2,3,4,5],[1,2,3,4],[1,2,3],[1,2],[1],[]]
+            local_usxs.append(up_xs)
+    usxs.append(local_usxs)
+    local_usxs = []
 
 # assign xs
 sigma_t = 2.0
 
 if num_groups == 1:
     mat.assign_xs(0, 0, sigma_t, dsxs[0])
-
 elif upscatter:
     for g in xrange(num_groups):
         mat.assign_upscatter(0, g, sigma_t, cup[g], usxs[g])
