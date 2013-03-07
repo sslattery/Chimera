@@ -11,10 +11,16 @@ initialize(sys.argv)
 ##---------------------------------------------------------------------------##
 # SPECTRAL ANALYSIS PARAMETERS
 ##---------------------------------------------------------------------------##
-pn_order = 5
-spn_order = 3
-num_groups = 30
-upscatter = False
+pn_order = 7
+spn_order = 7
+num_groups = 10
+upscatter = True
+
+sigma_t = 5.0
+sigma_ing = 0.25
+sigma_down = 1.0
+sigma_up = 0.10
+
 ##---------------------------------------------------------------------------##
 
 
@@ -22,9 +28,9 @@ entries = {
     "delta_x"     : 1.0,
     "delta_y"     : 1.0,
     "delta_z"     : 1.0,
-    "num_cells_i" : 5,
-    "num_cells_j" : 5,
-    "num_cells_k" : 5,
+    "num_cells_i" : 4,
+    "num_cells_j" : 4,
+    "num_cells_k" : 4,
     "num_groups"  : num_groups,
     "SPN_order"   : spn_order,
     "boundary"    : "reflect",
@@ -71,8 +77,8 @@ mat.assign_id(0, [])
 ingroup_xs = []
 down_xs = []
 for m in xrange(pn_order+1):
-    ingroup_xs.append(0.25)
-    down_xs.append(1.0)
+    ingroup_xs.append(sigma_ing)
+    down_xs.append(sigma_down)
 
 dsxs = []
 local_dsxs = []
@@ -90,7 +96,7 @@ for g in xrange(num_groups):
 # upscatter cross sections
 up_xs = []
 for m in xrange(pn_order+1):
-    up_xs.append(0.1)
+    up_xs.append(sigma_up)
 
 usxs = []
 local_usxs = []
@@ -112,8 +118,6 @@ for g in xrange(num_groups):
     local_usxs = []
 
 # assign xs
-sigma_t = 2.0
-
 if num_groups == 1:
     mat.assign_xs(0, 0, sigma_t, dsxs[0])
 elif upscatter:
