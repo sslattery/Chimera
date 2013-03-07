@@ -7,12 +7,16 @@ from spn_fv import *
 
 initialize(sys.argv)
 
-##---------------------------------------------------------------------------##
 
+##---------------------------------------------------------------------------##
+# SPECTRAL ANALYSIS PARAMETERS
+##---------------------------------------------------------------------------##
 pn_order = 3
-spn_order = 7
+spn_order = 3
 num_groups = 1
 upscatter = False
+##---------------------------------------------------------------------------##
+
 
 entries = {
     "delta_x"     : 1.0,
@@ -69,40 +73,40 @@ down_xs = []
 for m in xrange(pn_order+1):
     ingroup_xs.append(1.0)
     down_xs.append(0.25)
-    
+
 dg0 = [ingroup_xs]
-dg1 = [down_xs],    [ingroup_xs]
-dg2 = [down_xs],    [down_xs],    [ingroup_xs]
-dg3 = [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
-dg4 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
-dg5 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
-dg6 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
-dg7 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
-dg8 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
-dg9 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
+dg1 = [down_xs,    ingroup_xs]
+dg2 = [down_xs,    down_xs,    ingroup_xs]
+dg3 = [down_xs,    down_xs,    down_xs,    ingroup_xs]
+dg4 = [down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
+dg5 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
+dg6 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
+dg7 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
+dg8 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
+dg9 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
 
 # upscatter cross sections.
 up_xs = []
 for m in xrange(pn_order+1):
     up_xs.append(0.1)
 
-ug0 = [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs]
-ug1 = [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs]
-ug2 = [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs]
-ug3 = [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs]
-ug4 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs],      [up_xs]
-ug5 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs],      [up_xs]
-ug6 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs],      [up_xs]
-ug7 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs],      [up_xs]
-ug8 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs], [up_xs]
-ug9 = [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [down_xs],    [ingroup_xs]
+ug0 = [ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs]
+ug1 = [down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs]
+ug2 = [down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs]
+ug3 = [down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs,      up_xs,      up_xs]
+ug4 = [down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs,      up_xs]
+ug5 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs,      up_xs]
+ug6 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs,      up_xs]
+ug7 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs,      up_xs]
+ug8 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs, up_xs]
+ug9 = [down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    down_xs,    ingroup_xs]
 
 sigma_t = 1.0
 
 # assign xs
-mdown = [dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7, dg8, dg9 ]
+mdown = [dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7, dg8, dg9]
 cdown = [[],[],[],[],[],[],[],[],[],[]]
-mup = [ug0, ug1, ug2, ug3, ug4, ug5, ug6, ug7, ug8, ug9 ]
+mup = [ug0, ug1, ug2, ug3, ug4, ug5, ug6, ug7, ug8, ug9]
 cup = [[1,2,3,4,5,6,7,8,9],[1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7],[1,2,3,4,5,6],[1,2,3,4,5],[1,2,3,4],[1,2,3],[1,2],[1],[]]
 
 if upscatter:
