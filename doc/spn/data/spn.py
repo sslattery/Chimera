@@ -12,8 +12,8 @@ initialize(sys.argv)
 # SPECTRAL ANALYSIS PARAMETERS
 ##---------------------------------------------------------------------------##
 pn_order = 3
-spn_order = 5
-num_groups = 5
+spn_order = 1
+num_groups = 1
 upscatter = True
 
 sigma_t = 5.0
@@ -28,9 +28,9 @@ entries = {
     "delta_x"     : 1.0,
     "delta_y"     : 1.0,
     "delta_z"     : 1.0,
-    "num_cells_i" : 4,
-    "num_cells_j" : 4,
-    "num_cells_k" : 4,
+    "num_cells_i" : 5,
+    "num_cells_j" : 5,
+    "num_cells_k" : 5,
     "num_groups"  : num_groups,
     "SPN_order"   : spn_order,
     "boundary"    : "reflect",
@@ -41,7 +41,7 @@ entries = {
 
 db = DB.from_dict(entries)
 
-#db.insert("linear_solver_xml_file","mcls.xml")
+db.insert("linear_solver_xml_file","mcls.xml")
 
 ## DECOMPOSITION
 
