@@ -11,9 +11,9 @@ initialize(sys.argv)
 ##---------------------------------------------------------------------------##
 # SPECTRAL ANALYSIS PARAMETERS
 ##---------------------------------------------------------------------------##
-pn_order = 7
-spn_order = 7
-num_groups = 10
+pn_order = 3
+spn_order = 5
+num_groups = 5
 upscatter = True
 
 sigma_t = 5.0
@@ -40,6 +40,8 @@ entries = {
     }
 
 db = DB.from_dict(entries)
+
+#db.insert("linear_solver_xml_file","mcls.xml")
 
 ## DECOMPOSITION
 
@@ -145,6 +147,7 @@ for g in xrange(num_groups):
 ##---------------------------------------------------------------------------##
 
 manager.write_Matlab()
+manager.solve(source)
 
 ##---------------------------------------------------------------------------##
 
