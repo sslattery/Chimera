@@ -11,10 +11,10 @@ initialize(sys.argv)
 ##---------------------------------------------------------------------------##
 # SPECTRAL ANALYSIS PARAMETERS
 ##---------------------------------------------------------------------------##
-pn_order = 3
-spn_order = 1
+pn_order = 1
+spn_order = 7
 num_groups = 1
-upscatter = True
+upscatter = False
 
 sigma_t = 5.0
 sigma_ing = 0.25
@@ -148,6 +148,16 @@ for g in xrange(num_groups):
 
 manager.write_Matlab()
 manager.solve(source)
+
+##---------------------------------------------------------------------------##
+
+adapter = manager.get_flux_adapter()
+
+flux = Vec_Dbl()
+adapter.get_local_scalar_flux(0, flux)
+
+for i in xrange( mesh.num_cells() ):
+    print flux[i]
 
 ##---------------------------------------------------------------------------##
 
