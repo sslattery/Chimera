@@ -14,7 +14,7 @@ initialize(sys.argv)
 pn_order = 5
 spn_order = 7
 num_groups = 10
-upscatter = True
+upscatter = False
 
 sigma_t = 5.0
 sigma_ing = 0.25
