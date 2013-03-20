@@ -237,11 +237,23 @@
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Point Jacobi Results}
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=2.5in,clip]{point_jacobi_data.png}
+    \caption{\textbf{Point Jacobi Preconditioning for $SP_N$ Equations}}
+  \end{figure}
   
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Block Jacobi Results}
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=3in,clip]{block_jacobi_data.png}
+    \caption{\textbf{Block Jacobi Preconditioning for $SP_N$ Equations}}
+  \end{figure}
   
 \end{frame}
 
@@ -252,7 +264,8 @@
   \item Block Jacobi preconditioning is a simple and appropriate
     solution for preconditioning the $SP_N$ equations
   \item Implementation is general - slides right into ANA framework
-  \item Implementation is scalable - local operations only
+  \item Implementation is scalable - local operations only, fast
+    LAPACK operations
   \item Implementation works - can move on with research
   \end{itemize}
 
