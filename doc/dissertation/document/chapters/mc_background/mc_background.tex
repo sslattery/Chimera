@@ -619,6 +619,232 @@ in-state transitions during the random walk sequence. Because of this,
 Jacobi preconditioning should always be performed, regardless of any
 other preconditioning that is applied to the system.
 
+\section{Monte Carlo Method Selection}
+
+The MCSA method defined in Eq.~(\ref{eq:mcsa}) uses the adjoint method
+to estimate the error in residual Monte Carlo solve instead of the
+direct method outlined in \S~\ref{sec:direct_mc}. To demonstrate
+the effectiveness of the adjoint method over the direct method within
+the context of MCSA, we choose the 2D time-dependent Poisson equation
+as a simple model problem:
+\begin{equation}
+  \frac{\partial \ve{u}}{\partial t} = \nabla^2 \ve{u}\:.
+  \label{eq:poisson_equation}
+\end{equation}
+For all comparisons, a single time step is computed with backwards Euler time
+integration. The Laplacian is differenced on a square Cartesian grid with a
+second-order five-point stencil,
+\begin{equation}
+  \nabla^2_5 = \frac{1}{\Delta^2}[u_{i-1,j} + u_{i+1,j} + u_{i,j-1} +
+    u_{i,j+1} - 4 u_{i,j}]\:,
+  \label{eq:five_point_stencil}
+\end{equation}
+and a fourth-order nine-point stencil,
+\begin{multline}
+  \nabla^2_9 = \frac{1}{6\Delta^2}[4 u_{i-1,j} + 4 u_{i+1,j} + 4
+    u_{i,j-1} + 4 u_{i,j+1} + u_{i-1,j-1}\\ + u_{i-1,j+1} +
+    u_{i+1,j-1} + u_{i+1,j+1} - 20 u_{i,j}]\:,
+  \label{eq:nine_point_stencil}
+\end{multline}
+both assuming a grid size of $\Delta$ in both the $i$ and $j$ directions. For
+a single time step solution, we then have the following sparse linear system
+to be solved with the MCSA method:
+\begin{equation}
+  \ve{A} \ve{u}^{n+1} = \ve{u}^n\:.
+  \label{eq:poisson_eq_lin_sys}
+\end{equation}
+Both the stencils will be used to vary the size and density of the sparse
+linear system in Eq.~(\ref{eq:poisson_eq_lin_sys}).
+
+A timing and convergence study is used to demonstrate the
+effectiveness of the adjoint method as compared to the direct
+method. To assess both the CPU time and number of iterations required
+to converge to a solution, a problem of constant $\Delta$ was used
+with varying values of grid size, fixing the spectral radius of the
+system at a constant value for each variation. Both the five-point and
+nine-point stencils were used with both the direct and adjoint
+solvers. For each case, $N \times N$ total random walk permutations
+were computed per MCSA iteration where $N \times N$ is the number of
+discrete grid points in the system. Solver parameters were set to a
+weight cutoff of \sn{1}{-4} for the stochastic linear solver and a
+convergence tolerance of \sn{1}{-8} for the MCSA iterative solver.
+Figure~\ref{fig:poisson_cpu_time} gives the CPU time needed for each
+case to converge in seconds and Figure~\ref{fig:poisson_iterations}
+gives the number of iterations needed for each case to converge to the
+specified tolerance as a function of the problem size. All
+computations presented in this section and
+\S~\ref{subsec:sequential_comparison} were completed on a 3.0 GHz
+Intel Core 2 Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_cpu.pdf}
+  \caption{\textbf{CPU Time (s) to converge vs. Problem Size ($N$ for
+      an $N \times N$ square mesh).} \textit{Both the adjoint and
+      direct solvers are used with the five point and nine point
+      stencils. A CPU time speedup is noted with the adjoint method
+      due to the higher density of random walk events in regions with
+      a large residual.}}
+  \label{fig:poisson_cpu_time}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_iterations.pdf}
+  \caption{\textbf{Iterations to converge vs. Problem Size ($N$ for an
+      $N \times N$ square mesh).} \textit{Both the adjoint and direct
+      solvers are used with the five-point and nine-point stencils.}}
+  \label{fig:poisson_iterations}
+\end{figure}
+
+We see clearly in Figure~\ref{fig:poisson_cpu_time} that the using the
+adjoint solver with MCSA results in a speedup over the direct solver
+while the number of iterations required to converge is also reduced as
+shown in Figure~\ref{fig:poisson_iterations}. We expect this for several
+reasons. First, with an equivalent number of histories specified for
+both solvers per MCSA iteration and a system of size $N \times N$, the
+direct solver will compute a single random walk for each state in the
+system per iteration to acquire a solution in that state, regardless
+of the size of the residual in that state. This is necessary in the
+direct method to ensure a contribution from each state as the random
+walk sequence will only contribute to the starting state. For the
+adjoint method, a total of $N \times N$ random walk events will have
+their starting state determined by sampling the residual
+vector. Because the random walk sequence contributes to the state in
+which it currently resides, sampling the residual vector as the Monte
+Carlo source gives a higher density of random walk events in regions
+with a high residual, thus giving a more accurate correction in that
+region due to reduced statistical error. From an iteration
+perspective, Figure~\ref{fig:poisson_iterations} shows that using the
+direct method yields a roughly unchanging number of iterations
+required to converge as the problem size increases. Again, if we
+desire a correction value for all states in the problem, then we must
+start a random walk in each state in the system which does not reduce
+the number of iterations need as the problem size grows. Conversely,
+as the problem size grows in the adjoint method, the additional
+stochastic histories that will be computed are concentrated in regions
+with a large residual, further reducing the stochastic error in the
+correction in those regions and subsequently reducing the required
+number of iterations to converge.
+
+As an additional comparison, the convergence behavior of MCSA can be
+analyzed using both the adjoint and direct solvers to detect any
+performance benefits. To assess the convergence properties of MCSA
+using each solver and stencil, the infinity norm of the residual
+computed in Eq.~(\ref{eq:mcsa}) was collected at each iteration for a
+fixed problem size of $N=500$. Figure~\ref{fig:poisson_convergence}
+gives the results of these computations. First, it is worthy to note
+on the semilog plot that we are indeed achieving the expected
+exponential convergence from MCSA with both Monte Carlo
+solvers. Second, we note that using the adjoint method with the same
+number of stochastic histores per MCSA iteration gives a faster rate
+of converge for the same reasons as above. We also note here that
+fewer iterations are required for convergence when the 9-point stencil
+is used to discretize the Laplacian operator (although at no gain in
+speed as given by the results in
+Figure~\ref{fig:poisson_cpu_time}). This is due to the fact that the
+smaller discretization error directly corresponds to a more well
+defined residual source generated by the Richardson extrapolation for
+the Monte Carlo calculation. In addition, the better defined source is
+transported through a domain described more accurately by the 9-point
+stencil, thus yielding a more accuracte correction vector from the
+Monte Carlo calculation.
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_conv.pdf}
+  \caption{\textbf{Infinity norm of the solution residual
+      vs. iteration number for a problem of size $N=500$.}
+    \textit{Both the adjoint and direct solvers are used with the five
+      point and nine point stencils. A higher rate of convergence is
+      observed for MCSA using the adjoint Monte Carlo solver as
+      compared to the direct method when both solvers compute the same
+      number of random walks per iteration.}}
+  \label{fig:poisson_convergence}
+\end{figure}
+
+\section{Comparison to Sequential Monte Carlo}
+\label{subsec:sequential_comparison}
+To further motivate using Monte Carlo Synthetic Acceleration, we
+compare its performance to Halton's Sequential Monte Carlo method on
+which our previous work in this area was based. For this comparison,
+we use the same transient Poisson problem as described in the previous
+section and choose only the 5-point stencil to discretize the
+Laplacian operator as the previous results yielded little qualitative
+difference between the discretizations. Both MCSA and Halton's method
+are used with the adjoint Monte Carlo solver. In order to complete the
+same study as in the previous section, the number of histories
+computed by the Monte Carlo solver at each iteration had to be doubled
+to $2 \times N \times N$ in order to ensure convergence in Sequential
+Monte Carlo Method. Figure~\ref{fig:seq_cpu_time} gives the CPU time
+results for this comparison as a function of problem size while
+Figure~\ref{fig:seq_iterations} gives the number of iterations to
+converge as a function of problem size. In both cases, using the Monte
+Carlo solver as a synthetic acceleration rather than in a pure
+residual Monte Carlo scheme resulted in a reduction in both CPU time
+and iterations required to converge. The additional Richardson
+extrapolation between each Monte Carlo solve in the MCSA method gives
+a better converged residual source to use with the Monte Carlo
+calculation while the Sequential method requires more iterations to
+achieve the same level of convergence in the residual.
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/seq_cpu.pdf}
+  \caption{\textbf{CPU Time (s) to converge vs. Problem Size ($N$ for
+      an $N \times N$ square mesh).} \textit{oth the Sequential Monte
+      Carlo and MCSA solvers are used with the five point stencils and
+      the adjoint Monte Carlo solver. The number of random walks was
+      twice the number of discrete states in the system in order to
+      ensure convergence in the Sequential Monte Carlo method.}}
+  \label{fig:seq_cpu_time}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/seq_iterations.pdf}
+  \caption{\textbf{Iterations to converge vs. Problem Size ($N$ for an
+      $N \times N$ square mesh).} \textit{Both the Sequential Monte
+      Carlo and MCSA solvers are used with the five point stencils and
+      the adjoint Monte Carlo solver.}}
+  \label{fig:seq_iterations}
+\end{figure}
+
+The benefits of using a synthetic acceleration scheme are also noted
+when the infinity norm of the residual computed at each iteration for
+both methods was collected at each iteration for a fixed problem sizes
+of $N=100$ and $N=500$ as shown in figures Figure~\ref{fig:seq_100}
+and \ref{fig:seq_500} respectively. In both cases, the Sequential
+method is subject to two regimes of exponential convergence with the
+later regime converging the slowest while the MCSA method exhibits a
+single rate of exponential convergence observed to be much higher than
+that computed by Halton's method. Even with the doubling of the number
+of stochastic histories computed per time step in order to ensure
+convergence for the Sequential method, we still see robustness issues
+with a non-monotonically decreasing residual observed for the $N=100$
+case. In both cases the MCSA solver is observed to be robust with a
+monotonically decreasing residual.
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/seq_conv_100.pdf}
+  \caption{\textbf{Infinity norm of the solution residual
+      vs. iteration number for a problem of size $N=100$.}
+    \textit{Both the Sequential Monte Carlo and MCSA solvers are used
+      with the five point stencils and the adjoint Monte Carlo
+      solver.}}
+  \label{fig:seq_100}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/seq_conv_500.pdf}
+  \caption{\textbf{Infinity norm of the solution residual
+      vs. iteration number for a problem of size $N=500$.}
+    \textit{Both the Sequential Monte Carlo and MCSA solvers are used
+      with the five point stencils and the adjoint Monte Carlo
+      solver.}}
+  \label{fig:seq_500}
+\end{figure}
+
 \section{Parallelization of Stochastic Methods}
 \label{sec:parallel_stochastic_methods}
 For Monte Carlo methods, and in particular MCSA, to be viable at the
