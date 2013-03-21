@@ -11,7 +11,7 @@ chap_spn = chapters/spn_solutions
 chap_nl = chapters/nonlinear_problem
 chap_ns = chapters/navier_stokes_solutions
 
-all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf
+all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
@@ -48,6 +48,10 @@ msod_example.pdf: $(chap_pmc)/msod_example.fig
 procassini_example.pdf: $(chap_pmc)/procassini_example.fig
 	fig2dev -L pdftex -p $(chap_pmc)/procassini_example.pdf -m 0.4 $(chap_pmc)/procassini_example.fig $(chap_pmc)/procassini_example.pdf
 	fig2dev -L pdftex_t -p $(chap_pmc)/procassini_example.pdf -m 0.4 $(chap_pmc)/procassini_example.fig $(chap_pmc)/procassini_example.pdftex_t
+
+stencil.pdf: $(chap_pmc)/stencil.fig
+	fig2dev -L pdftex -p $(chap_pmc)/stencil.pdf -m 0.4 $(chap_pmc)/stencil.fig $(chap_pmc)/stencil.pdf
+	fig2dev -L pdftex_t -p $(chap_pmc)/stencil.pdf -m 0.4 $(chap_pmc)/stencil.fig $(chap_pmc)/stencil.pdftex_t
 
 # Navier stokes figures
 natural_convection_cavity.pdf: $(chap_ns)/natural_convection_cavity.fig
