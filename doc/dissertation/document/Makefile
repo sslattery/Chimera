@@ -5,7 +5,7 @@ PDF    := dvipdf
 
 chap_intro = chapters/introduction
 chap_lp = chapters/linear_problem
-chap_pmc = chapters/parallel_mc
+chap_pmc = chapters/mc_background
 chap_nl = chapters/nonlinear_problem
 chap_prop = chapters/research_proposal
 
