@@ -5,7 +5,8 @@ PDF    := dvipdf
 
 chap_intro = chapters/introduction
 chap_lp = chapters/linear_problem
-chap_pmc = chapters/mc_background
+chap_mcb = chapters/mc_background
+chap_pmc = chapters/parallel_mc
 chap_spn = chapters/spn_solutions
 chap_nl = chapters/nonlinear_problem
 chap_ns = chapters/navier_stokes_solutions
@@ -75,6 +76,7 @@ clean:
 	-rm -f *.bak
 	-rm -f $(chap_intro)/*.pdftex_t $(chap_intro)/*.bak
 	-rm -f $(chap_lp)/*.pdftex_t $(chap_lp)/*.bak
+	-rm -f $(chap_mcb)/*.pdftex_t $(chap_mcb)/*.bak
 	-rm -f $(chap_pmc)/*.pdftex_t $(chap_pmc)/*.bak
 	-rm -f $(chap_spn)/*.pdftex_t $(chap_spn)/*.bak
 	-rm -f $(chap_nl)/*.pdftex_t $(chap_nl)/*.bak
