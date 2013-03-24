@@ -7,9 +7,12 @@ chap_intro = chapters/introduction
 chap_lp = chapters/linear_problem
 chap_mcb = chapters/mc_background
 chap_pmc = chapters/parallel_mc
-chap_spn = chapters/spn_solutions
+chap_mct = chapters/mc_theory
+chap_spne = chapters/spn_equations
+chap_spns = chapters/spn_solutions
 chap_nl = chapters/nonlinear_problem
 chap_ns = chapters/navier_stokes_solutions
+chap_conc = chapters/conclusion
 
 all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf
 	$(PDFTEX) dissertation
@@ -49,9 +52,9 @@ procassini_example.pdf: $(chap_pmc)/procassini_example.fig
 	fig2dev -L pdftex -p $(chap_pmc)/procassini_example.pdf -m 0.4 $(chap_pmc)/procassini_example.fig $(chap_pmc)/procassini_example.pdf
 	fig2dev -L pdftex_t -p $(chap_pmc)/procassini_example.pdf -m 0.4 $(chap_pmc)/procassini_example.fig $(chap_pmc)/procassini_example.pdftex_t
 
-stencil.pdf: $(chap_pmc)/stencil.fig
-	fig2dev -L pdftex -p $(chap_pmc)/stencil.pdf -m 0.4 $(chap_pmc)/stencil.fig $(chap_pmc)/stencil.pdf
-	fig2dev -L pdftex_t -p $(chap_pmc)/stencil.pdf -m 0.4 $(chap_pmc)/stencil.fig $(chap_pmc)/stencil.pdftex_t
+stencil.pdf: $(chap_mct)/stencil.fig
+	fig2dev -L pdftex -p $(chap_mct)/stencil.pdf -m 0.4 $(chap_mct)/stencil.fig $(chap_mct)/stencil.pdf
+	fig2dev -L pdftex_t -p $(chap_mct)/stencil.pdf -m 0.4 $(chap_mct)/stencil.fig $(chap_mct)/stencil.pdftex_t
 
 # Navier stokes figures
 natural_convection_cavity.pdf: $(chap_ns)/natural_convection_cavity.fig
@@ -81,10 +84,13 @@ clean:
 	-rm -f $(chap_intro)/*.pdftex_t $(chap_intro)/*.bak
 	-rm -f $(chap_lp)/*.pdftex_t $(chap_lp)/*.bak
 	-rm -f $(chap_mcb)/*.pdftex_t $(chap_mcb)/*.bak
+	-rm -f $(chap_mct)/*.pdftex_t $(chap_mct)/*.bak
 	-rm -f $(chap_pmc)/*.pdftex_t $(chap_pmc)/*.bak
-	-rm -f $(chap_spn)/*.pdftex_t $(chap_spn)/*.bak
+	-rm -f $(chap_spne)/*.pdftex_t $(chap_spne)/*.bak
+	-rm -f $(chap_spns)/*.pdftex_t $(chap_spns)/*.bak
 	-rm -f $(chap_nl)/*.pdftex_t $(chap_nl)/*.bak
 	-rm -f $(chap_ns)/*.pdftex_t $(chap_ns)/*.bak
+	-rm -f $(chap_conc)/*.pdftex_t $(chap_conc)/*.bak
 	-rm -f TAGS
 
 realclean: clean
