@@ -87,7 +87,7 @@ sequence to estimate the state transitions in
 Eq~(\ref{eq:expanded_neumann_solution}).
 
 %%---------------------------------------------------------------------------%%
-\section{Direct Method}
+\section{Direct Monte Carlo Method}
 \label{sec:direct_mc}
 In the context of matrix inversion, a direct method resembles an
 adjoint Monte Carlo method in the reactor physics community where the
@@ -303,7 +303,7 @@ Eq~(\ref{eq:variance_norm_inequality}) with $\rho(\ve{H}) < 1$ so that
 our expectation values for the solution may have a finite variance.
 
 %%---------------------------------------------------------------------------%%
-\section{Adjoint Method}
+\section{Adjoint Monte Carlo Method}
 \label{sec:adjoint_mc}
 An alternative formulation for Monte Carlo matrix inversion is the
 adjoint method. We begin by defining the linear system adjoint to
@@ -535,7 +535,7 @@ a good initial guess is not available, Halton's method is still
 characterized by poor performance.
 
 %%---------------------------------------------------------------------------%%
-\section{Monte Carlo Synthetic-Acceleration}
+\section{Monte Carlo Synthetic Acceleration}
 \label{sec:mcsa}
 Using the ideas of Halton, Evans and Mosher recently developed a Monte
 Carlo solution method that was not prohibited severely by the quality
