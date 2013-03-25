@@ -39,6 +39,11 @@ matvec_proc_1.pdf: $(chap_lp)/matvec_proc_1.fig
 	fig2dev -L pdftex -p $(chap_lp)/matvec_proc_1.pdf -m 0.4 $(chap_lp)/matvec_proc_1.fig $(chap_lp)/matvec_proc_1.pdf
 	fig2dev -L pdftex_t -p $(chap_lp)/matvec_proc_1.pdf -m 0.4 $(chap_lp)/matvec_proc_1.fig $(chap_lp)/matvec_proc_1.pdftex_t
 
+# mc background
+$(chap_mcb)/heat_eq_setup.pdf: $(chap_mcb)/heat_eq_setup.fig
+	fig2dev -L pdftex -p $(chap_mcb)/heat_eq_setup.pdf -m 0.4 $(chap_mcb)/heat_eq_setup.fig $(chap_mcb)/heat_eq_setup.pdf
+	fig2dev -L pdftex_t -p $(chap_mcb)/heat_eq_setup.pdf -m 0.4 $(chap_mcb)/heat_eq_setup.fig $(chap_mcb)/heat_eq_setup.pdftex_t
+
 # Parallel mc figures
 gentile_example.pdf: $(chap_pmc)/gentile_example.fig
 	fig2dev -L pdftex -p $(chap_pmc)/gentile_example.pdf -m 0.4 $(chap_pmc)/gentile_example.fig $(chap_pmc)/gentile_example.pdf

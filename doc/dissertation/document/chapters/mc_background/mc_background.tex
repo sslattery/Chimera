@@ -176,6 +176,42 @@ negligible. Using this, we choose terminate a random walk sequence
 with a \textit{weight cutoff}, $W_c$, that is enforced when $W_m <
 W_c$ for a particular random walk permutation.
 
+\subsection{Direct Method: Evolution of a Solution}
+\label{subsec:direct_evolution}
+
+As a means of visually demonstrating the direct Monte Carlo method,
+consider a 2-dimensional thermal diffusion problem with sources on the
+left and right hand sides of the domain and a smaller uniform source
+as shown in Figure~\ref{fig:heat_setup}.
+\begin{figure}[h!]
+  \begin{center}
+    \scalebox{1.0}{ \input{heat_eq_setup.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Problem setup for 2D heat equation.}
+    \textit{Dirichlet conditions are set for the temperature on all 4
+      boundaries of the Cartesian grid. Background source of 1.0
+      present. $50 \times 50$ grid.}}
+  \label{fig:heat_setup}
+\end{figure}
+For this problem, the number of histories used to compute the solution
+at each state in the domain was increased from 1 to 1000 in order to
+show its effects on the solution and the statistical nature of the
+method. Figure~\ref{fig:direct_evolution} gives these results.
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=4in]{direct_evolution.png}
+  \end{center}
+  \caption{\textbf{Direct Monte Carlo solution to the heat equation
+      with varying numbers of histories.} \textit{Top left: 1 history
+      per state. Top right: 10 histories per state. Bottom left: 100
+      histories per state. Bottom right: 1000 histories per state.}}
+  \label{fig:direct_evolution}
+\end{figure}
+As the number of histories used per state is increased, the
+statistical variance of the solutions is decreased as more tallies are
+made. At 1000 histories per state, enough tallies have been made to
+generate a reasonable estimate for the structure of the solution.
+
 \subsection{Estimator Variance}
 \label{subsec:estimator_variance}
 We can compute the variance of the estimator through traditional
@@ -422,6 +458,10 @@ necessary. For the adjoint method, we utilize a \textit{relative
 where $W_c$ is defined as in the direct method. The adjoint random
 walk will then be terminated after $m$ steps if $W_m < W_f$ as tally
 contributions become increasingly small.
+
+\subsection{Adjoint Method: Evolution of a Solution}
+\label{subsec:adjoint_evolution}
+
 
 %%---------------------------------------------------------------------------%%
 \section{Sequential Monte Carlo}
