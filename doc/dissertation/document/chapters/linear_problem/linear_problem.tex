@@ -269,7 +269,7 @@ eliminates the components of the residual that exist in
 $\mathcal{L}$. This situation is geometrically presented in
 Figure~\ref{fig:linear_projection_constraint}.
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \scalebox{1.75}{
       \input{chapters/linear_problem/orthogonal_residual.pdftex_t} }
@@ -378,7 +378,7 @@ $\ve{V}_m$ is found, per the constraint subspace definition it then
 follows that its basis is defined as $\ve{W}_m = \ve{A}
 \ve{V}_m$. Knowing the projections onto the search and constraint
 subspaces, the GMRES iteration may be formulated as follows:
-\begin{algorithm}[htpb!]
+\begin{algorithm}[t!]
   \caption{GMRES Iteration}
   \label{alg:gmres}
   \begin{algorithmic}
@@ -539,7 +539,7 @@ acquired through asynchronous/synchronous communications. Consider the
 sparse matrix-vector multiply in
 Figure~\ref{fig:partitioned_matvec_multiply} that is partitioned on 3
 processors.
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{
       \input{chapters/linear_problem/partitioned_matrix.pdftex_t} }
@@ -559,7 +559,7 @@ Figure~\ref{fig:partitioned_matvec_multiply}. As shown in
 Figure~\ref{fig:matvec_proc_1}, the components of the matrix will be
 multiplied by pieces of the vector that are owned by all
 processors. 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{
       \input{chapters/linear_problem/matvec_proc_1.pdftex_t} }
