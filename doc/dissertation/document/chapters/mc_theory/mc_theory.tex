@@ -1,12 +1,12 @@
-\chapter{An Analytic Framework for Parallel Monte Carlo Methods}
+\chapter{An Analytic Performance Framework for Domain-Decomposed Monte Carlo}
 \label{ch:analytic_framework}
 
 %%---------------------------------------------------------------------------%%
-\section{Domain-to-Domain Communication for Symmetric Systems}
-\label{sec:mc_comm_costs_symmetric}
+\section{Leakage Fractions for Symmetric Systems}
+\label{sec:symmetric_leakage_fractions}
 With Wagner's work, we observed that domain overlap implemented with a
 domain decomposed Monte Carlo setting reduces the amount of nearest
-neighbor communication that must occur during transport. 
+neighbor communication that must occur during transport.
 
 To date, parallel Neumann-Ulam methods have been limited to full
 domain replication with parallelism exploited through individual
@@ -590,6 +590,16 @@ more optically thick (with both increasing $n_i$ and decreasing
 $\rho(\ve{H})$), the approximations are more accurate.
 
 %%---------------------------------------------------------------------------%%
-\section{Domain-to-Domain Communication for Asymmetric Systems}
-\label{sec:mc_comm_costs_asymmetric}
+\section{Communication Costs for Symmetric Systems}
+\label{sec:Symmetric_comm_costs}
+Use Seigel's work to get communication costs.
+
+%%---------------------------------------------------------------------------%%
+\section{Leakage Fractions for Asymmetric Systems}
+\label{sec:asymmetric_leakage_fractions}
 Extend the above results to asymmetric systems.
+
+%%---------------------------------------------------------------------------%%
+\section{Communication Costs for Asymmetric Systems}
+\label{sec:asymmetric_comm_costs}
+Use Seigel's work to get communication costs.
