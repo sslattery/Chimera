@@ -185,12 +185,12 @@ left and right hand sides of the domain and a smaller uniform source
 as shown in Figure~\ref{fig:heat_setup}.
 \begin{figure}[h!]
   \begin{center}
-    \scalebox{1.0}{ \input{heat_eq_setup.pdftex_t} }
+    \scalebox{1.0}{ \input{chapters/mc_background/heat_eq_setup.pdftex_t} }
   \end{center}
   \caption{\textbf{Problem setup for 2D heat equation.}
     \textit{Dirichlet conditions are set for the temperature on all 4
-      boundaries of the Cartesian grid. Background source of 1.0
-      present. $50 \times 50$ grid.}}
+      boundaries of the Cartesian grid. Background source of 1/5 the
+      value of the boundary sources present. $50 \times 50$ grid.}}
   \label{fig:heat_setup}
 \end{figure}
 For this problem, the number of histories used to compute the solution
@@ -199,7 +199,7 @@ show its effects on the solution and the statistical nature of the
 method. Figure~\ref{fig:direct_evolution} gives these results.
 \begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=4in]{direct_evolution.png}
+    \includegraphics[width=5in]{chapters/mc_background/direct_evolution.png}
   \end{center}
   \caption{\textbf{Direct Monte Carlo solution to the heat equation
       with varying numbers of histories.} \textit{Top left: 1 history
@@ -462,6 +462,38 @@ contributions become increasingly small.
 \subsection{Adjoint Method: Evolution of a Solution}
 \label{subsec:adjoint_evolution}
 
+As a means of visually demonstrating the adjoint Monte Carlo method,
+again considerthe a 2-dimensional thermal diffusion problem with
+sources on the left and right hand sides of the domain and a smaller
+uniform source as shown in Figure~\ref{fig:heat_setup}. For the
+adjoint method, the number of histories sampled from the source was
+increased from 10 to 10,000,000 in order to show its effects on the
+solution and the statistical nature of the
+method. Figure~\ref{fig:adjoint_evolution} gives these results.
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=5in]{chapters/mc_background/adjoint_evolution.png}
+  \end{center}
+  \caption{\textbf{Adjoint Monte Carlo solution to the heat equation
+      with varying numbers of histories.} \textit{Top left: 10
+      histories per state. Top right: 1,000 histories per
+      state. Bottom left: 100,000 histories per state. Bottom right:
+      10,000,000 histories per state.}}
+  \label{fig:adjoint_evolution}
+\end{figure}
+As the number of histories used per state is increased, the
+statistical variance of the solutions is decreased as more tallies are
+made. At 10,000,000 histories per state, enough tallies have been made
+to generate a reasonable estimate for the structure of the
+solution. The visual difference between
+Figures~\ref{fig:direct_evolution} and \ref{fig:adjoint_evolution} is
+precisely that determined by their mathematics. As the adjoint
+solution evolves with the addition of histories, more histories
+emanate from the source with more penetrating the domain and making
+contributions to those tallies. As the direct method evolves, the
+solution simply comes into focus as histories are emanated from each
+state in the system and contribute only to the solution in that state
+regardless of their path.
 
 %%---------------------------------------------------------------------------%%
 \section{Sequential Monte Carlo}

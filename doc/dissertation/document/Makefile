@@ -14,7 +14,7 @@ chap_nl = chapters/nonlinear_problem
 chap_ns = chapters/navier_stokes_solutions
 chap_conc = chapters/conclusion
 
-all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf
+all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf heat_eq_setup.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
@@ -40,7 +40,7 @@ matvec_proc_1.pdf: $(chap_lp)/matvec_proc_1.fig
 	fig2dev -L pdftex_t -p $(chap_lp)/matvec_proc_1.pdf -m 0.4 $(chap_lp)/matvec_proc_1.fig $(chap_lp)/matvec_proc_1.pdftex_t
 
 # mc background
-$(chap_mcb)/heat_eq_setup.pdf: $(chap_mcb)/heat_eq_setup.fig
+heat_eq_setup.pdf: $(chap_mcb)/heat_eq_setup.fig
 	fig2dev -L pdftex -p $(chap_mcb)/heat_eq_setup.pdf -m 0.4 $(chap_mcb)/heat_eq_setup.fig $(chap_mcb)/heat_eq_setup.pdf
 	fig2dev -L pdftex_t -p $(chap_mcb)/heat_eq_setup.pdf -m 0.4 $(chap_mcb)/heat_eq_setup.fig $(chap_mcb)/heat_eq_setup.pdftex_t
 
