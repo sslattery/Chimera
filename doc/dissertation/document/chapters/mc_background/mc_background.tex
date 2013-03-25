@@ -323,26 +323,27 @@ forming the Neumann series in reverse order:
 We can readily build an estimator for the adjoint solution from this
 series expansion, but we instead desire the direct solution. We
 achieve this by using Eq~(\ref{eq:adjoint_vector_relation}) as a
-constraint. Here we have 2 unknowns, $\ve{y}$ and $\ve{d}$ and
-therefore we require a second constraint to close the system. As a
+constraint. Here we have 2 unknowns, $\ve{y}$ and $\ve{d}$, and therefore we
+require two constraints to close the system. We use
+Eq~(\ref{eq:adjoint_vector_relation}) as the first constraint and as a
 second constraint we select:
 \begin{equation}
-  \ve{d} = \boldsymbol{\delta}_i\:,
+  \ve{d} = \boldsymbol{\delta}_j\:,
   \label{eq:adjoint_second_constraint}
 \end{equation}
-where the $k^{th}$ component of the vector $\boldsymbol{\delta}_i$ is
-the Dirac delta function $\delta_{i_k,i}$. If we apply
-Eq~(\ref{eq:adjoint_second_constraint}) to our first constraint
-Eq~(\ref{eq:adjoint_vector_relation}), we get the following convenient
-outcome:
+where $\boldsymbol{\delta}_j$ is one of a set of vectors in which the
+$j^{th}$ component is the Kronecker delta function $\delta_{i,j}$. If
+we apply Eq~(\ref{eq:adjoint_second_constraint}) to our first
+constraint Eq~(\ref{eq:adjoint_vector_relation}), we get the following
+convenient outcome:
 \begin{equation}
   \langle \ve{y}, \ve{b} \rangle = \langle \ve{x},
-  \boldsymbol{\delta}_i \rangle = x_i \:,
+  \boldsymbol{\delta}_j \rangle = x_j \:,
   \label{eq:inner_product_constraint}
 \end{equation}
-meaning that if we compute the inner product of the direct source and
-the adjoint solution using a delta function source, we recover the
-direct solution we are looking for 
+meaning that if we compute the inner product of the original source
+and the adjoint solution using a delta function source, we recover one
+component of the original solution.
 
 In terms of particle transport, this adjoint method is equivalent to a
 traditional forward method. As a result of using the adjoint system,
