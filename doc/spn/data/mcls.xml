@@ -24,7 +24,7 @@
       <Parameter name="Preconditioner Type" type="string" value="Block Jacobi"/>
       <ParameterList name="Preconditioner Types">
         <ParameterList name="Block Jacobi">
-          <Parameter name="Jacobi Block Size" type="int" value="4"/>
+          <Parameter name="Jacobi Block Size" type="int" value="40"/>
         </ParameterList>
       </ParameterList>
     </ParameterList>

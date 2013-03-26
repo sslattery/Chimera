@@ -13,8 +13,8 @@ initialize(sys.argv)
 ##---------------------------------------------------------------------------##
 pn_order = 1
 spn_order = 7
-num_groups = 1
-upscatter = False
+num_groups = 10
+upscatter = True
 
 sigma_t = 5.0
 sigma_ing = 0.25
@@ -28,9 +28,9 @@ entries = {
     "delta_x"     : 1.0,
     "delta_y"     : 1.0,
     "delta_z"     : 1.0,
-    "num_cells_i" : 5,
-    "num_cells_j" : 5,
-    "num_cells_k" : 5,
+    "num_cells_i" : 2,
+    "num_cells_j" : 2,
+    "num_cells_k" : 2,
     "num_groups"  : num_groups,
     "SPN_order"   : spn_order,
     "boundary"    : "reflect",
