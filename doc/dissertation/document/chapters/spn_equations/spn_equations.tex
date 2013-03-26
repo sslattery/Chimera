@@ -1213,7 +1213,7 @@ case with full downscatter and full upscatter.
   \caption{\textbf{Spectral radius results for the point Jacobi
       preconditioned iteration matrix with 10 energy groups, full
       downscatter and full upscatter.}}
-  \label{tab:group10dspj}
+  \label{tab:group10uspj}
 \end{table}
 It is readily apparent from the tabulated data the point Jacobi
 preconditioning is insufficient as a preconditioning mechanism for
@@ -1250,12 +1250,12 @@ diagonal as shown on the left side of
 Figure~\ref{fig:block_jacobi_ex}.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4in]{chapters/spn_equations/block_preconditioning}
+    \includegraphics[width=5in]{chapters/spn_equations/block_preconditioning.png}
   \end{center}
   \caption{\textbf{Block Jacobi preconditioning strategy used for the
       $SP_N$ equations.} \textit{Left: The preconditioner is formed by
-      the diagonal blocks. Right: Inversion is trivial and decoupled
-      by block.}}
+      the diagonal blocks of the matrix. Right: Inversion is trivial
+      and decoupled by block.}}
   \label{fig:block_jacobi_ex}
 \end{figure}
 The inversion of this preconditioner is trivial as shown on the right
@@ -1263,13 +1263,15 @@ side of Figure~\ref{fig:block_jacobi_ex}. Each block can be inverted
 individually and combined to form the inverse. For high performance
 implementations this has several attractive properties. First, the
 blocks in the matrix come from the energy/angle discretization of the
-transport equation. Each block on the diagonal is bound to a mesh
-element in the system (note there are 8 blocks in each of the sparsity
-patterns with a mesh of $2 \times 2 \times 2$) and therefore we expect
-the matrix elements forming the block to be entirely local. Second,
-these blocks are typically dense and nearly lower triangular for many
+transport equation as given by Eq~(\ref{eq:A_block_matrix}). Each
+block on the diagonal is bound to a mesh element in the system (note
+there are 8 blocks on the diagonal in each of the sparsity patterns
+with a mesh of $2 \times 2 \times 2$) and therefore we expect the
+matrix elements forming the block to be entirely local. Second, these
+blocks are typically dense and nearly lower triangular for many
 transport problems meaning that established dense matrix methods based
-on LU-factorization and other schemes can be used for fast inversion.
+on LU-factorization and other schemes can be used for fast inversion
+\citep{lapack_citation}.
 
 \subsection{Block Jacobi Spectral Analysis Results}
 \label{subsec:spn_analysis_results}
