@@ -1054,7 +1054,7 @@ location and energy group.
   \begin{center}
     \begin{tabular}{ll}\hline\hline
       \multicolumn{1}{c}{Parameter}& 
-      \multicolumn{1}{c}{Value} \\\hline\hline
+      \multicolumn{1}{c}{Value} \\\hline
       Mesh Element Size & 1.0 \\
       Mesh Elements & $4 \times 4 \times 4$ \\
       Reflecting Boundaries & True \\
@@ -1100,7 +1100,7 @@ by the discretization.
   \end{center}
   \caption{\textbf{Sparsity pattern for 1-group $SP_7$
       discretization.} \textit{A $2\times 2 \times 2$ element mesh was
-      used to show detil of the blocks formed by the discretization.}}
+      used to show detail of the blocks formed by the discretization.}}
   \label{fig:group1}
 \end{figure}
 \begin{figure}[t!]
@@ -1109,7 +1109,7 @@ by the discretization.
   \end{center}
   \caption{\textbf{Sparsity pattern for 10-group $SP_7$ discretization
       with downscatter only.} \textit{A $2\times 2 \times 2$ element
-      mesh was used to show detil of the blocks formed by the
+      mesh was used to show detail of the blocks formed by the
       discretization.}}
   \label{fig:group10ds}
 \end{figure}
@@ -1119,17 +1119,157 @@ by the discretization.
   \end{center}
   \caption{\textbf{Sparsity pattern for 10-group $SP_7$ discretization
       with downscatter and upscatter.} \textit{A $2\times 2 \times 2$ element
-      mesh was used to show detil of the blocks formed by the
+      mesh was used to show detail of the blocks formed by the
       discretization.}}
   \label{fig:group10us}
 \end{figure}
+We note a few key features of the sparsity plots. The first is that
+for multigroup problems without full upscatter and downscatter
+(i.e. Figure~\ref{fig:group10ds}), the resulting matrix is asymmetric
+and therefore a linear solver that can handle asymmetric linear
+systems is required. Nearly all problems of interest will not have
+full upscattering or downscattering. Second we note the largely
+diagonal character of these systems, although the blocks from
+Eq~(\ref{eq:A_block_matrix}) are readily apparent. Our first attempt
+at preconditioning this system will be to use the point Jacobi
+preconditioning from \S\ref{sec:stochastic_preconditioning} due to
+this diagonal form.
 
 \subsection{Point Jacobi Spectral Analysis Results}
 \label{subsec:spn_analysis_results}
+Spectral radius computations were performed for the cases described
+above for the point Jacobi preconditioned iteration matrix $\ve{H} =
+\ve{I}-\ve{M}^{-1}\ve{A}$ with $\ve{M} =
+diag(\ve{A})$. Table~\ref{tab:group1pj} gives the results for the
+1-group case, Table~\ref{tab:group10dspj} for the 10-group case with
+full downscatter only and Table~\ref{tab:group10uspj} for the 10-group
+case with full downscatter and full upscatter.
+\begin{table}[t!]
+  \begin{center}
+    \begin{tabular}{cccccc}\hline\hline
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{$SP_N$ Order}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{} \\
+       &   & \textbf{1} & \textbf{3} & \textbf{5} & \textbf{7}  \\
+       & \textbf{0} & 0.0635 & 0.6722 & 1.3144 & 1.976 \\
+       & \textbf{1} & 0.0666 & 0.6728 & 1.3141 & 1.9755 \\
+      $P_N$ Order & \textbf{3} & 0.0666 & 0.6822 & 1.3141 & 1.9755 \\
+       & \textbf{5} & 0.0666 & 0.6822 & 1.3278 & 1.9847 \\
+       & \textbf{7} & 0.0666 & 0.6822 & 1.3278 & 1.9917 \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Spectral radius results for the point Jacobi
+      preconditioned iteration matrix with 1 energy group.}}
+  \label{tab:group1pj}
+\end{table}
+\begin{table}[t!]
+  \begin{center}
+    \begin{tabular}{cccccc}\hline\hline
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{$SP_N$ Order}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{} \\
+       &   & \textbf{1} & \textbf{3} & \textbf{5} & \textbf{7}  \\
+       & \textbf{0} & 0.0655 & 0.677 & 1.32 & 1.982 \\
+       & \textbf{1} & 0.071 & 0.67777 & 1.319 & 1.982 \\
+      $P_N$ Order & \textbf{3} & 0.071 & 0.687 & 1.327 & 1.9872 \\
+       & \textbf{5} & 0.071 & 0.687 & 1.336 & 1.997 \\
+       & \textbf{7} & 0.071 & 0.687 & 1.336 & 1.9995 \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Spectral radius results for the point Jacobi
+      preconditioned iteration matrix with 10 energy groups and full
+      downscatter.}}
+  \label{tab:group10dspj}
+\end{table}
+\begin{table}[t!]
+  \begin{center}
+    \begin{tabular}{cccccc}\hline\hline
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{$SP_N$ Order}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{} \\
+       &   & \textbf{1} & \textbf{3} & \textbf{5} & \textbf{7}  \\
+       & \textbf{0} & 0.7283 & 0.81 & 1.47 & 2.1446 \\
+       & \textbf{1} & 0.7317 & 0.8 & 1.46 & 2.1368 \\
+      $P_N$ Order & \textbf{3} & 0.7317 & 0.91 & 1.526 & 2.2274 \\
+       & \textbf{5} & 0.7317 & 0.91 & 1.5344 & 2.2562 \\
+       & \textbf{7} & 0.7317 & 0.91 & 1.5345 & 1.2842 \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Spectral radius results for the point Jacobi
+      preconditioned iteration matrix with 10 energy groups, full
+      downscatter and full upscatter.}}
+  \label{tab:group10dspj}
+\end{table}
+It is readily apparent from the tabulated data the point Jacobi
+preconditioning is insufficient as a preconditioning mechanism for
+problems of order $SP_5$ or higher. In addition, as upscatter is
+introduced into the system, a much larger spectral radius is observed
+at lower $SP_N$ orders, signaling a need for a better preconditioning
+strategy to both ensure and improve covergence for Monte Carlo
+methods. 
 
 \subsection{Preconditioning Strategy}
 \label{subsec:spn_preconditioning}
+If Monte Carlo methods are to be used to solve the $SP_N$ system of
+equations, a different preconditioning strategy is required in order
+to ensure convergence for systems of all $SP_N$ and $P_N$ orders with
+arbitrary energy group structures. To achieve this, we look back to
+the sparsity plots we generated in Figures~\ref{fig:group1},
+\ref{fig:group10ds} and \ref{fig:group10us} as well as the multigroup
+$SP_N$ equations. Initially, the diagonal character of the system led
+us to try point Jacobi preconditioning with only marginal
+results. From the sparsity plots we note the block structure that
+ultimately arises from the multigroup scattering matrices and their
+insertion into Eq~(\ref{eq:A_block_matrix}). When full upscatter and
+downscatter are used the resulting blocks are completely dense while
+only downscatter gives a lower triangular scattering matrix and the
+block structure shown in Figure~\ref{fig:group10ds}. 
 
+Based on this both block and diagonally dominant structure for
+matrices formed by the general multigroup $SP_N$ equations, we instead
+choose \textit{block Jacobi} preconditioning as a left preconditioner
+for the system. Like point Jacobi preconditioning, block Jacobi
+preconditioning extracts the diagonal elements of the matrix as the
+preconditioner where now the elements extracted are the blocks on the
+diagonal as shown on the left side of
+Figure~\ref{fig:block_jacobi_ex}.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=4in]{chapters/spn_equations/block_preconditioning}
+  \end{center}
+  \caption{\textbf{Block Jacobi preconditioning strategy used for the
+      $SP_N$ equations.} \textit{Left: The preconditioner is formed by
+      the diagonal blocks. Right: Inversion is trivial and decoupled
+      by block.}}
+  \label{fig:block_jacobi_ex}
+\end{figure}
+The inversion of this preconditioner is trivial as shown on the right
+side of Figure~\ref{fig:block_jacobi_ex}. Each block can be inverted
+individually and combined to form the inverse. For high performance
+implementations this has several attractive properties. First, the
+blocks in the matrix come from the energy/angle discretization of the
+transport equation. Each block on the diagonal is bound to a mesh
+element in the system (note there are 8 blocks in each of the sparsity
+patterns with a mesh of $2 \times 2 \times 2$) and therefore we expect
+the matrix elements forming the block to be entirely local. Second,
+these blocks are typically dense and nearly lower triangular for many
+transport problems meaning that established dense matrix methods based
+on LU-factorization and other schemes can be used for fast inversion.
 
 \subsection{Block Jacobi Spectral Analysis Results}
 \label{subsec:spn_analysis_results}
