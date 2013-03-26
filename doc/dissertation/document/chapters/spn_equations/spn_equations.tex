@@ -1178,7 +1178,7 @@ case with full downscatter and full upscatter.
       \multicolumn{1}{c}{} \\
        &   & \textbf{1} & \textbf{3} & \textbf{5} & \textbf{7}  \\
        & \textbf{0} & 0.0655 & 0.677 & 1.32 & 1.982 \\
-       & \textbf{1} & 0.071 & 0.67777 & 1.319 & 1.982 \\
+       & \textbf{1} & 0.071 & 0.6777 & 1.319 & 1.982 \\
       $P_N$ Order & \textbf{3} & 0.071 & 0.687 & 1.327 & 1.9872 \\
        & \textbf{5} & 0.071 & 0.687 & 1.336 & 1.997 \\
        & \textbf{7} & 0.071 & 0.687 & 1.336 & 1.9995 \\
@@ -1205,7 +1205,7 @@ case with full downscatter and full upscatter.
        & \textbf{1} & 0.7317 & 0.8 & 1.46 & 2.1368 \\
       $P_N$ Order & \textbf{3} & 0.7317 & 0.91 & 1.526 & 2.2274 \\
        & \textbf{5} & 0.7317 & 0.91 & 1.5344 & 2.2562 \\
-       & \textbf{7} & 0.7317 & 0.91 & 1.5345 & 1.2842 \\
+       & \textbf{7} & 0.7317 & 0.91 & 1.5345 & 2.2842 \\
       %%
       \hline\hline
     \end{tabular}
@@ -1247,7 +1247,8 @@ for the system. Like point Jacobi preconditioning, block Jacobi
 preconditioning extracts the diagonal elements of the matrix as the
 preconditioner where now the elements extracted are the blocks on the
 diagonal as shown on the left side of
-Figure~\ref{fig:block_jacobi_ex}.
+Figure~\ref{fig:block_jacobi_ex}. For the $SP_N$ equations,
+Eq~(\ref{eq:A_block_matrix}) gives a block size of $N_g\times(N+1)/2$.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=5in]{chapters/spn_equations/block_preconditioning.png}
@@ -1275,3 +1276,88 @@ on LU-factorization and other schemes can be used for fast inversion
 
 \subsection{Block Jacobi Spectral Analysis Results}
 \label{subsec:spn_analysis_results}
+Spectral radius computations for the block Jacobi preconditioned
+iteration matrix were performed for the same problems as the point
+Jacobi preconditioned case. Table~\ref{tab:group1bj} gives the results
+for the 1-group case, Table~\ref{tab:group10dsbj} for the 10-group
+case with full downscatter only and Table~\ref{tab:group10usbj} for
+the 10-group case with full downscatter and full upscatter. A block
+size of $N_g\times(N+1)/2$ was used for the preconditioner in all
+cases.
+\begin{table}[t!]
+  \begin{center}
+    \begin{tabular}{cccccc}\hline\hline
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{$SP_N$ Order}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{} \\
+       &   & \textbf{1} & \textbf{3} & \textbf{5} & \textbf{7}  \\
+       & \textbf{0} & 0.0635 & 0.1269 & 0.1444 & 0.1513 \\
+       & \textbf{1} & 0.0666 & 0.1315 & 0.1474 & 0.1534 \\
+      $P_N$ Order & \textbf{3} & 0.0666 & 0.1365 & 0.154 & 0.1592 \\
+       & \textbf{5} & 0.0666 & 0.1365 & 0.1562 & 0.163 \\
+       & \textbf{7} & 0.0666 & 0.1365 & 0.1562 & 0.164 \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Spectral radius results for the block Jacobi
+      preconditioned iteration matrix with 1 energy group.}}
+  \label{tab:group1bj}
+\end{table}
+\begin{table}[t!]
+  \begin{center}
+    \begin{tabular}{cccccc}\hline\hline
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{$SP_N$ Order}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{} \\
+       &   & \textbf{1} & \textbf{3} & \textbf{5} & \textbf{7}  \\
+       & \textbf{0} & 0.0647 & 0.1275 & 0.1449 & 0.1514 \\
+       & \textbf{1} & 0.0686 & 0.1338 & 0.1484 & 0.1547 \\
+      $P_N$ Order & \textbf{3} & 0.0687 & 0.1399 & 0.1582 & 0.1625 \\
+       & \textbf{5} & 0.0692 & 0.1399 & 0.1582 & 0.1657 \\
+       & \textbf{7} & 0.0678 & 0.1393 & 0.1624 & 0.166 \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Spectral radius results for the block Jacobi
+      preconditioned iteration matrix with 10 energy groups and full
+      downscatter.}}
+  \label{tab:group10dsbj}
+\end{table}
+\begin{table}[t!]
+  \begin{center}
+    \begin{tabular}{cccccc}\hline\hline
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{$SP_N$ Order}& 
+      \multicolumn{1}{c}{}& 
+      \multicolumn{1}{c}{} \\
+       &   & \textbf{1} & \textbf{3} & \textbf{5} & \textbf{7}  \\
+       & \textbf{0} & 0.1887 & 0.2267 & 0.2285 & 0.2286 \\
+       & \textbf{1} & 0.4535 & 0.5044 & 0.5045 & 0.5045 \\
+      $P_N$ Order & \textbf{3} & 0.4535 & 0.6453 & 0.6506 & 0.6506 \\
+       & \textbf{5} & 0.4535 & 0.6453 & 0.6802 & 0.6818 \\
+       & \textbf{7} & 0.4535 & 0.6453 & 0.6802 & 0.6927 \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Spectral radius results for the block Jacobi
+      preconditioned iteration matrix with 10 energy groups, full
+      downscatter and full upscatter.}}
+  \label{tab:group10usbj}
+\end{table}
+From the tabulated block Jacobi data it is clear that this is the
+preferred preconditioning choice for all $SP_N$ problems in term of
+Monte Carlo solution methods. All cases were observed to have a
+spectral radius below unity and often significantly smaller than that,
+greatly improving convergence rates over the point Jacobi preconditioned
+problem.
