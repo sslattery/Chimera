@@ -887,15 +887,18 @@ when the infinity norm of the residual computed at each iteration for
 both methods was collected at each iteration for a fixed problem sizes
 of $N=100$ and $N=500$ as shown in figures Figure~\ref{fig:seq_100}
 and \ref{fig:seq_500} respectively. In both cases, the Sequential
-method is subject to two regimes of exponential convergence with the
-later regime converging the slowest while the MCSA method exhibits a
-single rate of exponential convergence observed to be much higher than
-that computed by Halton's method. Even with the doubling of the number
-of stochastic histories computed per time step in order to ensure
-convergence for the Sequential method, we still see robustness issues
-with a non-monotonically decreasing residual observed for the $N=100$
-case. In both cases the MCSA solver is observed to be robust with a
-monotonically decreasing residual.
+method is subject to two regimes of exponential convergence with high
+frequency error modes removed in the first regime leaving lower
+frequency and slower converging error modes in the second. Using MCSA
+we a see a single rate of exponential convergence observed to be much
+higher than that computed by Halton's method due to the fact that the
+extra Richardson iteration is providing a smoothing effect to
+alleviate the error mode variations. Even with the doubling of the
+number of stochastic histories computed per time step in order to
+ensure convergence for the Sequential method, we still see robustness
+issues with a non-monotonically decreasing residual observed for the
+$N=100$ case. In both cases the MCSA solver is observed to be robust
+with a monotonically decreasing residual.
 
 \begin{figure}[t!]
   \centering
