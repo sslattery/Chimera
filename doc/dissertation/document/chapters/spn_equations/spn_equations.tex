@@ -132,6 +132,7 @@ where the angular component of the solution is no longer dependent on
 the azimuthal direction of travel and an isotropic source of neutrons
 is assumed.
 
+%%---------------------------------------------------------------------------%%
 \section{Derivation of the $P_N$ Equations}
 \label{sec:pn_equations}
 Next, we derive the $P_N$ equations, a simplified form of the general
@@ -499,6 +500,7 @@ equations if Marshak conditions are used or 2 non-zero moments to be
 solved for if reflected conditions are used. The formulation above
 also holds for vacuum conditions where $\phi_b = 0$.
 
+%%---------------------------------------------------------------------------%%
 \section{Derivation of the $SP_N$ Equations}
 \label{sec:spn_equations}
 The $P_N$ equations give $N+1$ coupled first-order equations
@@ -744,7 +746,7 @@ equations:
 where $\phi_b$ is again an isotropic source prescribed on the planar
 boundary. For the odd moment in each boundary equation, we insert
 Eq~(\ref{eq:odd_moments}) to remove them, leaving only the even
-moments and a set of differential equations:
+moments and a set of first-order differential equations:
 \begin{subequations}
   \begin{gather}
     \frac{1}{2}\phi_0 + \frac{1}{3\Sigma_1}\frac{\partial}{\partial
@@ -870,6 +872,7 @@ that:
 for reflecting $SP_N$ boundaries, providing enough equations to close
 the system.
 
+%%---------------------------------------------------------------------------%%
 \section{Derivation of the Multigroup $SP_N$ Equations}
 \label{sec:mg_spn_equations}
 Up to this point, we have formulated the $P_N$ and subsequently the
@@ -1005,7 +1008,8 @@ each boundary for each psuedo-moment and $\mathbb{B}_{nm}$ is an $N_g
 diagonal. For reflecting conditions, again we have $\nabla
 \mathbb{U}_n = 0$ for all pseudo-moments.
 
-\section{A Note on Spatial Discretization and Matrix Symmetry}
+%%---------------------------------------------------------------------------%%
+\section{Spatial Discretization}
 \label{sec:spatial_discretization}
 To this point, the formulation of the multigroup $SP_N$ equations
 presented have discretized the transport equation in angle and energy
@@ -1029,31 +1033,28 @@ current is balanced from cell-to-cell, continuity of the flux is
 preserved across cell/material boundaries, and boundary conditions are
 naturally represented through cell-face currents. Furthermore, this
 spatial discretization is a natural extension of the balance
-principles used to arrive at the general transport equation. The
-result of this finite volume discretization is one that is symmetric
-for all equations in the domain with respect to the spatial components
-of the solution.
+principles used to arrive at the general transport equation.
 
-Given the symmetry of the spatial discretization equations in the
-domain given by monoenergetic Eq~(\ref{eq:spn_matrix}) form a
-symmetric linear operator acting on the pseudo-moment vector to give:
-\begin{equation}
-  \mathbf{L}\mathbf{u}=\mathbf{Q}\:,
-  \label{eq:matrix_system}
-\end{equation}
-where $\mathbf{L} = -\nabla \cdot \mathbf{D} \nabla +
-\mathbf{A}$. Moving to the multigroup formulation in
-Eq~(\ref{eq:spn_multigroup_system}) we have:
-\begin{equation}
-  \mathbb{L}\mathbb{U}=\mathbb{Q}\:,
-  \label{eq:multigroup_matrix_system}
-\end{equation}
-where $\mathbb{L} = -\nabla \cdot \mathbb{D} \nabla +
-\mathbb{A}$. Whether or not the resulting matrix is symmetric is
-determined by the group scattering matrices, $\sigma_{sn}^{gg'}$, for
-each of the moments. In general, the cross sections in these matrices
-do not form a symmetric matrix and therefore the resulting linear
-operator in Eq~(\ref{eq:multigroup_matrix_system}) will always be
-asymmetric for multigroup problems. Solutions to this linear system
-will then require techniques specifically formulated for asymmetric
-systems.
+%%---------------------------------------------------------------------------%%
+\section{Spectral Analysis of the $SP_N$ Equations}
+\label{sec:spn_spectral_analysis}
+Before we can move on to solving the $SP_N$ equations with both
+conventional and Monte Carlo methods, we must first understand their
+spectral character to ensure the MCSA will apply. As presented in
+Chapter~\ref{chap:mc_background}, the spectral radius of the iteration
+matrix must be less than unity to ensure convergence and a finite
+variance. Therefore, we will compute the spectral radius of the $SP_N$
+equations parametrically varying the $SP_N$ order, the $P_N$ order,
+the number of energy groups, and upscattering/downscattering between
+energy groups.
+
+\subsection{Point Jacobi Spectral Analysis Results}
+\label{subsec:spn_analysis_results}
+
+
+\subsection{Preconditioning Strategy}
+\label{subsec:spn_preconditioning}
+
+
+\subsection{Block Jacobi Spectral Analysis Results}
+\label{subsec:spn_analysis_results}
