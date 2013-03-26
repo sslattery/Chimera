@@ -13,10 +13,10 @@ recognize that the algorithm occurs in two stages, an outer iteration
 performing Richardson's iteration and applying the correction, and an
 inner Monte Carlo solver that is generating the correction via the
 adjoint method. The parallel aspects of both these components must be
-considered. In this chapter we review particle transport methods for
-domain decomposed Monte Carlo and then devise an algorithm based on
-these methods for efficient parallel solutions using the adjoint
-Neumann-Ulam method and MCSA.
+considered. In this chapter we briefly review particle transport
+methods for domain decomposed Monte Carlo and then devise an algorithm
+based on these methods for efficient parallel solutions using the
+adjoint Neumann-Ulam method and MCSA.
 
 %%---------------------------------------------------------------------------%%
 \section{Domain Decomposition for Monte Carlo}
@@ -137,29 +137,51 @@ today's modern machines.
 %%---------------------------------------------------------------------------%%
 \section{Fully Asynchronous MSOD Neumann-Ulam Algorithm}
 \label{sec:asynchronous_algorithm}
-We can take much of what was learned from the survey of parallel Monte
-Carlo methods for radiation transport and directly apply it to a
-parallel formulation of our stochastic linear solvers. Direct analogs
-can be derived from these works by noting that the primary difference
-between solving a linear system with Monte Carlo methods and fixed
-source Monte Carlo transport problems is the content of the Markov
-chains that are generated. The transitions represented by these chains
-are bound by probabilities and weights and are initiated by the
-sampling of a source. In the context of transport problems, those
-transitions represent events such as particle scattering and
-absorption with probabilities that are determined by physical data in
-the form of cross sections. For stochastic matrix inversion, those
-transitions represent moving between the equations of the linear
-system (and therefore the physical domain which they represent) and
-their probabilities are defined by the coefficients of those
-equations. Ultimately, we tally the contributions to generate
+We can take much of what was learned from Brunner and Wagner's
+parallel Monte Carlo methods for radiation transport and directly
+apply it to a parallel formulation of our stochastic linear
+solvers. Direct analogs can be derived from these works by noting that
+the primary difference between solving a linear system with Monte
+Carlo methods and fixed source Monte Carlo transport problems is the
+content of the Markov chains that are generated. The transitions
+represented by these chains are bound by probabilities and weights and
+are initiated by the sampling of a source. In the context of transport
+problems, those transitions represent events such as particle
+scattering and absorption with probabilities that are determined by
+physical data in the form of cross sections. For stochastic matrix
+inversion, those transitions represent moving between the equations of
+the linear system (and therefore the physical domain which they
+represent) and their probabilities are defined by the coefficients of
+those equations. Ultimately, we tally the contributions to generate
 expectation values in the desired states as we progress through the
 chains. Therefore, parallel methods for Monte Carlo radiation
 transport can be abstracted and we can use those concepts that apply
 to matrix inversion methods as an initial means of developing a
-parallel Neumann-Ulam-type solver. Based on the results observed in
-the last decade of parallel Monte Carlo development, we can generate
-many practical questions that this type of work could answer.
+parallel Neumann-Ulam-type solver.
+
+\subsection{Parallel Random Number Generation}
+\label{subsec:parallel_rng}
+
+\subsection{Generating the Transport Domain with Overlap and Preconditioning}
+\label{subsec:domain_generation}
+
+\subsection{Generating the Transport Source with Preconditioning}
+\label{subsec:source_generation}
+
+\subsection{Transition Processing Kernel}
+\label{subsec:transition_processing}
+
+\subsection{Local Domain Transport Kernel}
+\label{subsec:local_domain_transport}
+
+\subsection{Domain-to-Domain Communication Kernel}
+\label{subsec:domain_to_domain_kernel}
+
+\subsection{Asynchronous Transport Kernel}
+\label{subsec:async_transport_kernel}
+
+\subsection{Multiple Set Algorithm}
+\label{subsec:multiple_sets_algorithm}
 
 %%---------------------------------------------------------------------------%%
 \section{Parallel MCSA}
