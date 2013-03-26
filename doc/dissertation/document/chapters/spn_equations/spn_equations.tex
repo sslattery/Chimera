@@ -514,7 +514,7 @@ while maintaining the angular character of the flux, making them
 amenable to solutions with modern diffusion methods.
 
 First, the $P_N$ equations can be simplified to $(N+1)/2$ second-order
-equations by solving for the $n^th$ Legendre flux moment in the
+equations by solving for the $n^{th}$ Legendre flux moment in the
 odd-order equations:
 \begin{equation}
   \phi_n = \frac{1}{\Sigma_n}\Bigg[ q \delta_{no} -
@@ -537,8 +537,8 @@ reduced group of equations for the even moments:
 \end{multline}
 Immediately, we note the diffusion-like nature of
 Eq~(\ref{eq:reduced_pn}) as compared to the original $P_N$
-equations. To extend these equations to multiple dimensions, gelbard
-simple replaced the x-plane spatial derivatives in the reduced set of
+equations. To extend these equations to multiple dimensions, Gelbard
+simply replaced the planar spatial derivatives in the reduced set of
 equations with general multidimensional gradient operators:
 \begin{multline}
   -\nabla \cdot \Bigg[\frac{n}{2n+1}\frac{1}{\Sigma_{n-1}} \nabla
@@ -550,8 +550,8 @@ equations with general multidimensional gradient operators:
   \label{eq:spn_equations}
 \end{multline}
 yielding a multidimensional set of $(N+1)/1$ angular coupled equations
-known as the $SP_N$. Again, we provide closure to this set of
-equations with $\phi_{N+1} = 0$. As a concrete example, we will
+defined as the $SP_N$ equations. Again, we provide closure to this set
+of equations with $\phi_{N+1} = 0$. As a concrete example, we will
 consider the $SP_7$ equations:
 \begin{subequations}
   \begin{gather}
@@ -643,7 +643,7 @@ and $\mathbf{A}$ a matrix of angular scattering terms:
 % was feeling lazy. I have verified its correctness.
 \begin{equation}
   \mathbf{A} = 
-  \begin{bmatrix}
+  {\tiny \begin{bmatrix}
     (\Sigma_0) &
     (-\frac{2}{3}\Sigma_0) &
     (\frac{8}{15}\Sigma_0) &
@@ -652,7 +652,7 @@ and $\mathbf{A}$ a matrix of angular scattering terms:
     &&&\\
     %%
     (-\frac{2}{3}\Sigma_0) &
-    (\frac{4}{15}\Sigma_0 + \frac{1}{3}\Sigma_2) &
+    (\frac{4}{9}\Sigma_0 + \frac{5}{9}\Sigma_2) &
     (-\frac{16}{45}\Sigma_0 - \frac{4}{9}\Sigma_2) &
     (\frac{32}{105}\Sigma_0 + \frac{8}{21}\Sigma_2) \\
     %%
@@ -672,7 +672,7 @@ and $\mathbf{A}$ a matrix of angular scattering terms:
     & 
     (\frac{256}{1225}\Sigma_0 + \frac{64}{245}\Sigma_2 +
     \frac{324}{1225}\Sigma_4 + \frac{13}{49}\Sigma_6)
-  \end{bmatrix}\:.
+  \end{bmatrix}}\:.
   \label{eq:A_matrix}
 \end{equation}
 Note that the term $\sum_{m=1}^4 A_{nm} u_m$ in
@@ -765,7 +765,7 @@ moments and a set of differential equations:
 \end{subequations}
 We can again make the substitution of variables given by
 Eqs~(\ref{eq:spn7_subs}) and (\ref{eq:spn7_subs_inverse}) for
-consitency with the equations defined on the domain. In addition, we
+consistency with the equations defined on the domain. In addition, we
 apply the $SP_N$ approximation to the derivatives by assuming they are
 instead multidimensional gradients on the boundary such that
 $\frac{\partial}{\partial x} \rightarrow
@@ -961,7 +961,7 @@ $\mathbb{A}$ is now a block matrix of $N_g \times N_g$ submatrices
 generated from the moment scattering matrices:
 \begin{equation}
   \mathbf{A} = 
-  \begin{bmatrix}
+  {\tiny \begin{bmatrix}
     (\mathbf{\Sigma}_0) &
     (-\frac{2}{3}\mathbf{\Sigma}_0) &
     (\frac{8}{15}\mathbf{\Sigma}_0) &
@@ -970,7 +970,7 @@ generated from the moment scattering matrices:
     &&&\\
     %%
     (-\frac{2}{3}\mathbf{\Sigma}_0) &
-    (\frac{4}{15}\mathbf{\Sigma}_0 + \frac{1}{3}\mathbf{\Sigma}_2) &
+    (\frac{4}{9}\mathbf{\Sigma}_0 + \frac{5}{9}\mathbf{\Sigma}_2) &
     (-\frac{16}{45}\mathbf{\Sigma}_0 - \frac{4}{9}\mathbf{\Sigma}_2) &
     (\frac{32}{105}\mathbf{\Sigma}_0 + \frac{8}{21}\mathbf{\Sigma}_2) \\
     %%
@@ -990,7 +990,7 @@ generated from the moment scattering matrices:
     & 
     (\frac{256}{1225}\mathbf{\Sigma}_0 + \frac{64}{245}\mathbf{\Sigma}_2 +
     \frac{324}{1225}\mathbf{\Sigma}_4 + \frac{13}{49}\mathbf{\Sigma}_6)
-  \end{bmatrix}\:.
+  \end{bmatrix}}\:.
   \label{eq:A_block_matrix}
 \end{equation}
 Analogously, for Marshak conditions on the boundaries we have:
