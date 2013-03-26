@@ -13,7 +13,10 @@ recognize that the algorithm occurs in two stages, an outer iteration
 performing Richardson's iteration and applying the correction, and an
 inner Monte Carlo solver that is generating the correction via the
 adjoint method. The parallel aspects of both these components must be
-considered.
+considered. In this chapter we review particle transport methods for
+domain decomposed Monte Carlo and then devise an algorithm based on
+these methods for efficient parallel solutions using the adjoint
+Neumann-Ulam method and MCSA.
 
 %%---------------------------------------------------------------------------%%
 \section{Domain Decomposition for Monte Carlo}
@@ -24,7 +27,7 @@ parallel process owns a subset of the equations in the linear
 system. Given this convention, the adjoint Monte Carlo algorithm must
 perform random walks over a domain that is decomposed and must remain
 decomposed due to memory limitations. This naturally leads us to seek
-parallel algorithms that handle domain decomposition.
+parallel Monte Carlo algorithms that handle domain decomposition.
 
 In the context of radiation transport, Brunner and colleagues provided
 a survey of algorithms for achieving this as implemented in production
@@ -64,7 +67,7 @@ In 2010, Wagner and colleagues developed the \textit{multiple-set
   overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
 applications for full-core light water reactor analysis
 \citep{wagner_hybrid_2010}. In their work, an extension of Brunner's,
-their scheme employed the similar parallel algorithms for particle
+their scheme employed similar parallel algorithms for particle
 transport but a certain amount of overlap between adjacent domains was
 used to decrease the number of particles leaving the local domain. In
 addition, Wagner utilized a level of replication of the domain such
@@ -130,6 +133,78 @@ overlap. Based on these results, this overlap approach, coupled with
 the multiple sets paradigm that will scale for existing parallel
 transport algorithms, provides a scalable Monte Carlo algorithm for
 today's modern machines.
+
+%%---------------------------------------------------------------------------%%
+\section{Fully Asynchronous MSOD Neumann-Ulam Algorithm}
+\label{sec:asynchronous_algorithm}
+We can take much of what was learned from the survey of parallel Monte
+Carlo methods for radiation transport and directly apply it to a
+parallel formulation of our stochastic linear solvers. Direct analogs
+can be derived from these works by noting that the primary difference
+between solving a linear system with Monte Carlo methods and fixed
+source Monte Carlo transport problems is the content of the Markov
+chains that are generated. The transitions represented by these chains
+are bound by probabilities and weights and are initiated by the
+sampling of a source. In the context of transport problems, those
+transitions represent events such as particle scattering and
+absorption with probabilities that are determined by physical data in
+the form of cross sections. For stochastic matrix inversion, those
+transitions represent moving between the equations of the linear
+system (and therefore the physical domain which they represent) and
+their probabilities are defined by the coefficients of those
+equations. Ultimately, we tally the contributions to generate
+expectation values in the desired states as we progress through the
+chains. Therefore, parallel methods for Monte Carlo radiation
+transport can be abstracted and we can use those concepts that apply
+to matrix inversion methods as an initial means of developing a
+parallel Neumann-Ulam-type solver. Based on the results observed in
+the last decade of parallel Monte Carlo development, we can generate
+many practical questions that this type of work could answer.
+
+%%---------------------------------------------------------------------------%%
+\section{Parallel MCSA}
+\label{sec:parallel_mcsa}
+With a parallel adjoint Neumann-Ulam solver implementation, the
+parallel implementation of the MCSA method will be trivial. Recall the
+MCSA iteration procedure outlined in Eq~(\ref{eq:mcsa}). In
+\S~\ref{sec:parallel_krylov_methods} we discussed parallel matrix and
+vector operations as utilized in conventional Krylov methods. We
+utilize these here for the parallel MCSA implementation. In the first
+step, a parallel matrix-vector multiply is used to apply the split
+operator to the previous iterate's solution. A parallel vector update
+is then performed with the source vector to arrive at the initial
+iteration guess. In the next step, the residual is computed by the
+same operations where now the operator is applied to the solution
+guess with a parallel matrix-vector multiply and then a parallel
+vector update with the source vector is performed. Once the correction
+is computed with a parallel adjoint Neumann-Ulam solve, this
+correction is applied to the guess with a parallel vector update to
+get the new iteration solution. Additionally, as given by
+Eq~(\ref{eq:mcsa_stopping_criteria}), 2 parallel vector reductions
+will be required to check the stopping criteria: one initially to
+compute the infinity norm of the source vector, and another at every
+iteration to compute the infinity norm of the residual vector. For
+this implementation, all of the issues that will be potentially
+generated by the parallel adjoint solver implementation will manifest
+themselves here as the quality of the correction will be of intense
+study.
+
+In addition to parallel implementation and performance, MCSA's
+potential for aiding advancement in non-symmetric matrix solutions
+leads to a natural comparison with the GMRES algorithm. As both
+solvers are aimed at the same class of problem, we desire a set of
+metrics that will allow us to quantitatively compare the two. Given
+that the Krylov subspace maintained by GMRES can become large, do we
+benefit from a memory standpoint with an MCSA scheme in that no
+subspace is required? Does this benefit outweigh the fact that the
+linear operator must be explicitly formed in order to build the
+transition probabilities for the random walk sequence? For
+non-symmetric systems, does MCSA exhibit similar convergence
+properties to Krylov methods? If a Krylov methods build a subspace,
+can those memory savings in MCSA be used to implement domain
+replication in the adjoint solver? Such questions can be answered by a
+comparative study of the two solvers that controls the system size and
+the iterations required to converge.
 
 %%---------------------------------------------------------------------------%%
 \section{Load Balancing Concerns}
@@ -258,125 +333,3 @@ values for which additions will always be commutative. Once the
 operations are complete, these integers are mapped back to floating
 point values.
 
-%%---------------------------------------------------------------------------%%
-\section{Parallel Adjoint Method}
-\label{sec:parallel_adjoint}
-We can take much of what was learned from the survey of parallel Monte
-Carlo methods for radiation transport and directly apply it to a
-parallel formulation of our stochastic linear solvers. Direct analogs
-can be derived from these works by noting that the primary difference
-between solving a linear system with Monte Carlo methods and fixed
-source Monte Carlo transport problems is the content of the Markov
-chains that are generated. The transitions represented by these chains
-are bound by probabilities and weights and are initiated by the
-sampling of a source. In the context of transport problems, those
-transitions represent events such as particle scattering and
-absorption with probabilities that are determined by physical data in
-the form of cross sections. For stochastic matrix inversion, those
-transitions represent moving between the equations of the linear
-system (and therefore the physical domain which they represent) and
-their probabilities are defined by the coefficients of those
-equations. Ultimately, we tally the contributions to generate
-expectation values in the desired states as we progress through the
-chains. Therefore, parallel methods for Monte Carlo radiation
-transport can be abstracted and we can use those concepts that apply
-to matrix inversion methods as an initial means of developing a
-parallel Neumann-Ulam-type solver. Based on the results observed in
-the last decade of parallel Monte Carlo development, we can generate
-many practical questions that this type of work could answer.
-
-Given a decomposed domain, per Wagner's work
-\citep{wagner_hybrid_2010} is clear that domain overlap significantly
-reduces the amount of communication required between adjacent domains
-as histories move to states that are not owned by the local
-processor. How much domain overlap is suitable for matrix inversion
-problems? Are we memory limited by large problems such that only so
-much overlap is feasible? Are there metrics related to the properties
-of the matrix including the eigenvalues and sparsity pattern such that
-we can provide guidelines for selecting the amount of overlap
-required? Furthermore, as Wagner and colleagues observed
-\citep{wagner_hybrid_2010}, with marginal domain overlap for reactor
-problems, the percentage of histories leaving the local domain can
-easily be reduced to less than 1\%. Evans and colleagues in their
-initial MCSA development typically used only 50 particle histories in
-order to compute a correction in an MCSA iteration
-\citep{evans_monte_2012}. Per the Central Limit Theorem, that
-correlates to a statistical uncertainty of 14.1\% in the correction,
-yet as compared to conventional Krylov solvers, MCSA achieved
-identical numerical results. If good convergence and numerically
-accurate solutions can be achieved with such a large uncertainty in
-the correction computation, then perhaps with enough domain overlap
-the minimal amount of histories that do transition to non-local states
-can be ignored and thus eliminate all communication in the parallel
-Monte Carlo adjoint solver transport sequence and create an
-embarrassingly parallel method. Given Gropp's work on parallel Krylov
-methods that we discussed in
-\S~\ref{subsec:projection_method_performance} and the empirical
-results of Siegel \citep{siegel_analysis_2012}, we know that these
-nearest neighbor computations between adjacent domains do not scale as
-well as global reduction operations and therefore we are improving
-scaling by eliminating them from the transport sequence. It will be
-important to determine if the expectation value bias in the MCSA
-correction generated by this approximation will remain within the
-bounds of the already high statistical uncertainty for unbiased
-estimates, thus providing numerically equivalent results.
-
-From a domain replication perspective, this may be difficult to
-achieve with a production scale linear solver. Typically, memory is at
-a premium and therefore the more distinct domains available in the
-decomposition, the spatially finer and/or the numerically more
-accurate the discretization that can be implemented. How much
-replication is possible for large problems? How does replication
-facilitate parallel performance when coupled with domain overlap? How
-can we measure how much domain overlap is feasible? Replicating
-domains may therefore run into memory limitations for exceptionally
-large problems such that the operator, solution vector, and source
-vector must be copied in their entirety multiple times. From a
-resiliency standpoint, such an operation will be required, and
-therefore its performance and memory implications on conventional
-problems must be analyzed.
-
-%%---------------------------------------------------------------------------%%
-\section{Parallel MCSA}
-\label{sec:parallel_mcsa}
-With a parallel adjoint Neumann-Ulam solver implementation, the
-parallel implementation of the MCSA method will be trivial. Recall the
-MCSA iteration procedure outlined in Eq~(\ref{eq:mcsa}). In
-\S~\ref{sec:parallel_krylov_methods} we discussed parallel matrix and
-vector operations as utilized in conventional Krylov methods. We
-utilize these here for the parallel MCSA implementation. In the first
-step, a parallel matrix-vector multiply is used to apply the split
-operator to the previous iterate's solution. A parallel vector update
-is then performed with the source vector to arrive at the initial
-iteration guess. In the next step, the residual is computed by the
-same operations where now the operator is applied to the solution
-guess with a parallel matrix-vector multiply and then a parallel
-vector update with the source vector is performed. Once the correction
-is computed with a parallel adjoint Neumann-Ulam solve, this
-correction is applied to the guess with a parallel vector update to
-get the new iteration solution. Additionally, as given by
-Eq~(\ref{eq:mcsa_stopping_criteria}), 2 parallel vector reductions
-will be required to check the stopping criteria: one initially to
-compute the infinity norm of the source vector, and another at every
-iteration to compute the infinity norm of the residual vector. For
-this implementation, all of the issues that will be potentially
-generated by the parallel adjoint solver implementation will manifest
-themselves here as the quality of the correction will be of intense
-study.
-
-In addition to parallel implementation and performance, MCSA's
-potential for aiding advancement in non-symmetric matrix solutions
-leads to a natural comparison with the GMRES algorithm. As both
-solvers are aimed at the same class of problem, we desire a set of
-metrics that will allow us to quantitatively compare the two. Given
-that the Krylov subspace maintained by GMRES can become large, do we
-benefit from a memory standpoint with an MCSA scheme in that no
-subspace is required? Does this benefit outweigh the fact that the
-linear operator must be explicitly formed in order to build the
-transition probabilities for the random walk sequence? For
-non-symmetric systems, does MCSA exhibit similar convergence
-properties to Krylov methods? If a Krylov methods build a subspace,
-can those memory savings in MCSA be used to implement domain
-replication in the adjoint solver? Such questions can be answered by a
-comparative study of the two solvers that controls the system size and
-the iterations required to converge.
