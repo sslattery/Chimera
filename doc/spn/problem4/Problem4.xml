@@ -379,13 +379,13 @@
         <Parameter name="Convergence Tolerance" type="double" value="1e-5"/>
       </ParameterList>
       <ParameterList name="operator_db">
-        <Parameter name="linear_solver_xml_file" type="string" value="Stratimikos_PL.xml"/>
+        <Parameter name="linear_solver_xml_file" type="string" value="aztec_ilut.xml"/>
       </ParameterList>
     </ParameterList>
     <Parameter name="mat_library" type="string" value="casl_comp.sh5"/>
     <Parameter name="max_delta_z" type="double" value="5.08"/>
-    <Parameter name="num_blocks_i" type="int" value="12"/>
-    <Parameter name="num_blocks_j" type="int" value="12"/>
+    <Parameter name="num_blocks_i" type="int" value="1"/>
+    <Parameter name="num_blocks_j" type="int" value="1"/>
     <Parameter name="num_z_blocks" type="int" value="1"/>
     <Parameter name="num_groups" type="int" value="8"/>
     <Parameter name="num_sets" type="int" value="1"/>
