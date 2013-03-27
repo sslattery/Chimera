@@ -185,7 +185,7 @@
       </ParameterList>
       <ParameterList name="operator_db">
         <Parameter name="max_itr" type="int" value="1000"/>
-        <Parameter name="linear_solver_xml_file" type="string" value="SPN_Params.xml"/>
+        <Parameter name="linear_solver_xml_file" type="string" value="Stratimikos_PL.xml"/>
       </ParameterList>
     </ParameterList>
     <Parameter name="num_groups" type="int" value="23"/>
