@@ -188,13 +188,13 @@
         <Parameter name="linear_solver_xml_file" type="string" value="mcls.xml"/>
       </ParameterList>
     </ParameterList>
-    <Parameter name="num_groups" type="int" value="23"/>
+    <Parameter name="num_groups" type="int" value="1"/>
     <Parameter name="dimension" type="int" value="3"/>
     <Parameter name="num_blocks_i" type="int" value="1"/>
     <Parameter name="num_blocks_j" type="int" value="1"/>
     <Parameter name="num_z_blocks" type="int" value="1"/>
     <Parameter name="num_sets" type="int" value="1"/>
-    <Parameter name="new_grp_bounds" type="Array(double)" value="{8.2085e+05,1.1109e+05,5.5308e+03,1.8644e+02,3.7612e+01,3.5379e+01,2.7697e+01,2.1684e+01,2.0397e+01,1.5968e+01,7.1500e+00,6.7000e+00,6.3000e+00,1.0970e+00,1.0450e+00,9.5000e-01,3.5000e-01,2.0600e-01,1.0700e-01,5.8000e-02,2.5000e-02,1.0000e-02,1.0000e-05}"/>
+    <Parameter name="new_grp_bounds" type="Array(double)" value="{1.0000e-5}"/>
     <Parameter name="xs_library" type="string" value="lib252_HetBondOneAbs-NoAbsSigP"/>
     <Parameter name="cell_homogenize" type="bool" value="true"/>
     <Parameter name="mat_library" type="string" value="casl_comp.sh5"/>

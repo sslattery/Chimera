@@ -21,7 +21,7 @@
   <Parameter name="Preconditioner Type" type="string" value="MCLS"/>
   <ParameterList name="Preconditioner Types">
     <ParameterList name="MCLS">
-      <Parameter name="Preconditioner Type" type="string" value="Block Jacobi"/>
+      <Parameter name="Preconditioner Type" type="string" value="Point Jacobi"/>
       <ParameterList name="Preconditioner Types">
         <ParameterList name="Block Jacobi">
           <Parameter name="Jacobi Block Size" type="int" value="40"/>

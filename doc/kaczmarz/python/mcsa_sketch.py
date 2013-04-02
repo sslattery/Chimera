@@ -251,8 +251,8 @@ for i in xrange(m):
     Q.append(Q_row)
 
 # Setup
-np = 100
-wc = 1.0E-12
+np = 1000
+wc = 1.0E-4
 tol = 1.0E-8
 print "Histories             =", np
 print "Weight cutoff         =", wc

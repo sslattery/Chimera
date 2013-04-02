@@ -12,25 +12,25 @@ initialize(sys.argv)
 # SPECTRAL ANALYSIS PARAMETERS
 ##---------------------------------------------------------------------------##
 pn_order = 1
-spn_order = 7
-num_groups = 10
+spn_order = 1
+num_groups = 1
 upscatter = True
 
 sigma_t = 5.0
-sigma_ing = 0.25
-sigma_down = 1.0
-sigma_up = 0.10
+sigma_ing = 2.0
+sigma_down = 3.0
+sigma_up = 1.0
 
 ##---------------------------------------------------------------------------##
 
 
 entries = {
-    "delta_x"     : 1.0,
-    "delta_y"     : 1.0,
-    "delta_z"     : 1.0,
-    "num_cells_i" : 2,
-    "num_cells_j" : 2,
-    "num_cells_k" : 2,
+    "delta_x"     : 0.03,
+    "delta_y"     : 0.03,
+    "delta_z"     : 0.03,
+    "num_cells_i" : 6,
+    "num_cells_j" : 6,
+    "num_cells_k" : 6,
     "num_groups"  : num_groups,
     "SPN_order"   : spn_order,
     "boundary"    : "reflect",
@@ -147,7 +147,7 @@ for g in xrange(num_groups):
 ##---------------------------------------------------------------------------##
 
 manager.write_Matlab()
-manager.solve(source)
+#manager.solve(source)
 
 ##---------------------------------------------------------------------------##
 
