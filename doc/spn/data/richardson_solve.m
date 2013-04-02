@@ -3,16 +3,17 @@ function [] = richardson_solve( filename, relax_param, tol )
 A = load(filename,'-ascii');
 A = spconvert(A); 
 I = speye(size(A,1)); 
-H = I-relax_param*A;
 
-x = zeros(size(H,1))
-b = ones(size(H,1))
+x = zeros(size(A,1),1);
+b = ones(size(A,1),1);
 
-iters = 0
-while max(b-A*x) > tol
-    x = H*x + b;
+iters = 0;
+r = b-A*x;
+while norm(r,Inf) > tol
+    x = x + relax_param*r;
+    r = b-A*x;
     iters = iters + 1
-    max(b-A*x)
+    norm(r,Inf)
 end
 
 x

@@ -1,29 +1,29 @@
-function [] = ilut_solve( matname, drop_tol, tol )
+function [] = ilut_solve( filename, drop_tol, tol, relax_param )
 % Block-Jacobi preconditioned iteration matrix eigenvalues
-filename = strcat(matname,'.mat');
 A = load(filename,'-ascii');
 A = spconvert(A);
 sizeA = size(A,1);
 
-% Build the block preconditoner matrix
+% Build the LU decomposition
 setup.type = 'ilutp';
 setup.droptol = drop_tol;
 [L,U] = ilu(A,setup);
 
-% Compute the iteration matrix.
+% Compute the preconditoners
 I = speye(sizeA);
-M = L^(-1)
-N = U^(-1)
-H = I-M*A*N;
+M = L^(-1);
+N = U^(-1);
 
-x = zeros(size(H,1))
-b = ones(size(H,1))
+x = zeros(size(A,1),1);
+b = ones(size(A,1),1);
 
-iters = 0
-while max(M*(b-A*x)) > tol
-    x = H*x + M*b;
+iters = 0;
+r = M*b-M*A*N*x;
+while norm(r,Inf) > tol
+    x = x + relax_param*r;
+    r = M*b-M*A*N*x;
     iters = iters + 1
-    max(M*(b-A*x))
+    norm(r,Inf)
 end
 
 N*x

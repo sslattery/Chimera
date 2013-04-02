@@ -1,22 +1,22 @@
-function [] = point_jacobi_solve( matname, tol )
+function [] = point_jacobi_solve( filename, relax_param, tol )
 % Point-Jacobi preconditioned iteration matrix eigenvalues
-filename = strcat(matname,'.mat');
 A = load(filename,'-ascii');
 A = spconvert(A); 
 d = diag(A); 
 d_inv = d.^(-1); 
 M = diag(d_inv); 
 I = speye(size(d_inv,1)); 
-H = I-M*A;
 
-x = zeros(size(H,1))
-b = ones(size(H,1))
+x = zeros(size(A,1),1);
+b = ones(size(A,1),1);
 
-iters = 0
-while max(M*(b-A*x)) > tol
-    x = H*x + M*b;
+iters = 0;
+r = M*(b-A*x);
+while norm(r,Inf) > tol
+    x = x + relax_param*r;
+    r = M*(b-A*x);
     iters = iters + 1
-    max(M*(b-A*x))
+    norm(r,Inf)
 end
 
 x
