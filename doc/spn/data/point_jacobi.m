@@ -1,6 +1,5 @@
-function [] = point_jacobi( matname )
+function [] = point_jacobi( filename )
 % Point-Jacobi preconditioned iteration matrix eigenvalues
-filename = strcat(matname,'.mat');
 A = load(filename,'-ascii');
 A = spconvert(A); 
 d = diag(A); 

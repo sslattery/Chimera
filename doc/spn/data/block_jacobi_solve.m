@@ -1,4 +1,4 @@
-function [] = block_jacobi( filename, spn, groups )
+function [] = block_jacobi_solve( filename, spn, groups, tol )
 % Block-Jacobi preconditioned iteration matrix eigenvalues
 A = load(filename,'-ascii');
 A = spconvert(A);
@@ -38,8 +38,18 @@ end
 
 I = speye(sizeA);
 H = I-M*A;
-opts.tol=1.0e-8;
-eigs(H,1,'lm',opts)
+
+x = zeros(size(H,1))
+b = ones(size(H,1))
+
+iters = 0
+while max(M*(b-A*x)) > tol
+    x = H*x + M*b;
+    iters = iters + 1
+    max(M*(b-A*x))
+end
+
+x
 
 end
 

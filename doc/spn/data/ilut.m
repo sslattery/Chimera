@@ -1,6 +1,5 @@
-function [] = ilut( matname, drop_tol )
+function [] = ilut( filename, drop_tol )
 % Block-Jacobi preconditioned iteration matrix eigenvalues
-filename = strcat(matname,'.mat');
 A = load(filename,'-ascii');
 A = spconvert(A);
 sizeA = size(A,1);
