@@ -13,7 +13,7 @@ setup.droptol = drop_tol;
 I = speye(sizeA);
 M = L^(-1);
 N = U^(-1);
-
+spy(I-M*N*A)
 x = zeros(size(A,1),1);
 b = ones(size(A,1),1);
 
