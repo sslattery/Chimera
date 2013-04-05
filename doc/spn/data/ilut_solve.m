@@ -1,5 +1,5 @@
 function [] = ilut_solve( filename, drop_tol, tol, relax_param )
-% Block-Jacobi preconditioned iteration matrix eigenvalues
+% ILUT preconditioned Richardson iteration
 A = load(filename,'-ascii');
 A = spconvert(A);
 sizeA = size(A,1);
@@ -14,8 +14,8 @@ I = speye(sizeA);
 M = L^(-1);
 N = U^(-1);
 spy(I-M*N*A)
-x = zeros(size(A,1),1);
-b = ones(size(A,1),1);
+x = zeros(sizeA,1);
+b = ones(sizeA,1);
 
 iters = 0;
 r = M*b-M*A*N*x;
