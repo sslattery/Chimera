@@ -1,5 +1,5 @@
-function [] = mr_iter( filename, tol )
-% Minimal Residual (MR) iteration.
+function [] = rnsd_iter( filename, tol )
+  % Residual norm steepest descent iteration.
   A = load(filename,'-ascii');
   A = spconvert(A);
    
@@ -11,10 +11,11 @@ function [] = mr_iter( filename, tol )
   iters = 0;
   r = b-A*x;
   while norm(r,Inf) > tol
-    Ar = A*r;
-    alpha = dot(r,Ar) / dot(Ar,Ar);
-    x = x + alpha*r;
-    r = b-A*x;
+    v = (A.')*r;
+    w = A*v;
+    alpha = dot(v,v) / dot(w,w);
+    x = x + alpha*v;
+    r = r - alpha*w;
     iters = iters + 1
     norm_val = norm(r,Inf)
   end
