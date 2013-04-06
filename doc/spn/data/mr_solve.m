@@ -1,51 +1,53 @@
-function [] = mr_solve( filename, guess_scale, drop_tol, fill_level mr_iters, tol )
+function [] = mr_solve( filename, guess_scale, drop_tol, fill_level, mr_iters, tol, relax_param, max_iters )
   % MR preconditioned Richardson iteration.
   A = load(filename,'-ascii');
   A = spconvert(A);
   sizeA = size(A,1);
 
-
   % Build the inverse matrix.
   I = speye(sizeA);
-  M = guess_scale*(speye(sizeA));
+  N = guess_scale*I;
   for j = 1:sizeA
-    M(:,j) = M*I(:,j);
     for i = 1:mr_iters
-      r = I(:,j) - A*M(:,j);
+      r = I(:,j) - A*N(:,j);
       Ar = A*r;
       alpha = dot(r,Ar) / dot(Ar,Ar);
-      M(:,j) = M(:,j) + alpha*r;
-      apply_drop( (A.')*r, M(:,j), I(:,j), drop_tol, fill_level );
+      N(:,j) = N(:,j) + alpha*r;
+      N(:,j) = apply_drop( A, r, N(:,j), I(:,j), drop_tol, fill_level );
     end
   end
 
-
   % Solve.
-  spy(I-A*M)
+  N = spconvert(N);
+  H = I-A*N;
+  spy(H);
+  opts.tol=1.0e-8;
+  eigs(H,1,'lm',opts)
   x = zeros(sizeA,1);
   b = ones(sizeA,1);
 
   iters = 0;
-  r = b-A*M*x;
-  while norm(r,Inf) > tol
+  r = b-A*N*x;
+  while norm(r,Inf) > tol && (iters < max_iters)
     x = x + relax_param*r;
-    r = b-A*M*x;
+    r = b-A*N*x;
     iters = iters + 1
     norm(r,Inf)
   end
 
-M*x
+N*b
 end
 
-function [] = apply_drop( ATr, mj, ej, drop_tol, fill_level )
+function [mj] = apply_drop( A, r, mj, ej, drop_tol, fill_level )
     % Chow and Sadd drop scheme
-    fill_counter = 0;
     n = size(mj,1);
-    rho = -2*dot(ej,ATr)*mj + mj.^2;
+    ATr = (A.')*r;
+    deatr = dot(ej,ATr);
+    rho = -2*deatr*mj + mj.^2;
     rho_sorted = sort(rho,'descend');
     for i = 1:n
-	if rho[i] < rho[fill_level] || rho[i] < drop_tol
-	   mj[i] = 0.0;
-	end
+	    if (rho(i,1) < rho_sorted(fill_level,1)) || (rho(i,1) < drop_tol)
+	        mj(i,1) = 0.0;
+	    end
     end
 end
