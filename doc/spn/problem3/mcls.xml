@@ -2,20 +2,21 @@
   <Parameter name="Linear Solver Type" type="string" value="MCLS"/>
   <ParameterList name="Linear Solver Types">
     <ParameterList name="MCLS">
-      <Parameter name="Solver Type" type="string" value="Richardson"/>
+      <Parameter name="Solver Type" type="string" value="MCSA"/>
       <ParameterList name = "Solver Types">
         <ParameterList name = "MCSA">
           <Parameter name="Number of Sets" type="int" value="1"/>
           <Parameter name="Reproducible MC Mode" type="bool" value="false"/>
           <Parameter name="Overlap Size" type="int" value="0"/>
-          <Parameter name="Weight Cutoff" type="double" value="1.0e-4"/>
-          <Parameter name="Set Number of Histories" type="int" value="30000"/>
+          <Parameter name="Weight Cutoff" type="double" value="1.0e-3"/>
+          <Parameter name="Set Number of Histories" type="int" value="8000"/>
           <Parameter name="Iteration Print Frequency" type="int" value="1"/>
           <Parameter name="Richardson Relaxation" type="double" value="1.0"/>
-          <Parameter name="Neumann Relaxation" type="double" value="0.9"/>
+          <Parameter name="Neumann Relaxation" type="double" value="1.0"/>
+          <Parameter name="Estimator Type" type="int" value="1"/>
         </ParameterList>
         <ParameterList name = "Richardson">
-          <Parameter name="Iteration Print Frequency" type="int" value="1000"/>
+          <Parameter name="Iteration Print Frequency" type="int" value="10000"/>
           <Parameter name="Richardson Relaxation" type="double" value="1.0"/>
         </ParameterList>
       </ParameterList>
@@ -24,7 +25,7 @@
   <Parameter name="Preconditioner Type" type="string" value="MCLS"/>
   <ParameterList name="Preconditioner Types">
     <ParameterList name="MCLS">
-      <Parameter name="Preconditioner Type" type="string" value="Point Jacobi"/>
+      <Parameter name="Preconditioner Type" type="string" value="ILUT"/>
       <ParameterList name="Preconditioner Types">
         <ParameterList name="Block Jacobi">
           <Parameter name="Jacobi Block Size" type="int" value="1"/>

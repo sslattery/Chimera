@@ -19,8 +19,8 @@
     <Parameter name="Prec Type" type="string" value="ILUT"/>
     <Parameter name="Overlap" type="int" value="0"/>
     <ParameterList name="Ifpack Settings">
-      <Parameter name="fact: drop tolerance" type="double" value="1e-2"/>
-      <Parameter name="fact: ilut level-of-fill" type="double" value="1.5"/>
+      <Parameter name="fact: drop tolerance" type="double" value="5.0e-4"/>
+      <Parameter name="fact: ilut level-of-fill" type="double" value="2.0"/>
     </ParameterList>
   </ParameterList>
 </ParameterList>

@@ -190,7 +190,7 @@
     </ParameterList>
     <Parameter name="num_groups" type="int" value="1"/>
     <Parameter name="dimension" type="int" value="3"/>
-    <Parameter name="num_blocks_i" type="int" value="2"/>
+    <Parameter name="num_blocks_i" type="int" value="1"/>
     <Parameter name="num_blocks_j" type="int" value="1"/>
     <Parameter name="num_z_blocks" type="int" value="1"/>
     <Parameter name="num_sets" type="int" value="1"/>
