@@ -1,18 +1,24 @@
-<!-- Modify these files to experiment with solver parameters in MCLS -->
+
 <ParameterList>
   <Parameter name="Linear Solver Type" type="string" value="MCLS"/>
   <ParameterList name="Linear Solver Types">
     <ParameterList name="MCLS">
-      <Parameter name="Solver Type" type="string" value="MCSA"/>
+      <Parameter name="Solver Type" type="string" value="Richardson"/>
       <ParameterList name = "Solver Types">
         <ParameterList name = "MCSA">
           <Parameter name="Number of Sets" type="int" value="1"/>
           <Parameter name="Reproducible MC Mode" type="bool" value="false"/>
           <Parameter name="Overlap Size" type="int" value="0"/>
           <Parameter name="Weight Cutoff" type="double" value="1.0e-4"/>
-          <Parameter name="Set Number of Histories" type="int" value="5"/>
+          <Parameter name="Set Number of Histories" type="int" value="5000"/>
           <Parameter name="Iteration Print Frequency" type="int" value="1"/>
-          <Parameter name="Convergence Tolerance" type="double" value="1.0e-8"/>
+          <Parameter name="Richardson Relaxation" type="double" value="1.0"/>
+          <Parameter name="Neumann Relaxation" type="double" value="1.0"/>
+          <Parameter name="Estimator Type" type="int" value="1"/>
+        </ParameterList>
+        <ParameterList name = "Richardson">
+          <Parameter name="Iteration Print Frequency" type="int" value="100"/>
+          <Parameter name="Richardson Relaxation" type="double" value="1.0"/>
         </ParameterList>
       </ParameterList>
     </ParameterList>
@@ -20,10 +26,19 @@
   <Parameter name="Preconditioner Type" type="string" value="MCLS"/>
   <ParameterList name="Preconditioner Types">
     <ParameterList name="MCLS">
-      <Parameter name="Preconditioner Type" type="string" value="Block Jacobi"/>
+      <Parameter name="Preconditioner Type" type="string" value="Point Jacobi"/>
       <ParameterList name="Preconditioner Types">
         <ParameterList name="Block Jacobi">
-          <Parameter name="Jacobi Block Size" type="int" value="40"/>
+          <Parameter name="Jacobi Block Size" type="int" value="1"/>
+        </ParameterList>
+        <ParameterList name="ILUT">
+          <Parameter name="fact: ilut level-of-fill" type="double" value="2.0"/>
+          <Parameter name="fact: drop tolerance" type="double" value="1.0e-3"/>
+        </ParameterList>
+        <ParameterList name="ParaSails">
+          <Parameter name="ParaSails: Threshold" type="double" value="0"/>
+          <Parameter name="ParaSails: Number of Levels" type="int" value="2"/>
+          <Parameter name="ParaSails: Filter" type="double" value="0.0"/>
         </ParameterList>
       </ParameterList>
     </ParameterList>
