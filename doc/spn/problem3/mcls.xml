@@ -9,7 +9,7 @@
           <Parameter name="Reproducible MC Mode" type="bool" value="false"/>
           <Parameter name="Overlap Size" type="int" value="0"/>
           <Parameter name="Weight Cutoff" type="double" value="1.0e-4"/>
-          <Parameter name="Set Number of Histories" type="int" value="1000"/>
+          <Parameter name="Set Number of Histories" type="int" value="30000"/>
           <Parameter name="Iteration Print Frequency" type="int" value="1"/>
           <Parameter name="Richardson Relaxation" type="double" value="1.0"/>
           <Parameter name="Neumann Relaxation" type="double" value="1.0"/>
@@ -28,14 +28,14 @@
   <Parameter name="Preconditioner Type" type="string" value="MCLS"/>
   <ParameterList name="Preconditioner Types">
     <ParameterList name="MCLS">
-      <Parameter name="Preconditioner Type" type="string" value="ParaSails"/>
+      <Parameter name="Preconditioner Type" type="string" value="ILUT"/>
       <ParameterList name="Preconditioner Types">
         <ParameterList name="Block Jacobi">
           <Parameter name="Jacobi Block Size" type="int" value="1"/>
         </ParameterList>
         <ParameterList name="ILUT">
-          <Parameter name="fact: ilut level-of-fill" type="double" value="2.0"/>
-          <Parameter name="fact: drop tolerance" type="double" value="1.0e-3"/>
+          <Parameter name="fact: ilut level-of-fill" type="double" value="3.0"/>
+          <Parameter name="fact: drop tolerance" type="double" value="5.0e-4"/>
         </ParameterList>
         <ParameterList name="ParaSails">
           <Parameter name="ParaSails: Threshold" type="double" value="0.01"/>
