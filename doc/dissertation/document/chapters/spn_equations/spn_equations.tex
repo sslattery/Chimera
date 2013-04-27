@@ -1,4 +1,4 @@
-\chapter{The Simplified $P_N$ Equations}
+\chapter{Monte Carlo Solution Methods for the Simplified $P_N$ Equations}
 \label{ch:spn_equations}
 
 The neutron transport problem is complicated. Solutions cover a large
@@ -1223,8 +1223,8 @@ at lower $SP_N$ orders, signaling a need for a better preconditioning
 strategy to both ensure and improve covergence for Monte Carlo
 methods. 
 
-\subsection{Preconditioning Strategy}
-\label{subsec:spn_preconditioning}
+\subsection{Block Jacobi Preconditioning}
+\label{sec:spn_preconditioning}
 If Monte Carlo methods are to be used to solve the $SP_N$ system of
 equations, a different preconditioning strategy is required in order
 to ensure convergence for systems of all $SP_N$ and $P_N$ orders with
@@ -1361,3 +1361,28 @@ Monte Carlo solution methods. All cases were observed to have a
 spectral radius below unity and often significantly smaller than that,
 greatly improving convergence rates over the point Jacobi preconditioned
 problem.
+
+%%---------------------------------------------------------------------------%%
+\section{Fuel Assembly Criticality Calculations}
+\label{sec:fuel_assembly_calcs}
+
+\subsection{Jacobi Preconditioned Calculations}
+\label{subsec:jacobi_prec_assembly_calc}
+
+\subsection{MCSA Break Down}
+\label{subsec:mcsa_break_down}
+
+\subsection{Advanced Preconditioning Strategies}
+\label{subsec:spn_advanced_preconditioning}
+
+\subsubsection{ILUT Preconditioning}
+\label{subsubsec:spn_ilut_preconditioning}
+
+\subsubsection{Sparse Approximate Inverse Preconditioning}
+\label{subsubsec:spn_spainv_preconditioning}
+
+\subsubsection{SPAINV Improved ILUT Preconditioning}
+\label{subsubsec:spn_spainv_preconditioning}
+
+\subsection{MCSA Comparison to Conventional Methods}
+\label{subsec:spn_comparison}
