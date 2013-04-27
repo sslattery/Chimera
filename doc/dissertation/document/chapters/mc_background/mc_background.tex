@@ -14,6 +14,16 @@ provided a more formal explanation of Von Neumann and Ulam's method
 \citep{spanier_monte_1969} present additional detail on this topic
 using a collection of references from the 1950's and early 1960's.
 
+In this chapter, we will present the fundamentals of the Monte Carlo
+method for discrete linear systems. Both the forward and adjoint
+methods will be presented and analyzed including a variance analysis
+of several Monte Carlo estimators. The Sequential Monte Carlo and
+Monte Carlo Synthetic Acceleration methods will then be presented as a
+means of leveraging the basic Monte Carlo methods in a iterative
+refinement scheme that accelerates their convergence. Using these
+iterative schemes, a set of modest variance reduction schemes will be
+introduced and their effects on the Monte Carlo methods explored.
+
 %%---------------------------------------------------------------------------%%
 \section{Preliminaries}
 \label{sec:mc_preliminaries}
@@ -131,7 +141,7 @@ events, we define the weight of that permutation to be:
 \end{equation}
 such that the weight of each transition event contributes to the
 total. The contribution to the solution from a particular random walk
-permutation is then:
+permutation is then the \textit{terminal estimator}:
 \begin{equation}
   X_{\nu}(i_0 = i) = \sum_{m=0}^k W_{m} b_{i_m}\:,
   \label{eq:direct_permutation_contribution}
@@ -219,96 +229,6 @@ solution. It is interesting to note here that as the statistical
 uncertainty is reduced at each grid point in the domain, the solution
 is resolved in a certain sense, analagous to the convergence of a
 traditional iterative method.
-
-\subsection{Estimator Variance}
-\label{subsec:estimator_variance}
-We can compute the variance of the estimator through traditional
-methods by defining the variance, $\sigma_i$, for each component in
-the solution:
-\begin{equation}
-  {\sigma_i}^2 = E\{X(i_0 = i) - (\ve{A}^{-1}\ve{b})_i\}^2 = E\{X(i_0
-  = i)^2\} - x_i^2\:,
-  \label{eq:direct_variance_1}
-\end{equation}
-where the vector exponentials are computed element-wise. Inserting
-Eq~(\ref{eq:direct_expectation_value}) gives:
-\begin{equation}
-  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} X_{\nu}^2\Big)_i - x_i^2\:,
-  \label{eq:direct_variance_2}
-\end{equation}
-and applying Eq~(\ref{eq:direct_permutation_contribution}):
-\begin{equation}
-  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2
-  b_{i_m}^2\Big)_i - x_i^2\:.
-  \label{eq:direct_variance_3}
-\end{equation}
-Finally, expanding the transition probabilities yields the variance:
-\begin{equation}
-  \sigma_i^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-  \sum_{i_k}^{N} p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
-  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k} b_{i_m} - x_i^2\:.
-  \label{eq:direct_variance_4}
-\end{equation}
-Using this definition for the variance, we can arrive at a more natural
-reason for enforcing $\rho(\ve{H}) < 1$ for our Monte Carlo method to
-converge. Per the Hadamard product, we can concatenate the summation
-in Eq~(\ref{eq:direct_variance_4}):
-\begin{equation}
-  (\ve{P} \circ \ve{W} \circ \ve{W})^k =
-  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
-  p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
-  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k}\:.
-  \label{eq:double_weighted_decomposition}
-\end{equation}
-If we assign $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$ as in
-Eq~(\ref{eq:neumann_ulam_decomposition}), we then have a new
-formulation for the variance:
-\begin{equation}
-  \sigma^2_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-  \sum_{i_k}^{N}g_{i,i_1}g_{i_1,i_2}\ldots g_{i_{k-1},i_k} b_{i_k}^2 -
-  x_i^2\:,
-\end{equation}
-which contains the general Neumann series for $\ve{G}$,
-\begin{equation}
-  \ve{T} = \sum_{k=0}^{\infty} \ve{G}^k\:,
-  \label{eq:variance_neumann_series}
-\end{equation}
-where $\ve{T} = (\ve{I}-\ve{G})^{-1}$. We can then insert $T$ back
-into the variance formulation for a more concise definition:
-\begin{equation}
-  \sigma^2_i = (\ve{T}\ve{b})_i - x_i^2\:.
-  \label{eq:direct_variance_5}
-\end{equation}
-We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
-contains an additional Hadamard product with the weight matrix. The
-Hadamard product has the property that:
-\begin{equation}
-  |\ve{H} \circ \ve{W}| \geq |\ve{H}|\ |\ve{W}|\:.
-  \label{eq:hadamard_inequality}
-\end{equation}
-Using the norm property of the Hadamard product and
-Eq~(\ref{eq:neumann_ulam_decomposition}), we can define the norm of
-$\ve{W}$ as:
-\begin{equation}
-  \frac{|\ve{H}|}{|\ve{P}|} \geq |\ve{W}|\:.
-  \label{eq:weight_norm}
-\end{equation}
-Choosing the infinity norm of the operator as defined in
-Eq~(\ref{eq:matrix_infinity_norm}), the row normalized probability
-matrix will yield a norm of 1 giving the following inequality for
-relating $\ve{G}$ and $\ve{H}$:
-\begin{equation}
-  |\ve{G}| \geq |\ve{H}|^2
-  \label{eq:variance_norm_inequality}
-\end{equation}
-Using these relations to analyze Eq~(\ref{eq:direct_variance_5}), we
-see that if $\rho(\ve{G}) > 1$, then the sum in
-Eq~(\ref{eq:variance_neumann_series}) will not converge and an
-infinite variance will arise as the elements of $\ve{T}$ become
-infinite in Eq~(\ref{eq:direct_variance_5}). We must restrict $\ve{G}$
-to alleviate this and therefore restrict $\ve{H}$ due to
-Eq~(\ref{eq:variance_norm_inequality}) with $\rho(\ve{H}) < 1$ so that
-our expectation values for the solution may have a finite variance.
 
 %%---------------------------------------------------------------------------%%
 \section{Adjoint Monte Carlo Method}
@@ -421,7 +341,8 @@ the weight generated for a particular random walk permutation as in
 Eq~(\ref{eq:mc_walk_permutation}) and our result from
 Eq~(\ref{eq:inner_product_constraint}) generated by applying the
 adjoint constraints, the contribution to the solution in state $i$
-from a particular random walk permutation is then:
+from a particular random walk permutation is then the
+\textit{collision estimator}:
 \begin{equation}
   X_{\nu} = \sum_{m=0}^k W_{m} \delta_{i,i_m}\:,
   \label{eq:adjoint_permutation_contribution}
@@ -477,6 +398,10 @@ where $W_c$ is defined as in the direct method. The adjoint random
 walk will then be terminated after $m$ steps if $W_m < W_f$ as tally
 contributions become increasingly small.
 
+\subsection{Expected Value Estimator}
+\label{subsec:expected_value_estimator}
+Here we introduce an estimator based on the method of expected values.
+
 \subsection{Adjoint Method: Evolution of a Solution}
 \label{subsec:adjoint_evolution}
 As a means of visually demonstrating the adjoint Monte Carlo method,
@@ -508,6 +433,106 @@ precisely that determined by their mathematics. As the adjoint
 solution evolves with the addition of histories, more histories
 emanate from the source with more penetrating the domain and making
 contributions to those tallies.
+
+%%---------------------------------------------------------------------------%%
+\section{Estimator Variance}
+\label{subsec:estimator_variance}
+
+\subsection{Terminal Estimator Variance}
+\label{subsec:terminal_variance}
+We can compute the variance of the estimators through traditional
+methods by defining the variance, $\sigma_i$, for each component in
+the solution:
+\begin{equation}
+  {\sigma_i}^2 = E\{X(i_0 = i) - (\ve{A}^{-1}\ve{b})_i\}^2 = E\{X(i_0
+  = i)^2\} - x_i^2\:,
+  \label{eq:direct_variance_1}
+\end{equation}
+where the vector exponentials are computed element-wise. Inserting
+Eq~(\ref{eq:direct_expectation_value}) gives:
+\begin{equation}
+  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} X_{\nu}^2\Big)_i - x_i^2\:,
+  \label{eq:direct_variance_2}
+\end{equation}
+and applying Eq~(\ref{eq:direct_permutation_contribution}):
+\begin{equation}
+  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2
+  b_{i_m}^2\Big)_i - x_i^2\:.
+  \label{eq:direct_variance_3}
+\end{equation}
+Finally, expanding the transition probabilities yields the variance:
+\begin{equation}
+  \sigma_i^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N} p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
+  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k} b_{i_m} - x_i^2\:.
+  \label{eq:direct_variance_4}
+\end{equation}
+Using this definition for the variance, we can arrive at a more natural
+reason for enforcing $\rho(\ve{H}) < 1$ for our Monte Carlo method to
+converge. Per the Hadamard product, we can concatenate the summation
+in Eq~(\ref{eq:direct_variance_4}):
+\begin{equation}
+  (\ve{P} \circ \ve{W} \circ \ve{W})^k =
+  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
+  p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
+  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k}\:.
+  \label{eq:double_weighted_decomposition}
+\end{equation}
+If we assign $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$ as in
+Eq~(\ref{eq:neumann_ulam_decomposition}), we then have a new
+formulation for the variance:
+\begin{equation}
+  \sigma^2_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}g_{i,i_1}g_{i_1,i_2}\ldots g_{i_{k-1},i_k} b_{i_k}^2 -
+  x_i^2\:,
+\end{equation}
+which contains the general Neumann series for $\ve{G}$,
+\begin{equation}
+  \ve{T} = \sum_{k=0}^{\infty} \ve{G}^k\:,
+  \label{eq:variance_neumann_series}
+\end{equation}
+where $\ve{T} = (\ve{I}-\ve{G})^{-1}$. We can then insert $T$ back
+into the variance formulation for a more concise definition:
+\begin{equation}
+  \sigma^2_i = (\ve{T}\ve{b})_i - x_i^2\:.
+  \label{eq:direct_variance_5}
+\end{equation}
+We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
+contains an additional Hadamard product with the weight matrix. The
+Hadamard product has the property that:
+\begin{equation}
+  |\ve{H} \circ \ve{W}| \geq |\ve{H}|\ |\ve{W}|\:.
+  \label{eq:hadamard_inequality}
+\end{equation}
+Using the norm property of the Hadamard product and
+Eq~(\ref{eq:neumann_ulam_decomposition}), we can define the norm of
+$\ve{W}$ as:
+\begin{equation}
+  \frac{|\ve{H}|}{|\ve{P}|} \geq |\ve{W}|\:.
+  \label{eq:weight_norm}
+\end{equation}
+Choosing the infinity norm of the operator as defined in
+Eq~(\ref{eq:matrix_infinity_norm}), the row normalized probability
+matrix will yield a norm of 1 giving the following inequality for
+relating $\ve{G}$ and $\ve{H}$:
+\begin{equation}
+  |\ve{G}| \geq |\ve{H}|^2
+  \label{eq:variance_norm_inequality}
+\end{equation}
+Using these relations to analyze Eq~(\ref{eq:direct_variance_5}), we
+see that if $\rho(\ve{G}) > 1$, then the sum in
+Eq~(\ref{eq:variance_neumann_series}) will not converge and an
+infinite variance will arise as the elements of $\ve{T}$ become
+infinite in Eq~(\ref{eq:direct_variance_5}). We must restrict $\ve{G}$
+to alleviate this and therefore restrict $\ve{H}$ due to
+Eq~(\ref{eq:variance_norm_inequality}) with $\rho(\ve{H}) < 1$ so that
+our expectation values for the solution may have a finite variance.
+
+\subsection{Collision Estimator Variance}
+\label{subsec:collision_variance}
+
+\subsection{Expected Value Estimator Variance}
+\label{subsec:expected_value_variance}
 
 %%---------------------------------------------------------------------------%%
 \section{Sequential Monte Carlo}
@@ -687,6 +712,12 @@ diagonal elements, thereby eliminating all in-state transitions during
 the random walk sequence. Because of this, point Jacobi
 preconditioning should be considered for many classes of problems,
 regardless of any other preconditioning that is applied to the system.
+
+\subsection{General Preconditioning Strategies}
+\label{subsec:general_mcsa_strategies}
+It is possible to use general left, right, and left/right
+preconditioning with MCSA by carefully considering the underly Monte
+Carlo that will be solved with the Neumann Ulam method.
 
 %%---------------------------------------------------------------------------%%
 \section{Monte Carlo Method Selection}
@@ -921,3 +952,13 @@ with a monotonically decreasing residual.
       solver.}}
   \label{fig:seq_500}
 \end{figure}
+
+%%---------------------------------------------------------------------------%%
+\section{Variance Reduction Techniques}
+\label{sec:variance_reduction}
+
+\subsection{Artificial Absorption}
+\label{subsec:artificial_absorption}
+
+\subsection{Reduced Domain Approximation}
+\label{subsec:reduced_domain_approximation}
