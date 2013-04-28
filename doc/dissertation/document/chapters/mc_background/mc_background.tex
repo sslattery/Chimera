@@ -195,6 +195,95 @@ terminate a random walk sequence with a \textit{weight cutoff}, $W_c$,
 that is enforced when $W_m < W_c$ for a particular random walk
 permutation.
 
+\subsection{Forward Estimator Variance}
+\label{subsec:forward_variance}
+We can compute the variance of the forward estimator through traditional
+methods by defining the variance, $\sigma_i$, for each component in
+the solution:
+\begin{equation}
+  {\sigma_i}^2 = E\{X_i - (\ve{A}^{-1}\ve{b})_i\}^2 = E\{X_i^2\} - x_i^2\:,
+  \label{eq:direct_variance_1}
+\end{equation}
+where the vector exponentials are computed element-wise. Inserting
+Eq~(\ref{eq:direct_expectation_value}) gives:
+\begin{equation}
+  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} X_{\nu}^2\Big)_i - x_i^2\:,
+  \label{eq:direct_variance_2}
+\end{equation}
+and applying Eq~(\ref{eq:direct_permutation_contribution}):
+\begin{equation}
+  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2
+  b_{i_m}^2\Big)_i - x_i^2\:.
+  \label{eq:direct_variance_3}
+\end{equation}
+Finally, expanding the transition probabilities yields the variance:
+\begin{equation}
+  \sigma_i^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N} p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
+  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k} b_{i_k}^2 - x_i^2\:.
+  \label{eq:direct_variance_4}
+\end{equation}
+Using this definition for the variance, we can arrive at a more natural
+reason for enforcing $\rho(\ve{H}) < 1$ for our Monte Carlo method to
+converge. Per the Hadamard product, we can concatenate the summation
+in Eq~(\ref{eq:direct_variance_4}):
+\begin{equation}
+  (\ve{P} \circ \ve{W} \circ \ve{W})^k =
+  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
+  p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
+  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k}\:.
+  \label{eq:double_weighted_decomposition}
+\end{equation}
+If we assign $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$ as in
+Eq~(\ref{eq:neumann_ulam_decomposition}), we then have a new
+formulation for the variance:
+\begin{equation}
+  \sigma^2_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}g_{i,i_1}g_{i_1,i_2}\ldots g_{i_{k-1},i_k} b_{i_k}^2 -
+  x_i^2\:,
+\end{equation}
+which contains the general Neumann series for $\ve{G}$,
+\begin{equation}
+  \ve{T} = \sum_{k=0}^{\infty} \ve{G}^k\:,
+  \label{eq:variance_neumann_series}
+\end{equation}
+where $\ve{T} = (\ve{I}-\ve{G})^{-1}$. We can then insert $T$ back
+into the variance formulation for a more concise definition:
+\begin{equation}
+  \sigma^2_i = (\ve{T}\ve{b})_i - x_i^2\:.
+  \label{eq:direct_variance_5}
+\end{equation}
+We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
+contains an additional Hadamard product with the weight matrix. The
+Hadamard product has the property that:
+\begin{equation}
+  |\ve{H} \circ \ve{W}| \geq |\ve{H}|\ |\ve{W}|\:.
+  \label{eq:hadamard_inequality}
+\end{equation}
+Using the norm property of the Hadamard product and
+Eq~(\ref{eq:neumann_ulam_decomposition}), we can define the norm of
+$\ve{W}$ as:
+\begin{equation}
+  \frac{|\ve{H}|}{|\ve{P}|} \geq |\ve{W}|\:.
+  \label{eq:weight_norm}
+\end{equation}
+Choosing the infinity norm of the operator as defined in
+Eq~(\ref{eq:matrix_infinity_norm}), the row normalized probability
+matrix will yield a norm of 1 giving the following inequality for
+relating $\ve{G}$ and $\ve{H}$:
+\begin{equation}
+  |\ve{G}| \geq |\ve{H}|^2
+  \label{eq:variance_norm_inequality}
+\end{equation}
+Using these relations to analyze Eq~(\ref{eq:direct_variance_5}), we
+see that if $\rho(\ve{G}) > 1$, then the sum in
+Eq~(\ref{eq:variance_neumann_series}) will not converge and an
+infinite variance will arise as the elements of $\ve{T}$ become
+infinite in Eq~(\ref{eq:direct_variance_5}). We must restrict $\ve{G}$
+to alleviate this and therefore restrict $\ve{H}$ due to
+Eq~(\ref{eq:variance_norm_inequality}) with $\rho(\ve{H}) < 1$ so that
+our expectation values for the solution may have a finite variance.
+
 \subsection{Direct Method: Evolution of a Solution}
 \label{subsec:direct_evolution}
 As a means of visually demonstrating the direct Monte Carlo method,
@@ -318,10 +407,17 @@ meaning that if we compute the inner product of the original source
 and the adjoint solution using a delta function source, we recover one
 component of the original solution.
 
-In terms of particle transport, this adjoint method is equivalent to a
-traditional forward method. As a result of using the adjoint system,
-we modify our probabilities and weights using the \textit{adjoint
-  Neumann-Ulam decomposition} of $\ve{H}$:
+In terms of radiation transport, this adjoint method is equivalent to
+a traditional forward method where the initial state $i_0$ of the
+random walk is determined by sampling the source vector $\ve{b}$ with
+probabilities:
+\begin{equation}
+  P_{i_0=i}(\nu) = \frac{b_i}{||\ve{b}||_1}\:.
+  \label{eq:adjoint_source_probability}
+\end{equation}
+ As a result of using the adjoint system, we modify our probabilities
+ and weights using the \textit{adjoint Neumann-Ulam decomposition} of
+ $\ve{H}$:
 \begin{equation}
   \ve{H}^{T} = \ve{P} \circ \ve{W}\:,
   \label{eq:adjoint_neumann_ulam}
@@ -335,8 +431,8 @@ column-scaled:
   p_{ij} = \frac{|h_{ji}|}{\sum_j |h_{ji}|}\:,
   \label{eq:adjoint_probability}
 \end{equation}
-such that we expect to select a new state $j$ from the current state
-in the random walk $j$ by sampling column-wise (or row-wise if an
+such that we expect to select a new state, $j$, from the current state
+in the random walk, $i$, by sampling column-wise (or row-wise if an
 adjoint probability matrix is formed). Per
 Eq~(\ref{eq:adjoint_neumann_ulam}), the transition weight is then
 defined as:
@@ -349,7 +445,7 @@ the adjoint method. Given Eq~(\ref{eq:direct_permutation_weight}) as
 the weight generated for a particular random walk permutation as in
 Eq~(\ref{eq:mc_walk_permutation}) and our result from
 Eq~(\ref{eq:inner_product_constraint}) generated by applying the
-adjoint constraints, the contribution to the solution in state $i$
+adjoint constraints, the contribution to the solution in state $j$
 from a particular random walk permutation of $k$ events is then the
 \textit{collision estimator}:
 \begin{equation}
@@ -387,7 +483,7 @@ solution. It should be noted here that
 Eq~(\ref{eq:adjoint_expectation_expansion}) only computes a single
 component of our desired solution vector when really what we desire is
 the entire solution vector. In an adjoint Monte Carlo simulation using
-this estimator, the $w_{i,j}$ elements that are added into the tally
+this estimator, the $w_{ij}$ elements that are added into the tally
 for each state are only selected if the random walk currently resides
 in that state. Much like a mesh tally in a particle transport
 simulation, we have $N$ simultaneous tallies for $\ve{A} \in
@@ -407,15 +503,79 @@ where $W_c$ is defined as in the direct method. The adjoint random
 walk will then be terminated after $m$ steps if $W_m < W_f$ as tally
 contributions become increasingly small.
 
+\subsection{Collision Estimator Variance}
+\label{subsec:forward_variance}
+We can compute the variance of the collision estimator in the same way
+as the direct estimator for each component in the solution where now:
+\begin{equation}
+  \sigma_j^2 = \Big(\sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2
+  \delta_{i_m,j}\Big)_j - x_j^2\:.
+  \label{eq:collision_variance_1}
+\end{equation}
+Expanding the transition probabilities yields the same variance as the
+direct estimator, this time with the terms in reverse order and the
+introduction of the Kronecker delta:
+\begin{equation}
+  \sigma_j^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N} p_{i_k,i_{k-1}}\ldots p_{i_2,i_1} p_{i_1,i_0}
+  w^2_{i_k,i_{k-1}}\ldots w^2_{i_2,i_1} w^2_{i_1,i_0}
+  b^2_{i_0}\delta_{i_k,j} - x_i^2\:.
+  \label{eq:collision_variance_2}
+\end{equation}
+If we again $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$, we then have:
+\begin{equation}
+  \sigma^2_j = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}g_{i_{k},i_{k-1}} \ldots
+  g_{i_2,i_1}g_{i_1,i_0}b_{i_0}\delta_{i_k,j}^2 - x_i^2\:,
+\label{eq:collision_variance_3}
+\end{equation}
+which again contains the general Neumann series for $\ve{G}$ as given
+by Eq~(\ref{eq:variance_neumann_series}).  Inserting $T$ back into the
+variance formulation gives:
+\begin{equation}
+  \sigma^2_j = (\ve{T}\ve{b})_j - x_i^2\:.
+  \label{eq:direct_variance_5}
+\end{equation}
+We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
+contains an additional Hadamard product with the weight matrix. The
+Hadamard product has the property that:
+\begin{equation}
+  |\ve{H} \circ \ve{W}| \geq |\ve{H}|\ |\ve{W}|\:.
+  \label{eq:hadamard_inequality}
+\end{equation}
+Using the norm property of the Hadamard product and
+Eq~(\ref{eq:neumann_ulam_decomposition}), we can define the norm of
+$\ve{W}$ as:
+\begin{equation}
+  \frac{|\ve{H}|}{|\ve{P}|} \geq |\ve{W}|\:.
+  \label{eq:weight_norm}
+\end{equation}
+Choosing the infinity norm of the operator as defined in
+Eq~(\ref{eq:matrix_infinity_norm}), the row normalized probability
+matrix will yield a norm of 1 giving the following inequality for
+relating $\ve{G}$ and $\ve{H}$:
+\begin{equation}
+  |\ve{G}| \geq |\ve{H}|^2
+  \label{eq:variance_norm_inequality}
+\end{equation}
+Using these relations to analyze Eq~(\ref{eq:direct_variance_5}), we
+see that if $\rho(\ve{G}) > 1$, then the sum in
+Eq~(\ref{eq:variance_neumann_series}) will not converge and an
+infinite variance will arise as the elements of $\ve{T}$ become
+infinite in Eq~(\ref{eq:direct_variance_5}). We must restrict $\ve{G}$
+to alleviate this and therefore restrict $\ve{H}$ due to
+Eq~(\ref{eq:variance_norm_inequality}) with $\rho(\ve{H}) < 1$ so that
+our expectation values for the solution may have a finite variance.
+
 \subsection{Expected Value Estimator}
 \label{subsec:expected_value_estimator}
 In addition to the collision estimator, an additional estimator is
-available is available due to the work of Okten
-\citep{okten_solving_2005} that uses the method of expected values as
-a means to improve the Monte Carlo estimate. As outlined by Spanier
-and Gelbard \citep{spanier_monte_1969}, the method of expected values
-is a deterministic averaging of events that may potentially occur in
-the Monte Carlo random walk sequence. Okten applied this principle
+available due to the work of Okten \citep{okten_solving_2005} that
+uses the method of expected values as a means to improve the Monte
+Carlo estimate. As outlined by Spanier and Gelbard
+\citep{spanier_monte_1969}, the method of expected values is a
+deterministic averaging of events that may potentially occur in the
+Monte Carlo random walk sequence. Okten applied this principle
 directly to discrete Monte Carlo by forming the \textit{expected value
   estimator} for a random walk of $k$ events:
 \begin{equation}
@@ -448,10 +608,11 @@ Eq~(\ref{eq:richardson_split}):
   \label{eq:unbiased_eval_2}
 \end{equation}
 and is therefore and unbiased estimate. Compared to the collision
-estimator, provides additional information at every step of the random
-walk, yielding potentially better statistics with the same amount of
-transport work. Conveniently, even if no Monte Carlo histories are
-computed, the estimator still deterministically computes the first
+estimator, the expected value estimator provides additional
+information at every step of the random walk, yielding potentially
+better statistics with the same amount of transport
+work. Conveniently, even if no Monte Carlo histories are computed, the
+expected value estimator still deterministically computes the first
 term of the Neumann Series, $\ve{H}^0\ve{b}$, whereas the collision
 estimator will provide no information.
 
@@ -487,108 +648,6 @@ solution evolves with the addition of histories, more histories
 emanate from the boundary and smaller uniform source with more
 penetrating from the boundary into the domain and making contributions
 to the tallies in those states.
-
-%%---------------------------------------------------------------------------%%
-\section{Estimator Variance}
-\label{subsec:estimator_variance}
-
-
-
-\subsection{Forward Estimator Variance}
-\label{subsec:forward_variance}
-We can compute the variance of the forward estimator through traditional
-methods by defining the variance, $\sigma_i$, for each component in
-the solution:
-\begin{equation}
-  {\sigma_i}^2 = E\{X(i_0 = i) - (\ve{A}^{-1}\ve{b})_i\}^2 = E\{X(i_0
-  = i)^2\} - x_i^2\:,
-  \label{eq:direct_variance_1}
-\end{equation}
-where the vector exponentials are computed element-wise. Inserting
-Eq~(\ref{eq:direct_expectation_value}) gives:
-\begin{equation}
-  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} X_{\nu}^2\Big)_i - x_i^2\:,
-  \label{eq:direct_variance_2}
-\end{equation}
-and applying Eq~(\ref{eq:direct_permutation_contribution}):
-\begin{equation}
-  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2
-  b_{i_m}^2\Big)_i - x_i^2\:.
-  \label{eq:direct_variance_3}
-\end{equation}
-Finally, expanding the transition probabilities yields the variance:
-\begin{equation}
-  \sigma_i^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-  \sum_{i_k}^{N} p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
-  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k} b_{i_m} - x_i^2\:.
-  \label{eq:direct_variance_4}
-\end{equation}
-Using this definition for the variance, we can arrive at a more natural
-reason for enforcing $\rho(\ve{H}) < 1$ for our Monte Carlo method to
-converge. Per the Hadamard product, we can concatenate the summation
-in Eq~(\ref{eq:direct_variance_4}):
-\begin{equation}
-  (\ve{P} \circ \ve{W} \circ \ve{W})^k =
-  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
-  p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
-  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k}\:.
-  \label{eq:double_weighted_decomposition}
-\end{equation}
-If we assign $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$ as in
-Eq~(\ref{eq:neumann_ulam_decomposition}), we then have a new
-formulation for the variance:
-\begin{equation}
-  \sigma^2_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-  \sum_{i_k}^{N}g_{i,i_1}g_{i_1,i_2}\ldots g_{i_{k-1},i_k} b_{i_k}^2 -
-  x_i^2\:,
-\end{equation}
-which contains the general Neumann series for $\ve{G}$,
-\begin{equation}
-  \ve{T} = \sum_{k=0}^{\infty} \ve{G}^k\:,
-  \label{eq:variance_neumann_series}
-\end{equation}
-where $\ve{T} = (\ve{I}-\ve{G})^{-1}$. We can then insert $T$ back
-into the variance formulation for a more concise definition:
-\begin{equation}
-  \sigma^2_i = (\ve{T}\ve{b})_i - x_i^2\:.
-  \label{eq:direct_variance_5}
-\end{equation}
-We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
-contains an additional Hadamard product with the weight matrix. The
-Hadamard product has the property that:
-\begin{equation}
-  |\ve{H} \circ \ve{W}| \geq |\ve{H}|\ |\ve{W}|\:.
-  \label{eq:hadamard_inequality}
-\end{equation}
-Using the norm property of the Hadamard product and
-Eq~(\ref{eq:neumann_ulam_decomposition}), we can define the norm of
-$\ve{W}$ as:
-\begin{equation}
-  \frac{|\ve{H}|}{|\ve{P}|} \geq |\ve{W}|\:.
-  \label{eq:weight_norm}
-\end{equation}
-Choosing the infinity norm of the operator as defined in
-Eq~(\ref{eq:matrix_infinity_norm}), the row normalized probability
-matrix will yield a norm of 1 giving the following inequality for
-relating $\ve{G}$ and $\ve{H}$:
-\begin{equation}
-  |\ve{G}| \geq |\ve{H}|^2
-  \label{eq:variance_norm_inequality}
-\end{equation}
-Using these relations to analyze Eq~(\ref{eq:direct_variance_5}), we
-see that if $\rho(\ve{G}) > 1$, then the sum in
-Eq~(\ref{eq:variance_neumann_series}) will not converge and an
-infinite variance will arise as the elements of $\ve{T}$ become
-infinite in Eq~(\ref{eq:direct_variance_5}). We must restrict $\ve{G}$
-to alleviate this and therefore restrict $\ve{H}$ due to
-Eq~(\ref{eq:variance_norm_inequality}) with $\rho(\ve{H}) < 1$ so that
-our expectation values for the solution may have a finite variance.
-
-\subsection{Collision Estimator Variance}
-\label{subsec:collision_variance}
-
-\subsection{Expected Value Estimator Variance}
-\label{subsec:expected_value_variance}
 
 %%---------------------------------------------------------------------------%%
 \section{Sequential Monte Carlo}
@@ -721,15 +780,19 @@ iteration, the weight cutoff for those histories, and the total MCSA
 convergence tolerance as specified by $\epsilon$.
 
 \subsection{Preconditioning MCSA}
-\label{sec:stochastic_preconditioning}
+\label{subsec:stochastic_preconditioning}
 In most cases, at least a minimal amount of \textit{preconditioning}
 of the linear system will be required in order to use the class of
 stochastic methods described. Although these methods have no symmetry
 requirements for convergence, they do require that the spectral radius
-of the iteration matrix be less than one. As an example, to achieve
-this for diagonally dominant matrices point Jacobi left
-preconditioning can be used such that the preconditioning matrix
-$\ve{M}$ is:
+of the iteration matrix be less than one. Preconditioning serves as a
+means of achieving this.
+
+\subsubsection{Basic Preconditioning}
+\label{subsubsec:basic_mcsa_preconditioning}
+As an example, to achieve this for diagonally dominant matrices point
+Jacobi left preconditioning can be used such that the preconditioning
+matrix $\ve{M}$ is:
 \begin{equation}
   \ve{M} = diag(\ve{A})\:.
   \label{eq:jacobi_preconditioner}
@@ -769,11 +832,80 @@ the random walk sequence. Because of this, point Jacobi
 preconditioning should be considered for many classes of problems,
 regardless of any other preconditioning that is applied to the system.
 
-\subsection{General Preconditioning Strategies}
-\label{subsec:general_mcsa_strategies}
+\subsubsection{General Preconditioning Strategies}
+\label{subsubsec:general_mcsa_preconditioning}
 It is possible to use general left, right, and left/right
 preconditioning with MCSA by carefully considering the underly Monte
-Carlo that will be solved with the Neumann Ulam method.
+Carlo that will be solved with the Neumann Ulam method. We consider
+here the general left/right preconditioned method as the left or right
+preconditioned methods can be inferred from its formulation. We
+consider a left preconditioner $\ve{M_L}$ and a right preconditioner
+$\ve{M_R}$. The left/right preconditioned linear problem is then:
+\begin{equation}
+  \ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}\ve{M}_R\ve{x} = \ve{M}_L^{-1}\ve{b}\:.
+  \label{eq:left_right_linear_problem}
+\end{equation}
+To handle the right preconditioning, the system is written with a
+substitution of variables:
+\begin{equation}
+  \ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}\ve{u} = \ve{M}_L^{-1}\ve{b}\:,
+  \label{eq:left_right_subs_problem}
+\end{equation}
+with
+\begin{equation}
+  \ve{x} = \ve{M}_R^{-1}\ve{u}\:.
+  \label{eq:left_right_recover}
+\end{equation}
+To apply such a method to MCSA, we solve for the substituted variable
+$\ve{u}$ during the iteration sequence:
+\begin{subequations}
+  \begin{gather}
+    \ve{u}^{k+1/2} = \ve{u}^k + \ve{r}^k\:,\\
+    \ve{r}^{k+1/2} = \ve{M}_L^{-1}(\ve{b}-\ve{A}\ve{M}_R^{-1}\ve{u}^{k+1/2})\:,\\ 
+    \ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}\delta\ve{u}^{k+1/2} = \ve{r}^{k+1/2}\:,\\ 
+    \ve{u}^{k+1} = \ve{u}^{k+1/2} + \delta \ve{u}^{k+1/2}\:,\\
+    \ve{r}^{k+1} = \ve{M}_L^{-1}(\ve{b}-\ve{A}\ve{M}_R^{-1}\ve{u}^{k+1})\:,
+    \label{eq:left_right_mcsa}
+  \end{gather}
+\end{subequations}
+and then recover the original solution vector with
+Eq~(\ref{eq:left_right_recover}). For the Monte Carlo problem, we
+isolate the generation of the correction:
+\begin{equation}
+  \ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}\delta\ve{u}^{k+1/2} = \ve{r}^{k+1/2}\:,
+  \label{eq:left_right_correction}
+\end{equation}
+and note that the precondtioned residual of the substituted variable
+is now serving as the source and the new iteration matrix is:
+\begin{equation}
+  \ve{H} = \ve{I} - \ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}\:.
+  \label{eq:left_right_iteration_matrix}
+\end{equation}
+As we require $(i,j)$ element-wise access to the iteration matrix in
+order to construct probabilities and weights for the Monte Carlo
+procedure, the \textit{composite operator},
+$\ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}$, must be formed via matrix-matrix
+multiplication. Several possible shortcomings of this preconditioning
+approach are readily observed. First, the matrix-matrix multiplication
+operation for sparse, parallel distributed matrices is significantly
+more expensive than a matrix-vector multiplication operation. Second,
+each preconditioner must be explicitly inverted, an operation in
+itself that my be expensive prohibits the use of any preconditioners
+which prohibit the extraction of the inverse. Third, for many modern
+preconditioning methods, this inversion may yield dense matrices,
+destroying sparsity and further impeding the performance of a
+matrix-matrix multiplication operation. It is also interesting to note
+that the Monte Carlo problem in the general left/right preconditioned
+scheme given by Eq~(\ref{eq:left_right_correction}) is not fully
+left/right preconditioned (meaning that we do not recover $\ve{x}$),
+but instead part of a sequence for finding the substituted variable
+$\ve{u}$. We do, however, gain the benefits of this general
+preconditioning by building the iteration matrix in
+Eq~(\ref{eq:left_right_iteration_matrix}) from the fully
+preconditioned linear operator. In addition, for MCSA to apply to
+increasingly difficult problems, more advanced preconditioning
+techniques that require the generation of the composite operator may
+be necessary for convergence.
 
 %%---------------------------------------------------------------------------%%
 \section{Monte Carlo Method Selection}
@@ -813,25 +945,25 @@ Both the stencils will be used to vary the size and density of the sparse
 linear system in Eq.~(\ref{eq:poisson_eq_lin_sys}).
 
 A timing and convergence study is used to demonstrate the
-effectiveness of the adjoint method as compared to the direct
-method. To assess both the CPU time and number of iterations required
-to converge to a solution, a problem of constant $\Delta$ was used
-with varying values of the number of mesh elements, fixing the
-spectral radius of the system at a constant value for each
-variation. Both the five-point and nine-point stencils were used with
-both the direct and adjoint solvers. For each case, $N \times N$ total
-random walk permutations were computed per MCSA iteration where $N
-\times N$ is the number of discrete grid points in the system. Solver
-parameters were set to a weight cutoff of \sn{1}{-4} for the
-stochastic linear solver and a convergence tolerance of \sn{1}{-8} for
-the MCSA iterative solver.  Figure~\ref{fig:poisson_cpu_time} gives
-the CPU time needed for each case to converge in seconds and
-Figure~\ref{fig:poisson_iterations} gives the number of iterations
-needed for each case to converge to the specified tolerance as a
-function of the problem size. All computations presented in this
-section and \S\ref{subsec:sequential_comparison} were completed on a
-3.0 GHz Intel Core 2 Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3
-memory.
+effectiveness of the adjoint method with the collision estimator as
+compared to the direct method. To assess both the CPU time and number
+of iterations required to converge to a solution, a problem of
+constant $\Delta$ was used with varying values of the number of mesh
+elements, fixing the spectral radius of the system at a constant value
+for each variation. Both the five-point and nine-point stencils were
+used with both the direct and adjoint solvers. For each case, $N
+\times N$ total random walk permutations were computed per MCSA
+iteration where $N \times N$ is the number of discrete grid points in
+the system. Solver parameters were set to a weight cutoff of
+\sn{1}{-4} for the stochastic linear solver and a convergence
+tolerance of \sn{1}{-8} for the MCSA iterative solver.
+Figure~\ref{fig:poisson_cpu_time} gives the CPU time needed for each
+case to converge in seconds and Figure~\ref{fig:poisson_iterations}
+gives the number of iterations needed for each case to converge to the
+specified tolerance as a function of the problem size. All
+computations presented in this section and
+\S\ref{subsec:sequential_comparison} were completed on a 3.0 GHz Intel
+Core 2 Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
 \begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_cpu.pdf}
@@ -947,11 +1079,11 @@ a better converged residual source to use with the Monte Carlo
 calculation while the Sequential method requires more iterations to
 achieve the same level of convergence in the residual.
 
-\begin{figure}[t!]
+\begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_cpu.pdf}
   \caption{\textbf{CPU Time (s) to converge vs. Problem Size ($N$ for
-      an $N \times N$ square mesh).} \textit{oth the Sequential Monte
+      an $N \times N$ square mesh).} \textit{Both the Sequential Monte
       Carlo and MCSA solvers are used with the five point stencils and
       the adjoint Monte Carlo solver. The number of random walks was
       twice the number of discrete states in the system in order to
@@ -959,7 +1091,7 @@ achieve the same level of convergence in the residual.
   \label{fig:seq_cpu_time}
 \end{figure}
 
-\begin{figure}[t!]
+\begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_iterations.pdf}
   \caption{\textbf{Iterations to converge vs. Problem Size ($N$ for an
@@ -987,7 +1119,7 @@ issues with a non-monotonically decreasing residual observed for the
 $N=100$ case. In both cases the MCSA solver is observed to be robust
 with a monotonically decreasing residual.
 
-\begin{figure}[t!]
+\begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_conv_100.pdf}
   \caption{\textbf{Infinity norm of the solution residual
@@ -998,7 +1130,7 @@ with a monotonically decreasing residual.
   \label{fig:seq_100}
 \end{figure}
 
-\begin{figure}[t!]
+\begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_conv_500.pdf}
   \caption{\textbf{Infinity norm of the solution residual
@@ -1012,9 +1144,59 @@ with a monotonically decreasing residual.
 %%---------------------------------------------------------------------------%%
 \section{Variance Reduction Techniques}
 \label{sec:variance_reduction}
+Variance reduction is a mechanism by which the probabilities and
+weights of the Monte Carlo problem are modified to improve the
+performance of a given estimator. In many cases, such modifications
+will introduce bias into the system. However, using Monte Carlo within
+an MCSA iterative scheme provides a potential buffer for the solution
+from this bias as the correction generated by the Monte Carlo solve
+will contain large statistical error even without variance reduction.
 
 \subsection{Artificial Absorption}
 \label{subsec:artificial_absorption}
+The random walk sequences generated by the adjoint Neumann Ulam
+decomposition in Eqs~(\ref{eq:adjoint_probability}) and
+(\ref{eq:adjoint_weight}) will continue on indefinitely without the
+implementation of a weight cutoff procedure (which in itself is
+effectively a form of variance reduction). This is due to the fact
+that all states to which a stochastic history may move in a given
+transition exist within the system and have a non-zero weight. A
+preliminary variance reduction scheme is to introduce
+\textit{artifical absorption} into the system such that at each
+transition event, a stochastic history will now have some finite
+probability of being terminated through absorption as well as
+transition to other states in the system. This probability, $p_{abs}$,
+modifies the probabilities and weights in the adjoint random walk
+sequence as:
+\begin{equation}
+  p_{ij} = \frac{|h_{ji}|}{\sum_i|h_{ji}|}(1-p_{abs})\:,
+  \label{eq:absorption_probabilities}
+\end{equation}
+and
+\begin{equation}
+  w_{ij} = \frac{sign(h_{ji})\sum_i|h_{ji}|}{(1-p_{abs})}\:.
+  \label{eq:absorption_weights}
+\end{equation}
+At each transition step, a history at state $i$ will then sample the
+probability distribution function generated by
+Eq~(\ref{eq:absorption_probabilities}) with an additional absorption
+state added to the distribution. If the sampling procedure results in
+a transition to the absorption state, the history is immediately
+terminated. The advantages of this for residual Monte Carlo are that
+increasing the absorption probability decreases the length of each
+random walk (resulting in speedup), while the random walk has a higher
+weight contribution at every step. This higher weight means that each
+history is depositing more information near its birth site which will
+on average be located where the system residual is the largest. An
+additional advantage of this formulation is that the full Neumann Ulam
+decomposition is maintained, resulting in Monte Carlo estimates that
+are unbiased.
+
+To observe the effects of this variance reduction on MCSA solutions,
+the transient Poisson problem was again solved with the adjoint
+method, this time with varying values of artificial
+absorption. Compare CPU time and iterative performance with a fixed
+grid.
 
 \subsection{Weight Capping}
 \label{subsec:weight_capping}
