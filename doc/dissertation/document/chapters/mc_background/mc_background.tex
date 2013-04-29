@@ -1144,7 +1144,100 @@ With the adjoint method shown to be more effective than the direct
 method and MCSA to have better iterative and timing performance than
 sequential Monte Carlo, we now aim to study the effects of the adjoint
 Monte Carlo parameters, weight cutoff and number of histories, on MCSA
-performance with both the collision and expected value estimators.
+performance with both the collision and expected value
+estimators. With the same Poisson problem, we will use a $200 \times
+200$ grid and a convergence tolerance of \sn{1}{-8} for all
+calculations. To study the effects of the number of Monte Carlo
+histories per MCSA iteration, the weight cutoff was fixed at
+\sn{1}{-4} while the number of histories per iteration was varied from
+6,000 to 100,000. It was observed that MCSA would not converge for
+this problem using the collision estimator with less than 6,000
+histories while the expected value estimator permitted convergence
+with only 2,000 histories. Figure~\ref{fig:estimator_nh_iters} gives
+the number of iterations required to converge for both estimators as a
+function of the number of histories per iteration. For smaller numbers
+of histories, the performance of the expected value estimator is
+significantly better than the collision estimator. This result is
+valuable in that less transport is required to achieve the same MCSA
+iterative performance with the expected value estimator, important for
+situations where transport is expensive (i.e. in domain decomposed
+calculations). Interstingly, as the number of histories per iteration
+are increased, the iterative performance with the collision estimator
+approaches that of the expected value estimator. However, given the
+performance of the expected value estimator at a fractional number of
+histories, one should strongly consider its use over using the collision
+estimator with more histories. The CPU time required to converge is
+presented in Figure~\ref{fig:estimator_nh_time} and reflects the
+results of the iterative performance. In general, using the collision
+estimator is slightly slower overall, but the time per iteration is
+faster due to the fact that the estimator does not have to cycle
+through multiple states during the tally procedure.
+
+\begin{figure}[p!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/estimator_nh_iters.pdf}
+  \caption{\textbf{Iterations (s) to converge vs. Monte Carlo
+      histories per MCSA iteration for a $200 \times 200$ square mesh
+      and a weight cutoff of \sn{1}{-4}.} \textit{For low numbers of
+      histories, the expected value estimator performance is
+      significantly better than the collision estimator. At higher
+      numbers of histories, the estimators become roughly
+      equivalent.}}
+  \label{fig:estimator_nh_iters}
+\end{figure}
+
+\begin{figure}[p!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/estimator_nh_time.pdf}
+  \caption{\textbf{CPU Time (s) to converge vs. Monte Carlo histories
+      per MCSA iteration for a $200 \times 200$ square mesh and a
+      weight cutoff of \sn{1}{-4}.} \textit{For low numbers of
+      histories, the expected value estimator performance is better
+      than the collision estimator due to a lower iteration count
+      while the actual compute time per iteration is higher.}}
+  \label{fig:estimator_nh_time}
+\end{figure}
+
+For the weight cutoff study, the number of histories per iteration was
+fixed at 40,000 and the weight cutoff varied from \sn{5}{-1} down to
+\sn{1}{-10}. Surprisingly, the number of iterations to converge given
+by Figure~\ref{fig:estimator_wc_iters} is effectively invariant to the
+weight cutoff, only seeing detrimental effects on the number of
+iterations at a very large weight cutoff. This suggests that a fairly
+large weight cutoff can be used in practice with both estimators and
+that the preliminary components of the random walk are more important
+to MCSA convergence than those that occur later and with lower weight
+contributions. To further motivate using a larger weight cutoff,
+Figure~\ref{fig:estimator_wc_time} gives the CPU time need to converge
+as a function of weight cutoff. As expected, lowering the weight
+cutoff lengthens the random walk lengths and increases CPU time at no
+gain of iterative performance. In general, these results suggest using
+the expected value estimator over the collision estimator with MCSA as
+well as using a larger weight cutoff.
+
+\begin{figure}[p!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/estimator_wc_iters.pdf}
+  \caption{\textbf{Iterations (s) to converge vs. history weight
+      cutoff for a $200 \times 200$ square mesh and 40,000 histories.}
+    \textit{For low numbers of histories, the expected value estimator
+      performance is significantly better than the collision
+      estimator. At higher numbers of histories, the estimators become
+      roughly equivalent.}}
+  \label{fig:estimator_wc_iters}
+\end{figure}
+
+\begin{figure}[p!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/estimator_wc_time.pdf}
+  \caption{\textbf{CPU Time (s) to converge vs. history weight cutoff
+      for a $200 \times 200$ square mesh and 40,000 histories.}
+    \textit{For low numbers of histories, the expected value estimator
+      performance is better than the collision estimator due to a
+      lower iteration count while the actual compute time per
+      iteration is higher.}}
+  \label{fig:estimator_wc_time}
+\end{figure}
 
 %%---------------------------------------------------------------------------%%
 \section{Variance Reduction Techniques}
@@ -1163,8 +1256,8 @@ The random walk sequences generated by the adjoint Neumann Ulam
 decomposition in Eqs~(\ref{eq:adjoint_probability}) and
 (\ref{eq:adjoint_weight}) will continue on indefinitely without the
 implementation of a weight cutoff procedure (which in itself is
-effectively a form of variance reduction). This is due to the fact
-that all states to which a stochastic history may move in a given
+effectively a form of biased variance reduction). This is due to the
+fact that all states to which a stochastic history may move in a given
 transition exist within the system and have a non-zero weight. A
 preliminary variance reduction scheme is to introduce
 \textit{artifical absorption} into the system such that at each
@@ -1174,12 +1267,12 @@ transition to other states in the system. This probability, $p_{abs}$,
 modifies the probabilities and weights in the adjoint random walk
 sequence as:
 \begin{equation}
-  p_{ij} = \frac{|h_{ji}|}{\sum_i|h_{ji}|}(1-p_{abs})\:,
+  p_{ij} = \frac{|h_{ji}|}{\sum_j|h_{ji}|}(1-p_{abs})\:,
   \label{eq:absorption_probabilities}
 \end{equation}
 and
 \begin{equation}
-  w_{ij} = \frac{sign(h_{ji})\sum_i|h_{ji}|}{(1-p_{abs})}\:.
+  w_{ij} = \frac{sign(h_{ji})\sum_j|h_{ji}|}{(1-p_{abs})}\:.
   \label{eq:absorption_weights}
 \end{equation}
 At each transition step, a history at state $i$ will then sample the
@@ -1199,9 +1292,13 @@ are unbiased.
 
 To observe the effects of this variance reduction on MCSA solutions,
 the transient Poisson problem was again solved with the adjoint
-method, this time with varying values of artificial
-absorption. Compare CPU time and iterative performance with a fixed
-grid.
+method, this time with varying values of artificial absorption. A $200
+\times 200$ grid was used with 40,000 histories at every iterations
+with the expected value estimator. To reduce the effect of the weight
+cutoff on this study, the weight cutoff was set to \sn{1}{-12} such
+that it is signicantly more likely that a history will be terminated
+by absorption rather than weight cutoff. Compare CPU time and
+iterative performance with a fixed grid.
 
 \subsection{Weight Capping}
 \label{subsec:weight_capping}
