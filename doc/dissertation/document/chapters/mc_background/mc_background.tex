@@ -1287,18 +1287,62 @@ weight contribution at every step. This higher weight means that each
 history is depositing more information near its birth site which will
 on average be located where the system residual is the largest. An
 additional advantage of this formulation is that the full Neumann Ulam
-decomposition is maintained, resulting in Monte Carlo estimates that
-are unbiased.
+decomposition is maintained.
 
 To observe the effects of this variance reduction on MCSA solutions,
 the transient Poisson problem was again solved with the adjoint
 method, this time with varying values of artificial absorption. A $200
-\times 200$ grid was used with 40,000 histories at every iterations
-with the expected value estimator. To reduce the effect of the weight
-cutoff on this study, the weight cutoff was set to \sn{1}{-12} such
-that it is signicantly more likely that a history will be terminated
-by absorption rather than weight cutoff. Compare CPU time and
-iterative performance with a fixed grid.
+\times 200$ grid was used with 40,000 histories at every iteration
+with the expected value estimator converged to a tolerance of
+\sn{1}{-8}. To reduce the effect of the weight cutoff on this study,
+the weight cutoff was set to \sn{1}{-12} such that it is signicantly
+more likely that a history will be terminated by absorption rather
+than weight cutoff. Figure~\ref{fig:absorption_iters} gives the number
+of iterations to converge as a function of the artificial absorption
+probability. Up to a probability of roughly 0.5, the iterative
+performance is not significanltly affected with the information lost
+due to shortened random walks causing a small increase in the number
+of iterations. At a probability of 0.6, the number of iterations
+required grows rapidly as the bias creates an MCSA correction that
+pushes the solution in the wrong direction. Convergence was observed
+to be lost at probabilities of 0.7 and higher. The random walk length
+has a strong effect on CPU time as
+well. Figure~\ref{fig:absorption_time} gives the CPU time in seconds
+required to converge as a function of artificial absorption
+probability. Initially, small absorption probabilities not only
+maintain iterative performance, but also drastically reduced the time
+required to converge as absorption was more frequent than even a large
+weight cutoff but the weights themselves were not significantly
+modified. As the number of iterations grow rapidly, so does the time
+required to converge to a solution. Based on these results, using a
+small amount of artificial absorption should provide some CPU speedup
+while maintaining iterative performance. For the problem presented
+here, an absorption probability of around 0.25 may be the best choice
+as it minimizes CPU time.
+
+\begin{figure}[p!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/absorption_iters.pdf}
+  \caption{\textbf{Iterations (s) to converge vs. artificial
+      absorption probability for a $200 \times 200$ square mesh and
+      40,000 histories.}  \textit{The addition of absorption is
+      detrimental to iterative performance due to both the shortening
+      of the random walks as well as the modification of the
+      transition weight.}}
+  \label{fig:absorption_iters}
+\end{figure}
+
+\begin{figure}[p!]
+  \centering
+  \includegraphics[width=5in,clip]{chapters/mc_background/absorption_time.pdf}
+  \caption{\textbf{CPU Time (s) to converge vs. artificial absorption
+      probability for a $200 \times 200$ square mesh and 40,000
+      histories.}  \textit{The reduced random walk length speeds up
+      the calculation with a fixed number of histories. Too much
+      artificial absorption increases iterations rapidly giving an
+      increasing CPU time.}}
+  \label{fig:absorption_time}
+\end{figure}
 
 \subsection{Weight Capping}
 \label{subsec:weight_capping}
