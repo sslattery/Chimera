@@ -134,8 +134,8 @@ It should be noted here that if $\ve{A}$ is sparse, then $\ve{H}$,
 $\ve{P}$, and $\ve{W}$ must be sparse as well by
 definition. Additionally, we only compute $\ve{P}$ and $\ve{W}$ from
 the non-zero elements of $\ve{H}$ as those components that are zero
-will not participate in the random walk and produce identical sparsity
-patterns. 
+will not participate in the random walk and thus produce identical
+sparsity patterns for all matrices.
 
 Using these matrices, we can then form the expectation value of the
 direct solution. For a given random walk permutation $\nu$, we define
@@ -184,7 +184,7 @@ perform a predetermined number of random walks in order to generate an
 approximation for $\ve{x}$. If we are only to approximate the
 solution, we also need conditions by which we may terminate a random
 walk as the Neumann Ulam decomposition defined by
-Eqs~(\ref{direct_probability}) and (\ref{eq:direct_weight}) will
+Eqs~(\ref{eq:direct_probability}) and (\ref{eq:direct_weight}) will
 create a random walk weight in Eq~(\ref{eq:direct_permutation_weight})
 that approaches, but never reaches zero. We do this by noticing that
 the factors added to Eq~(\ref{eq:direct_permutation_weight}) will
@@ -241,6 +241,7 @@ formulation for the variance:
   \sigma^2_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
   \sum_{i_k}^{N}g_{i,i_1}g_{i_1,i_2}\ldots g_{i_{k-1},i_k} b_{i_k}^2 -
   x_i^2\:,
+  \label{eq:direct_variance_6}
 \end{equation}
 which contains the general Neumann series for $\ve{G}$,
 \begin{equation}
@@ -291,9 +292,9 @@ consider a 2-dimensional thermal diffusion problem with sources on the
 left and right hand sides of the domain and a uniform source
 throughout the domain of 1/5 the strength of the boundary sources as
 shown in Figure~\ref{fig:heat_setup}.
-\begin{figure}[t!]
+\begin{figure}[p!]
   \begin{center}
-    \scalebox{1.0}{ \input{chapters/mc_background/heat_eq_setup.pdftex_t} }
+    \scalebox{1.2}{ \input{chapters/mc_background/heat_eq_setup.pdftex_t} }
   \end{center}
   \caption{\textbf{Problem setup for 2D heat equation.}
     \textit{Dirichlet conditions are set for the temperature on all 4
@@ -306,7 +307,7 @@ at each grid point (state) in the domain was increased from 1 to 1000
 in order to demonstrate the effects on the solution and the
 statistical nature of the method. Figure~\ref{fig:direct_evolution}
 gives these results.
-\begin{figure}[t!]
+\begin{figure}[p!]
   \begin{center}
     \includegraphics[width=5in]{chapters/mc_background/direct_evolution.png}
   \end{center}
@@ -331,7 +332,7 @@ traditional iterative method.
 %%---------------------------------------------------------------------------%%
 \section{Adjoint Monte Carlo Method}
 \label{sec:adjoint_mc}
-Often a more useful form, an alternative for Monte Carlo matrix
+Often a more useful form, an alternative to forward Monte Carlo matrix
 inversion is the adjoint method. We begin by defining the linear
 system adjoint to Eq~(\ref{eq:linear_problem}):
 \begin{equation}
@@ -339,16 +340,9 @@ system adjoint to Eq~(\ref{eq:linear_problem}):
   \label{eq:adjoint_linear_problem}
 \end{equation}
 where $\ve{y}$ and $\ve{d}$ are the adjoint solution and source
-respectively and $\ve{A}^T$ is the adjoint operator for $\ve{A} \in
-\mathbb{R}^{N \times N}$. We can split this equation to mirror
-Eq~(\ref{eq:richardson_split}) by defining the following inner product
-equivalence \citep{spanier_monte_1969}:
-\begin{equation}
-  \langle \ve{A}^T \ve{x}, \ve{y} \rangle = \langle \ve{x}, \ve{A}
-  \ve{y} \rangle\:.
-  \label{eq:adjoint_operator_product}
-\end{equation}
-With this statement we can then define the split equation:
+respectively vectors and $\ve{A}^T$ is the adjoint operator for
+$\ve{A} \in \mathbb{R}^{N \times N}$. We can split this equation to
+mirror Eq~(\ref{eq:richardson_split}): 
 \begin{equation}
   \ve{y} = \ve{H}^T \ve{y} + \ve{d}\:.
   \label{eq:adjoint_split_system}
@@ -356,8 +350,14 @@ With this statement we can then define the split equation:
 As was required for convergence with the direct method using
 Eq~(\ref{eq:richardson_split}), the spectral radius of $\ve{H}$ must
 remain less than 1 as $\ve{H}^T$ contains the same eigenvalues and
-therefore has the same spectral radius. From this definition it
-follows that:
+therefore has the same spectral radius. By defining the following
+inner product equivalence \citep{spanier_monte_1969}:
+\begin{equation}
+  \langle \ve{A}^T \ve{x}, \ve{y} \rangle = \langle \ve{x}, \ve{A}
+  \ve{y} \rangle\:.
+  \label{eq:adjoint_operator_product}
+\end{equation}
+it follows that:
 \begin{equation}
   \langle \ve{x}, \ve{d} \rangle = \langle \ve{y}, \ve{b} \rangle\:.
   \label{eq:adjoint_vector_relation}
@@ -412,12 +412,13 @@ a traditional forward method where the initial state $i_0$ of the
 random walk is determined by sampling the source vector $\ve{b}$ with
 probabilities:
 \begin{equation}
-  P_{i_0=i}(\nu) = \frac{b_i}{||\ve{b}||_1}\:.
+  P_{i_0=i}(\nu) = \frac{|b_i|}{||\ve{b}||_1}\:.
   \label{eq:adjoint_source_probability}
 \end{equation}
- As a result of using the adjoint system, we modify our probabilities
- and weights using the \textit{adjoint Neumann-Ulam decomposition} of
- $\ve{H}$:
+The random walk starting weight will then be $W_0 = b_{i_0}$.  As a
+result of using the adjoint system, we modify our probabilities and
+weights using the \textit{adjoint Neumann-Ulam decomposition} of
+$\ve{H}$:
 \begin{equation}
   \ve{H}^{T} = \ve{P} \circ \ve{W}\:,
   \label{eq:adjoint_neumann_ulam}
@@ -453,10 +454,9 @@ from a particular random walk permutation of $k$ events is then the
   \label{eq:adjoint_permutation_contribution}
 \end{equation}
 where the Kronecker delta indicates that the tally contributes only in
-the current state the random walk starting weight will be $W_0 =
-b_{i_0}$. Note here that the estimator in
-Eq~(\ref{eq:adjoint_permutation_contribution}) does not have a
-dependency on the source state as in
+the current state, $i_m$, of the random walk.  Note here that the
+estimator in Eq~(\ref{eq:adjoint_permutation_contribution}) does not
+have a dependency on the source state as in
 Eq~(\ref{eq:adjoint_permutation_contribution}), providing a remedy for
 the situation in the direct method where we must start a random walk
 in each source state for every permutation if we want to compute a
@@ -473,13 +473,17 @@ recovers the exact solution:
 \begin{equation}
   \begin{split}
     E\{X_j\} &=\sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-    \sum_{i_k}^{N} b_{i_0} h_{i_0,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}
-    \delta_{i_k,j} \\ &= x_{j}\:,
+    \sum_{i_k}^{N} b_{i_0} h_{i_0,i_1}h_{i_1,i_2}\ldots
+    h_{i_{k-1},i_k} \delta_{i_k,j} \\ &= x_{j}\:,
   \end{split}
   \label{eq:adjoint_expectation_expansion}
 \end{equation}
 therefore also providing an unbiased Monte Carlo estimate of the
-solution. It should be noted here that
+solution. Note that this expansion produces the effective sequence of
+matrix-vector multiplications with the $b_{i_0}$ component of the
+source vector which will be selected at random for each walk
+permutation and the unbiasedness of the estimator relies on an
+unbiased sampling of the source. It should also be noted here that
 Eq~(\ref{eq:adjoint_expectation_expansion}) only computes a single
 component of our desired solution vector when really what we desire is
 the entire solution vector. In an adjoint Monte Carlo simulation using
@@ -508,8 +512,8 @@ contributions become increasingly small.
 We can compute the variance of the collision estimator in the same way
 as the direct estimator for each component in the solution where now:
 \begin{equation}
-  \sigma_j^2 = \Big(\sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2
-  \delta_{i_m,j}\Big)_j - x_j^2\:.
+  \sigma_j^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 \delta_{i_m,j}
+  - x_j^2\:.
   \label{eq:collision_variance_1}
 \end{equation}
 Expanding the transition probabilities yields the same variance as the
@@ -522,50 +526,26 @@ introduction of the Kronecker delta:
   b^2_{i_0}\delta_{i_k,j} - x_i^2\:.
   \label{eq:collision_variance_2}
 \end{equation}
-If we again $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$, we then have:
+If we again define $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$, we
+then have:
 \begin{equation}
   \sigma^2_j = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
   \sum_{i_k}^{N}g_{i_{k},i_{k-1}} \ldots
-  g_{i_2,i_1}g_{i_1,i_0}b_{i_0}\delta_{i_k,j}^2 - x_i^2\:,
+  g_{i_2,i_1}g_{i_1,i_0}b_{i_0}\delta_{i_k,j} - x_i^2\:,
 \label{eq:collision_variance_3}
 \end{equation}
-which again contains the general Neumann series for $\ve{G}$ as given
-by Eq~(\ref{eq:variance_neumann_series}).  Inserting $T$ back into the
-variance formulation gives:
-\begin{equation}
-  \sigma^2_j = (\ve{T}\ve{b})_j - x_i^2\:.
-  \label{eq:direct_variance_5}
-\end{equation}
-We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
-contains an additional Hadamard product with the weight matrix. The
-Hadamard product has the property that:
-\begin{equation}
-  |\ve{H} \circ \ve{W}| \geq |\ve{H}|\ |\ve{W}|\:.
-  \label{eq:hadamard_inequality}
-\end{equation}
-Using the norm property of the Hadamard product and
-Eq~(\ref{eq:neumann_ulam_decomposition}), we can define the norm of
-$\ve{W}$ as:
-\begin{equation}
-  \frac{|\ve{H}|}{|\ve{P}|} \geq |\ve{W}|\:.
-  \label{eq:weight_norm}
-\end{equation}
-Choosing the infinity norm of the operator as defined in
-Eq~(\ref{eq:matrix_infinity_norm}), the row normalized probability
-matrix will yield a norm of 1 giving the following inequality for
-relating $\ve{G}$ and $\ve{H}$:
-\begin{equation}
-  |\ve{G}| \geq |\ve{H}|^2
-  \label{eq:variance_norm_inequality}
-\end{equation}
-Using these relations to analyze Eq~(\ref{eq:direct_variance_5}), we
-see that if $\rho(\ve{G}) > 1$, then the sum in
-Eq~(\ref{eq:variance_neumann_series}) will not converge and an
-infinite variance will arise as the elements of $\ve{T}$ become
-infinite in Eq~(\ref{eq:direct_variance_5}). We must restrict $\ve{G}$
-to alleviate this and therefore restrict $\ve{H}$ due to
-Eq~(\ref{eq:variance_norm_inequality}) with $\rho(\ve{H}) < 1$ so that
-our expectation values for the solution may have a finite variance.
+where now $\ve{G}$ in this case is the transpose of that used in
+Eq~(\ref{eq:direct_variance_6}). The Kronecker delta implies that the
+variance contribution from each random walk will only be in its
+current state and for many random walks, many starting weights of
+$b_{i_0}$ will contribute to the variance in the same way as they
+contribute to the solution tally. As the transpose is formed and the
+Neumann series of $\ve{G}$ is now formed in reverse order in
+Eq~(\ref{eq:collision_variance_3}), then
+Eq~(\ref{eq:collision_variance_3}) and Eq~(\ref{eq:direct_variance_6})
+are equivalent and therefore the variance of the forward and collision
+estimators are equivalent as well and bound by the same restrictions
+on $\rho(\ve{G})$ to ensure that the variance is finite.
 
 \subsection{Expected Value Estimator}
 \label{subsec:expected_value_estimator}
@@ -583,7 +563,7 @@ directly to discrete Monte Carlo by forming the \textit{expected value
   \label{eq:expected_value_estimator}
 \end{equation}
 where now the contribution of the iteration matrix is
-deterministically averaged at step $m$ over all potentially states $j$
+deterministically averaged at step $m$ over all potential states $j$
 that may be reached from the current state $i_m$. Via Okten, the
 estimator can be shown to be unbiased through a comparison to
 the expected value estimator. We can first rewrite the summation in
@@ -626,7 +606,7 @@ adjoint method with the collision estimator, the number of histories
 sampled from the source was increased from 10 to 10,000,000 in order
 to show its effects on the solution and the statistical nature of the
 method. Figure~\ref{fig:adjoint_evolution} gives these results.
-\begin{figure}[t!]
+\begin{figure}[p!]
   \begin{center}
     \includegraphics[width=5in]{chapters/mc_background/adjoint_evolution.png}
   \end{center}
@@ -673,19 +653,19 @@ Eq~(\ref{eq:linear_problem})\:
   \end{gather}
   \label{eq:sequential_monte_carlo}
 \end{subequations}
-where the correction $\boldsymbol{\delta}$ is computed by the adjoint
-Monte Carlo method. The merits of Halton's approach are immediately
-visible in that we have now broken the binding of the convergence rate
-to the Central Limit Theorem. Here, the Monte Carlo solver is used to
-produce a correction from the residual, analogous to using the
-residual to extract a correction from the search subspace in a
-projection method. By doing this, the Monte Carlo error is bound in
-the correction used to update the solution and therefore does not
-explicitly manifest itself in the overall convergence of the
-solution. The downside of such a method is that if the solution guess
-is poor, then many iterations are required in order to reach
-exponential converge as the Monte Carlo error (and therefore the
-Central Limit Theorem) does dominate in this situation.
+where the correction $\boldsymbol{\delta}^k$ is computed by the
+adjoint Monte Carlo method at each iteration. The merits of Halton's
+approach are immediately visible in that we have now broken the
+binding of the convergence rate to the Central Limit Theorem. Here,
+the Monte Carlo solver is used to produce a correction from the
+residual, analogous to using the residual to extract a correction from
+the search subspace in a projection method. By doing this, the Monte
+Carlo error is bound in the correction used to update the solution and
+therefore does not explicitly manifest itself in the overall
+convergence of the solution. The downside of such a method is that if
+the solution guess is poor, then many iterations are required in order
+to reach exponential converge as the Monte Carlo error (and therefore
+the Central Limit Theorem) does dominate in this situation.
 
 %%---------------------------------------------------------------------------%%
 \section{Monte Carlo Synthetic Acceleration}
@@ -695,11 +675,12 @@ Carlo solution method that was not prohibited severely by the quality
 of the initial guess for the system \citep{evans_monte_2009} and later
 applied it more rigorously as a solution mechanism for the radiation
 diffusion equation \citep{evans_monte_2012}. With their new methods,
-they achieved identical numerical results as and marginally better
-performance than conventional Krylov solvers. Their approach was
-instead to use residual Monte Carlo as a synthetic acceleration for a
-stationary method. To derive this method, we begin by splitting the
-operator in Eq~(\ref{eq:linear_problem})
+they achieved identical numerical results as conventional Krylov
+solvers well as comparable performance in both number of iterations
+and CPU time. Their approach was instead to use residual Monte Carlo
+as a synthetic acceleration for a stationary method. To derive this
+method, we begin by splitting the operator in
+Eq~(\ref{eq:linear_problem})
 \begin{equation}
   \ve{x} = (\ve{I} - \ve{A})\ve{x} + \ve{b}\:.
   \label{eq:linear_split}
@@ -731,7 +712,7 @@ Subtracting from this $(\ve{I} - \ve{A})\delta \ve{x}^{k+1}$ yields:
   \end{split}
 \end{equation}
 Using this, we define the following scheme that will converge in one
-iteration if $\ve{A}$ is inverted exactly.
+iteration if $\ve{A}$ is inverted exactly:
 \begin{subequations}
   \begin{gather}
     \ve{x}^{k+1} = (\ve{I} - \ve{A})\ve{x}^k + \ve{b}\:,\\
@@ -764,7 +745,12 @@ method. Here, the approximate Monte Carlo solution is not driven to a
 particular convergence as it merely supplies a correction for the
 initial guess generated by Richardson's iteration. Rather, only a set
 number of histories are required using the adjoint method to generate
-the correction.
+the correction. In addition, the fact that the scheme in
+Eq~(\ref{eq:mcsa_setup_3}) will converge in one iteration if $\ve{A}$
+is inverted exactly means that as more and more stochastic histories
+are used to compute the correction and the error is reduced towards
+zero, the number of iterations required for MCSA to converge should
+decrease accordingly, thus accelerating the solution.
 
 In addition to the Monte Carlo solver parameters dictating the number
 of histories and weight cutoff, the outer MCSA iterations also have
@@ -773,11 +759,14 @@ the following stopping criteria:
   ||\ve{r}||_\infty < \epsilon \ ||\ve{b}||_\infty\:,
   \label{eq:mcsa_stopping_criteria}
 \end{equation}
-where $\epsilon$ is a user-defined parameter. We therefore have 3
-parameters to tune in an MCSA implementation: the number of Monte
-Carlo histories computed in the adjoint solve during each MCSA
-iteration, the weight cutoff for those histories, and the total MCSA
-convergence tolerance as specified by $\epsilon$.
+where $\epsilon$ is a user-defined parameter. As with any iterative
+method, other stopping criteria using other vector norms could be
+computed, however, for this work we will only use
+Eq~(\ref{eq:mcsa_stopping_criteria}). We therefore have 3 parameters
+to tune in an MCSA implementation: the number of Monte Carlo histories
+computed in the adjoint solve during each MCSA iteration, the weight
+cutoff for those histories, and the total MCSA convergence tolerance
+as specified by $\epsilon$.
 
 \subsection{Preconditioning MCSA}
 \label{subsec:stochastic_preconditioning}
@@ -786,19 +775,21 @@ of the linear system will be required in order to use the class of
 stochastic methods described. Although these methods have no symmetry
 requirements for convergence, they do require that the spectral radius
 of the iteration matrix be less than one. Preconditioning serves as a
-means of achieving this.
+means of achieving this by altering the eigenvalue spectrum of the
+iteration matrix.
 
 \subsubsection{Basic Preconditioning}
 \label{subsubsec:basic_mcsa_preconditioning}
-As an example, to achieve this for diagonally dominant matrices point
-Jacobi left preconditioning can be used such that the preconditioning
-matrix $\ve{M}$ is:
+As an example, to achieve a spectral radius of less than one for
+diagonally dominant matrices point Jacobi preconditioning can be used
+such that the preconditioning matrix $\ve{M}$ is:
 \begin{equation}
-  \ve{M} = diag(\ve{A})\:.
+  \ve{M} = diag(\ve{A})\:,
   \label{eq:jacobi_preconditioner}
 \end{equation}
-With the application of this preconditioner we are instead solving the
-following linear system:
+which may be trivially inverted. With the application of this
+preconditioner we are instead solving the following scaled linear
+system:
 \begin{equation}
   \ve{M}^{-1}\ve{A}\ve{x} = \ve{M}^{-1}\ve{b}\:.
   \label{eq:jacobi_precond_linear_problem}
@@ -830,17 +821,19 @@ $\ve{H}$ in the adjoint solver will have a zero term in each of its
 diagonal elements, thereby eliminating all in-state transitions during
 the random walk sequence. Because of this, point Jacobi
 preconditioning should be considered for many classes of problems,
-regardless of any other preconditioning that is applied to the system.
+regardless of any other preconditioning that is applied to the
+system.
 
 \subsubsection{General Preconditioning Strategies}
 \label{subsubsec:general_mcsa_preconditioning}
 It is possible to use general left, right, and left/right
-preconditioning with MCSA by carefully considering the underly Monte
-Carlo that will be solved with the Neumann Ulam method. We consider
-here the general left/right preconditioned method as the left or right
-preconditioned methods can be inferred from its formulation. We
-consider a left preconditioner $\ve{M_L}$ and a right preconditioner
-$\ve{M_R}$. The left/right preconditioned linear problem is then:
+preconditioning with MCSA by carefully considering the underlying
+Monte Carlo problem that will be solved with the Neumann-Ulam
+method. We consider here the general left/right preconditioned method
+as the left or right preconditioned methods can be inferred from its
+formulation. We consider a left preconditioner $\ve{M_L}$ and a right
+preconditioner $\ve{M_R}$. The left/right preconditioned linear
+problem is then:
 \begin{equation}
   \ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}\ve{M}_R\ve{x} = \ve{M}_L^{-1}\ve{b}\:.
   \label{eq:left_right_linear_problem}
@@ -883,15 +876,16 @@ is now serving as the source and the new iteration matrix is:
 \end{equation}
 As we require $(i,j)$ element-wise access to the iteration matrix in
 order to construct probabilities and weights for the Monte Carlo
-procedure, the \textit{composite operator},
-$\ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}$, must be formed via matrix-matrix
-multiplication. Several possible shortcomings of this preconditioning
-approach are readily observed. First, the matrix-matrix multiplication
-operation for sparse, parallel distributed matrices is significantly
-more expensive than a matrix-vector multiplication operation. Second,
-each preconditioner must be explicitly inverted, an operation in
-itself that my be expensive prohibits the use of any preconditioners
-which prohibit the extraction of the inverse. Third, for many modern
+procedure from the Neumann-Ulam decomposition, the \textit{composite
+  operator}, $\ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}$, must be formed via
+matrix-matrix multiplication. Several possible shortcomings of this
+preconditioning approach are readily observed. First, the
+matrix-matrix multiplication operation for sparse, parallel
+distributed matrices is significantly more expensive than a
+matrix-vector multiplication operation. Second, each preconditioner
+must be explicitly inverted, an operation in itself that may be
+expensive and which prohibits the use of any preconditioners which
+provide no mechanism to extract their inverse. Third, for many modern
 preconditioning methods, this inversion may yield dense matrices,
 destroying sparsity and further impeding the performance of a
 matrix-matrix multiplication operation. It is also interesting to note
@@ -964,7 +958,7 @@ specified tolerance as a function of the problem size. All
 computations presented in this section and
 \S\ref{subsec:sequential_comparison} were completed on a 3.0 GHz Intel
 Core 2 Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
-\begin{figure}[t!]
+\begin{figure}[p!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_cpu.pdf}
   \caption{\textbf{CPU Time (s) to converge vs. Problem Size ($N$ for
@@ -976,7 +970,7 @@ Core 2 Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
   \label{fig:poisson_cpu_time}
 \end{figure}
 
-\begin{figure}[t!]
+\begin{figure}[p!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_iterations.pdf}
   \caption{\textbf{Iterations to converge vs. Problem Size ($N$ for an
@@ -1038,7 +1032,7 @@ transported through a domain described more accurately by the 9-point
 stencil, thus yielding a more accuracte correction vector from the
 Monte Carlo calculation.
 
-\begin{figure}[t!]
+\begin{figure}[p!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_conv.pdf}
   \caption{\textbf{Infinity norm of the solution residual
@@ -1061,25 +1055,27 @@ use the same transient Poisson problem as described in the previous
 section and choose only the 5-point stencil to discretize the
 Laplacian operator as the previous results yielded little qualitative
 difference between the discretizations. Both MCSA and Halton's method
-are used with the adjoint Monte Carlo solver. In order to complete the
-same study as in the previous section, the number of histories
-computed by the Monte Carlo solver at each iteration had to be doubled
-to $2 \times N \times N$ in order to ensure convergence in Sequential
-Monte Carlo Method. For the majority of the problems in the previous
-section, the Sequential method used with $N \times N$ histories would
-not converge. Figure~\ref{fig:seq_cpu_time} gives the CPU time results
-for this comparison as a function of problem size while
+are used with the adjoint Monte Carlo solver and the collision
+estimator. In order to complete the same study as in the previous
+section, the number of histories computed by the Monte Carlo solver at
+each iteration had to be doubled to $2 \times N \times N$ in order to
+ensure convergence in Sequential Monte Carlo Method. For the majority
+of the problems in the previous section, the Sequential method used
+with $N \times N$ histories would not
+converge. Figure~\ref{fig:seq_cpu_time} gives the CPU time results for
+this comparison as a function of problem size while
 Figure~\ref{fig:seq_iterations} gives the number of iterations to
-converge as a function of problem size. In both cases, using the Monte
-Carlo solver as a synthetic acceleration rather than in a pure
-residual Monte Carlo scheme resulted in a reduction in both CPU time
-and iterations required to converge. The additional Richardson
-extrapolation between each Monte Carlo solve in the MCSA method gives
-a better converged residual source to use with the Monte Carlo
-calculation while the Sequential method requires more iterations to
-achieve the same level of convergence in the residual.
+converge as a function of problem size with a convergence tolerance of
+\sn{1}{-8}. In both cases, using the Monte Carlo solver as a synthetic
+acceleration rather than in a pure residual Monte Carlo scheme
+resulted in a reduction in both CPU time and iterations required to
+converge. The additional Richardson extrapolation between each Monte
+Carlo solve in the MCSA method gives a better converged residual
+source to use with the Monte Carlo calculation while the Sequential
+method requires more iterations to achieve the same level of
+convergence in the residual.
 
-\begin{figure}[ht!]
+\begin{figure}[p!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_cpu.pdf}
   \caption{\textbf{CPU Time (s) to converge vs. Problem Size ($N$ for
@@ -1091,7 +1087,7 @@ achieve the same level of convergence in the residual.
   \label{fig:seq_cpu_time}
 \end{figure}
 
-\begin{figure}[ht!]
+\begin{figure}[p!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_iterations.pdf}
   \caption{\textbf{Iterations to converge vs. Problem Size ($N$ for an
@@ -1119,7 +1115,7 @@ issues with a non-monotonically decreasing residual observed for the
 $N=100$ case. In both cases the MCSA solver is observed to be robust
 with a monotonically decreasing residual.
 
-\begin{figure}[ht!]
+\begin{figure}[p!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_conv_100.pdf}
   \caption{\textbf{Infinity norm of the solution residual
@@ -1130,7 +1126,7 @@ with a monotonically decreasing residual.
   \label{fig:seq_100}
 \end{figure}
 
-\begin{figure}[ht!]
+\begin{figure}[p!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_conv_500.pdf}
   \caption{\textbf{Infinity norm of the solution residual
@@ -1140,6 +1136,15 @@ with a monotonically decreasing residual.
       solver.}}
   \label{fig:seq_500}
 \end{figure}
+
+%%---------------------------------------------------------------------------%%
+\section{Monte Carlo Parameter and Estimator Analysis}
+\label{sec:parameter_estimator_analysis}
+With the adjoint method shown to be more effective than the direct
+method and MCSA to have better iterative and timing performance than
+sequential Monte Carlo, we now aim to study the effects of the adjoint
+Monte Carlo parameters, weight cutoff and number of histories, on MCSA
+performance with both the collision and expected value estimators.
 
 %%---------------------------------------------------------------------------%%
 \section{Variance Reduction Techniques}
