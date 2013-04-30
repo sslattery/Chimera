@@ -3,8 +3,8 @@
 An alternative approach to approximate matrix inversion is to employ
 Monte Carlo methods that sample a distribution with an expectation
 value equivalent to that of the inverted operator. Such methods have
-been in existence for decades with the earliest reference noted here
-an enjoyable manuscript published in 1950 by Forsythe and Leibler
+been in existence for decades with the earliest reference noted here a
+manuscript published in 1950 by Forsythe and Leibler
 \citep{forsythe_matrix_1950}. In their outline, Forsythe and Liebler
 in fact credit the creation of this technique to J. Von Neumann and
 S.M. Ulam some years earlier than its publication. In 1952 Wasow
@@ -19,10 +19,10 @@ method for discrete linear systems. Both the forward and adjoint
 methods will be presented and analyzed including a variance analysis
 of several Monte Carlo estimators. The Sequential Monte Carlo and
 Monte Carlo Synthetic Acceleration methods will then be presented as a
-means of leveraging the basic Monte Carlo methods in a iterative
+means of leveraging the basic Monte Carlo methods in an iterative
 refinement scheme that accelerates their convergence. Using these
-iterative schemes, a set of modest variance reduction schemes will be
-introduced and their effects on the Monte Carlo methods explored.
+iterative schemes, a set of modest variance reduction techniques will
+be introduced and their effects on the Monte Carlo methods explored.
 
 %%---------------------------------------------------------------------------%%
 \section{Preliminaries}
@@ -207,23 +207,34 @@ the solution:
 where the vector exponentials are computed element-wise. Inserting
 Eq~(\ref{eq:direct_expectation_value}) gives:
 \begin{equation}
-  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} X_{\nu}^2\Big)_i - x_i^2\:,
+  \sigma_i^2 = \sum_{\nu} P_{\nu} X_{i}(\nu)^2 - x_i^2\:,
   \label{eq:direct_variance_2}
 \end{equation}
 and applying Eq~(\ref{eq:direct_permutation_contribution}):
 \begin{equation}
-  \sigma_i^2 = \Big(\sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2
-  b_{i_m}^2\Big)_i - x_i^2\:.
+  \sigma_i^2 = \sum_{\nu} P_{\nu} \Big(\sum_{m=0}^k W_{m}^2 b_{i_m}^2
+  + 2 \sum_{\substack{ j=0 \\ m<j}}^k W_m W_j b_{i_m} b_{i_j} \Big)-
+  x_i^2\:.
   \label{eq:direct_variance_3}
 \end{equation}
-Finally, expanding the transition probabilities yields the variance:
+We can distribute the random walk probability to yield an expanded
+form of the variance:
 \begin{equation}
-  \sigma_i^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-  \sum_{i_k}^{N} p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
-  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k} b_{i_k}^2 - x_i^2\:.
+  \sigma_i^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 b_{i_m}^2 + 2
+  \sum_{\nu} P_{\nu} \sum_{\substack{ j=0 \\ m<j}}^k W_m W_j b_{i_m}
+  b_{i_j} - x_i^2\:.
+  \label{eq:direct_variance_3_2}
+\end{equation}
+In particular, we will isolate the first summation of the variance by
+expanding it:
+\begin{equation}
+  \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 b_{i_m}^2 =
+  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
+  p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
+  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k} b_{i_k}^2\:.
   \label{eq:direct_variance_4}
 \end{equation}
-Using this definition for the variance, we can arrive at a more natural
+Using this expansion, we can arrive at a more natural
 reason for enforcing $\rho(\ve{H}) < 1$ for our Monte Carlo method to
 converge. Per the Hadamard product, we can concatenate the summation
 in Eq~(\ref{eq:direct_variance_4}):
@@ -235,15 +246,14 @@ in Eq~(\ref{eq:direct_variance_4}):
   \label{eq:double_weighted_decomposition}
 \end{equation}
 If we assign $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$ as in
-Eq~(\ref{eq:neumann_ulam_decomposition}), we then have a new
-formulation for the variance:
+Eq~(\ref{eq:neumann_ulam_decomposition}), we then have:
 \begin{equation}
-  \sigma^2_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-  \sum_{i_k}^{N}g_{i,i_1}g_{i_1,i_2}\ldots g_{i_{k-1},i_k} b_{i_k}^2 -
-  x_i^2\:,
+   (\ve{P} \circ \ve{W} \circ \ve{W})^k =
+  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}g_{i,i_1}g_{i_1,i_2}\ldots g_{i_{k-1},i_k}\:,
   \label{eq:direct_variance_6}
 \end{equation}
-which contains the general Neumann series for $\ve{G}$,
+which is the general Neumann series for $\ve{G}$,
 \begin{equation}
   \ve{T} = \sum_{k=0}^{\infty} \ve{G}^k\:,
   \label{eq:variance_neumann_series}
@@ -251,7 +261,8 @@ which contains the general Neumann series for $\ve{G}$,
 where $\ve{T} = (\ve{I}-\ve{G})^{-1}$. We can then insert $T$ back
 into the variance formulation for a more concise definition:
 \begin{equation}
-  \sigma^2_i = (\ve{T}\ve{b})_i - x_i^2\:.
+  \sigma^2_i = (\ve{T}\ve{b}^2)_i + 2 \sum_{\nu} P_{\nu}
+  \sum_{\substack{ j=0 \\ m<j}}^k W_m W_j b_{i_m} b_{i_j} - x_i^2\:.
   \label{eq:direct_variance_5}
 \end{equation}
 We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
@@ -277,7 +288,7 @@ relating $\ve{G}$ and $\ve{H}$:
   \label{eq:variance_norm_inequality}
 \end{equation}
 Using these relations to analyze Eq~(\ref{eq:direct_variance_5}), we
-see that if $\rho(\ve{G}) > 1$, then the sum in
+see that if $\rho(\ve{G}) > 1$, then the first sum in
 Eq~(\ref{eq:variance_neumann_series}) will not converge and an
 infinite variance will arise as the elements of $\ve{T}$ become
 infinite in Eq~(\ref{eq:direct_variance_5}). We must restrict $\ve{G}$
@@ -512,12 +523,24 @@ contributions become increasingly small.
 We can compute the variance of the collision estimator in the same way
 as the direct estimator for each component in the solution where now:
 \begin{equation}
-  \sigma_j^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 \delta_{i_m,j}
-  - x_j^2\:.
+  \sigma_j^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 \delta_{i_m,j} + 2
+  \sum_{\nu} P_{\nu} \sum_{\substack{ l=0 \\ m<l}}^k W_m W_l
+  \delta_{i_m,j} \delta_{i_l,j} - x_i^2\:.
   \label{eq:collision_variance_1}
 \end{equation}
-Expanding the transition probabilities yields the same variance as the
-direct estimator, this time with the terms in reverse order and the
+In this case, in the second summation $m \neq l$ for all states due to
+the form of the summation and therefore the delta functions,
+$\delta_{i_m,j}$ or $\delta_{i_l,j}$, will only be nonzero for random
+walks that are in the current solution state (when $i_m = i_l = j$)
+and other states visited do not contribute to the variance of the
+current state (when $i_m \neq i_l$). This is important as it shows a
+decoupling of the variance among the solution vector states, meaning
+that the variance in solution state $i$ does not depend on the
+variance in solution state $j$.
+
+Expanding the transition probabilities in the first sum again yields a
+Neumman summation in the same form as that explored for the forward
+estimator, this time with the terms in reverse order and the
 introduction of the Kronecker delta:
 \begin{equation}
   \sigma_j^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
@@ -535,17 +558,18 @@ then have:
 \label{eq:collision_variance_3}
 \end{equation}
 where now $\ve{G}$ in this case is the transpose of that used in
-Eq~(\ref{eq:direct_variance_6}). The Kronecker delta implies that the
-variance contribution from each random walk will only be in its
-current state and for many random walks, many starting weights of
+Eq~(\ref{eq:direct_variance_6}). The Kronecker delta again implies
+that the variance contribution from each random walk will only be in
+its current state and for many random walks, many starting weights of
 $b_{i_0}$ will contribute to the variance in the same way as they
 contribute to the solution tally. As the transpose is formed and the
-Neumann series of $\ve{G}$ is now formed in reverse order in
-Eq~(\ref{eq:collision_variance_3}), then
-Eq~(\ref{eq:collision_variance_3}) and Eq~(\ref{eq:direct_variance_6})
-are equivalent and therefore the variance of the forward and collision
-estimators are equivalent as well and bound by the same restrictions
-on $\rho(\ve{G})$ to ensure that the variance is finite.
+Neumann series of $\ve{G}$ is in reverse order in
+Eq~(\ref{eq:collision_variance_3}) relative to its formulation in the
+forward estimator, then Eq~(\ref{eq:collision_variance_3}) and
+Eq~(\ref{eq:direct_variance_6}) are equivalent and therefore the
+collision estimator is bound by the same restrictions on
+$\rho(\ve{G})$ and $\rho(\ve{H})$ to ensure that the variance is
+finite.
 
 \subsection{Expected Value Estimator}
 \label{subsec:expected_value_estimator}
@@ -595,6 +619,9 @@ work. Conveniently, even if no Monte Carlo histories are computed, the
 expected value estimator still deterministically computes the first
 term of the Neumann Series, $\ve{H}^0\ve{b}$, whereas the collision
 estimator will provide no information.
+
+\subsubsection{Expected Value Estimator Variance}
+\label{subsubsec:expected_value_estimator_variance}
 
 \subsection{Adjoint Method: Evolution of a Solution}
 \label{subsec:adjoint_evolution}
@@ -878,23 +905,25 @@ As we require $(i,j)$ element-wise access to the iteration matrix in
 order to construct probabilities and weights for the Monte Carlo
 procedure from the Neumann-Ulam decomposition, the \textit{composite
   operator}, $\ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}$, must be formed via
-matrix-matrix multiplication. Several possible shortcomings of this
-preconditioning approach are readily observed. First, the
-matrix-matrix multiplication operation for sparse, parallel
-distributed matrices is significantly more expensive than a
-matrix-vector multiplication operation. Second, each preconditioner
-must be explicitly inverted, an operation in itself that may be
-expensive and which prohibits the use of any preconditioners which
-provide no mechanism to extract their inverse. Third, for many modern
-preconditioning methods, this inversion may yield dense matrices,
-destroying sparsity and further impeding the performance of a
-matrix-matrix multiplication operation. It is also interesting to note
-that the Monte Carlo problem in the general left/right preconditioned
-scheme given by Eq~(\ref{eq:left_right_correction}) is not fully
-left/right preconditioned (meaning that we do not recover $\ve{x}$),
-but instead part of a sequence for finding the substituted variable
-$\ve{u}$. We do, however, gain the benefits of this general
-preconditioning by building the iteration matrix in
+matrix-matrix multiplication. 
+
+Several possible shortcomings of this preconditioning approach are
+readily observed. First, the matrix-matrix multiplication operation
+for sparse, parallel distributed matrices is significantly more
+expensive than a matrix-vector multiplication operation. Second, each
+preconditioner must be explicitly inverted, an operation in itself
+that may be expensive and which prohibits the use of any
+preconditioners which provide no mechanism to extract their
+inverse. Third, for many modern preconditioning methods, this
+inversion may yield dense matrices, destroying sparsity and further
+impeding the performance of a matrix-matrix multiplication
+operation. It is also interesting to note that the Monte Carlo problem
+in the general left/right preconditioned scheme given by
+Eq~(\ref{eq:left_right_correction}) is not fully left/right
+preconditioned (meaning that we do not recover $\ve{x}$), but instead
+part of a sequence for finding the substituted variable $\ve{u}$. We
+do, however, gain the benefits of this general preconditioning by
+building the iteration matrix in
 Eq~(\ref{eq:left_right_iteration_matrix}) from the fully
 preconditioned linear operator. In addition, for MCSA to apply to
 increasingly difficult problems, more advanced preconditioning
