@@ -525,7 +525,7 @@ as the direct estimator for each component in the solution where now:
 \begin{equation}
   \sigma_j^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 \delta_{i_m,j} + 2
   \sum_{\nu} P_{\nu} \sum_{\substack{ l=0 \\ m<l}}^k W_m W_l
-  \delta_{i_m,j} \delta_{i_l,j} - x_i^2\:.
+  \delta_{i_m,j} \delta_{i_l,j} - x_j^2\:.
   \label{eq:collision_variance_1}
 \end{equation}
 In this case, in the second summation $m \neq l$ for all states due to
@@ -539,14 +539,14 @@ that the variance in solution state $i$ does not depend on the
 variance in solution state $j$.
 
 Expanding the transition probabilities in the first sum again yields a
-Neumman summation in the same form as that explored for the forward
+Neumman series in the same form as that explored for the forward
 estimator, this time with the terms in reverse order and the
 introduction of the Kronecker delta:
 \begin{equation}
   \sigma_j^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
   \sum_{i_k}^{N} p_{i_k,i_{k-1}}\ldots p_{i_2,i_1} p_{i_1,i_0}
   w^2_{i_k,i_{k-1}}\ldots w^2_{i_2,i_1} w^2_{i_1,i_0}
-  b^2_{i_0}\delta_{i_k,j} - x_i^2\:.
+  b^2_{i_0}\delta_{i_k,j} - x_j^2\:.
   \label{eq:collision_variance_2}
 \end{equation}
 If we again define $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$, we
@@ -554,7 +554,7 @@ then have:
 \begin{equation}
   \sigma^2_j = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
   \sum_{i_k}^{N}g_{i_{k},i_{k-1}} \ldots
-  g_{i_2,i_1}g_{i_1,i_0}b_{i_0}\delta_{i_k,j} - x_i^2\:,
+  g_{i_2,i_1}g_{i_1,i_0}b_{i_0}\delta_{i_k,j} - x_j^2\:,
 \label{eq:collision_variance_3}
 \end{equation}
 where now $\ve{G}$ in this case is the transpose of that used in
@@ -622,6 +622,22 @@ estimator will provide no information.
 
 \subsubsection{Expected Value Estimator Variance}
 \label{subsubsec:expected_value_estimator_variance}
+Following the collision estimator variance, the expected value
+estimator variance is given as:
+\begin{multline}
+  \sigma_j^2 = \sum_{\nu} P_{\nu} b_j^2 + 2 \sum_{\nu} P_{\nu} b_j
+  \sum_{m=0}^k W_{m} h_{j,i_m} +\\ \sum_{\nu} P_{\nu} \sum_{m=0}^k
+  W_{m}^2 h_{j,i_m}^2 + 2 \sum_{\nu} P_{\nu} \sum_{\substack{ l=0
+      \\ m<l}}^k W_m W_l h_{j,i_m} h_{j,i_l} - x_j^2\:.
+  \label{eq:expected_value_variance_1}
+\end{multline}
+As the delta functions are no longer present, the final summation in
+Eq~(\ref{eq:expected_value_variance_1}) contains contributions for all
+valid state combinations in the same and therefore the variance of
+each state in the solution tally is coupled to a group of other states
+as defined by the sparsity pattern of the iteration. This coupling of
+variances is expected due to the deterministic averaging used to
+generate the expected value estimator.
 
 \subsection{Adjoint Method: Evolution of a Solution}
 \label{subsec:adjoint_evolution}
