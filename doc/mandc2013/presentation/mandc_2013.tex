@@ -54,18 +54,18 @@ for Linear Systems}
 \maketitle
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Monte Carlo Methods for Discrete Linear Systems}
+\begin{frame}{Motivation}
 
   \begin{itemize}
   \item First proposed by J. Von Neumann and S.M. Ulam in the 1940's
-    \medskip \medskip
-  \item Earliest published reference in 1950
-    \medskip \medskip
+    \bigskip
   \item General lack of published work
-    \medskip \medskip
+    \bigskip
   \item Recent work by Evans and others has yielded new potential
     applications
-    \medskip \medskip
+    \bigskip
+  \item Implications for resilient exascale solver strategies
+    \bigskip
   \item Domain decomposed parallelism has yet to be exploited - would
     like a preliminary analytic framework
   \end{itemize}
@@ -120,7 +120,6 @@ for Linear Systems}
   \sum_{i_k}^{N}h_{i,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}b_{i_k}
   \]
 
-  \medskip
   \begin{itemize}
   \item Define a sequence of state transitions
   \end{itemize}
@@ -130,24 +129,10 @@ for Linear Systems}
   \rightarrow i_{k}
   \]
 
-  \medskip
   \begin{itemize}
-  \item Define the \textit{Neumann-Ulam decomposition}\footnote{The
+  \item Use the adjoint Neumann-Ulam decomposition\footnote{The
     Hadamard product $\ve{A} = \ve{B} \circ \ve{C}$ is defined
     element-wise as $a_{ij} = b_{ij} c_{ij}$.}
-  \end{itemize}
-
-  \[
-  \ve{H} = \ve{P} \circ \ve{W}
-  \]
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Adjoint Method}
-
-  \begin{itemize}
-  \item Use the adjoint Neumann-Ulam decomposition
   \end{itemize}
 
   \[
@@ -158,6 +143,11 @@ for Linear Systems}
   p_{ij} = \frac{|h_{ji}|}{\sum_j |h_{ji}|},\ w_{ij} =
   \frac{h_{ji}}{p_{ij}}
   \]
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Adjoint Method}
 
   \medskip
   \begin{itemize}
@@ -176,6 +166,11 @@ for Linear Systems}
     h_{i_{k-1},i_k} \delta_{i_k,j} \\ &= x_{j}
   \end{split}
   \]
+
+  \medskip
+  \begin{itemize}
+  \item Terminate a random walk below a weight cutoff, $W_m < W_c$
+  \end{itemize}
 
 \end{frame}
 
@@ -412,60 +407,103 @@ for Linear Systems}
 \begin{frame}{Random Walk Length}
 
   \[
-    \ve{e}^{k} = \ve{H}^k\ve{e}^0
-\]
+  \ve{e}^{k} = \ve{H}^k\ve{e}^0 \ \ \rightarrow \ \ ||\ve{e}^{k}||_2
+  \leq \rho(\ve{H})^k ||\ve{e}^0||_2 \ \ \rightarrow \ \ k \approx
+  \frac{ \log(W_c) }{ \log( \rho(\ve{H}) ) }
+  \]
 
-\[
-  ||\ve{e}^{k}||_2 \leq \rho(\ve{H})^k ||\ve{e}^0||_2
-\]
-
-\[
-  ||\ve{e}^{k}||_2 = \epsilon ||\ve{e}^0||_2
-\]
-
-\[
-  k = \frac{ \log(W_c) }{ \log( \rho(\ve{H}) ) }
-\]
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Random Walk Length Results}
-
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=4.5in,clip]{measured_length.png}
-  \end{center}
-  \caption{\textbf{Measured and analytic random walk length as a
-      function of the iteration matrix spectral radius.}}
-\end{figure}
+  \bigskip
+  \begin{figure}[t!]
+    \begin{center}
+      \includegraphics[width=4.5in,clip]{measured_length.png}
+    \end{center}
+    \caption{\textbf{Measured and analytic random walk length as a
+        function of the iteration matrix spectral radius.}}
+  \end{figure}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Linear Operator Domain Optical Thickness}
 
-  \[
-    \langle \bar{r_1^2} \rangle = (n_s h)^2 \ \ \ \rightarrow
-    \ \ \ \langle \bar{r_k^2} \rangle = k (n_s h)^2
-  \]
+  \begin{columns}
 
-  \[
-    \langle \bar{r_k^2} \rangle = k \Bigg(\frac{n_s l}{n_i}\Bigg)^2
-  \]
+    \begin{column}{0.5\textwidth}
 
-  \[
-    \tau = \frac{l}{2 d \sqrt{\langle \bar{r_k^2} \rangle}}
-  \]
+      \begin{itemize}
+      \item $l$ = chord length
+        \bigskip
+      \item $n_i$ = \# of discrete states along the chord
+        \bigskip
+      \item $n_s$ = \# of discrete states per transition along the chord
+        \bigskip
+      \item $d$ = dimensionality of problem
+      \end{itemize}
 
-  \[
-    \tau = \frac{n_i}{2 d n_s \sqrt{k}}
-  \]
+    \end{column}
 
-  \[
-    \tau = \frac{n_i}{2 d n_s}
-    \sqrt{\frac{\log(\rho(\ve{H}))}{\log(W_c)}}
-  \]
+    \begin{column}{0.5\textwidth}
+
+      \[
+      \langle \bar{r_1^2} \rangle = (n_s h)^2 \ \ \ \rightarrow
+      \ \ \ \langle \bar{r_k^2} \rangle = k (n_s h)^2
+      \]
+
+      \[
+      \langle \bar{r_k^2} \rangle = k \Bigg(\frac{n_s l}{n_i}\Bigg)^2
+      \]
+
+      \[
+      \tau = \frac{l}{2 d \sqrt{\langle \bar{r_k^2} \rangle}}
+      \]
+
+      \[
+      \tau = \frac{n_i}{2 d n_s \sqrt{k}}
+      \]
+
+      \[
+      \tau = \frac{n_i}{2 d n_s}
+      \sqrt{\frac{\log(\rho(\ve{H}))}{\log(W_c)}}
+      \]
+
+    \end{column}
+
+
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Choosing $n_i$ and $n_s$}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+      \begin{figure}[t!]
+        \begin{center}
+          \scalebox{0.5}{\input{stencil.pdftex_t}}
+        \end{center}
+        \caption{\textbf{Nine-point Laplacian stencil.}}
+      \end{figure}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \[
+      n_i = 5
+      \]
+
+      \[
+      n_s = \frac{3}{5}
+      \]
+    \end{column}
+
+  \end{columns}
+
+  \begin{multline}
+    -\frac{1}{6h^2}[4 \phi_{i-1,j} + 4 \phi_{i+1,j} + 4 \phi_{i,j-1} + 4
+      \phi_{i,j+1} + \phi_{i-1,j-1}\\ + \phi_{i-1,j+1} + \phi_{i+1,j-1}
+      + \phi_{i+1,j+1} - 20 \phi_{i,j}] + \Sigma_a \phi_{i,j} = s_{i,j}
+  \end{multline}
 
 \end{frame}
 
@@ -473,8 +511,8 @@ for Linear Systems}
 \begin{frame}{Domain Leakage Approximations}
 
   \[
-    \Lambda = \frac{average\ \#\ of\ particles\ leaving\ local\ domain}
-            {total\ of\ \#\ of\ particles\ starting\ in\ local\ domain}
+    \Lambda = \frac{average\ \#\ of\ histories\ leaving\ local\ domain}
+            {total\ of\ \#\ of\ histories\ starting\ in\ local\ domain}
   \]
   \bigskip
 
@@ -502,8 +540,12 @@ for Linear Systems}
     \begin{center}
       \includegraphics[width=3.5in,clip]{leakage_variation.png}
     \end{center}
-    \caption{\textbf{Measured and analytic domain leakage as a function
-        of the iteration matrix spectral radius.}}
+    \caption{\textbf{Measured and analytic domain leakage as a
+        function of the iteration matrix spectral radius.} The red
+      data was computed numerically by a domain-decomposed adjoint
+      Neumann-Ulam implementation, the black dashed data was generated
+      using the mean-chord approximation, and the dashed-dotted black
+      data was generated using the Wigner rational approximation.}
   \end{figure}
 
 \end{frame}
@@ -522,7 +564,26 @@ for Linear Systems}
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Conclusions}
+\begin{frame}{Conclusions and Future Work}
+
+  \begin{itemize}
+  \item Good agreement between theory and numerical experiments
+    \bigskip
+  \item Extension to asymmetric systems and communcation cost analysis
+    \bigskip
+  \item Coordinate measurements with massively parallel computations
+    \bigskip
+  \item Explore in the context of synthetic acceleration methods
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Acknowledgements}
+
+This work was performed under appointment to the Nuclear Regulatory
+Commission Fellowship program at the University of Wisconsin - Madison
+Engineering Physics Department.
 
 \end{frame}
 
