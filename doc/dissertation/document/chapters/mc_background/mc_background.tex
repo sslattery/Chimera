@@ -16,10 +16,10 @@ using a collection of references from the 1950's and early 1960's.
 
 In this chapter, we will present the fundamentals of the Monte Carlo
 method for discrete linear systems. Both the forward and adjoint
-methods will be presented and analyzed including a variance analysis
-of several Monte Carlo estimators. The Sequential Monte Carlo and
-Monte Carlo Synthetic Acceleration methods will then be presented as a
-means of leveraging the basic Monte Carlo methods in an iterative
+methods will be presented and analyzed including a brief variance
+analysis of several Monte Carlo estimators. The Sequential Monte Carlo
+and Monte Carlo Synthetic Acceleration methods will then be presented
+as a means of leveraging the basic Monte Carlo methods in an iterative
 refinement scheme that accelerates their convergence. Using these
 iterative schemes, a set of modest variance reduction techniques will
 be introduced and their effects on the Monte Carlo methods explored.
@@ -303,7 +303,7 @@ consider a 2-dimensional thermal diffusion problem with sources on the
 left and right hand sides of the domain and a uniform source
 throughout the domain of 1/5 the strength of the boundary sources as
 shown in Figure~\ref{fig:heat_setup}.
-\begin{figure}[p!]
+\begin{figure}[t!]
   \begin{center}
     \scalebox{1.2}{ \input{chapters/mc_background/heat_eq_setup.pdftex_t} }
   \end{center}
@@ -318,7 +318,7 @@ at each grid point (state) in the domain was increased from 1 to 1000
 in order to demonstrate the effects on the solution and the
 statistical nature of the method. Figure~\ref{fig:direct_evolution}
 gives these results.
-\begin{figure}[p!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=5in]{chapters/mc_background/direct_evolution.png}
   \end{center}
@@ -339,6 +339,7 @@ solution. It is interesting to note here that as the statistical
 uncertainty is reduced at each grid point in the domain, the solution
 is resolved in a certain sense, analagous to the convergence of a
 traditional iterative method.
+\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{Adjoint Monte Carlo Method}
@@ -351,9 +352,9 @@ system adjoint to Eq~(\ref{eq:linear_problem}):
   \label{eq:adjoint_linear_problem}
 \end{equation}
 where $\ve{y}$ and $\ve{d}$ are the adjoint solution and source
-respectively vectors and $\ve{A}^T$ is the adjoint operator for
+vectors respectively and $\ve{A}^T$ is the adjoint operator for
 $\ve{A} \in \mathbb{R}^{N \times N}$. We can split this equation to
-mirror Eq~(\ref{eq:richardson_split}): 
+mirror Eq~(\ref{eq:richardson_split}):
 \begin{equation}
   \ve{y} = \ve{H}^T \ve{y} + \ve{d}\:.
   \label{eq:adjoint_split_system}
@@ -542,21 +543,24 @@ Expanding the transition probabilities in the first sum again yields a
 Neumman series in the same form as that explored for the forward
 estimator, this time with the terms in reverse order and the
 introduction of the Kronecker delta:
-\begin{equation}
+\begin{multline}
   \sigma_j^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
   \sum_{i_k}^{N} p_{i_k,i_{k-1}}\ldots p_{i_2,i_1} p_{i_1,i_0}
   w^2_{i_k,i_{k-1}}\ldots w^2_{i_2,i_1} w^2_{i_1,i_0}
-  b^2_{i_0}\delta_{i_k,j} - x_j^2\:.
+  b^2_{i_0}\delta_{i_k,j} + \\ 2 \sum_{\nu} P_{\nu} \sum_{\substack{
+      l=0 \\ m<l}}^k W_m W_l \delta_{i_m,j} \delta_{i_l,j} - x_j^2\:.
   \label{eq:collision_variance_2}
-\end{equation}
+\end{multline}
 If we again define $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$, we
 then have:
-\begin{equation}
+\begin{multline}
   \sigma^2_j = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
   \sum_{i_k}^{N}g_{i_{k},i_{k-1}} \ldots
-  g_{i_2,i_1}g_{i_1,i_0}b_{i_0}\delta_{i_k,j} - x_j^2\:,
+  g_{i_2,i_1}g_{i_1,i_0}b_{i_0}\delta_{i_k,j} + \\ 2 \sum_{\nu}
+  P_{\nu} \sum_{\substack{ l=0 \\ m<l}}^k W_m W_l \delta_{i_m,j}
+  \delta_{i_l,j} - x_j^2\:,
 \label{eq:collision_variance_3}
-\end{equation}
+\end{multline}
 where now $\ve{G}$ in this case is the transpose of that used in
 Eq~(\ref{eq:direct_variance_6}). The Kronecker delta again implies
 that the variance contribution from each random walk will only be in
@@ -633,11 +637,11 @@ estimator variance is given as:
 \end{multline}
 As the delta functions are no longer present, the final summation in
 Eq~(\ref{eq:expected_value_variance_1}) contains contributions for all
-valid state combinations in the same and therefore the variance of
-each state in the solution tally is coupled to a group of other states
-as defined by the sparsity pattern of the iteration. This coupling of
-variances is expected due to the deterministic averaging used to
-generate the expected value estimator.
+valid state combinations in the same row of the iteration matrix and
+therefore the variance of each state in the solution tally is coupled
+to a group of other states as defined by the sparsity pattern of the
+iteration matrix. This coupling of variances is expected due to the
+deterministic averaging used to generate the expected value estimator.
 
 \subsection{Adjoint Method: Evolution of a Solution}
 \label{subsec:adjoint_evolution}
@@ -649,7 +653,7 @@ adjoint method with the collision estimator, the number of histories
 sampled from the source was increased from 10 to 10,000,000 in order
 to show its effects on the solution and the statistical nature of the
 method. Figure~\ref{fig:adjoint_evolution} gives these results.
-\begin{figure}[p!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=5in]{chapters/mc_background/adjoint_evolution.png}
   \end{center}
@@ -671,6 +675,7 @@ solution evolves with the addition of histories, more histories
 emanate from the boundary and smaller uniform source with more
 penetrating from the boundary into the domain and making contributions
 to the tallies in those states.
+\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{Sequential Monte Carlo}
@@ -682,7 +687,7 @@ presented a residual Monte Carlo method that moves towards exponential
 convergence rates \citep{halton_sequential_1962} and further refined
 his work some years later \citep{halton_sequential_1994}. Applications
 of his work by the transport community have confirmed convergence
-rates on the order of of $exp(-N)$ \citep{evans_residual_2003}. In
+rates on the order of of $e^{-N}$ \citep{evans_residual_2003}. In
 much the same way as projection methods, Halton's method, sequential
 Monte Carlo, utilizes the adjoint Monte Carlo solver as a means of
 directly reducing the elements residual vector. He proposed the
@@ -1003,7 +1008,7 @@ specified tolerance as a function of the problem size. All
 computations presented in this section and
 \S\ref{subsec:sequential_comparison} were completed on a 3.0 GHz Intel
 Core 2 Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
-\begin{figure}[p!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_cpu.pdf}
   \caption{\textbf{CPU Time (s) to converge vs. Problem Size ($N$ for
@@ -1015,7 +1020,7 @@ Core 2 Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
   \label{fig:poisson_cpu_time}
 \end{figure}
 
-\begin{figure}[p!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_iterations.pdf}
   \caption{\textbf{Iterations to converge vs. Problem Size ($N$ for an
@@ -1076,8 +1081,7 @@ the Monte Carlo calculation. In addition, the better defined source is
 transported through a domain described more accurately by the 9-point
 stencil, thus yielding a more accuracte correction vector from the
 Monte Carlo calculation.
-
-\begin{figure}[p!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_conv.pdf}
   \caption{\textbf{Infinity norm of the solution residual
@@ -1089,6 +1093,8 @@ Monte Carlo calculation.
       number of random walks per iteration.}}
   \label{fig:poisson_convergence}
 \end{figure}
+
+\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{MCSA Comparison to Sequential Monte Carlo}
@@ -1120,7 +1126,7 @@ source to use with the Monte Carlo calculation while the Sequential
 method requires more iterations to achieve the same level of
 convergence in the residual.
 
-\begin{figure}[p!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_cpu.pdf}
   \caption{\textbf{CPU Time (s) to converge vs. Problem Size ($N$ for
@@ -1132,7 +1138,7 @@ convergence in the residual.
   \label{fig:seq_cpu_time}
 \end{figure}
 
-\begin{figure}[p!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_iterations.pdf}
   \caption{\textbf{Iterations to converge vs. Problem Size ($N$ for an
@@ -1160,7 +1166,7 @@ issues with a non-monotonically decreasing residual observed for the
 $N=100$ case. In both cases the MCSA solver is observed to be robust
 with a monotonically decreasing residual.
 
-\begin{figure}[p!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_conv_100.pdf}
   \caption{\textbf{Infinity norm of the solution residual
@@ -1171,7 +1177,7 @@ with a monotonically decreasing residual.
   \label{fig:seq_100}
 \end{figure}
 
-\begin{figure}[p!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/seq_conv_500.pdf}
   \caption{\textbf{Infinity norm of the solution residual
@@ -1181,6 +1187,8 @@ with a monotonically decreasing residual.
       solver.}}
   \label{fig:seq_500}
 \end{figure}
+
+\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{Monte Carlo Parameter and Estimator Analysis}
@@ -1218,7 +1226,7 @@ estimator is slightly slower overall, but the time per iteration is
 faster due to the fact that the estimator does not have to cycle
 through multiple states during the tally procedure.
 
-\begin{figure}[p!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/estimator_nh_iters.pdf}
   \caption{\textbf{Iterations (s) to converge vs. Monte Carlo
@@ -1231,7 +1239,7 @@ through multiple states during the tally procedure.
   \label{fig:estimator_nh_iters}
 \end{figure}
 
-\begin{figure}[p!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/estimator_nh_time.pdf}
   \caption{\textbf{CPU Time (s) to converge vs. Monte Carlo histories
@@ -1260,7 +1268,7 @@ gain of iterative performance. In general, these results suggest using
 the expected value estimator over the collision estimator with MCSA as
 well as using a larger weight cutoff.
 
-\begin{figure}[p!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/estimator_wc_iters.pdf}
   \caption{\textbf{Iterations (s) to converge vs. history weight
@@ -1272,7 +1280,7 @@ well as using a larger weight cutoff.
   \label{fig:estimator_wc_iters}
 \end{figure}
 
-\begin{figure}[p!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/estimator_wc_time.pdf}
   \caption{\textbf{CPU Time (s) to converge vs. history weight cutoff
@@ -1283,6 +1291,8 @@ well as using a larger weight cutoff.
       iteration is higher.}}
   \label{fig:estimator_wc_time}
 \end{figure}
+
+\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{Variance Reduction Techniques}
@@ -1389,8 +1399,7 @@ as it minimizes CPU time.
   \label{fig:absorption_time}
 \end{figure}
 
-\subsection{Weight Capping}
-\label{subsec:weight_capping}
-
 \subsection{Reduced Domain Approximation}
 \label{subsec:reduced_domain_approximation}
+
+\clearpage
