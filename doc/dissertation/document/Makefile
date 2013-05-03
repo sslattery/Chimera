@@ -11,8 +11,9 @@ chap_mct = chapters/mc_theory
 chap_spne = chapters/spn_equations
 chap_nl = chapters/nonlinear_problem
 chap_conc = chapters/conclusion
+apdx = backmatter
 
-all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf heat_eq_setup.pdf block_jacobi.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf
+all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf heat_eq_setup.pdf block_jacobi.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf mesh_cell.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
@@ -77,7 +78,12 @@ backward_facing_step.pdf: $(chap_nl)/backward_facing_step.fig
 	fig2dev -L pdftex -p $(chap_nl)/backward_facing_step.pdf -m 0.4 $(chap_nl)/backward_facing_step.fig $(chap_nl)/backward_facing_step.pdf
 	fig2dev -L pdftex_t -p $(chap_nl)/backward_facing_step.pdf -m 0.4 $(chap_nl)/backward_facing_step.fig $(chap_nl)/backward_facing_step.pdftex_t
 
+# Backmatter
+mesh_cell.pdf: $(apdx)/mesh_cell.fig
+	fig2dev -L pdftex -p $(apdx)/mesh_cell.pdf -m 0.4 $(apdx)/mesh_cell.fig $(apdx)/mesh_cell.pdf
+	fig2dev -L pdftex_t -p $(apdx)/mesh_cell.pdf -m 0.4 $(apdx)/mesh_cell.fig $(apdx)/mesh_cell.pdftex_t
 
+#cleanup
 clean:
 	-rm -f *~
 	-rm -f *.log

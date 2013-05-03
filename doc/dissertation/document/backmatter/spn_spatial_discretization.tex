@@ -1,3 +1,20 @@
 \chapter{Finite Volume Discretization for the $SP_N$ Equations}
 \label{chap:spn_spatial_discretization}
-Finite volume discretization for the $SP_N$ equations.
+The moment-discretized form of the $SP_N$ equations given by
+Eq~(\ref{eq:spn_matrix}) for the monoenergetic case has yet to have
+the spatial components of the solution and the derivative operators
+discretized. To achieve this, we choose a conservation law approach,
+using Eq~(\ref{eq:spn_matrix}) as the balance equation, to yield a
+finite volume calculation \citep{leveque_finite_2002}. To do this, we
+first define a control volume about point $(i,j,k)$ in the domain as a
+cell in a Cartesian mesh as shown in Figure~\ref{fig:mesh_cell}).
+\begin{figure}[h!]
+  \begin{center}
+    \scalebox{1.5}{
+    \input{backmatter/mesh_cell.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Cartesian mesh cell used for the spatial
+      discretization of the $SP_N$ equations.} \textit{The cell is
+      centered about $(i,j,k)$.}}
+  \label{fig:mesh_cell}
+\end{figure}
