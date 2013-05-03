@@ -468,7 +468,7 @@ difference and finite element formulations. In the Denovo package at
 ORNL, Evans has implemented a finite volume scheme for these
 equations resulting in:
 \begin{equation}
-  
+  discretization
   \label{eq:spn_spatial_discretization}
 \end{equation}
 Although arbitrary grids could be handled effectively
@@ -489,17 +489,17 @@ principles used to arrive at the general transport equation.
 \label{sec:spn_spectral_analysis}
 Before we can move on to solving the $SP_N$ equations with both
 conventional and Monte Carlo methods, we must first understand their
-spectral character to ensure the MCSA will apply. As presented in
-Chapter~\ref{ch:stochastic_methods}, the spectral radius of the
-iteration matrix must be less than unity to ensure convergence and a
-finite variance. Therefore, we will compute the spectral radius of the
+spectral character to ensure the MCSA will be applicable. As presented
+in Chapter~\ref{ch:stochastic_methods}, the spectral radius of the
+iteration matrix must be less than unity to ensure
+convergence. Therefore, we will compute the spectral radius of the
 $SP_N$ equations while parametrically varying the $SP_N$ order, the
 $P_N$ order, the number of energy groups, and
 upscattering/downscattering between energy groups. For each problem in
 the parameter study, the values given in
 Table~\ref{tab:spn_fixed_parameters} were fixed for each spatial
 location and energy group.
-\begin{table}[t!]
+\begin{table}[h!]
   \begin{center}
     \begin{tabular}{ll}\hline\hline
       \multicolumn{1}{c}{Parameter}& 
@@ -581,8 +581,8 @@ full upscattering or downscattering. Second we note the largely
 diagonal character of these systems, although the blocks from
 Eq~(\ref{eq:A_block_matrix}) are readily apparent. Our first attempt
 at preconditioning this system will be to use the point Jacobi
-preconditioning from \S\ref{sec:stochastic_preconditioning} due to
-this diagonal form.
+preconditioning from \S\ref{subsubsec:basic_mcsa_preconditioning} due
+to this diagonal form.
 
 \subsection{Point Jacobi Spectral Analysis Results}
 \label{subsec:spn_analysis_results}
@@ -677,17 +677,18 @@ methods.
 If Monte Carlo methods are to be used to solve the $SP_N$ system of
 equations, a different preconditioning strategy is required in order
 to ensure convergence for systems of all $SP_N$ and $P_N$ orders with
-arbitrary energy group structures. To achieve this, we look back to
-the sparsity plots we generated in Figures~\ref{fig:group1},
-\ref{fig:group10ds} and \ref{fig:group10us} as well as the multigroup
-$SP_N$ equations. Initially, the diagonal character of the system led
-us to try point Jacobi preconditioning with only marginal
-results. From the sparsity plots we note the block structure that
-ultimately arises from the multigroup scattering matrices and their
-insertion into Eq~(\ref{eq:A_block_matrix}). When full upscatter and
-downscatter are used the resulting blocks are completely dense while
-only downscatter gives a lower triangular scattering matrix and the
-block structure shown in Figure~\ref{fig:group10ds}. 
+arbitrary energy group structures. As another means of achieving this,
+we look back to the sparsity plots we generated in
+Figures~\ref{fig:group1}, \ref{fig:group10ds} and \ref{fig:group10us}
+as well as the multigroup $SP_N$ equations. Initially, the diagonal
+character of the system led us to try point Jacobi preconditioning
+with only marginal results. From the sparsity plots we note the block
+structure that ultimately arises from the multigroup scattering
+matrices and their insertion into Eq~(\ref{eq:A_block_matrix}). When
+full upscatter and downscatter are used the resulting blocks are
+completely dense while only downscatter gives a lower triangular
+scattering matrix and the block structure shown in
+Figure~\ref{fig:group10ds}.
 
 Based on this both block and diagonally dominant structure for
 matrices formed by the general multigroup $SP_N$ equations, we instead
@@ -700,7 +701,8 @@ Figure~\ref{fig:block_jacobi_ex}. For the $SP_N$ equations,
 Eq~(\ref{eq:A_block_matrix}) gives a block size of $N_g\times(N+1)/2$.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/block_preconditioning.png}
+    \scalebox{1.5}{
+    \input{chapters/spn_equations/block_jacobi.pdftex_t} }
   \end{center}
   \caption{\textbf{Block Jacobi preconditioning strategy used for the
       $SP_N$ equations.} \textit{Left: The preconditioner is formed by
