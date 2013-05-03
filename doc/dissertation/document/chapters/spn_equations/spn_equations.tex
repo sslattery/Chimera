@@ -452,8 +452,7 @@ generated from the moment scattering matrices:
 Boundary conditions for these equations are provided in
 Appendix~\ref{chap:spn_boundary_conditions}.
 
-%%---------------------------------------------------------------------------%%
-\subsection{Spatial Discretization}
+\subsection{Spatial Discretization of the $SP_N$ Equations}
 \label{subsec:spatial_discretization}
 To this point, the formulation of the multigroup $SP_N$ equations
 presented have discretized the transport equation in angle and energy
@@ -483,6 +482,9 @@ preserved across cell/material boundaries, and boundary conditions are
 naturally represented through cell-face currents. Furthermore, this
 spatial discretization is a natural extension of the balance
 principles used to arrive at the general transport equation.
+
+\subsection{Eigenvalue Form of the $SP_N$ Equations}
+\label{subsec:eigenvalue_form}
 
 %%---------------------------------------------------------------------------%%
 \section{Spectral Analysis of the $SP_N$ Equations}
@@ -593,7 +595,7 @@ diag(\ve{A})$. Table~\ref{tab:group1pj} gives the results for the
 1-group case, Table~\ref{tab:group10dspj} for the 10-group case with
 full downscatter only and Table~\ref{tab:group10uspj} for the 10-group
 case with full downscatter and full upscatter.
-\begin{table}[t!]
+\begin{table}[h!]
   \begin{center}
     \begin{tabular}{cccccc}\hline\hline
       \multicolumn{1}{c}{}& 
@@ -616,7 +618,7 @@ case with full downscatter and full upscatter.
       preconditioned iteration matrix with 1 energy group.}}
   \label{tab:group1pj}
 \end{table}
-\begin{table}[t!]
+\begin{table}[h!]
   \begin{center}
     \begin{tabular}{cccccc}\hline\hline
       \multicolumn{1}{c}{}& 
@@ -640,7 +642,7 @@ case with full downscatter and full upscatter.
       downscatter.}}
   \label{tab:group10dspj}
 \end{table}
-\begin{table}[t!]
+\begin{table}[h!]
   \begin{center}
     \begin{tabular}{cccccc}\hline\hline
       \multicolumn{1}{c}{}& 
@@ -706,24 +708,24 @@ Eq~(\ref{eq:A_block_matrix}) gives a block size of $N_g\times(N+1)/2$.
   \end{center}
   \caption{\textbf{Block Jacobi preconditioning strategy used for the
       $SP_N$ equations.} \textit{Left: The preconditioner is formed by
-      the diagonal blocks of the matrix. Right: Inversion is trivial
-      and decoupled by block.}}
+      the diagonal blocks of the matrix. Right: Inversion of the
+      preconditioner is trivial and decoupled by block.}}
   \label{fig:block_jacobi_ex}
 \end{figure}
 The inversion of this preconditioner is trivial as shown on the right
 side of Figure~\ref{fig:block_jacobi_ex}. Each block can be inverted
-individually and combined to form the inverse. For high performance
-implementations this has several attractive properties. First, the
-blocks in the matrix come from the energy/angle discretization of the
-transport equation as given by Eq~(\ref{eq:A_block_matrix}). Each
-block on the diagonal is bound to a mesh element in the system (note
-there are 8 blocks on the diagonal in each of the sparsity patterns
-with a mesh of $2 \times 2 \times 2$) and therefore we expect the
-matrix elements forming the block to be entirely local. Second, these
-blocks are typically dense and nearly lower triangular for many
-transport problems meaning that established dense matrix methods based
-on LU-factorization and other schemes can be used for fast inversion
-\citep{lapack_citation}.
+individually and combined to form the inverse. In addition, in the
+limit of a block size of one, the block Jacobi method reduces to the
+point Jacobi method. For high performance implementations this has
+several attractive properties. First, the blocks in the matrix come
+from the energy/angle discretization of the transport equation as
+given by Eq~(\ref{eq:A_block_matrix}). Each block on the diagonal is
+bound to a mesh element in the system (note there are 8 blocks on the
+diagonal in each of the sparsity patterns with a mesh of $2 \times 2
+\times 2$) and therefore we expect the matrix elements forming the
+block to be entirely local. Second, these blocks are typically dense
+and nearly lower triangular for many transport problems meaning that
+established dense matrix methods can be used for fast inversion.
 
 \subsection{Block Jacobi Spectral Analysis Results}
 \label{subsec:spn_analysis_results}
@@ -735,7 +737,7 @@ case with full downscatter only and Table~\ref{tab:group10usbj} for
 the 10-group case with full downscatter and full upscatter. A block
 size of $N_g\times(N+1)/2$ was used for the preconditioner in all
 cases.
-\begin{table}[t!]
+\begin{table}[h!]
   \begin{center}
     \begin{tabular}{cccccc}\hline\hline
       \multicolumn{1}{c}{}& 
@@ -758,7 +760,7 @@ cases.
       preconditioned iteration matrix with 1 energy group.}}
   \label{tab:group1bj}
 \end{table}
-\begin{table}[t!]
+\begin{table}[h!]
   \begin{center}
     \begin{tabular}{cccccc}\hline\hline
       \multicolumn{1}{c}{}& 
@@ -782,7 +784,7 @@ cases.
       downscatter.}}
   \label{tab:group10dsbj}
 \end{table}
-\begin{table}[t!]
+\begin{table}[h!]
   \begin{center}
     \begin{tabular}{cccccc}\hline\hline
       \multicolumn{1}{c}{}& 
@@ -806,16 +808,32 @@ cases.
       downscatter and full upscatter.}}
   \label{tab:group10usbj}
 \end{table}
-From the tabulated block Jacobi data it is clear that this is the
-preferred preconditioning choice for all $SP_N$ problems in term of
-Monte Carlo solution methods. All cases were observed to have a
-spectral radius below unity and often significantly smaller than that,
-greatly improving convergence rates over the point Jacobi preconditioned
-problem.
+
+From the tabulated block Jacobi data it is clear that this is a viable
+preconditioning choice for all $SP_N$ problems in term of Monte Carlo
+solution methods. All cases were observed to have a spectral radius
+below unity and often significantly smaller than that, greatly
+improving convergence rates over the point Jacobi preconditioned
+problem. Based on these results, the block Jacobi method should be the
+first preconditioning strategy applied to more complicated problems
+representative of physical systems.
 
 %%---------------------------------------------------------------------------%%
 \section{Fuel Assembly Criticality Calculations}
 \label{sec:fuel_assembly_calcs}
+Fuel assembly calculations are a critical piece of nuclear engineering
+infrastructure for reactor core analysis and design. At this level,
+individual fuel pins may be resolved at fine resolution in a variety
+of configurations. As a sophisticated problem of interest to push the
+limits of MCSA, a $17 \times 17$ pin assembly will be used with
+varying energy group structure and $SP_N$ discretization in a
+criticality calculation. In this scheme, at every eigenvalue iteration
+MCSA is used to solve the resulting $SP_N$ problem using the provided
+fission source. This problem is significantly more complicated that
+the simple test problem used for the previous spectral
+analysis. Fission has been introduced into the set of equations and
+the addition of moderator into the system will increase the amount of
+scattering, creating a significantly more difficult problem.
 
 \subsection{Jacobi Preconditioned Calculations}
 \label{subsec:jacobi_prec_assembly_calc}
