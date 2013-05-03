@@ -101,9 +101,9 @@ As a starting point we define the time-independent neutron transport
 equation \citep{lewis_computational_1993}:
 \begin{multline}
   \hat{\Omega} \cdot \vec{\nabla} \psi(\vec{r},\hat{\Omega},E) +
-  \sigma(\vec{r},E) \psi(\vec{r},\hat{\Omega},E) = \\ \int \int
-  \sigma_s(\vec{r},E' \rightarrow E,\hat{\Omega}' \rightarrow
-  \hat{\Omega}) \psi(\vec{r},\hat{\Omega}',E') d\Omega' dE' +
+  \sigma(\vec{r},E) \psi(\vec{r},\hat{\Omega},E) = \\ \iint
+  \sigma_s(\vec{r},E' \rightarrow E,\hat{\Omega}' \cdot \hat{\Omega})
+  \psi(\vec{r},\hat{\Omega}',E') d\Omega' dE' +
   q(\vec{r},\hat{\Omega},E)\:,
   \label{eq:general_transport}
 \end{multline}
@@ -127,14 +127,42 @@ For this work, it is sufficient to formulate
 Eq~(\ref{eq:general_transport}) in 1-dimensonal Cartesian geometry:
 \begin{multline}
   \mu \frac{\partial}{\partial x} \psi(x,\mu,E) + \sigma(x,E)
-  \psi(x,\mu,E) = \\ \int \int \sigma_s(x,E') \rightarrow
-  E,\hat{\Omega}' \rightarrow \hat{\Omega}) \psi(x,\hat{\Omega}',E')
-  d\Omega' dE' + \frac{q(x,E)}{4 \pi}\:,
+  \psi(x,\mu,E) = \\ \iint \sigma_s(x,E' \rightarrow E,\hat{\Omega}'
+  \cdot \hat{\Omega}) \psi(x,\hat{\Omega}',E') d\Omega' dE' +
+  \frac{q(x,E)}{4 \pi}\:,
   \label{eq:cart_1d_transport}
 \end{multline}
 where the angular component of the solution is no longer dependent on
 the azimuthal direction of travel and an isotropic source of neutrons
-is assumed.
+is assumed. In addition, for fission systems the eigenvalue form of the transport
+equation is:
+\begin{multline}
+  \hat{\Omega} \cdot \vec{\nabla} \psi(\vec{r},\hat{\Omega},E) +
+  \sigma(\vec{r},E) \psi(\vec{r},\hat{\Omega},E) = \\ \iint
+  \sigma_s(\vec{r},E' \rightarrow E,\hat{\Omega}' \cdot \hat{\Omega})
+  \psi(\vec{r},\hat{\Omega}',E') d\Omega' dE' + \\ \frac{1}{k} \chi(E)
+  \iint \nu \sigma_f(\hat{r},E') \psi(\vec{r},\hat{\Omega}',E')
+  d\Omega' dE' + q(\vec{r},\hat{\Omega},E) \:,
+  \label{eq:eigenvalue_transport}
+\end{multline}
+with the addition variables defined as
+\begin{itemize}
+\item $k$ - multiplication factor
+\item $\chi(E)$ - fission neutron energy spectrum
+\item $\nu$ - average number of neutrons per fission
+\item $\sigma_f(r,E')$ - fission cross section\:.
+\end{itemize}
+In 1-dimensional cartesian geometry,
+Eq~(\ref{eq:eigenvalue_transport}) becomes:
+\begin{multline}
+  \mu \frac{\partial}{\partial x} \psi(x,\mu,E) + \sigma(x,E)
+  \psi(x,\mu,E) = \\ \iint \sigma_s(x,E' \rightarrow
+  E,\hat{\Omega}' \cdot \hat{\Omega}) \psi(x,\hat{\Omega}',E')
+  d\Omega' dE' + \\ \frac{1}{k} \chi(E)
+  \iint \nu \sigma_f(x,E') \psi(x,\hat{\Omega}',E') d\Omega'
+  dE' + \frac{q(x,E)}{4 \pi}\:.
+  \label{eq:cart_1d_eigenvalue}
+\end{multline}
 
 %%---------------------------------------------------------------------------%%
 \section{Derivation of the Monoenergetic $SP_N$ Equations}
@@ -328,10 +356,10 @@ Appendix~\ref{chap:spn_boundary_conditions}.
 %%---------------------------------------------------------------------------%%
 \section{Derivation of the Multigroup $SP_N$ Equations}
 \label{sec:mg_spn_equations}
-Up to this point, we have formulated the $P_N$ and subsequently the
-$SP_N$ equations for a single neutron energy. To expand these
-equations for multiple energies, we start by stating the multigroup
-neutron transport equation for a single dimension in planar geometry:
+Up to this point, we have formulated the $SP_N$ equations for a single
+neutron energy. To expand these equations for multiple energies, we
+start by stating the multigroup neutron transport equation for a
+single dimension in planar geometry:
 \begin{multline}
   \mu \frac{\partial}{\partial x} \psi^g(x,\mu) + \sigma^g(x)
   \psi^g(x,\mu) = \\ \sum_{g'=0}^{G} \int
@@ -345,9 +373,9 @@ replaced by a discrete summation. For scattering, $\sigma_s^{gg'}$
 provides the probability of scattering at a particular angle from
 group $g$ to $g'$. The result is an equation nearly identical in form
 to Eq~(\ref{eq:cart_1d_transport}) where now instead of forming the
-$P_N$ and $SP_N$ equations for a single energy group, we form them for
-each of the energy groups with group coupling occuring through the
-scattering term. The multigroup $P_N$ equations are then:
+$SP_N$ equations for a single energy group, we form them for each of
+the energy groups with group coupling occuring through the scattering
+term. The multigroup $P_N$ equations are then:
 \begin{equation}
    \frac{1}{2n+1} \frac{\partial}{\partial x}\Big[ (n+1) \phi^g_{n+1}
      + n \phi^g_{n-1} \Big] +
@@ -825,15 +853,93 @@ Fuel assembly calculations are a critical piece of nuclear engineering
 infrastructure for reactor core analysis and design. At this level,
 individual fuel pins may be resolved at fine resolution in a variety
 of configurations. As a sophisticated problem of interest to push the
-limits of MCSA, a $17 \times 17$ pin assembly will be used with
-varying energy group structure and $SP_N$ discretization in a
-criticality calculation. In this scheme, at every eigenvalue iteration
-MCSA is used to solve the resulting $SP_N$ problem using the provided
-fission source. This problem is significantly more complicated that
-the simple test problem used for the previous spectral
-analysis. Fission has been introduced into the set of equations and
-the addition of moderator into the system will increase the amount of
-scattering, creating a significantly more difficult problem.
+limits of MCSA, a $17 \times 17$ hot zero-power pin assembly will be
+used with varying energy group structure and $SP_N$ discretization in
+a criticality calculation. A cross section along the vertical access
+showing homogenized fuel pin materials and the associated grid is
+given by Figure~\ref{fig:problem3_radial_mat} while a cross section of
+the materials configuration along the horizontal axis is given by
+Figure~\ref{fig:problem3_radial_mat}.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=4in]{chapters/spn_equations/problem3_radial_mat.png}
+  \end{center}
+  \caption{\textbf{Fuel assembly mesh and geometry cross section.}
+    \textit{Reflecting boundaries are used on the left and lower
+      boundaries to create a complete $17 \times 17$ assembly
+      geometry. Each fuel pin is resolved by a $2 \times 2$ mesh.}}
+  \label{fig:problem3_radial_mat}
+\end{figure}
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6.25in]{chapters/spn_equations/problem3_axial_mat.png}
+  \end{center}
+  \caption{\textbf{Fuel assembly geometry cross section.}  \textit{The
+      geometry is subdivided along the axial direction into 50 zones
+      spaced to capture material boundaries. Important details include
+      spacer grids along the length of the fuel pins and core
+      structures on the top and bottom of the assembly.}}
+  \label{fig:problem3_axial_mat}
+\end{figure}
+Significant geometric details are contained in the model including
+spacer grids, fuel pins with homogenized cladding and gas gap, and
+core plenum. Table~\ref{tab:problem3_parameters} gives the primary
+design parameters for the fuel assembly calculations.
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{ll}\hline\hline
+      \multicolumn{1}{l}{\textbf{Parameter}} & 
+      \multicolumn{1}{l}{\textbf{Value}} \\
+      Power Level & 0 MW \\
+      Inlet Temperature & 326.85C \\
+      Fuel Temperature & 600C \\
+      Boron Concentration & 1300 ppm \\
+      Moderator Density & 0.743 g/cc \\
+      Helium Density & \sn{1.79}{-4} g/cc \\
+      Zirconium Density & 6.56 g/cc \\
+      Stainless Steel Density & 8.0 g/cc \\
+      Inconel Density & 8.19 g/cc \\
+      UO2 Density & 10.257 g/cc \\
+      Fuel Pin Radius (w/o clad) & 0.4096 cm \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Design parameters for the $17 \times 17$ pin fuel
+      assembly criticality calculation.}}
+  \label{tab:problem3_parameters}
+\end{table}
+
+To generate the multiplication factor and steady-state flux
+distribution for this problem, at every eigenvalue iteration MCSA is
+used to solve the resulting $SP_N$ problem using the provided fission
+source. Algorithm~\ref{alg:power_iteration} presents the use of MCSA
+within a power iteration strategy to find the multiplication factor.
+\begin{algorithm}[h!]
+  \caption{Power Iteration MCSA Scheme}
+  \label{alg:power_iteration}
+  \begin{algorithmic}
+    \State $k_0 =$ initial guess
+    \State $\ve{\phi_0} =$ initial guess
+    \State $n = 0$
+    \While{$|\frac{k^n - k^{n-1}}{k^n}| < \epsilon$}
+    \Comment{Iterate until convergence of the eigenvalue}
+    \State $\ve{M} \ve{\phi}^{n+1} = \frac{1}{k^n} \ve{F} \ve{\phi}^n$
+    \Comment{Solve for the new flux state with MCSA}
+    \State $k^{n+1} = k^n \frac{\int \ve{F} \ve{\phi}^{n+1} d\ve{r}}{\int
+      \ve{F} \ve{\phi}^n d\ve{r}}$
+    \Comment{Update the multiplication factor}
+    \State $n = n+1$
+    \EndWhile
+  \end{algorithmic}
+\end{algorithm}
+Here, $\ve{M}$ is the transport operator generated on the left-hand
+side of the $SP_N$ discretization and $\ve{F}$ is the fission matrix.
+This problem is significantly more complicated that the simple test
+problem used for the previous spectral analysis. Fission has been
+introduced into the set of equations and the addition of moderator
+into the system will increase the amount of scattering, creating a
+significantly more difficult problem.
 
 \subsection{Jacobi Preconditioned Calculations}
 \label{subsec:jacobi_prec_assembly_calc}
@@ -853,7 +959,7 @@ scattering, creating a significantly more difficult problem.
 \subsubsection{SPAINV Improved ILUT Preconditioning}
 \label{subsubsec:spn_spainv_preconditioning}
 
-\subsubsection{Estimator Comparison}
+\subsubsection{Monte Carlo Estimator Comparison}
 \label{subsubsec:spn_estimator_comparison}
 
 \subsection{MCSA Comparison to Conventional Methods}
