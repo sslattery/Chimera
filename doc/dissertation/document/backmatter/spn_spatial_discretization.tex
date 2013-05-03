@@ -15,6 +15,270 @@ cell in a Cartesian mesh as shown in Figure~\ref{fig:mesh_cell}).
   \end{center}
   \caption{\textbf{Cartesian mesh cell used for the spatial
       discretization of the $SP_N$ equations.} \textit{The cell is
-      centered about $(i,j,k)$.}}
+      centered about $(i,j,k)$ and has a volume $V_{ijk} = \Delta_i
+      \Delta_j \Delta_k$.}}
   \label{fig:mesh_cell}
 \end{figure}
+
+To begin, we first define the neutron current in the $n^th$
+pseudo-moment, $u_n$ using Fick's law as:
+\begin{equation}
+  J_n = -D_n \nabla u_n\:,
+  \label{eq:neutron_current}
+\end{equation}
+where $J_n$ is the moment current and $D_n$ is the moment diffusion
+coefficient. Next, we substitue Eq~(\ref{eq:neutron_current}) into
+Eq~(\ref{eq:spn_matrix}) to get the balance equation:
+\begin{equation}
+    \nabla \cdot J_n + \sum_{m=1}^4 A_{nm} u_m = q_n\ \ \ \ \ \ \ n =
+    1,2,3,4\:,
+  \label{eq:neutron_balance}
+\end{equation}
+with the current term accounting for losses, $q_n$ accounting for
+neutron generation, and $\sum_{m=1}^4 A_{nm} u_m$ accounting for
+moment-to-moment transport. To enforce conservation, we integrate
+moments over the control volume of cell $ijk$ in Figure~\ref{fig:mesh_cell}):
+\begin{equation}
+    \int_{ijk} \Bigg[\nabla \cdot J_n + \sum_{m=1}^4 A_{nm} u_m - q_n
+      \Bigg] dV = 0 \ \ \ \ \ \ \ n = 1,2,3,4\:.
+  \label{eq:neutron_conservation}
+\end{equation}
+If for a given quantity $X$, we define the cell-averaged quantity
+$X_{ijk}$ as:
+\begin{equation}
+  X_{ijk} = \frac{\int_{ijk} X dV }{V_{ijk}}\:,
+  \label{eq:cell_averaged_quant}
+\end{equation}
+then Eq~(\ref{eq:neutron_conservation}) can be written as:
+\begin{equation}
+  \int_{ijk} \nabla \cdot J_n dV + \sum_{m=1}^4 A_{nm,ijk} u_{m,ijk} = q_{n,ijk}\:,
+  \label{eq:neutron_conservation_2}
+\end{equation}
+with $n$ now implied to be 1,2,3 or 4 and the moment matrix elements,
+moments, and sources now defined as volume averaged terms in the mesh
+cell. Using the divergence theorem, we can rewrite the remaining
+integral in terms of a discrete sum of area-weighted averages over the
+faces of the cell:
+\begin{equation}
+  \int_{ijk} \nabla \cdot J_n dV = \int_{\partial} J_n \cdot \hat{n}
+  dA = \sum_{f=1}^6 J_{n,f} \cdot \hat{n}_f A_f\:,
+\label{eq:face_currents}
+\end{equation}
+where $f$ is the face index, $\hat{n}_f$ is the unit normal vector for
+that face and $A_f$ is the area of the face. Inserting this into
+Eq~(\ref{eq:neutron_conservation_2}) and expanding the face current
+summation provides a discrete form of the $SP_N$ equations:
+\begin{multline}
+(J_{n,i+1/2} - J_{n,i-1/2}) \Delta_j \Delta_k + (J_{n,j+1/2} -
+  J_{n,j-1/2}) \Delta_i \Delta_k +\\ (J_{n,k+1/2} - J_{n,k-1/2})
+  \Delta_i \Delta_j + \sum_{m=1}^4 A_{nm,ijk} u_{m,ijk} V_{ijk} =
+  q_{n,ijk} V_{ijk}\:,
+  \label{eq:discrete_current}
+\end{multline}
+For the discretization we desire only cell-centered quanities and
+therefore we aim to elminate all $J_{n,l \pm 1/2}$ terms from the
+discretization where $l = \{i,j,k\}$. To do this, we enforce
+continuity of the moment flux and the moment currents across cell
+boundaries such that $J_{n,l \pm 1/2}^+ = J_{n,l \pm
+  1/2}^-$. Considering $J_{n,l+1/2}$, using
+Eq~(\ref{eq:neutron_current}) we then have:
+\begin{equation}
+  J_{n,l+1/2} = -2 D_{n,l+1/2}\frac{u_{n,l+1} - u_{n,l}}{\Delta_{l+1}+
+    \Delta_{l}}\:,
+  \label{eq:face_current}
+\end{equation}
+\begin{equation}
+  J_{n,l+1/2}^+ = -2 D_{n,l+1}\frac{u_{n,l+1} - u_{n,l+1/2}}{\Delta_{l+1}}\:,
+  \label{eq:face_current_plus}
+\end{equation}
+\begin{equation}
+  J_{n,l+1/2}^- = -2 D_{n,l}\frac{u_{n,l+1/2} - u_{n,l}}{\Delta_{l}}\:.
+  \label{eq:face_current_minus}
+\end{equation}
+To eliminate $D_{n,l+1/2}$ in Eq~(\ref{eq:face_current}), we equate
+Eqs~(\ref{eq:face_current_plus}) and (\ref{eq:face_current_minus}) to
+enforce continuity of the neutron current:
+\begin{equation}
+  -2 D_{n,l+1}\frac{u_{n,l+1} - u_{n,l+1/2}}{\Delta_{l+1}} = -2
+  D_{n,l}\frac{u_{n,l+1/2} - u_{n,l}}{\Delta_{l}}\:.
+  \label{eq:face_current_equality}
+\end{equation}
+Solving for $u_{n,l+1/2}$ gives:
+\begin{equation}
+  u_{n,l+1/2} = \frac{\Delta_l D_{n,l+1} u_{n,l+1} + \Delta_{l+1}
+    D_{n,l} u_{n,l}}{\Delta_l D_{n,l+1} + \Delta_{l+1} D_{n,l}}\:.
+  \label{eq:face_flux}
+\end{equation}
+Next, we equate Eq~(\ref{eq:face_current}) to
+Eq~(\ref{eq:face_current_plus}):
+\begin{equation}
+-2 D_{n,l+1/2}\frac{u_{n,l+1} - u_{n,l}}{\Delta_{l+1} + \Delta_{l}} =
+-2 D_{n,l+1}\frac{u_{n,l+1} - u_{n,l+1/2}}{\Delta_{l+1}}\:,
+  \label{eq:face_current_solve}
+\end{equation}
+and rearrange:
+\begin{equation}
+  \Delta_{l+1} D_{n,l+1/2} (u_{n,l+1} - u_{n,l}) = (\Delta_{l+1} +
+  \Delta_l) D_{n,l+1}u_{n,l+1} - (\Delta_{l+1} + \Delta_l)
+  D_{n,l+1}u_{n,l+1/2}\:.
+  \label{eq:face_current_solve_2}
+\end{equation}
+Inserting Eq~(\ref{eq:face_flux}) into
+Eq~(\ref{eq:face_current_solve_2}) gives:
+\begin{multline}
+  \Delta_{l+1} D_{n,l+1/2} (\Delta_l D_{n,l+1} + \Delta_{l+1} D_{n,l})
+  (u_{n,l+1} - u_{n,l}) = \\(\Delta_{l+1} + \Delta_l) D_{n,l+1}
+  (\Delta_l D_{n,l+1} + \Delta_{l+1} D_{n,l}) u_{n,l+1} -\\
+  (\Delta_{l+1} + \Delta_l) D_{n,l+1}(\Delta_l D_{n,l+1} u_{n,l+1} +
+  \Delta_{l+1} D_{n,l} u_{n,l})\:.
+  \label{eq:face_current_solve_3}
+\end{multline}
+Expanding gives 5 terms:
+\begin{multline}
+  \Delta_{l+1} D_{n,l+1/2} (\Delta_l D_{n,l+1} + \Delta_{l+1} D_{n,l})
+  (u_{n,l+1} - u_{n,l}) = \\(\Delta_{l+1} + \Delta_l) D_{n,l+1}
+  \Delta_l D_{n,l+1} u_{n,l+1} + (\Delta_{l+1} + \Delta_l) D_{n,l+1}
+  \Delta_{l+1} D_{n,l} u_{n,l+1} -\\ (\Delta_{l+1} + \Delta_l)
+  D_{n,l+1} \Delta_l D_{n,l+1} u_{n,l+1} - (\Delta_{l+1} + \Delta_l)
+  D_{n,l+1} \Delta_{l+1} D_{n,l} u_{n,l}\:,
+  \label{eq:face_current_solve_4}
+\end{multline}
+two of which cancel, giving:
+\begin{multline}
+  \Delta_{l+1} D_{n,l+1/2} (\Delta_l D_{n,l+1} + \Delta_{l+1} D_{n,l})
+  (u_{n,l+1} - u_{n,l}) = \\(\Delta_{l+1} + \Delta_l) \Delta_{l+1}
+  D_{n,l+1} D_{n,l} ( u_{n,l+1} - u_{n,l} ) \:.
+  \label{eq:face_current_solve_5}
+\end{multline}
+Solving Eq~(\ref{eq:face_current_solve_5}) for $D_{n,l+1/2}$ then
+gives the face diffusion coefficient in terms of cell-centered
+coefficients:
+\begin{equation}
+  D_{n,l+1/2} = \frac{\Delta_{l+1} D_{n,l+1} D_{n,l} + \Delta_l
+    D_{n,l+1} D_{n,l}}{\Delta_l D_{n,l+1} + \Delta_{l+1} D_{n,l}} \:.
+  \label{eq:face_current_solve_6}
+\end{equation}
+With this diffusion coefficient, we can then finish the derivation of
+the cell-face currents by inserting Eq~(\ref{eq:face_current_solve_6})
+into Eq~(\ref{eq:face_current}) giving:
+\begin{equation}
+  J_{n,l+1/2} = -2 \frac{D_{n,l+1} D_{n,l}}{\Delta_l D_{n,l+1} +
+    \Delta_{l+1} D_{n,l}} (u_{n,l+1} - u_{n,l})\:.
+  \label{eq:face_current_solve_7}
+\end{equation}
+Analagously, for cell face in the opposite direction, we have:
+\begin{equation}
+  J_{n,l-1/2} = -2 \frac{D_{n,l} D_{n,l-1}}{\Delta_{l-1} D_{n,l} +
+    \Delta_{l} D_{n,l-1}} (u_{n,l} - u_{n,l-1})\:.
+  \label{eq:face_current_solve_8}
+\end{equation}
+
+Before inserting the derived face fluxes into
+Eq~(\ref{eq:discrete_current}), we divide by the cell volume to get:
+\begin{multline}
+(J_{n,i+1/2} - J_{n,i-1/2}) \frac{1}{\Delta_i} + (J_{n,j+1/2} -
+  J_{n,j-1/2}) \frac{1}{\Delta_j} +\\ (J_{n,k+1/2} - J_{n,k-1/2})
+  \frac{1}{\Delta_k} + \sum_{m=1}^4 A_{nm,ijk} u_{m,ijk} =
+  q_{n,ijk}\:,
+  \label{eq:discrete_current_2}
+\end{multline}
+Based on the face currents computed, we identify the following
+coefficients that will appear in the moment equations:
+\begin{equation}
+  C_{n,l+1} = \frac{2}{\Delta_l}\Bigg( \frac{D_{n,l+1}
+    D_{n,l}}{\Delta_l D_{n,l+1} + \Delta_{l+1} D_{n,l}}\Bigg)\:,
+  \label{eq:moment_coeff_plus}
+\end{equation}
+\begin{equation}
+  C_{n,l-1} = \frac{2}{\Delta_l}\Bigg( \frac{D_{n,l}
+    D_{n,l-1}}{\Delta_{l-1} D_{n,l} + \Delta_{l} D_{n,l-1}}\Bigg)\:.
+  \label{eq:moment_coeff_minus}
+\end{equation}
+Inserting these coefficients into Eqs~(\ref{eq:face_current_solve_7})
+and (\ref{eq:face_current_solve_8}) gives:
+\begin{equation}
+  J_{n,l+1/2} = - \Delta_l C_{n_l+1} (u_{n,l+1} - u_{n,l})\:.
+  \label{eq:face_current_solve_9}
+\end{equation}
+\begin{equation}
+  J_{n,l-1/2} = - \Delta_l C_{n_l-1} (u_{n,l} - u_{n,l-1})\:.
+  \label{eq:face_current_solve_10}
+\end{equation}
+Applying Eqs~(\ref{eq:face_current_solve_9}) and
+(\ref{eq:face_current_solve_10}) Eq~(\ref{eq:discrete_current_2})
+gives the final spatially discretized $SP_N$ equations:
+\begin{multline}
+  - C_{n,i+1} u_{n_i+1} - C_{n,i-1} u_{n_i-1} - C_{n,j+1} u_{n_j+1} -
+  C_{n,j-1} u_{n_j-1} - C_{n,k+1} u_{n_k+1} - C_{n,k-1} u_{n_k-1} +\\
+  \sum_{m=1}^4 \Big[A_{nm,ijk} +
+    (C_{n,i+1}+C_{n,j+1}+C_{n,k+1}+C_{n,i-1}+C_{n,j-1}+C_{n,k-1})\delta_{nm}\Big]
+  u_{m,ijk} = q_{n,ijk}\:.
+  \label{eq:discrete_space_spn}
+\end{multline}
+
+On the boundaries of the domain, special treatment of the face
+currents must be made as their are no adjacent cells with which to
+close the system. Starting with Eq~(\ref{eq:spn_bnd_matrix}), we again
+insert the neutron current given by Eq~(\ref{eq:neutron_current}):
+\begin{equation}
+  \mathbf{n} \cdot J_n + \sum_{m=1}^4 B_{nm} u_m = s_n\:.
+  \label{eq:boundary_current_system}
+\end{equation}
+On the low boundary we then have:
+\begin{equation}
+  J_{n,1/2} = s_{n,1} - \sum_{m=1}^4 B_{nm,1/2} u_{m,1/2}\:,
+  \label{eq:low_bnd_current}
+\end{equation}
+or in terms of moments:
+\begin{equation}
+  J_{n,1/2} = -2 D_{n,1}\frac{u_{n,1} - u_{n,1/2}}{\Delta_1}\:.
+  \label{eq:low_bnd_current_2}
+\end{equation}
+Equating Eqs~(\ref{eq:low_bnd_current}) and
+(\ref{eq:low_bnd_current_2}) gives an extra equation for the boundary
+moments:
+\begin{equation}
+  s_{n,1} = \sum_{m=1}^4 B_{nm,1/2} u_{m,1/2} -2 D_{n,1}\frac{u_{n,1}
+    - u_{n,1/2}}{\Delta_1}\:,
+  \label{eq:low_bnd_current_3}
+\end{equation}
+or
+\begin{equation}
+  s_{n,1} = \sum_{m=1}^4 \Big[B_{nm,1/2} + \frac{2
+      D_{n,1}}{\Delta_1}\delta_{mn} \Big] u_{m,1/2} -2
+  \frac{D_{n,1}}{\Delta_1} u_{n,1}\:.
+  \label{eq:low_bnd_current_4}
+\end{equation}
+To use these boundary fluxes to close the system, we insert
+Eq~(\ref{eq:low_bnd_current_2}) into Eq~(\ref{eq:discrete_current_2})
+and then add Eq~(\ref{eq:low_bnd_current_4}) to the system to
+eliminate the boundary currents introduced by
+Eq~(\ref{eq:low_bnd_current_2}).
+
+For the multigroup $SP_N$ equations, the spatial discretization is
+identical, this time with the multigroup moment vectors where now:
+\begin{multline}
+  - \mathbb{C}_{n,i+1} \mathbb{U}_{n_i+1} - \mathbb{C}_{n,i-1}
+  \mathbb{U}_{n_i-1} - \mathbb{C}_{n,j+1} \mathbb{U}_{n_j+1} -
+  \mathbb{C}_{n,j-1} \mathbb{U}_{n_j-1} - \mathbb{C}_{n,k+1}
+  \mathbb{U}_{n_k+1} - \mathbb{C}_{n,k-1} \mathbb{U}_{n_k-1}
+  +\\ \mathbb{U}m_{m=1}^4 \Big[\mathbb{A}_{nm,ijk} +
+    (\mathbb{C}_{n,i+1}+\mathbb{C}_{n,j+1}+\mathbb{C}_{n,k+1}+
+    \mathbb{C}_{n,i-1}+\mathbb{C}_{n,j-1}+\mathbb{C}_{n,k-1})\delta_{nm}\Big]
+  \mathbb{U}_{m,ijk} = \mathbb{Q}_{n,ijk}\:,
+  \label{eq:discrete_mg_space_spn}
+\end{multline}
+and the coefficients are:
+\begin{equation}
+  \mathbb{C}_{n,l+1} = \frac{2}{\Delta_l}\Bigg( \frac{\mathbb{D}_{n,l+1}
+    \mathbb{D}_{n,l}}{\Delta_l \mathbb{D}_{n,l+1} + \Delta_{l+1} \mathbb{D}_{n,l}}\Bigg)\:,
+  \label{eq:mg_coeff_plus}
+\end{equation}
+\begin{equation}
+  \mathbb{C}_{n,l-1} = \frac{2}{\Delta_l}\Bigg( \frac{\mathbb{D}_{n,l}
+    \mathbb{D}_{n,l-1}}{\Delta_{l-1} \mathbb{D}_{n,l} + \Delta_{l}
+    \mathbb{D}_{n,l-1}}\Bigg)\:.
+  \label{eq:mg_coeff_minus}
+\end{equation}
+The boundary conditions are analagously formulated with the multigroup
+matrices/vectors.
