@@ -552,7 +552,20 @@ source derived in \S~\ref{sec:pn_eigenvalue}:
   \label{eq:multigroup_spn_eigenvalue}
 \end{multline}
 with the fission matrix $\mathbf{F}$ given by
-Eq~(\ref{eq:fission_matrix}).
+Eq~(\ref{eq:fission_matrix}). We again apply the change of variables
+to yield the set of pseudo-moments $\mathbb{U}_n$ where now the
+application of the fission matrix to the moment vectors will be
+expanded into a set of block matrices in identical fashion to the
+scattering matrices.
+
+Finally, we can apply the spatial discretization to yield the general
+$SP_N$ eigenvalue problem.
+
+It should be noted here that with respect to a general MCSA scheme,
+the introduction of the fission in the system will only effect the
+source vector in the linear system. The linear operator, and therefore
+overall MCSA performance will be dictated by streaming and scattering
+as defined on the left-hand side.
 
 %%---------------------------------------------------------------------------%%
 \section{Spectral Analysis of the $SP_N$ Equations}
