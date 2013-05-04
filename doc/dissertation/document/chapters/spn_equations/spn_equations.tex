@@ -368,7 +368,7 @@ single dimension in planar geometry:
   \label{eq:cart_1d_multigroup}
 \end{multline}
 where $g$ denotes the group index of $0$ to $G$ groups, $G=N_g-1$, and
-the integration of the scattering emission term of energy has been
+the integration of the scattering emission term over energy has been
 replaced by a discrete summation. For scattering, $\sigma_s^{gg'}$
 provides the probability of scattering at a particular angle from
 group $g$ to $g'$. The result is an equation nearly identical in form
@@ -484,20 +484,41 @@ Appendix~\ref{chap:spn_boundary_conditions}.
 \label{subsec:spatial_discretization}
 To this point, the formulation of the multigroup $SP_N$ equations
 presented have discretized the transport equation in angle and energy
-but have yet to consider the spatial component of phase space. We
-don't explicitly consider it in this document but instead we will
-briefly comment on possible means of discretization. Of primary
-interest here is the discretization of the diffusive term in
+but have yet to consider the spatial component of phase space. Of
+primary interest here is the discretization of the diffusive term in
 Eq~(\ref{eq:spn_multigroup_system}) and the current term on the
 boundaries in Eq~(\ref{eq:spn_multigroup_bnd}). Many popular choices
 for spatial discretization are available here and include finite
-difference and finite element formulations. In the Denovo package at
-ORNL, Evans has implemented a finite volume scheme for these
-equations resulting in:
+difference and finite element formulations. In the Exnihilo package at
+ORNL, Evans has implemented a finite volume scheme over a Cartesian
+grid for these equations resulting in:
+\begin{multline}
+  - \mathbb{C}_{n,i+1} \mathbb{U}_{n_i+1} - \mathbb{C}_{n,i-1}
+  \mathbb{U}_{n_i-1} - \mathbb{C}_{n,j+1} \mathbb{U}_{n_j+1} -
+  \mathbb{C}_{n,j-1} \mathbb{U}_{n_j-1} - \mathbb{C}_{n,k+1}
+  \mathbb{U}_{n_k+1} - \mathbb{C}_{n,k-1} \mathbb{U}_{n_k-1}
+  +\\ \sum_{m=1}^4 \Big[\mathbb{A}_{nm,ijk} +
+    (\mathbb{C}_{n,i+1}+\mathbb{C}_{n,j+1}+\mathbb{C}_{n,k+1}+
+    \mathbb{C}_{n,i-1}+\mathbb{C}_{n,j-1}+\mathbb{C}_{n,k-1})\delta_{nm}\Big]
+  \mathbb{U}_{m,ijk} = \mathbb{Q}_{n,ijk}\:,
+  \label{eq:spn_space}
+\end{multline}
+with the coefficients defined as:
 \begin{equation}
-  discretization
-  \label{eq:spn_spatial_discretization}
+  \mathbb{C}_{n,l+1} = \frac{2}{\Delta_l}\Bigg( \frac{\mathbb{D}_{n,l+1}
+    \mathbb{D}_{n,l}}{\Delta_l \mathbb{D}_{n,l+1} + \Delta_{l+1} \mathbb{D}_{n,l}}\Bigg)\:,
+  \label{eq:spn_coeff_plus}
 \end{equation}
+\begin{equation}
+  \mathbb{C}_{n,l-1} = \frac{2}{\Delta_l}\Bigg( \frac{\mathbb{D}_{n,l}
+    \mathbb{D}_{n,l-1}}{\Delta_{l-1} \mathbb{D}_{n,l} + \Delta_{l}
+    \mathbb{D}_{n,l-1}}\Bigg)\:,
+  \label{eq:spn_coeff_minus}
+\end{equation}
+where $l={i,j,k}$ along the cardinal directions of the Cartesian grid
+cell in Figure~\ref{fig:mesh_cell}. The details of the derivation are
+provided in Appendix~\ref{chap:spn_spatial_discretization}.
+
 Although arbitrary grids could be handled effectively
 through a finite element scheme, the rectilinear grid used in Denovo
 is easily discretized through the finite volume method in a
@@ -513,6 +534,25 @@ principles used to arrive at the general transport equation.
 
 \subsection{Eigenvalue Form of the $SP_N$ Equations}
 \label{subsec:eigenvalue_form}
+For criticality problems, the space, angle, and energy discretizations
+for the $SP_N$ equations can be applied to the general eigenvalue from
+of the transport equation given by
+Eq~(\ref{eq:eigenvalue_transport}). We can readily replace the fixed
+source in Eq~(\ref{eq:multigroup_spn_equations}) with the fission
+source derived in \S~\ref{sec:pn_eigenvalue}:
+\begin{multline}
+  -\nabla \cdot \Bigg[\frac{n}{2n+1}\mathbf{\Sigma_{n-1}}^{-1} \nabla
+    \Big(\frac{n-1}{2n-1} \mathbf{\Phi_{n-2}} +
+    \frac{n}{2n-1}\mathbf{\Phi_n} \Big) \\+
+    \frac{n+1}{2n+1}\mathbf{\Sigma_{n+1}}^{-1} \nabla
+    \Big(\frac{n+1}{2n+3}\mathbf{\Phi_n} +
+    \frac{n+2}{2n+3}\mathbf{\Phi_{n+2}}\Big) \Bigg] \\+
+  \mathbf{\Sigma_n} \mathbf{\Phi_n} = \frac{1}{k} \mathbf{F}
+  \mathbf{\Phi_n} \delta_{n0} \ \ \ \ \ \ \ \ \ n = 0,2,4,\cdots,N\:.
+  \label{eq:multigroup_spn_eigenvalue}
+\end{multline}
+with the fission matrix $\mathbf{F}$ given by
+Eq~(\ref{eq:fission_matrix}).
 
 %%---------------------------------------------------------------------------%%
 \section{Spectral Analysis of the $SP_N$ Equations}

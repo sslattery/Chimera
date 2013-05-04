@@ -366,3 +366,78 @@ equations if Marshak conditions are used or 2 non-zero moments to be
 solved for if reflected conditions are used. The formulation above
 also holds for vacuum conditions where $\phi_b = 0$.
 
+\section{Eigenvalue Form of the $P_N$ Equations}
+\label{sec:pn_eigenvalue}
+In addition to fixed source problems, the $P_N$ equations may be
+modified to solve eigenvalue problems by applying the same
+discretization techniques to the fission source in
+Eq~(\ref{eq:eigenvalue_transport}). Considering the multigroup
+case, we first replace the integration over energy with a summation
+over energy groups:
+\begin{multline}
+\frac{1}{k} \chi(E) \iint \nu \sigma_f(x,E') \psi(x,\hat{\Omega}',E')
+d\Omega' dE' =\\ \frac{1}{k} \sum_0^G \chi^g \int \nu \sigma^{g'}_f(x)
+\psi^{g'}(x,\hat{\Omega}') d\Omega'\:,
+  \label{eq:mg_fission_source}
+\end{multline}
+where $G = N_g-1$ and $N_g$ is the number of energy groups. Next, we
+expand the angular flux in the fission term by applying the expansion
+in Eq~(\ref{eq:flux_expansion}) and remove the dependence on the
+azimuthal angle:
+\begin{multline}
+\frac{1}{k} \sum_0^G \chi^g \int \nu \sigma^{g'}_f(x)
+\psi^{g'}(x,\hat{\Omega}') d\Omega' =\\ \frac{1}{k} \sum_0^G \chi^g
+\int_{-1}^{1} \nu \sigma^{g'}_f(x) \sum_{n=0}^\infty
+(2n+1)P_n(\mu)\phi^{g'}_n(x) d\mu'\:.
+  \label{eq:fission_flux_expansion}
+\end{multline}
+We can again use the the orthogonality property of the Legendre
+polynomials by multplying by $P_0(\mu) = 1$:
+\begin{equation}
+  \frac{1}{k} \sum_0^G \chi^g
+  \int_{-1}^{1} \nu \sigma^{g'}_f(x) \sum_{n=0}^\infty
+  (2n+1)P_n(\mu) P_0(\mu) \phi^{g'}_n(x) d\mu'\:,
+  \label{eq:fission_deriv_1}
+\end{equation}
+giving:
+\begin{equation}
+  \frac{1}{k} \sum_0^G \chi^g \nu \sigma^{g'}_f(x) \phi^{g'}_n(x)
+  \delta_{n0}\:,
+  \label{eq:fission_deriv_1}
+\end{equation}
+where $\chi^g$ and $\sigma^{g'}_f\phi^{g'}$ means that an effective
+inner product amongst group terms will be computed with the discrete
+$\chi$ spectrum and the fission reaction rate. In a multigoup form, if
+we choose to represent the energy dependent moments as vectors,
+$\mathbf{\Phi_n}$, composed of all energy groups, then this inner
+product takes the form of a spatially dependent fission matrix
+$\mathbf{F}$:
+\begin{equation}
+  \mathbf{F} = \nu
+  {\tiny \begin{bmatrix}
+    (\chi^0 \sigma_f^0) & (\chi^0 \sigma_f^1) & \cdots & (\chi^0
+      \sigma_f^G) \\
+    %%
+    &&&\\
+    %%
+    (\chi^1 \sigma_f^0) & (\chi^1 \sigma_f^1) & \cdots & (\chi^1
+      \sigma_f^G) \\
+    %%
+    &&&\\
+    %%
+      \vdots & \vdots & \ddots & \vdots \\ 
+    %%
+    &&&\\
+    %%
+    (\chi^G \sigma_f^0) & (\chi^G \sigma_f^1) & \cdots & (\chi^G
+      \sigma_f^G) \\
+  \end{bmatrix}}\:.
+  \label{eq:fission_matrix}
+\end{equation}
+This gives a final multigroup $P_N$ fission source of:
+\begin{equation}
+  \frac{1}{k} \mathbf{F} \mathbf{\Phi_n} \delta_{n0}
+  \label{eq:pn_fission_source}
+\end{equation}
+where the spatial dependence of the flux moments and fission matrix
+has been supressed.
