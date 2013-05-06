@@ -1398,8 +1398,41 @@ as it minimizes CPU time.
       increasing CPU time.}}
   \label{fig:absorption_time}
 \end{figure}
+\clearpage
 
 \subsection{Reduced Domain Approximation}
 \label{subsec:reduced_domain_approximation}
+For scalable parallel implementations and efficient Monte Carlo
+transport, the domain is required to be sparse. We may find through
+general preconditioning operations as outlined by the Monte Carlo
+problem in Eq~(\ref{eq:left_right_correction}) that this sparsity is
+lost. To alleviate this, we propose modifying the domain sampled by
+the Monte Carlo method to generate the correction within MCSA by
+removing terms in the iteration matrix through some predetermined
+criteria in order to recover sparsity. As the Neumann-Ulam scheme is a
+stochastic realization of multiple matrix-vector multiplies, the
+criteria we choose should be based on maintain those elements that
+will make the largest contributions to the multiplication. For each
+row in the preconditioned system, we can then apply the reduced domain
+approximation to eliminate those elements that either fall below a
+specified tolerance level, keep the $N$ largest elements in a row, or
+both giving:
+\begin{subequations}
+  \begin{gather}
+    \ve{x}^{k+1/2} = \ve{x}^k + \ve{r}^k\:,\\
+    \ve{r}^{k+1/2} = \ve{b} - \ve{A}\ve{x}^{k+1/2}\:,\\
+    \hat{\ve{A}}\delta\ve{x}^{k+1/2} = \ve{r}^{k+1/2}\:, 
+    \label{eq:rda_correction}\\
+    \ve{x}^{k+1} = \ve{x}^{k+1/2} + \delta \ve{x}^{k+1/2}\:,\\
+    \ve{r}^{k+1} = \ve{b} - \ve{A}\ve{x}^{k+1}\:,
+  \end{gather}
+  \label{eq:rda_mcsa}
+\end{subequations}
+where $\hat{\ve{A}}$ in Eq~(\ref{eq:rda_correction}) means that the
+reduced domain approximation has been applied to the iteration matrix
+in the Monte Carlo method. If enough of the terms in the original
+iteration matrix have been maintained, the character of the original
+iteration matrix should be retained and continue to accelerate the
+iterative scheme.
 
 \clearpage
