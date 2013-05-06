@@ -145,7 +145,7 @@ equation is:
   d\Omega' dE' + q(\vec{r},\hat{\Omega},E) \:,
   \label{eq:eigenvalue_transport}
 \end{multline}
-with the addition variables defined as
+with the additional variables defined as
 \begin{itemize}
 \item $k$ - multiplication factor
 \item $\chi(E)$ - fission neutron energy spectrum
@@ -572,7 +572,7 @@ as defined on the left-hand side.
 \label{sec:spn_spectral_analysis}
 Before we can move on to solving the $SP_N$ equations with both
 conventional and Monte Carlo methods, we must first understand their
-spectral character to ensure the MCSA will be applicable. As presented
+spectral character to ensure that MCSA will be applicable. As presented
 in Chapter~\ref{ch:stochastic_methods}, the spectral radius of the
 iteration matrix must be less than unity to ensure
 convergence. Therefore, we will compute the spectral radius of the
@@ -747,13 +747,12 @@ case with full downscatter and full upscatter.
       downscatter and full upscatter.}}
   \label{tab:group10uspj}
 \end{table}
-It is readily apparent from the tabulated data the point Jacobi
-preconditioning is insufficient as a preconditioning mechanism for
-problems of order $SP_5$ or higher. In addition, as upscatter is
-introduced into the system, a much larger spectral radius is observed
-at lower $SP_N$ orders, signaling a need for a better preconditioning
-strategy to both ensure and improve covergence for Monte Carlo
-methods. 
+It is readily apparent from the tabulated data that point Jacobi
+preconditioning is insufficient. For problems of order $SP_5$ and
+$SP_7$, the method will not converge at all and for the upscatter case
+with $SP_3$ the spectral radius is still quite large for large $P_N$
+orders. This data signals a need for a better preconditioning strategy
+to both ensure and improve covergence for Monte Carlo methods.
 
 \subsection{Block Jacobi Preconditioning}
 \label{sec:spn_preconditioning}
@@ -912,7 +911,7 @@ a criticality calculation. A cross section along the vertical access
 showing homogenized fuel pin materials and the associated grid is
 given by Figure~\ref{fig:problem3_radial_mat} while a cross section of
 the materials configuration along the horizontal axis is given by
-Figure~\ref{fig:problem3_radial_mat}.
+Figure~\ref{fig:problem3_axial_mat}.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4in]{chapters/spn_equations/problem3_radial_mat.png}
@@ -937,7 +936,9 @@ Figure~\ref{fig:problem3_radial_mat}.
 Significant geometric details are contained in the model including
 spacer grids, fuel pins with homogenized cladding and gas gap, and
 core plenum. Table~\ref{tab:problem3_parameters} gives the primary
-design parameters for the fuel assembly calculations.
+design parameters for the fuel assembly calculations. Group cross
+sections and other discrete nuclear data are generated as needed by a
+cross-section processing module.
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{ll}\hline\hline
@@ -973,32 +974,102 @@ within a power iteration strategy to find the multiplication factor.
   \label{alg:power_iteration}
   \begin{algorithmic}
     \State $k_0 =$ initial guess
-    \State $\ve{\phi_0} =$ initial guess
+    \State $\mathbf{\Phi}_0 =$ initial guess
     \State $n = 0$
     \While{$|\frac{k^n - k^{n-1}}{k^n}| < \epsilon$}
     \Comment{Iterate until convergence of the eigenvalue}
-    \State $\ve{M} \ve{\phi}^{n+1} = \frac{1}{k^n} \ve{F} \ve{\phi}^n$
+    \State $\mathbf{M} \mathbf{\Phi}^{n+1} = \frac{1}{k^n} \mathbf{F} \mathbf{\Phi}^n$
     \Comment{Solve for the new flux state with MCSA}
-    \State $k^{n+1} = k^n \frac{\int \ve{F} \ve{\phi}^{n+1} d\ve{r}}{\int
-      \ve{F} \ve{\phi}^n d\ve{r}}$
+    \State $k^{n+1} = k^n \frac{\int \mathbf{F} \mathbf{\Phi}^{n+1} d\mathbf{r}}{\int
+      \mathbf{F} \mathbf{\Phi}^n d\mathbf{r}}$
     \Comment{Update the multiplication factor}
     \State $n = n+1$
     \EndWhile
   \end{algorithmic}
 \end{algorithm}
-Here, $\ve{M}$ is the transport operator generated on the left-hand
-side of the $SP_N$ discretization and $\ve{F}$ is the fission matrix.
-This problem is significantly more complicated that the simple test
-problem used for the previous spectral analysis. Fission has been
-introduced into the set of equations and the addition of moderator
-into the system will increase the amount of scattering, creating a
-significantly more difficult problem.
+Here, $\mathbf{M}$ is the transport operator generated on the
+left-hand side of the $SP_N$ discretization, $\mathbf{F}$ is the
+fission matrix, and $\mathbf{\Phi}$ the multigroup neutron flux. This
+problem is significantly more complicated than the simple test problem
+used for the previous spectral analysis. Fission has been introduced
+into the set of equations and the addition of moderator into the
+system will increase the amount of scattering, creating a
+significantly more difficult problem manifesting itself in an
+iteration matrix with a larger spectral radius. When using MCSA, the
+linear operator applied to $\mathbf{\Phi}^{n+1}$ at each eigenvalue
+iteration will dictate converge and remain unchanged throughout the
+computation while the addition of fission to the system will only
+modify the source of neutrons and not affect Monte Carlo transport.
 
 \subsection{Jacobi Preconditioned Calculations}
 \label{subsec:jacobi_prec_assembly_calc}
+Based on the success of block Jacobi preconditioning with the test
+problem used for the spectral radius parameter study, we use it first
+to solve the $17 \times 17$ fuel assembly problem. A single energy
+group problem was first solved with $SP_1$ discretization, effectively
+giving the one-speed neutron diffusion system for the fuel assembly
+resulting in 20,088 degrees of freedom in the
+problem. Figure~\ref{fig:block_jacobi_res_mcsa} gives the residual
+infinity norm as a function of iteration for the MCSA linear solve in
+the first eigenvalue iteration.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=5in]{chapters/spn_equations/block_jacobi_res.pdf}
+  \end{center}
+  \caption{\textbf{Residual infinity norm vs. iteration for the block
+      Jacobi preconditioned MCSA solve during the first eigenvalue
+      iteration of the 1-group $17 \times 17$ fuel assembly problem.}
+    \textit{Convergence was not achieved with the block Jacobi
+      preconditioned method.}}
+  \label{fig:block_jacobi_res_mcsa}
+\end{figure}
+Convergence was not achieved as noted by the rapid rise in the
+residual over a few iterations. Based on the spectral radius
+computations performed, these results are not in line with
+expectations for this problem. Even if the problem may be
+ill-conditioned, we do expect convergence of MCSA. To investigate
+further, a block Jacobi preconditioned Richardson iteration was used
+to solve the same problem. Figure~\ref{fig:block_jacobi_res_richardson}
+gives the residual infinity norm as a function of iteration for the
+Richardson linear solve in the first eigenvalue iteration.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=5in]{chapters/spn_equations/block_jacobi_rich_res.pdf}
+  \end{center}
+  \caption{\textbf{Residual infinity norm vs. iteration for the block
+      Jacobi preconditioned Richardson solve during the first
+      eigenvalue iteration of the 1-group $17 \times 17$ fuel assembly
+      problem.}  \textit{A spectral radius near 1 was observed for the
+      iteration matrix.}}
+  \label{fig:block_jacobi_res_richardson}
+\end{figure}
+Poor converge is observed for the Richardson iteration. However,
+convergence is achieved meaning that the criteria needed to satisfy
+MCSA convergence has also been met. The effective slope of the
+convergence curve in Figure~\ref{fig:block_jacobi_res_richardson} will
+give an approximation for the spectral radius via
+Eq~(\ref{eq:linear_k_iter_norm3}). Based on these results, it then
+appears that even if the simple criteria of a spectral radius of less
+than one is met and the Richardson iteration will converge with the
+same preconditioning, MCSA still may not converge. We then expect the
+issue to reside with the Neumann-Ulam solve providing the correction
+as the Richardson iteration is known to provide the correct
+result. Furthermore, the fact that the spectral radius is less than
+one means that the stochastic histories in the block Jacobi
+preconditioned Neumann-Ulam method are eventually being terminated by
+the weight cutoff as no artificial absorption was used. Based on this,
+the correction being generated by the Neumann-Ulam solve must be
+incorrect.
 
-\subsection{MCSA Break Down}
+\subsection{MCSA Breakdown}
 \label{subsec:mcsa_break_down}
+For the fuel assembly problem, the initial block Jacobi calculations
+used a one-speed $SP_1$ discretization, effectively giving a diffusion
+system. To study the breakdown of MCSA at iteration matrix spectral
+radii near one, we will use a simpler homogoneous 2-dimensional
+one-speed neutron diffusion system to isolate this behavior. In this
+system, we can vary the cross sections in order to achieve varying
+spectral radii.
 
 \subsection{Advanced Preconditioning Strategies}
 \label{subsec:spn_advanced_preconditioning}
@@ -1011,6 +1082,9 @@ significantly more difficult problem.
 
 \subsubsection{SPAINV Improved ILUT Preconditioning}
 \label{subsubsec:spn_spainv_preconditioning}
+
+\subsubsection{MCSA Relaxation Parameters}
+\label{subsubsec:spn_mcsa_relaxation}
 
 \subsubsection{Monte Carlo Estimator Comparison}
 \label{subsubsec:spn_estimator_comparison}
