@@ -48,6 +48,10 @@ block_jacobi.pdf: $(chap_spne)/block_jacobi.fig
 	fig2dev -L pdftex -p $(chap_spne)/block_jacobi.pdf -m 0.4 $(chap_spne)/block_jacobi.fig $(chap_spne)/block_jacobi.pdf
 	fig2dev -L pdftex_t -p $(chap_spne)/block_jacobi.pdf -m 0.4 $(chap_spne)/block_jacobi.fig $(chap_spne)/block_jacobi.pdftex_t
 
+stencil.pdf: $(chap_spne)/stencil.fig
+	fig2dev -L pdftex -p $(chap_spne)/stencil.pdf -m 0.4 $(chap_spne)/stencil.fig $(chap_spne)/stencil.pdf
+	fig2dev -L pdftex_t -p $(chap_spne)/stencil.pdf -m 0.4 $(chap_spne)/stencil.fig $(chap_spne)/stencil.pdftex_t
+
 # Parallel mc figures
 gentile_example.pdf: $(chap_pmc)/gentile_example.fig
 	fig2dev -L pdftex -p $(chap_pmc)/gentile_example.pdf -m 0.4 $(chap_pmc)/gentile_example.fig $(chap_pmc)/gentile_example.pdf
@@ -60,10 +64,6 @@ msod_example.pdf: $(chap_pmc)/msod_example.fig
 procassini_example.pdf: $(chap_pmc)/procassini_example.fig
 	fig2dev -L pdftex -p $(chap_pmc)/procassini_example.pdf -m 0.4 $(chap_pmc)/procassini_example.fig $(chap_pmc)/procassini_example.pdf
 	fig2dev -L pdftex_t -p $(chap_pmc)/procassini_example.pdf -m 0.4 $(chap_pmc)/procassini_example.fig $(chap_pmc)/procassini_example.pdftex_t
-
-stencil.pdf: $(chap_mct)/stencil.fig
-	fig2dev -L pdftex -p $(chap_mct)/stencil.pdf -m 0.4 $(chap_mct)/stencil.fig $(chap_mct)/stencil.pdf
-	fig2dev -L pdftex_t -p $(chap_mct)/stencil.pdf -m 0.4 $(chap_mct)/stencil.fig $(chap_mct)/stencil.pdftex_t
 
 # Navier stokes figures
 natural_convection_cavity.pdf: $(chap_nl)/natural_convection_cavity.fig
