@@ -1027,7 +1027,8 @@ giving the one-speed neutron diffusion system for the fuel assembly
 resulting in 20,088 degrees of freedom in the
 problem. Figure~\ref{fig:block_jacobi_res_mcsa} gives the residual
 infinity norm as a function of iteration for the MCSA linear solve in
-the first eigenvalue iteration.
+the first eigenvalue iteration using 25,000 stochastic histories at
+every iteration for the adjoint Neumann-Ulam solve.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=5in]{chapters/spn_equations/block_jacobi_res.pdf}
@@ -1189,6 +1190,14 @@ zero.
 
 \subsubsection{MCSA Breakdown Analysis}
 \label{subsubsec:breakdown_analysis}
+For each solver and estimator combination, the spectral radius of the
+iteration matrix was varied by changing the absorption cross section
+while fixing the grid size and scattering cross section. At each
+solve, a minimum of stochastic history per degree of freedom (DOF) in
+the problem was used to compute the Monte Carlo correction. If the
+solver could not converge in less than 100 iterations, the number of
+histories was increased by increments of 5,000 until convergence was
+achieved.
 
 %%---------------------------------------------------------------------------%%
 \section{Advanced Preconditioning Strategies}
@@ -1213,6 +1222,3 @@ zero.
 \section{MCSA Comparison to Conventional Methods}
 \label{sec:spn_comparison}
 
-%%---------------------------------------------------------------------------%%
-\section{Multiple Fuel Assembly Challenge Problem}
-\label{sec:spn_challenge_problem}
