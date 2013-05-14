@@ -748,7 +748,7 @@ $SP_7$, the method will not converge at all and for the upscatter case
 with $SP_3$ the spectral radius is still quite large for large $P_N$
 orders and therefore convergence is expected to be slow. These
 eigenvalues signal a need for a better preconditioning strategy to
-both ensure and improve covergence for Monte Carlo methods.
+both ensure and improve convergence for Monte Carlo methods.
 
 \subsection{Block Jacobi Preconditioning}
 \label{sec:spn_preconditioning}
@@ -775,8 +775,11 @@ for the system. Like point Jacobi preconditioning, block Jacobi
 preconditioning extracts the diagonal elements of the matrix as the
 preconditioner where now the elements extracted are the blocks on the
 diagonal as shown on the left side of
-Figure~\ref{fig:block_jacobi_ex}. For the $SP_N$ equations,
-Eq~(\ref{eq:A_block_matrix}) gives a block size of $N_g\times(N+1)/2$.
+Figure~\ref{fig:block_jacobi_ex}. Shown on the right side of
+Figure~\ref{fig:block_jacobi_ex}, inversion of the preconditioner is
+trivial with each diagonal block inverted separately. For the $SP_N$
+equations, Eq~(\ref{eq:A_block_matrix}) gives a block size of
+$N_g\times(N+1)/2$.
 \begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{
@@ -893,6 +896,7 @@ improving convergence rates over the point Jacobi preconditioned
 problem. Based on these results, the block Jacobi method should be the
 first preconditioning strategy applied to more complicated problems
 representative of physical systems.
+\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{Fuel Assembly Criticality Calculations}
@@ -907,7 +911,12 @@ a criticality calculation. A cross section along the vertical axis
 showing homogenized fuel pin materials and the associated grid is
 given by Figure~\ref{fig:problem3_radial_mat} while a cross section of
 the materials configuration along the horizontal axis is given by
-Figure~\ref{fig:problem3_axial_mat}.
+Figure~\ref{fig:problem3_axial_mat}. On the top and bottom of the
+assembly, vacuum conditions are used as well as on the top and right
+boundaries in Figure~\ref{fig:problem3_radial_mat}. Reflecting
+conditions are used on the left and bottom boundaries of
+Figure~\ref{fig:problem3_radial_mat}, effectively giving a
+representation of one quarter of the assembly.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4in]{chapters/spn_equations/problem3_radial_mat.png}
@@ -915,7 +924,9 @@ Figure~\ref{fig:problem3_axial_mat}.
   \caption{\textbf{Fuel assembly mesh and geometry cross section.}
     \textit{Reflecting boundaries are used on the left and lower
       boundaries to create a complete $17 \times 17$ assembly
-      geometry. Each fuel pin is resolved by a $2 \times 2$ mesh.}}
+      geometry. Gray regions are homogenized fuel and red regions are
+      homogenzied moderator. Each fuel pin is resolved by a $2 \times
+      2$ mesh.}}
   \label{fig:problem3_radial_mat}
 \end{figure}
 \begin{figure}[t!]
@@ -931,11 +942,13 @@ Figure~\ref{fig:problem3_axial_mat}.
 \end{figure}
 Significant geometric details are contained in the model including
 spacer grids, fuel pins with homogenized cladding and gas gap, core
-plenum, and moderator with boron. Table~\ref{tab:problem3_parameters}
+plenum, and moderator with boron. Group cross sections and other
+discrete nuclear data are generated as needed by a cross-section
+processing module dependent on the meshing parameters used to
+discretize the geometry and single-dimension pin-cell calculations for
+intial flux spectrum generation. Table~\ref{tab:problem3_parameters}
 gives the primary design parameters for the fuel assembly
-calculations. Group cross sections and other discrete nuclear data are
-generated as needed by a cross-section processing module dependent on
-the meshing parameters used to discretize the geometry.
+calculations.
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{ll}\hline\hline
@@ -994,8 +1007,13 @@ system will increase the amount of scattering, creating a
 significantly more difficult problem manifesting itself in an
 iteration matrix with a larger spectral radius. When using MCSA, the
 linear operator applied to $\mathbf{\Phi}^{n+1}$ at each eigenvalue
-iteration will dictate converge and remain unchanged throughout the
-computation while the addition of fission to the system will only
+iteration will dictate convergence and remain unchanged throughout the
+computation\footnote{The operator will change if, for example, physics
+  feedback through temperature or potentially burnup is
+  considered. These additional physics will modify the cross sections
+  used to assemble $\mathbf{M}$. The calculations presented here will
+  consist of a single eigenvalue calculation with a static
+  $\mathbf{M}$.} while the addition of fission to the system will only
 modify the source of neutrons and the multiplication factor while not
 affecting Monte Carlo transport.
 
@@ -1041,7 +1059,7 @@ Richardson linear solve in the first eigenvalue iteration.
       iteration matrix.}}
   \label{fig:block_jacobi_res_richardson}
 \end{figure}
-Poor converge is observed for the Richardson iteration. However,
+Poor converge is observed for the Richardson iteration, however,
 convergence is achieved meaning that the criteria needed to satisfy
 MCSA convergence has also been met. The effective slope of the
 convergence curve in Figure~\ref{fig:block_jacobi_res_richardson} will
@@ -1060,18 +1078,25 @@ iteration is known to provide the correct result. Furthermore, the
 fact that the spectral radius is less than one means that the
 stochastic histories in the block Jacobi preconditioned Neumann-Ulam
 method are eventually being terminated by the weight cutoff as no
-artificial absorption was used. Based on this, the correction being
-generated by the Neumann-Ulam solve must be incorrect.
+artificial absorption was used for these preliminary
+calculations. Based on this, the correction being generated by the
+Neumann-Ulam solve is the component of MCSA causing a divergent
+solution.
 
 \subsection{MCSA Breakdown}
 \label{subsec:mcsa_break_down}
-For the fuel assembly problem, the initial block Jacobi calculations
-used a one-speed $SP_1$ discretization, effectively giving a diffusion
+For the fuel assembly problem, the initial block Jacobi
+preconditioned\footnote{For 1-group $SP_1$ problems, the block size is
+  1, giving a point Jacobi preconditioner.}  calculations used a
+one-speed $SP_1$ discretization, effectively giving a diffusion
 system. To study the breakdown of MCSA at iteration matrix spectral
 radii near one, we will use a simpler homogoneous 2-dimensional
 one-speed neutron diffusion system to isolate this behavior. In this
-system, we can vary the cross sections in order to achieve varying
-spectral radii.
+system, we can vary the cross sections while maintaining a fixed grid
+in order to achieve varying spectral radii. For these studies, we
+neglect fission as MCSA behavior is dictated by the transport operator
+$\mathbf{M}$ in an eigenvalue scheme with the fission matrix used to
+generate a fixed source.
 
 \subsubsection{Model Diffusion Problem}
 \label{subsec:model_problem}
@@ -1165,6 +1190,7 @@ zero.
 \subsubsection{MCSA Breakdown Analysis}
 \label{subsubsec:breakdown_analysis}
 
+%%---------------------------------------------------------------------------%%
 \section{Advanced Preconditioning Strategies}
 \label{subsec:spn_advanced_preconditioning}
 
@@ -1183,5 +1209,10 @@ zero.
 \subsection{Monte Carlo Estimator Comparison}
 \label{subsec:spn_estimator_comparison}
 
+%%---------------------------------------------------------------------------%%
 \section{MCSA Comparison to Conventional Methods}
 \label{sec:spn_comparison}
+
+%%---------------------------------------------------------------------------%%
+\section{Multiple Fuel Assembly Challenge Problem}
+\label{sec:spn_challenge_problem}

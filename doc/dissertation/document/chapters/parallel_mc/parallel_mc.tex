@@ -518,40 +518,40 @@ larger relative difference for both long and short random walks.
 \label{subsubsec:domain_leakage}
 Finally, we seek to measure the leakage from a domain in a domain
 decomposed Monte Carlo calculation and assess the quality of our
-analytic relation for the optical thickness of domain and the
+analytic relation for the optical thickness of a domain and the
 associated leakage approximations. For this experiment, a square grid
 with $h=0.1$ was decomposed into 9 square domains, 3 in each cardinal
 direction with measurements occurring in the central domain without
 boundary grid points. For the cross subsections, the absorption cross
-subsection was varied from 1 to 100 while the scattering cross subsection
-was set to zero to create a purely absorbing environment with weight
-cutoff of \sn{1}{-4}. The optical thickness of these domains will vary
-as a function of the absorption cross subsection if the other parameters
-are fixed. To compute the optical thickness, along with the spectral
-radius as given by Eq~(\ref{eq:iteration_radius}), we also need the
-parameters $n_i$ and $n_s$ which respectively describe the typical
-domain length and the average number of states moved along that
-typical length per history transition. For our grid above, the domains
-are varied in size with $50 \times 50$, $100 \times 100$, and $200
-\times 200$ cells giving $n_i=50$, $n_i=100$, and $n_i=200$ grid
-points or states along the typical length of the domain
-respectively. Looking at the Laplacian stencil in
-Eq~(\ref{eq:nine_point_stencil}), we see that all history transitions
-will only move a single state in either the $i$ or $j$ directions due
-to the symmetry of the problem. Furthermore, if we choose the $i$
-direction, not all states we will transition to will move the history
-in that direction. Therefore, we look to the definition of the
-iteration matrix in Eq~(\ref{eq:iteration_stencil}) and the definition
-of the adjoint probability matrix in Eq~(\ref{eq:adjoint_probability})
-to estimate the $n_s$ parameter. For a particular transition starting
-at state $(i,j)$, 6 of the 8 possible new states in the stencil move
-the history in $i$ direction with relative coefficients of 4 for
-moving in the $(\pm i,0)$ direction and of 1 for moving in the $(\pm
-i,\pm j)$. These coefficients dictate the frequency those states are
-visited relative to the others. For those 6 states we can visit along
-the typical length, their sum is 12 out of the total 20 for the
-coefficients for all possible states with their ratio giving $n_s =
-\frac{3}{5}$.
+subsection was varied from 1 to 100 while the scattering cross
+subsection was set to zero to create a purely absorbing environment
+with weight cutoff of \sn{1}{-4}. The optical thickness of these
+domains will vary as a function of the absorption cross subsection if
+the other parameters are fixed. To compute the optical thickness,
+along with the spectral radius as given by
+Eq~(\ref{eq:iteration_radius}), we also need the parameters $n_i$ and
+$n_s$ which respectively describe the typical domain length and the
+average number of states moved along that typical length per history
+transition. For our grid above, the domains are varied in size with
+$50 \times 50$, $100 \times 100$, and $200 \times 200$ cells giving
+$n_i=50$, $n_i=100$, and $n_i=200$ grid points or states along the
+typical length of the domain respectively. Looking at the Laplacian
+stencil in Eq~(\ref{eq:nine_point_stencil}), we see that all history
+transitions will only move a single state in either the $i$ or $j$
+directions due to the symmetry of the problem. Furthermore, if we
+choose the $i$ direction, not all states we will transition to will
+move the history in that direction. Therefore, we look to the
+definition of the iteration matrix in Eq~(\ref{eq:iteration_stencil})
+and the definition of the adjoint probability matrix in
+Eq~(\ref{eq:adjoint_probability}) to estimate the $n_s$ parameter. For
+a particular transition starting at state $(i,j)$, 6 of the 8 possible
+new states in the stencil move the history in $i$ direction with
+relative coefficients of 4 for moving in the $(\pm i,0)$ direction and
+of 1 for moving in the $(\pm i,\pm j)$. These coefficients dictate the
+frequency those states are visited relative to the others. For those 6
+states we can visit along the typical length, their sum is 12 out of
+the total 20 for the coefficients for all possible states with their
+ratio giving $n_s = \frac{3}{5}$.
 
 To compute the leakage fraction numerically, \sn{3}{5} histories were
 sampled from a uniform source of strength unity over the global
