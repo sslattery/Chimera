@@ -184,7 +184,7 @@
         <Parameter name="Convergence Tolerance" type="double" value="1e-6"/>
       </ParameterList>
       <ParameterList name="operator_db">
-        <Parameter name="max_itr" type="int" value="100"/>
+        <Parameter name="max_itr" type="int" value="20000"/>
         <Parameter name="linear_solver_xml_file" type="string" value="mcls.xml"/>
       </ParameterList>
     </ParameterList>

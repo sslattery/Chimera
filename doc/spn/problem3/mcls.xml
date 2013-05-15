@@ -5,20 +5,20 @@
       <Parameter name="Solver Type" type="string" value="MCSA"/>
       <ParameterList name = "Solver Types">
         <ParameterList name = "MCSA">
-          <Parameter name="MC Type" type="string" value="Forward"/>
+          <Parameter name="MC Type" type="string" value="Adjoint"/>
           <Parameter name="Number of Sets" type="int" value="1"/>
           <Parameter name="Reproducible MC Mode" type="bool" value="false"/>
           <Parameter name="Overlap Size" type="int" value="0"/>
           <Parameter name="Weight Cutoff" type="double" value="1.0e-4"/>
-          <Parameter name="Set Number of Histories" type="int" value="50000"/>
+          <Parameter name="Set Number of Histories" type="int" value="1000000"/>
           <Parameter name="Iteration Print Frequency" type="int" value="1"/>
           <Parameter name="Richardson Relaxation" type="double" value="1.0"/>
           <Parameter name="Neumann Relaxation" type="double" value="1.0"/>
-          <Parameter name="Absorption Probability" type="double" value="0.3"/>
+          <Parameter name="Absorption Probability" type="double" value="0.0"/>
           <Parameter name="Domain Filter Tolerance" type="double" value="0.0"/>
           <Parameter name="Domain Fill Value" type="int" value="5000"/>
           <Parameter name="Domain Weight Recovery" type="double" value="0.0"/>
-          <Parameter name="Estimator Type" type="string" value="Collision"/>
+          <Parameter name="Estimator Type" type="string" value="Expected Value"/>
         </ParameterList>
         <ParameterList name = "Richardson">
           <Parameter name="Iteration Print Frequency" type="int" value="100"/>

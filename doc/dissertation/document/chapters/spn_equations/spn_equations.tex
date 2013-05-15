@@ -1062,13 +1062,13 @@ Richardson linear solve in the first eigenvalue iteration.
 \end{figure}
 Poor converge is observed for the Richardson iteration, however,
 convergence is achieved meaning that the criteria needed to satisfy
-MCSA convergence has also been met. The effective slope of the
-convergence curve in Figure~\ref{fig:block_jacobi_res_richardson} will
-give an approximation for the spectral radius via
-Eq~(\ref{eq:linear_k_iter_norm3}). For the data in
-Figure~\ref{fig:block_jacobi_res_richardson}, $\rho(\mathbf{H})
-\approx 0.985$, nearing the limits of MCSA applicability and well
-beyond the spectral radii generated in the initial spectral analysis.
+MCSA convergence has also been met. The number of iterations required
+for the Richardson iteratio to converge will give an approximation for
+the spectral radius via Eq~(\ref{eq:linear_k_iter_norm3}). With 7291
+iterations require to converge to a tolerance of $\sn{1}{-6}$,
+$\rho(\mathbf{H}) \approx 0.998$, nearing the limits of MCSA
+applicability and well beyond the spectral radii generated in the
+initial spectral analysis.
 
 Based on these results, it then appears that even if the simple
 criteria of a spectral radius of less than one is met and the
@@ -1193,8 +1193,8 @@ zero.
 For each solver and estimator combination, the spectral radius of the
 iteration matrix was varied by changing the absorption cross section
 while fixing the grid size and scattering cross section. At each
-solve, a minimum of stochastic history per degree of freedom (DOF) in
-the problem was used to compute the Monte Carlo correction. If the
+solve, a minimum of one stochastic history per degree of freedom (DOF)
+in the problem was used to compute the Monte Carlo correction. If the
 solver could not converge in less than 100 iterations, the number of
 histories was increased by increments of 5,000 until convergence was
 achieved.
