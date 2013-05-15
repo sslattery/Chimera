@@ -32,8 +32,8 @@
   <Parameter name="MC Buffer Size" type="int" value="1000"/>
   <Parameter name="Iteration Print Frequency" type="int" value="1"/>
   <Parameter name="Reproducible MC Mode" type="bool" value="true"/>
-  <Parameter name="Overlap Size" type="int" value="15"/>
+  <Parameter name="Overlap Size" type="int" value="0"/>
   <Parameter name="Number of Sets" type="int" value="1"/>
   <Parameter name="Set Number of Histories" type="int" value="8000"/>
-  <Parameter name="Solver Package" type="string" value="Chimera"/>
+  <Parameter name="Solver Package" type="string" value="MCLS"/>
 </ParameterList>
