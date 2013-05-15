@@ -258,7 +258,7 @@ less than 1, we can expand $\vA^{-1}$ using the \latin{Neumann
   Series}:
 \begin{equation}
   \vA^{-1} = (\vI - \vH)^{-1} = \sum_{k=0}^{\infty} \vH^k\:.
-\end{equation} 
+\end{equation}
 Thus, when $\rho(\vH) < 1$, we can recast the solution vector $\vx$ as
 a series:
 \begin{equation}
@@ -456,7 +456,7 @@ The following scheme will then converge in one iteration:
   \begin{gather}
     \vx^{l+1} = (\vI - \vA)\vx^l + \vb\:,\\ \vA \delta \vx^{l+1} =
     \vr^{l+1}\;,
-    \label{eq:synthetic-residual-solve}\\ 
+    \label{eq:synthetic-residual-solve}\\
     \vx=\vx^{l+1}+\delta\vx^{l+1}\:.
   \end{gather}
 \end{subequations}
@@ -470,9 +470,9 @@ Synthetic-Acceleration (MCSA) method can be defined as follows:
   \begin{gather}
     \vx^{l+1/2} = (\vI - \vA)\vx^l + \vb\:,\\  \vr^{l+1/2} = \vb -
     \vA\vx^{l+1/2}\:,
-    \label{eq:MCSA-residual}\\     
+    \label{eq:MCSA-residual}\\
      \hat{\vA}\delta\vx^{l+1/2} = \vr^{l+1/2}\:,
-    \label{eq:MCSA-residual_solve}\\ 
+    \label{eq:MCSA-residual_solve}\\
      \vx^{l+1}=\vx^{l+1/2}+\delta\vx^{l+1/2}\:.
   \end{gather}
 \end{subequations}
@@ -487,7 +487,7 @@ error is then used to calculate an updated iterate of the solution vector,
 $\vx^{l+1}$.  The entire sequence is iterated to convergence based on the
 following stopping criterion~\cite{kelley_1995}:
 \begin{equation}
-  \|\vr\|_{\infty} < \epsilon\cdot\|\vb\|_\infty\:.
+  \|\vr\|_{2} < \epsilon\cdot\|\vb\|_2\:.
   \label{eq:stopping-criteria}
 \end{equation}
 
@@ -726,7 +726,7 @@ generated.
 \subsection{Equilibrium Diffusion Model}
 
 The general form of the equilibrium diffusion equation is \cite{morel_1996}
-\begin{equation} 
+\begin{equation}
   (\rho\Cv + 4aT^{3})\pder{T}{t} -
   \nabla\cdot{\Bigl(\frac{4acT^{3}}{3\ros}\Bigr)\grad{T}} = Q\:,
   \label{eq:eq-diff-T}
@@ -876,7 +876,7 @@ coefficient on the low-side face:
 \begin{equation}
   D_{l-1/2} = \frac{2\Delta_{l-1/2}}{3\sigma_l\Delta_l +
     3\sigma_{l-1}\Delta_{l-1}}\:.
-  \label{eq:D_l-1/2} 
+  \label{eq:D_l-1/2}
 \end{equation}
 
 Using Eqs.~(\ref{eq:F_l+1/2}), (\ref{eq:F_l-1/2}), (\ref{eq:D_l+1/2}),
@@ -1042,7 +1042,7 @@ several objectives:
 \end{itemize}
 The second item is quite important for Monte Carlo solutions of linear
 systems, and this type of scaling should be performed regardless of any
-additional preconditioner choices. 
+additional preconditioner choices.
 
 An advantage of MCSA is that the resulting system does not have to be SPD;
 thus, any suitable choice of $\ve{M}$ will suffice.  The preconditioned system
@@ -1083,7 +1083,7 @@ Eq.~(\ref{eq:preconditioned-diffusion}):
   \ve{M}^{-1}\ve{q}\:, \quad & (\text{fixed-point iteration})\\
   %%
   \vr^{l+1/2} = \ve{M}^{-1}\ve{q} - \ve{M}^{-1}\ve{D}\bphi^{l+1/2}\:,
-  \quad & (\text{compute residual})\\ 
+  \quad & (\text{compute residual})\\
   %%
   \ve{M}^{-1}\hat{\ve{D}}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:, \quad&
   (\text{estimate $\delta\phi$ using adjoint Monte Carlo method})\\
@@ -1155,13 +1155,13 @@ equations from each adjacent cell, here only noting the contribution from cell
 7:
 \begin{align*}
   \phi_1 &= \frac{\sigm_{7\rightarrow 1}}{\sigma_{T\,1}}
-  \frac{\Delta_7}{\Delta_1}\phi_7 + \ldots\:,\\ 
+  \frac{\Delta_7}{\Delta_1}\phi_7 + \ldots\:,\\
   %%
   \phi_2 &= \frac{\sigp_{7\rightarrow 2}}
   {\sigma_{T\,2}}\frac{\Delta_7}{\Delta_2}\phi_7 + \ldots\:,\\
   %%
   \phi_3 &= \frac{\sigm_{7\rightarrow 3}}{\sigma_{T\,3}}
-  \frac{\Delta_7}{\Delta_3}\phi_7 + \ldots\:,\\ 
+  \frac{\Delta_7}{\Delta_3}\phi_7 + \ldots\:,\\
   %%
   \phi_4 &= \frac{\sigp_{7\rightarrow 4}}{\sigma_{T\,4}}
   \frac{\Delta_7}{\Delta_4}\phi_7 + \ldots\:,\\
@@ -1170,8 +1170,8 @@ equations from each adjacent cell, here only noting the contribution from cell
   \frac{\Delta_7}{\Delta_5}\phi_7 + \ldots\:,\\
   %%
   \phi_6 &= \frac{\sigp_{7\rightarrow 6}}{\sigma_{T\,6}}
-  \frac{\Delta_7}{\Delta_6}\phi_7 + \ldots\:.\\ 
-\end{align*} 
+  \frac{\Delta_7}{\Delta_6}\phi_7 + \ldots\:.\\
+\end{align*}
 A quick view of these equations reveals that the only non-zero entries in
 column 7 of the iteration matrix are
 \begin{equation*}
@@ -1227,18 +1227,15 @@ Cells along the problem boundary can have fewer than six entries.
 \label{sec:results}
 
 Here we examine the effectiveness of the MCSA method and compare it to
-traditional deterministic solution methods.  The deterministic methods
-considered are preconditioned Conjugate Gradient (PCG) and
-preconditioned fixed-point (Richardson) iteration (PFIX).  The PCG
-method uses right-left preconditioning with $\ve{M}=\ve{L}\ve{L}^{T}$,
-where $\ve{L} = \ve{L}^{T} = \sqrt{\diag(\ve{D})}$.  Naturally, more
-powerful preconditioning methods could be used; however, this provides
-a fair comparison with the preconditioning used in the MCSA method.
-Different preconditioning strategies within MCSA will be the focus of
-a future paper.  The PFIX scheme is used to solve
-Eq.~(\ref{eq:preconditioned-diffusion}), which is identical to the
-system being solved with MCSA.  We examine each method on two 3D
-problems: a Marshak wave problem and a multi-material duct problem.
+traditional deterministic solution methods.  We implemented Krylov subspace
+methods to solve the radiation diffusion equation using the Trilinos solver
+library \cite{1089021}.  Conjugate Gradient (CG) is that standard method for
+symmetric positive-definite (SPD) systems like that defined in
+Eq.~(\ref{eq:discrete-diffusion}).  However, for completeness we include some
+comparisons using restarted GMRES($m$) so that asymmetric preconditioners can
+be tested. The stopping criterion in Eq.~(\ref{eq:stopping-criteria}) is used
+for all calculations. All methods are tested on two 3D problems: a
+uniform-medium Marshak wave problem and a multi-material duct problem.
 
 \subsection{Marshak Wave}
 
@@ -1264,11 +1261,11 @@ The problem is run to $100$~nanoseconds.
 
 Figure~\ref{fig:marshak_10} shows the analytic Marshak Wave solution compared
 to the MCSA solution.  As opposed to most Monte Carlo techniques, the MCSA
-method generates solutions that are numerically equivalent to the PCG and PFIX
-results.  Because the MCSA method converges the residual of the system, the
-numerical accuracy is determined by the stopping criterion shown in
-Eq.~(\ref{eq:stopping-criteria}).  Also, the MCSA method is not bound by the
-Central Limit Theorem so convergence is not restricted to
+method generates solutions that are numerically equivalent to the
+deterministic results.  Because the MCSA method converges the residual of the
+system, the numerical accuracy is determined by the stopping criterion shown
+in Eq.~(\ref{eq:stopping-criteria}).  Also, the MCSA method is not bound by
+the Central Limit Theorem so convergence is not restricted to
 $1/\sqrt{N}$~\cite{halton_1994,evans_2003}.
 \begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{marshak_10.pdf}}
@@ -1340,25 +1337,53 @@ particles are used.
 Having analyzed the variation of the MCSA algorithm efficiency with number of
 particles and weight cutoff, we now compare to traditional deterministic
 algorithms.  Table~\ref{tab:marshak_comparison} shows timing results for the
-Marshak problem using preconditioned CG (PCG), preconditioned Richardson
-iteration (PFIX), and MCSA. The results show that the MCSA method is the most
-efficient method, although the PCG results are nearly as fast.  More
-importantly, the MCSA method clearly accelerates Richardson iteration, as
-indicated by the fact that MCSA is 42\% faster than Richardson iteration
-alone.
+Marshak problem using CG with Jacobi and algebraic multigrid preconditioning
+and GMRES with incomplete LU (ILU) and ILU with threshold cutoff (ILUT).  The
+multigrid preconditioner is the smoothed aggregation algebraic multigrid
+method implemented in the Trilinos ML package \cite{Gee:2007uj}.  In all the
+problems that follow we use a $4/3$ damping factor in the aggregation and a
+symmetric Gauss-Seidel smoother with 2 sweeps per level.
+
+Analyzing Table~\ref{tab:marshak_comparison}, we see that the overall
+iterations are more than a factor of 2 less for the Krylov solvers compared to
+MCSA; however, the cost per iteration is signicantly more expensive.  For any
+given problem, the cost per iteration is roughly linear with particle count as
+illustrated in Fig.~\ref{fig:CPU_Np}.  Because this problem converges running
+only a maximum of 10 particles per iteration, 156,464 total particles over
+10,157 cycles resulting in an average of $\sim 1.6$ particles per iteration,
+the cost per iteration is exceptionally small.  Running more particles per
+iteration would reduce the number of iterations, but a greater cost per
+iteration.
 \begin{table}[ht!]
   \caption{Comparison of solution methods for the Marshak problem. All
     methods were run with a stopping criterion of $\sn{1}{-8}$.  The
-    MCSA method used $N_p=10$ and $W_c = \sn{1}{-4}$.  The CPU time is
-    measured relative to the MCSA method, which required 72.6 s on a
-    3.6~GHz Xeon.}
+    MCSA method used $N_p=10$ and $W_c = \sn{1}{-4}$.   Runtimes are relative
+    to the MCSA performance that required 57.72 seconds on
+    an 2.2 MHz AMD Opteron.}
   \label{tab:marshak_comparison}
   \begin{center}
-    \begin{tabular}{lrr}\hline\hline
-      \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Max Iterations}
-      & \multicolumn{1}{c}{Relative CPU Time}\\\hline\hline  PCG &
-      11 & 1.11 \\  PFIX & 11 & 1.42 \\  MCSA & 11 & 1.0
+    \small
+    \begin{tabular}{llrrrr}\hline\hline
+      \multicolumn{1}{c}{Method} &
+      \multicolumn{1}{c}{Preconditioner} &
+      \multicolumn{1}{c}{Total} &
+      \multicolumn{1}{c}{Average} &
+      \multicolumn{1}{c}{Relative Time} &
+      \multicolumn{1}{c}{Relative}\\
+      & & \multicolumn{1}{c}{Iterations} &
+      \multicolumn{1}{c}{Iterations} &
+      \multicolumn{1}{c}{per Iteration} &
+      \multicolumn{1}{c}{Runtime} \\\hline\hline
+      %%
+      CG & Jacobi & 46,746 & 4.60 & 25.91 & 3.29 \\
+      CG & ML & 12,150 & 1.20 & 74.72 & 2.69 \\
+      GMRES & ILU & 40,294 & 3.97 & 103.02 & 9.19 \\
+      GMRES & ILUT$^{\dagger}$ & 40,447 & 3.98 & 101.31 & 9.09 \\
+      MCSA & Jacobi & 98,863 & 9.73 & 1.0 & 1.0
+      %%
       \\ \hline\hline
+      \multicolumn{6}{l}{
+        $^{\dagger}$ The threshold cutoff was set to 0.01, and the fill was 1.}
     \end{tabular}
   \end{center}
 \end{table}
@@ -1421,21 +1446,41 @@ of $\sn{1}{-8}$.
 \end{figure}
 
 Table~\ref{tab:multimat_comparison} shows the timing results for the
-multi-material problem using PCG, PFIX, and MCSA.  The results correspond
-roughly with the results from the Marshak problem.  The MCSA is marginally
-faster than PCG and 43\% faster than PFIX.
+multi-material problem using CG with Jacobi and ML preconditioning versus MCSA
+run out to a time of 100~ns.  The MCSA method was set to use 1000 particles
+per iteration resulting in 74,237,525 total particles over 10,157 cycles or
+823.68 particles per iteration.  Because more particles are required to get a
+reasonable estimate of the Neumann series, the relative efficiency per
+iteration of MCSA versus CG is significanly reduced compared to the smaller
+Marshak wave problem.  Nonetheless, MCSA is still marginally more efficient
+than CG with Jacobi preconditioning and significantly more efficient than CG
+with algegraic multigrid.
 \begin{table}[htbp!]
   \caption{ Comparison of solution methods for the multi-material
     problem. All methods were run with a stopping criterion of
     $\sn{1}{-8}$.  The MCSA method used $N_p=1000$ and $W_c =
     \sn{1}{-3}$.  The problem was run to an elapsed time of 100~ns.
-    The MCSA method required 3.4 hours on a 3.6~GHz Xeon.}
+    Runtimes are relative to the MCSA performance that required 9,862.4
+    seconds on a 2.2 MHz AMD Opteron.}
   \label{tab:multimat_comparison}
   \begin{center}
-    \begin{tabular}{lrr}\hline\hline
-      \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Max Iterations}
-      & \multicolumn{1}{c}{Relative CPU Time}\\\hline\hline  PCG &
-      18 & 1.03 \\  PFIX & 38 & 1.43 \\  MCSA & 20 & 1.0
+    \small
+    \begin{tabular}{llrrrr}\hline\hline
+      \multicolumn{1}{c}{Method} &
+      \multicolumn{1}{c}{Preconditioner} &
+      \multicolumn{1}{c}{Total} &
+      \multicolumn{1}{c}{Average} &
+      \multicolumn{1}{c}{Relative Time} &
+      \multicolumn{1}{c}{Relative}\\
+      & & \multicolumn{1}{c}{Iterations} &
+      \multicolumn{1}{c}{Iterations} &
+      \multicolumn{1}{c}{per Iteration} &
+      \multicolumn{1}{c}{Runtime} \\\hline\hline
+      %%
+      CG & Jacobi & 42,881 & 4.22 & 2.93 & 1.02 \\
+      CG & ML & 14,097 & 1.39 & 26.60 & 1.94 \\
+      MCSA & Jacobi & 90,129 & 8.87 & 1.0 & 1.0
+      %%
       \\ \hline\hline
     \end{tabular}
   \end{center}
@@ -1489,7 +1534,7 @@ Contract No. DEAC05-00OR22725.
 %%---------------------------------------------------------------------------%%
 %% References with bibTeX database:
 
-\bibliographystyle{elsarticle-num} 
+\bibliographystyle{elsarticle-num}
 \bibliography{references}
 
 %% Authors are advised to submit their bibtex database files. They are
