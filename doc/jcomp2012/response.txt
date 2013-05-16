@@ -55,4 +55,5 @@ Dear Editor,
      no additional parameterization studies should be required.  We do
      appreciate that different solvers can behave differently based on
      time-step size, we feel that for this model equation, we are capturing
-     the comparison between each method fairly.
+     the comparison between each method fairly.  We added text to
+     indicate the timestep control used in each problem.
