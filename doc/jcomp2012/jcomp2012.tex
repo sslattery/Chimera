@@ -164,9 +164,9 @@
     more complex multiple material problem. Our results show that our Monte
     Carlo method is an effective solver for sparse matrix systems. For
     solutions converged to the same tolerance, it performs competitively with
-    deterministic methods including preconditioned conjugate gradient. We also
-    discuss various aspects of preconditioning the method and its general
-    applicability to broader classes of problems.
+    deterministic methods including preconditioned conjugate gradient and
+    GMRES. We also discuss various aspects of preconditioning the method and
+    its general applicability to broader classes of problems.
 
   \end{abstract}
 
@@ -225,7 +225,7 @@ work, our previous investigations are extended in the following manner:
 While parallel scaling and resiliency on Petascale systems and beyond provides
 strong motivation for pursuing this work, we do not directly address these
 issues in this study.  These topics will be the subject of future
-investigations. 
+investigations.
 
 In \S~\ref{sec:monte-carlo-matrix} we review Monte Carlo methods for solving
 matrix systems, and we discuss our new synthetic-acceleration scheme and
@@ -680,17 +680,17 @@ yielded little qualitative difference between the discretizations. Both MCSA
 and Halton's method are used with the adjoint Monte Carlo solver. In order to
 complete the same study as in the previous section, the number of histories
 computed by the Monte Carlo solver at each iteration had to be doubled to $2
-\times N \times N$ in order to ensure convergence in sequential Monte Carlo
-Method. Figure~\ref{fig:seq_cpu_time} gives the CPU time results for this
-comparison as a function of problem size while Figure~\ref{fig:seq_iterations}
-gives the number of iterations to converge as a function of problem size. In
-both cases, using the Monte Carlo solver as a synthetic acceleration rather
-than in a sequential Monte Carlo scheme resulted in a reduction in both CPU
-time and iterations required to converge. The additional Richardson iteration
-between each Monte Carlo solve in the MCSA method gives a better converged
-residual source to use with the Monte Carlo calculation while the sequential
-method requires more iterations to achieve the same level of convergence in
-the residual.
+\times N \times N$ in order to ensure convergence when using the sequential
+Monte Carlo Method. Figure~\ref{fig:seq_cpu_time} gives the CPU time results
+for this comparison as a function of problem size while
+Figure~\ref{fig:seq_iterations} gives the number of iterations to converge as
+a function of problem size. In both cases, using the Monte Carlo solver as a
+synthetic acceleration rather than in a sequential Monte Carlo scheme resulted
+in a reduction in both CPU time and iterations required to converge. The
+additional Richardson iteration between each Monte Carlo solve in the MCSA
+method gives a better converged residual source to use with the Monte Carlo
+calculation while the sequential method requires more iterations to achieve
+the same level of convergence in the residual.
 
 \begin{figure}[ht!]
   \centering
@@ -719,13 +719,13 @@ infinity norm of the residual computed at each iteration for both methods was
 collected at each iteration for a fixed problem sizes of $N=100$ and $N=500$
 as shown in figures Figure~\ref{fig:seq_100} and \ref{fig:seq_500}
 respectively. In both cases, the sequential method is characterized by a slow
-approach to the asymptotic rate of convergence.  Conversely, the MCSA method
-reaches its asymptotic convergence rate more quickly and is faster than
-Halton's method. Even with the doubling of the number of stochastic histories
-computed per time step in order to ensure convergence for the sequential
-method, we still see robustness issues with a non-monotonically decreasing
-residual observed for the $N=100$ case. In both cases the MCSA solver is
-observed to be robust with a monotonically decreasing residual.
+approach to the asymptotic rate of convergence.  Conversely, MCSA reaches its
+asymptotic convergence rate more quickly and exhibits a faster final rate of
+convergence than Halton's method. Even with the doubling of the number of
+stochastic histories computed per time step in order to ensure convergence for
+the sequential method, we still see robustness issues with a non-monotonically
+decreasing residual observed for the $N=100$ case. In both cases the MCSA
+solver is observed to be robust with a monotonically decreasing residual.
 
 \begin{figure}[ht!]
   \centering
@@ -897,10 +897,11 @@ equivalent:
     \frac{1}{3\sigma_{l}}\frac{\phi_{l+1/2} - \phi_{l}}{\Delta_l}\:,
   \end{aligned}
 \end{equation}
-where we have dropped the subscript $\mathrm{R}$ from $\sigma$ for clarity.
-Solving this system for $\phi_{l+1/2}$ and applying to either $F_{l+1/2}^{+}$
-or $F_{l+1/2}^{-}$ and setting the resulting expression equal to
-Eq.~(\ref{eq:F_l+1/2}), one finds the face-centered diffusion coefficient,
+where we have dropped the subscript $\mathrm{R}$ from $\sigma$ for clarity and
+the $\pm$ superscripts indicate positive and negative directions across the
+face.  Solving this system for $\phi_{l+1/2}$ and applying to either
+$F_{l+1/2}^{+}$ or $F_{l+1/2}^{-}$ and setting the resulting expression equal
+to Eq.~(\ref{eq:F_l+1/2}), one finds the face-centered diffusion coefficient,
 \begin{equation}
   D_{l+1/2} = \frac{2\Delta_{l+1/2}}{3\sigma_l\Delta_l +
     3\sigma_{l+1}\Delta_{l+1}}\:.
@@ -1150,13 +1151,13 @@ $\bphi^{l+1/2}$ via a single fixed-point iteration as follows:
     + \frac{\qn_{ijk}}{\sigT}\:.
   \end{aligned}
 \end{equation}
-This result is used to compute the residual of the system.  The residual then
+This result is used to compute the residual of the system that, in turn,
 becomes the source for the Monte Carlo simulation.
 
 The adjoint Monte Carlo method described in \S~\ref{sec:adjoint-method} is
 used to estimate
 \begin{equation}
-  \ve{M}^{-1}\hat{\ve{D}}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:.
+  \hat{\ve{T}}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:.
 \end{equation}
 As noted above, the residual acts as the source for this simulation, and the
 operator $\ve{T}$ is implicitly defined in
@@ -1264,7 +1265,7 @@ Cells along the problem boundary can have fewer than six entries.
 Here we examine the effectiveness of the MCSA method and compare it to
 traditional deterministic solution methods.  We implemented Krylov subspace
 methods to solve the radiation diffusion equation using the Trilinos solver
-library \cite{1089021}.  Conjugate Gradient (CG) is that standard method for
+library \cite{1089021}.  Conjugate Gradient (CG) is the standard method for
 symmetric positive-definite (SPD) systems like that defined in
 Eq.~(\ref{eq:discrete-diffusion}).  However, for completeness we include some
 comparisons using restarted GMRES($m$) so that asymmetric preconditioners can
@@ -1372,11 +1373,13 @@ Having analyzed the variation of the MCSA algorithm efficiency with number of
 particles and weight cutoff, we now compare to traditional deterministic
 algorithms.  Table~\ref{tab:marshak_comparison} shows timing results for the
 Marshak problem using CG with Jacobi and algebraic multigrid preconditioning
-and GMRES with incomplete LU (ILU) and ILU with threshold cutoff (ILUT).  The
-multigrid preconditioner is the smoothed aggregation algebraic multigrid
-method implemented in the Trilinos ML package \cite{Gee:2007uj}.  In all the
-problems that follow we use a $4/3$ damping factor in the aggregation and a
-symmetric Gauss-Seidel smoother with 2 sweeps per level.
+and GMRES with incomplete LU (ILU) and ILU with threshold cutoff (ILUT). The
+Krylov methods and preconditioners are implemented throught the Trilinos
+AztecOO package.  The multigrid preconditioner is the smoothed aggregation
+algebraic multigrid method implemented in the Trilinos ML package
+\cite{Gee:2007uj}.  In all the problems that follow we use a $4/3$ damping
+factor in the aggregation and a symmetric Gauss-Seidel smoother with 2 sweeps
+per level, which are the defaults for the ML smoothed aggregation option.
 
 Analyzing Table~\ref{tab:marshak_comparison}, we see that the overall
 iterations are more than a factor of 2 less for the Krylov solvers compared to
@@ -1386,7 +1389,7 @@ illustrated in Fig.~\ref{fig:CPU_Np}.  Because this problem converges running
 only a maximum of 10 particles per iteration, 156,464 total particles over
 10,157 cycles resulting in an average of $\sim 1.6$ particles per iteration,
 the cost per iteration is exceptionally small.  Running more particles per
-iteration would reduce the number of iterations, but a greater cost per
+iteration would reduce the number of iterations, but at a greater cost per
 iteration.
 \begin{table}[ht!]
   \caption{Comparison of solution methods for the Marshak problem. All
@@ -1531,8 +1534,7 @@ We have presented a new Monte Carlo solution method for solving the discrete,
 time-dependent radiation diffusion equation in three dimensions.  The MCSA
 method has been shown to match results using standard solution techniques to
 arbitrary precision. Also, the new method has been to shown to be faster than
-preconditioned CG and Richardson iteration for the model problems presented
-here.
+preconditioned CG and GMRES for the model problems presented here.
 
 While we have demonstrated marginal improvements over standard solution
 schemes in this study, significant improvements could be realized in fully
@@ -1545,12 +1547,21 @@ levels.  A smart transport algorithm could be developed that more efficiently
 solves the residual on these types of meshes.  These topics will be the focus
 of future study.
 
+Finally, exascale hardware will require resiliency to both hard and soft
+errors.  Stochastic solver approaches present a natural framework for both
+soft and hard errors.  In the former case, soft errors can be presented as
+high variance events.  For hard errors, histories from failed nodes can be
+safely discarded in the final calculation. The MCSA method provides a starting
+framework towards analyzing both of these failure conditions.
+
 %%---------------------------------------------------------------------------%%
 \section*{Acknowledgements}
 
 Work for this paper was supported by Oak Ridge National Laboratory, which is
-managed and operated by UT-Batelle, LLC, for the U.S. Department of Energy under
-Contract No. DEAC05-00OR22725.
+managed and operated by UT-Batelle, LLC, for the U.S. Department of Energy
+under Contract No. DEAC05-00OR22725.  The early part of this work was
+performed at Los Alamos National Laboratory under U.S. Government contract
+W-7405-ENG-36.
 
 %%---------------------------------------------------------------------------%%
 %% The Appendices part is started with the command \appendix;

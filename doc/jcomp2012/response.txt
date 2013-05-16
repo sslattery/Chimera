@@ -1,0 +1,47 @@
+Dear Editor,
+
+     Thank you for the thorough reviews to our paper.  We hope that we have
+     successfully responded to each reviewer.  Our responses follow below:
+
+     Response to reviewer 2.
+
+     We have added an acknowledgement indicating that the early part of the
+     work was performed at LANL.  We have added Section 2.4 that does detailed
+     comparisons between sequential Monte Carlo and MCSA.  Furthermore, we
+     have added text in the discussion that highlights the differences between
+     the methods.
+
+     This reviewer made a number of key editorial observations.  We have
+     adapted the text for each of them.  Some key points:
+
+     - we added a reference to synthetic acceleration
+     - we defined the terms in Eq. 6 and added some text for clarity
+     - we didn't add "adjoint" to the abstract because we feel it would be
+       confusing to the traditional Monte Carlo transport community.  We feel
+       the discussion in the text clarifies the differences sufficiently. We
+       also clarified the discussion involving the Kronecker delta in Eq. 13.
+     - we chose Np and Wc for the multimaterial problem using numerical
+       experiments; we added text indicating this.
+
+     Response to reviewer 3.
+
+     This reviewer correctly observed that the solvers that we compared MCSA
+     to in our original manuscript and the way the information was presented
+     was deficient.  We have expanded the results section to include GMRES and
+     CG results with a family of state-of-the-art preconditioners.  We also
+     updated the tables to include average and total iterations along with
+     other useful quantities that makes the comparisons more meaningful.
+     Additional text has been added to the results section to clarify the
+     comparisons.
+
+     We added a sentence clarifying the use of +|- in Eq 51.
+
+     We added a paragraph providing more motivation to the introduction.
+
+     We presented Figure 11 showing the spectral radius as a function of
+     problem time in order to address the issue of variable time-step size
+     versus solver performance.  Because all solvers use the same time-steps,
+     no additional parameterization studies should be required.  We do
+     appreciate that different solvers can behave differently based on
+     time-step size, we feel that for this model equation, we are capturing
+     the comparison between each method fairly.
