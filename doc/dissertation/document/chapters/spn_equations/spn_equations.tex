@@ -911,10 +911,12 @@ a criticality calculation. A cross section along the vertical axis
 showing homogenized fuel pin materials and the associated grid is
 given by Figure~\ref{fig:problem3_radial_mat} while a cross section of
 the materials configuration along the horizontal axis is given by
-Figure~\ref{fig:problem3_axial_mat}. On the top and bottom of the
-assembly, vacuum conditions are used as well as on the top and right
-boundaries in Figure~\ref{fig:problem3_radial_mat}. Reflecting
-conditions are used on the left and bottom boundaries of
+Figure~\ref{fig:problem3_axial_mat}. A detailed view of the assembly
+bottom is given in Figure~\ref{fig:problem3_end}. On the top and
+bottom of the assembly, vacuum conditions are used as well as on the
+top and right boundaries in
+Figure~\ref{fig:problem3_radial_mat}. Reflecting conditions are used
+on the left and bottom boundaries of
 Figure~\ref{fig:problem3_radial_mat}, effectively giving a
 representation of one quarter of the assembly.
 \begin{figure}[t!]
@@ -931,14 +933,26 @@ representation of one quarter of the assembly.
 \end{figure}
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6.25in]{chapters/spn_equations/problem3_axial_mat.png}
+    \includegraphics[width=6.0in]{chapters/spn_equations/problem3_axial_mat.png}
   \end{center}
   \caption{\textbf{Fuel assembly geometry cross section.}  \textit{The
       geometry is subdivided along the axial direction into 50 zones
       spaced to capture material boundaries. Important details include
       spacer grids along the length of the fuel pins and reactor core
-      structures on the top and bottom of the assembly.}}
+      structures on the top and bottom of the assembly. Lighter purple
+      material in the center of the assembly is moderator and darker
+      purple material fuel.}}
   \label{fig:problem3_axial_mat}
+\end{figure}
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6.0in]{chapters/spn_equations/problem3_end.png}
+  \end{center}
+  \caption{\textbf{Fuel assembly geometry end detail.}
+    \textit{Reactor core structure including spacer grids and plenum
+      has been included. Lighter purple material on the right of the
+      figure is moderator and darker purple material fuel.}}
+  \label{fig:problem3_end}
 \end{figure}
 Significant geometric details are contained in the model including
 spacer grids, fuel pins with homogenized cladding and gas gap, core
@@ -1043,12 +1057,15 @@ every iteration for the adjoint Neumann-Ulam solve.
 Convergence was not achieved as noted by the rapid rise in the
 residual over a few iterations. Based on the spectral radius
 computations performed, these results are not in line with
-expectations for this problem. Even if the problem may be
-ill-conditioned, we do expect convergence of MCSA. To investigate
-further, a block Jacobi preconditioned Richardson iteration was used
-to solve the same problem. Figure~\ref{fig:block_jacobi_res_richardson}
-gives the residual infinity norm as a function of iteration for the
-Richardson linear solve in the first eigenvalue iteration.
+expectations for this problem. Additional computations performed with
+\sn{1}{6} histories per iteration exhibited the same divergent
+behavior at a significant computational cost and compute time. Even if
+the problem may be ill-conditioned, we do expect convergence of
+MCSA. To investigate further, a block Jacobi preconditioned Richardson
+iteration was used to solve the same
+problem. Figure~\ref{fig:block_jacobi_res_richardson} gives the
+residual infinity norm as a function of iteration for the Richardson
+linear solve in the first eigenvalue iteration.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=5in]{chapters/spn_equations/block_jacobi_rich_res.pdf}
@@ -1061,14 +1078,14 @@ Richardson linear solve in the first eigenvalue iteration.
   \label{fig:block_jacobi_res_richardson}
 \end{figure}
 Poor converge is observed for the Richardson iteration, however,
-convergence is achieved meaning that the criteria needed to satisfy
-MCSA convergence has also been met. The number of iterations required
-for the Richardson iteratio to converge will give an approximation for
-the spectral radius via Eq~(\ref{eq:linear_k_iter_norm3}). With 7291
-iterations require to converge to a tolerance of $\sn{1}{-6}$,
-$\rho(\mathbf{H}) \approx 0.998$, nearing the limits of MCSA
-applicability and well beyond the spectral radii generated in the
-initial spectral analysis.
+convergence is achieved meaning that the preliminary criteria needed
+to satisfy MCSA convergence has also been met. The number of
+iterations required for the Richardson iteration to converge will give
+an approximation for the spectral radius via
+Eq~(\ref{eq:linear_k_iter_norm3}). With 7291 iterations required to
+converge to a tolerance of $\sn{1}{-6}$, $\rho(\mathbf{H}) \approx
+0.998$, nearing the limits of MCSA applicability and well beyond the
+spectral radii generated in the initial spectral analysis.
 
 Based on these results, it then appears that even if the simple
 criteria of a spectral radius of less than one is met and the
@@ -1197,7 +1214,8 @@ solve, a minimum of one stochastic history per degree of freedom (DOF)
 in the problem was used to compute the Monte Carlo correction. If the
 solver could not converge in less than 100 iterations, the number of
 histories was increased by increments of 5,000 until convergence was
-achieved.
+achieved in less than 100 iterations. The number of iterations
+required to converge and the time to converge was recorded.
 
 %%---------------------------------------------------------------------------%%
 \section{Advanced Preconditioning Strategies}
