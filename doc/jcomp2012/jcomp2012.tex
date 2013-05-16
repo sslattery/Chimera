@@ -145,6 +145,8 @@
 
   \author[wisc]{Stuart R. Slattery\fnref{fn2}} \ead{sslattery@wisc.edu}
 
+  \author[ornl]{Steven P. Hamilton\fnref{fn1}} \ead{hamiltonsp@ornl.gov}
+
   \fntext[fn1]{Radiation Transport Group, Reactor and Nuclear Systems
     Division} \fntext[fn2]{Department of Engineering Physics, College of
     Engineering}
@@ -180,6 +182,23 @@
 \section{Introduction}
 \label{sec:introduction}
 
+In nearly all computational engineering and physics fields, linear and
+non-linear solvers form the core components of modeling and simulation
+applications. Recent focus on multiphysics coupling adds additional complexity
+to common linear and non-linear systems as solution strategies change when
+physical models are coupled. Furthermore, a desire for predictive simulations
+to enhance the safety and performance of engineered systems creates a need for
+extremely high fidelity computations to be performed for these coupled systems
+as a means to capture effects not modeled by coarser methods. In order to
+achieve this high fidelity, state-of-the-art computing facilities must be
+leveraged in a way that is both efficient and considerate of hardware-related
+issues. As scientific computing moves towards exascale facilities, with
+machines of $O(1,000,000)$ cores already coming online, new algorithms to
+solve these complex problems must be developed to leverage this new
+hardware. Issues such as resiliency to node failures and scaling to large
+numbers of heterogeneous computing elements (CPUs and GPUs) will be pertinent
+to robust algorithms aimed at this new hardware.
+
 In previous work~\cite{evans_2003}, we developed a residual Monte Carlo method
 that was an application of Halton's sequential Monte Carlo
 method~\cite{halton_1962,halton_1994} to the one-dimensional (1D) equilibrium
@@ -203,6 +222,10 @@ work, our previous investigations are extended in the following manner:
 \item we compare numerical and performance results of the Monte Carlo
   method against traditional deterministic solution methods.
 \end{itemize}
+While parallel scaling and resiliency on Petascale systems and beyond provides
+strong motivation for pursuing this work, we do not directly address these
+issues in this study.  These topics will be the subject of future
+investigations. 
 
 In \S~\ref{sec:monte-carlo-matrix} we review Monte Carlo methods for solving
 matrix systems, and we discuss our new synthetic-acceleration scheme and
@@ -268,8 +291,8 @@ a series:
     \label{eq:neumann_series}
   \end{split}
 \end{equation}
-With this knowledge in hand, we can write an iterative method that
-solves Eq.~(\ref{eq:Ax=b}) (Richardson's Iteration):
+Using this series, we can write an iterative method that solves
+Eq.~(\ref{eq:Ax=b}) (Richardson's Iteration):
 \begin{equation}
   \vx^{k+1} = \vH\vx^k + \vb\:.
   \label{eq:richardson}
@@ -296,10 +319,11 @@ component of $\vx$:
   \end{split}
   \label{eq:neumann_series_i}
 \end{equation}
-The terms in the Neumann series can be interpreted as a series of
-transitions from $i_{m-1}\rightarrow i_m$ that can be simulated by a
-random walk.  Let $X$ be a random variable sampled from a random walk
-with $k$ events that initiates in state $i$:
+Here, $m$ is the random walk step index and the $h$ terms are the matrix
+elements of $\vH$.  The terms in the Neumann series can be interpreted as a
+series of transitions from $i_{m-1}\rightarrow i_m$ that can be simulated by a
+random walk.  Let $X$ be a random variable sampled from a random walk with $k$
+events that initiates in state $i$:
 \begin{equation}
   \begin{split}
     X(i_0 = i) &= \sum_{m=0}^{k}W_m b_{i_m}\\ &=
@@ -381,12 +405,12 @@ reverse order.  Correspondingly, the estimator for this method is
 \end{equation}
 Here, $\hat{b}_{i_0}$ is the sampled source and initial weight in state $i_0$.
 The Kronecker delta implies that tallies are only made in the state where the
-random walk currently resides.  This is the common approach in standard Monte
-Carlo transport simulations. Thus, unlike the direct method, we are no longer
-required to start a history in each state for each random walk permutation
-because tallies are made in the state in which the random walk currently
-resides. Instead, sampling the source is sufficient, and one random walk per
-permutation is required.
+random walk currently resides.  Thus, the adjoint method is equivalent to the
+common approach in standard Monte Carlo transport simulations. As opposed to
+the direct method, the adjoint method does not require starting a history in
+each state for each random walk permutation because tallies are made in the
+state in which the random walk currently resides. Instead, sampling the source
+is sufficient, and one random walk per permutation is required.
 
 Similar to the direct method, the adjoint method random walk process
 requires a terminating condition.  In all of the work that follows we
@@ -428,8 +452,8 @@ and the residual is iterated to convergence.  This iteration sequence is
 closely related to iterative refinement, the exception being that there is no
 update to $x^{l+1}$ between residual iterations.
 
-We propose a modification of this scheme that uses Monte Carlo as a
-synthetic acceleration for the fixed-point iteration given by
+We propose a modification of this scheme that uses Monte Carlo as a synthetic
+acceleration \cite{dsa} for the fixed-point iteration given by
 Eq.~(\ref{eq:richardson}). We begin by subtracting Eq.~(\ref{eq:richardson})
 from Eq.~(\ref{eq:point_iteration}):
 \begin{equation}
@@ -460,11 +484,11 @@ The following scheme will then converge in one iteration:
     \vx=\vx^{l+1}+\delta\vx^{l+1}\:.
   \end{gather}
 \end{subequations}
-To accelerate the fixed-point method and avoid inverting $\vA$ directly in
-Eq.~(\ref{eq:synthetic-residual-solve}), we can instead use the above ideas to
-create a new iterative scheme that applies the Monte Carlo method to estimate
-the solution error. With this in hand, the Fixed-Point Monte Carlo
-Synthetic-Acceleration (MCSA) method can be defined as follows:
+These steps can be written as an accelerated iteration scheme that applies the
+Monte Carlo method to estimate the error in each iteration. The Monte Carlo
+method is used to approximately invert $\vA$ in
+Eq.~(\ref{eq:synthetic-residual-solve}). This updated scheme, the Monte Carlo
+Synthetic-Acceleration (MCSA) method, can be defined as follows:
 \begin{subequations}
   \label{eq:MCSA-iteration}
   \begin{gather}
@@ -957,7 +981,7 @@ less than 1.
 
 Before completing the derivation of discrete equations required to solve
 Eq.~(\ref{eq:discrete-diffusion}), we must specify boundary conditions.  For
-this work, the Marshak Boundary condition suffices:
+this work, the Marshak boundary condition suffices:
 \begin{equation}
   f_b^\pm = \frac{1}{4}\phi -
   \frac{1}{2}\ve{F}\cdot\hat{\ve{n}}\:,\quad \vr\in \partial\Gamma\:,
@@ -1135,7 +1159,7 @@ used to estimate
   \ve{M}^{-1}\hat{\ve{D}}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:.
 \end{equation}
 As noted above, the residual acts as the source for this simulation, and the
-operator $\ve{M}^{-1}\hat{\ve{D}}$ is implicitly defined in
+operator $\ve{T}$ is implicitly defined in
 Eq.~(\ref{eq:preconditioned-discrete-diffusion}).  There are two Monte Carlo
 interpretations that can be applied to this system.  The first follows the
 mathematical presentation given in \S~\ref{sec:monte-carlo-matrix}.  Namely,
@@ -1206,10 +1230,9 @@ column 7 of the iteration matrix are
         6}}{\sigma_{T\,6}}\frac{\Delta_7}{\Delta_6}
   \end{pmatrix}\:,
 \end{equation*}
-where, following Eq.~(\ref{eq:point_iteration}), $\ve{H} = (\vI -
-\ve{M}^{-1}\ve{D})$ is the iteration matrix.  Now, using
-Eq.~(\ref{eq:adjoint-probability}), we define the scattering probabilities for
-cell 7 as
+where, following Eq.~(\ref{eq:point_iteration}), $\ve{H} = (\vI - \ve{T})$ is
+the iteration matrix.  Now, using Eq.~(\ref{eq:adjoint-probability}), we
+define the scattering probabilities for cell 7 as
 \begin{equation*}
   P_{7\rightarrow n} = p_{7,n} = \frac{|h_{n,7}|}{|h_{1,7} + h_{2,7} +
     h_{3,7} + h_{4,7} + h_{5,7} + h_{6,7}|}\:,\quad n\in
@@ -1282,9 +1305,8 @@ $1/\sqrt{N}$~\cite{halton_1994,evans_2003}.
 \begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{marshak_10.pdf}}
   \caption{ Solution of the Marshak wave problem at $t=100$~ns.  The analytic
-    solution is compared to the MCSA solution.  The MCSA, PCG, and PFIXED
-    methods are all converged to the same tolerance and therefore give
-    numerically equivalent answers.}
+    solution is compared to the MCSA solution.  All methods are converged to
+    the same tolerance and therefore give numerically equivalent answers.}
   \label{fig:marshak_10}
 \end{figure}
 
@@ -1427,10 +1449,9 @@ full set of problem conditions is as follows:
 \end{center}
 
 A 2D plot of the temperature at 1000~ns elapsed time is illustrated in
-Figure~\ref{fig:multi-mat_T}.  The time evolution of the temperature is shown at
-four edit points in Figure~\ref{fig:edit-points}.  All three methods, PCG, PFIX,
-and MCSA, give numerically identical answers when using a stopping criterion
-of $\sn{1}{-8}$.
+Figure~\ref{fig:multi-mat_T}.  The time evolution of the temperature is shown
+at four edit points in Figure~\ref{fig:edit-points}.  All three methods give
+numerically identical answers when using a stopping criterion of $\sn{1}{-8}$.
 \begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{mesh.pdf}}
   \caption{Multi-material problem mesh.  The duct region is blue.  The wall is
@@ -1460,13 +1481,14 @@ of $\sn{1}{-8}$.
 Table~\ref{tab:multimat_comparison} shows the timing results for the
 multi-material problem using CG with Jacobi and ML preconditioning versus MCSA
 run out to a time of 100~ns.  The MCSA method was set to use 1000 particles
-per iteration resulting in 74,237,525 total particles over 10,157 cycles or
-823.68 particles per iteration.  Because more particles are required to get a
-reasonable estimate of the Neumann series, the relative efficiency per
-iteration of MCSA versus CG is significanly reduced compared to the smaller
-Marshak wave problem.  Nonetheless, MCSA is still marginally more efficient
-than CG with Jacobi preconditioning and significantly more efficient than CG
-with algegraic multigrid.
+based on numerical experiments similar to those applied for the Marshak
+problem.  A value of 1000 particles per iteration yields 74,237,525 total
+particles over 10,157 cycles or 823.68 particles per iteration.  Because more
+particles are required to get a reasonable estimate of the Neumann series, the
+relative efficiency per iteration of MCSA versus CG is significanly reduced
+compared to the smaller Marshak wave problem.  Nonetheless, MCSA is still
+marginally more efficient than CG with Jacobi preconditioning and
+significantly more efficient than CG with algegraic multigrid.
 \begin{table}[htbp!]
   \caption{ Comparison of solution methods for the multi-material
     problem. All methods were run with a stopping criterion of
@@ -1497,6 +1519,9 @@ with algegraic multigrid.
     \end{tabular}
   \end{center}
 \end{table}
+More work is required to investigate automatic techiniques for optimizing
+particle count versus number of iterations with regards to both efficiency and
+convergence.  This will be the topic of a future paper.
 
 %%---------------------------------------------------------------------------%%
 \section{Conclusions}
@@ -1514,7 +1539,7 @@ schemes in this study, significant improvements could be realized in fully
 nonlinear-consistent solutions.  In these cases, the MCSA method competes with
 GMRES, which is more costly in memory and time than CG.  Another area where
 the MCSA scheme may have advantages over traditional solution methods is on
-dentritic, or adaptive, meshes.  These meshes yield matrices with poor
+dendritic, or adaptive, meshes.  These meshes yield matrices with poor
 condition numbers because of the changing cell volumes at different refinement
 levels.  A smart transport algorithm could be developed that more efficiently
 solves the residual on these types of meshes.  These topics will be the focus
