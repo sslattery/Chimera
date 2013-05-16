@@ -1,7 +1,18 @@
 Dear Editor,
 
-     Thank you for the thorough reviews to our paper.  We hope that we have
-     successfully responded to each reviewer.  Our responses follow below:
+     Thank you for the thorough reviews to our paper.  Both reviewers did a
+     very thorough job, and in general, we have no objections to any of their
+     specific comments.  We believe we have updated the paper to reflect that
+     main issues presented by the reviewers.  Other than editorial additions,
+     the main items added were:
+
+     - a new section directly comparing sequential MC with MCSA
+     - we implemented GMRES and Multigrid preconditioned CG along with ILU and
+       ILUT preconditioning and compared these to MCSA for the model problem
+
+     We feel that these improvements address each reviewers primary critique.
+     We have endeavered to address each of the specific comments by the
+     reviewers, these are addressed individually below:
 
      Response to reviewer 2.
 
@@ -28,11 +39,11 @@ Dear Editor,
      This reviewer correctly observed that the solvers that we compared MCSA
      to in our original manuscript and the way the information was presented
      was deficient.  We have expanded the results section to include GMRES and
-     CG results with a family of state-of-the-art preconditioners.  We also
-     updated the tables to include average and total iterations along with
-     other useful quantities that makes the comparisons more meaningful.
-     Additional text has been added to the results section to clarify the
-     comparisons.
+     CG results with a family of state-of-the-art preconditioners, including
+     algebraic multigrid.  We also updated the tables to include average and
+     total iterations along with other useful quantities that makes the
+     comparisons more meaningful.  Additional text has been added to the
+     results section to clarify the comparisons.
 
      We added a sentence clarifying the use of +|- in Eq 51.
 

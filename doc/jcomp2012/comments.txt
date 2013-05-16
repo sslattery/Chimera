@@ -1,0 +1,166 @@
+Reviewer #2: This is a very nice article on a new hybrid Monte Carlo
+method that extends previous work and provides more insight into these
+types of hybrid methods.
+
+Two major comments:
+
+1. The comparison of MCSA with leading deterministic methods is great.
+However, the MCSA method is introduced as a modification of the
+Sequential Monte Carlo method, and yet there are no comparisons of
+results from these two methods and no discussion of the differences,
+advantages, or disadvantages of each.  I'm finding the differences
+between Eqs. 15 and Eqs. 20 somewhat subtle, and I believe that the
+readers would benefit from more elucidation.  I would strongly recommend
+that the MCSA results be compared to results from Sequential Monte Carlo.
+If there's a good reason not to, then certainly more discussion is
+required.
+
+2. Doing a web search on the authors and "Monte Carlo" yielded a
+highlight article that reported this method along with the exact same 3D
+problem and results.  Apparently, the first two authors were at different
+laboratory before.  The highlight was "Residual Monte Carlo Methods" and
+was contained in "Nuclear Weapons Highlights 2007," LALP-07-041,
+http://www.lanl.gov/orgs/adtsc/publications/nw_highlights_2007/ch3/ch3_2evans.pdf.
+Obviously, the highlight is not a journal article, and more work and
+analysis have been done on the method since then, but should the previous
+funding acknowledgments be include in this article, too?
+
+
+Other comments:
+
+-Some comments toward improving the clarity of Section 2.1: After Eq. 4,
+"With this knowledge in hand" is a somewhat too emphatic transition.  I
+would suggest dropping the phrase and either transitioning with an "and"
+or starting a new sentence with "We can...". (You used "in hand" later in
+the paper; I would suggest removing both.)
+
+-The discussion around Eq. 6 needs a little strengthening.  Eq. 3 called
+the H^k's the Neumann Series.  The sentence after Eq. 6 implies that the
+(small) h_{i,j}'s are the "terms in the Neumann Series," but you haven't
+explicitly defined h_{i,j}, and it's at the crux of direct vs. adjoint.
+You haven't explicitly defined "i_m" nor "m" either; and you use P_\nu
+without a clear definition.  Please reread this section and add a few
+words and sentences to make it clearer.
+
+-At the end of 2.1.1, briefly say why you generally choose to use a
+cutoff as opposed to augmenting the matrix.  I believe it's because it's
+simpler and fits in with what you're doing in the adjoint, but you should
+say why.
+
+-Why does the word "adjoint" not appear in the abstract or the
+introduction?  It seems that it is an important aspect of the overall
+method and its efficiency.
+
+-The discussion of the Kronecker delta function in the adjoint method
+requires some attention.  In the sentence, "This is the common approach
+in standard Monte Carlo transport simulation," is "this" referring to the
+effects of the Kronecker delta?  Is "standard Monte Carlo" meant as
+"standard adjoint MC?"  Do you mean, that "The effect of the Kronecker
+delta is to make the adjoint MC calculation very similar to the standard
+forward Monte Carlo?"  Do you have a reference for the adjoint estimator?
+In the next sentence, the form "Unlike ..., because ..., we are ..." is
+awkward.
+
+-Page 7.  Make terminology consistent: "error" and "solution error".
+Need to add "both sides of" to the sentence before Eq. 18.  Remove "With
+this in hand."  When you say that the Monte Carlo solution only
+approximately inverts this operator, do you mean that it only
+statistically solves the problem?  Maybe the hat isn't necessary if the
+statistical uncertainty is inherent in \delta x^{l+1/2}?  Are there any
+consistency issues with an approximate operator (or solutions error) like
+there can be with Diffusion Synthetic Acceleration?
+
+-How about some references to synthetic acceleration?  Of course, DSA has
+been a highlight of the transport community since the 70's (Bill Reed,
+Ray Alcouffe, Ed Larsen).  TSA may be more closely related to MCSA.
+
+-The discussion between Eqs. 19c and 20a could be made clearer if you
+removed "accelerate the fixed-point method and" and "use the above ideas
+to".  They seem distracting and unnecessary.
+
+-You might consider adding symbols to Figure 1 to highlight
+direct-adjoint differences.  After Fig. 1, you've got an extra "the".
+And, you might add ", where several equals three."  Three orders of
+magnitude is huge, but I'm not sure that, outside of referring to human
+body parts and spouses, three is "several."
+
+-How did you pick the N_p and W_c for the multimaterial problem?  These
+selections were quite different than those from the Marshak wave for
+which you showed much analysis.  Some comment may be warranted.
+
+-Page 17: Marshak boundary condition: lower-case "b".
+
+-Page 19: "An advantage of MCSA <over deterministic methods?>..."
+
+-Page 20 and Figure 5: The "blue" cell doesn't show up as blue.
+
+-Conclusions: "has been to shown to", dendritic instead of dentritic
+
+Spellchecking: neccessary, precondioning
+
+
+
+
+
+
+
+Reviewer #3: Comments on "A Monte Carlo Synthetic-Acceleration Method for
+Solving the Thermal Radiation Diffusion Equation" (JCOMP-D-12-00951) by
+T. M. Evans, S. W. Mosher, and S. R. Slattery
+
+The manuscript discusses a solution methodology for thermal radiation
+diffusion equation with Sequential Monte Carlo.  The methodology is well
+presented and interesting, however, it is not new. The algorithm has been
+introduced in Halton's paper (ref 3).
+The authors' contribution is to extend the algorithm to thermal radiative
+diffusion problems and casting the algorithm in terms of a synthetic
+acceleration method.  Because the presented algorithm is not particularly
+new, furthermore (space-time) discretizations are not sophisticated, the
+reviewer thinks the manuscript should include more convincing numerical
+results and motivations in order to make the algorithm more attractive to
+the audiences.
+
+Overall, the reviewer believes that the manuscript will be publishable
+and of interest Journal of Computational Physics audiences if the revised
+manuscript includes the following changes/additions.
+
+1. The Introduction section needs to include more motivations, such as
+possible advantages of using the Monte Carlo method rather than other
+well-established iterative schemes.  Although some motivations are
+discussed briefly in the Conclusion section, the author should present
+their motivation up-front.
+
+2. For Figs. 1-3 in Sec. 2, why discretization with the larger stencil
+converge faster (smaller number of iterations).  And given that result,
+why the actual numerical results do not use 9-point stencils?
+
+3. Eq. (51) superscript +/- is very confusing since that notation is
+often used for outgoing/incoming partial fluxes.
+
+4. It is not correct to say a "fair" comparison with a simple diagonal
+scaling preconditioned CG.  More sophisticated preconditioners such as
+multigrid for CG is well established and readily available, there is no
+reason not to use a more efficient preconditioner.  Especially if the
+authors compare the efficiency of the developed method, "fair" comparison
+should be the one against the (somewhat) state of art.
+
+5. What are the time step sizes for both example problems? If this paper
+discusses the algorithm efficiency and the results have only a marginal
+gain in efficiency (with current results), more parametric/sensitivity
+studies are warranted. For example, reporting effects due to the
+different time step sizes and mesh sizes may be helpful.
+
+6. In Table 1 and 2, not only the maximum number of iterations, but also
+the average or total iteration counts should be reported. Otherwise, it
+is not clear why PFIX is slower than the other two methods in Table 1,
+and relative CPUs are almost exactly the same in Table1 and 2, regardless
+of the relative maximum iteration counts are increased almost a factor of
+two.
+
+7. The number of particles per step is Np=1000 in the second example. How
+does the authors determine this number?  In practice, how do you
+determine what is the optimal number of particles per step? If you
+compare the CPU time of an optimal (e.g., Np=1000) Monte Carlo with
+non-optimal preconditioned CG (with the diagonal scaling), that is not a
+"fair" comparison.  Is there a "rule of thumb" of how to determine an
+effective Np?

@@ -1293,7 +1293,9 @@ follows:
     \\ \hline
   \end{tabular}
 \end{center}
-The problem is run to $100$~nanoseconds.
+The problem is run to $100$~nanoseconds.  The variable timestep control
+started with \sn{1.25}{-9}~ns and increased to 0.01~ns using a maximum change
+of 10\% per cycle.
 
 Figure~\ref{fig:marshak_10} shows the analytic Marshak Wave solution compared
 to the MCSA solution.  As opposed to most Monte Carlo techniques, the MCSA
@@ -1450,6 +1452,8 @@ full set of problem conditions is as follows:
     \\ \hline
   \end{tabular}
 \end{center}
+The timestep controls from the Marshak problem were used here resulting in a
+maximum timestep of 0.01~ns.
 
 A 2D plot of the temperature at 1000~ns elapsed time is illustrated in
 Figure~\ref{fig:multi-mat_T}.  The time evolution of the temperature is shown
