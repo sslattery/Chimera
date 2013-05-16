@@ -941,7 +941,7 @@ representation of one quarter of the assembly.
       spacer grids along the length of the fuel pins and reactor core
       structures on the top and bottom of the assembly. Lighter purple
       material in the center of the assembly is moderator and darker
-      purple material fuel.}}
+      purple/red material is fuel.}}
   \label{fig:problem3_axial_mat}
 \end{figure}
 \begin{figure}[t!]
@@ -951,7 +951,7 @@ representation of one quarter of the assembly.
   \caption{\textbf{Fuel assembly geometry end detail.}
     \textit{Reactor core structure including spacer grids and plenum
       has been included. Lighter purple material on the right of the
-      figure is moderator and darker purple material fuel.}}
+      figure is moderator and darker purple/red material is fuel.}}
   \label{fig:problem3_end}
 \end{figure}
 Significant geometric details are contained in the model including
@@ -1299,6 +1299,18 @@ is more applicable.
 %%---------------------------------------------------------------------------%%
 \section{Advanced Preconditioning Strategies}
 \label{subsec:spn_advanced_preconditioning}
+For the fuel assembly criticality problem presented in the previous
+section, the spectral radius was near one and in a regime in which
+MCSA breakdown is observed. In this regime the number of stochastic
+histories required to converge MCSA increases rapidly and the
+resulting poor performance is compounded by those histories being
+expensive to compute. To overcome this difficulty, advanced
+preconditioning strategies are required beyond simple Jacobi methods
+that can reduce the spectral radius into a region of better MCSA
+performance. Several modern algebraic preconditioning strategies will
+be presented here and used within the preconditioned framework given
+by Eq~(\ref{eq:left_right_mcsa}). Data showing their effects on MCSA
+solutions of the fuel assembly criticality problem will be presented.
 
 \subsection{ILUT Preconditioning}
 \label{subsec:spn_ilut_preconditioning}
@@ -1314,6 +1326,8 @@ is more applicable.
 
 \subsection{Monte Carlo Estimator Comparison}
 \label{subsec:spn_estimator_comparison}
+
+\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{MCSA Comparison to Conventional Methods}
