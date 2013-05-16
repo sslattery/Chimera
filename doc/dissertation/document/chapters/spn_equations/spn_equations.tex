@@ -1215,7 +1215,80 @@ in the problem was used to compute the Monte Carlo correction. If the
 solver could not converge in less than 100 iterations, the number of
 histories was increased by increments of 5,000 until convergence was
 achieved in less than 100 iterations. The number of iterations
-required to converge and the time to converge was recorded.
+required to converge MCSA and the time to converge was recorded as a
+means to capture the breakdown. 
+
+Figure~\ref{fig:breakdown_iterations} gives the number of iterations
+required to converge for the chosen number of histories per iteration
+given by Figure~\ref{fig:breakdown_histories} using the adjoint solver
+with the collision and expected value estimators and the forward
+solver with the collision estimator. For spectral radii less than
+0.97, all MCSA problems converged with 1 history per DOF (10,000 for
+this problem) with the number of iterations required to converge
+increasing. Near a spectral radius of 0.97, the number of histories
+required to converge MCSA in less than 100 iterations takes a dramatic
+rise that exhibits neither exponential nor power law behavior. As the
+spectral radius approaches 1, the number of histories required becomes
+significant and effectively intractable. Even with this simple
+diffusion problem, the behavior is consistent with that oberseved for
+the fuel assembly problem with $SP_1$ discretization. In that case, we
+estimated a spectral radius of $\approx 0.998$, larger than any of the
+spectral radii that could be computed within even 90 minutes of
+compute time for this simple two dimensional problem. For that
+problem, even 1,000,000 histories ($\approx 50$ per DOF) was not
+enough to provide convergence.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=5in]{chapters/spn_equations/breakdown_iterations.pdf}
+  \end{center}
+  \caption{\textbf{Iterations required to converge as a function of
+      spectral radius for the neutron diffusion problem.} \textit{The
+      number of histories was increased to achieve convergence in less
+      than 100 iterations. At least 10,000 histories were used for
+      each calculation.}}
+  \label{fig:breakdown_iterations}
+\end{figure}
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=5in]{chapters/spn_equations/breakdown_histories.pdf}
+  \end{center}
+  \caption{\textbf{Histories required to converge as a function of
+      spectral radius for the neutron diffusion problem.} \textit{The
+      number of histories was increased to achieve convergence in less
+      than 100 iterations. At least 10,000 histories were used for
+      each calculation.}}
+  \label{fig:breakdown_histories}
+\end{figure}
+In addition to the significantly larger number of histories required
+for to achieve convergence for ill-conditioned problems another
+penalty is paid due to histories that take longer to
+compute. Figure~\ref{fig:breakdown_time} gives the CPU time in
+seconds required to compute a single random walk averaged over the
+entire set of histories run in the calculation over all iterations. As
+the spectral radius increases (correlating to a higher ratio of
+scattering in the system) the random walk lengths increase, using more
+CPU time to finish the computation. Compared to spectral radii of 0.5,
+larger spectral radii over 0.97 have histories that require two orders
+of magnitude more computation time. This signficant increase in
+computation time per history coupled with the significant increase in
+the number of histories required to converge is evidence that for
+problems with spectral radii above $\approx 0.97$, using MCSA to solve
+any problems of interest is completely intractable. We therefore
+require a more expansive set of preconditioning techniques to reduce
+the eigenvalue spectrum of the $SP_N$ problem into a regime in which
+MCSA is more applicable.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=5in]{chapters/spn_equations/breakdown_time.pdf}
+  \end{center}
+  \caption{\textbf{CPU time per history as a function of spectral
+      radius for the neutron diffusion problem.} \textit{As the
+      spectral radius grows, so do the length of the random
+      walks. Longer random walks require more CPU time to compute.}}
+  \label{fig:breakdown_time}
+\end{figure}
+
+\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{Advanced Preconditioning Strategies}
