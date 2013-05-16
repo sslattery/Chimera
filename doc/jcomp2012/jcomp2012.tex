@@ -181,11 +181,11 @@
 \label{sec:introduction}
 
 In previous work~\cite{evans_2003}, we developed a residual Monte Carlo method
-that was an application of Halton's Sequential Monte Carlo
+that was an application of Halton's sequential Monte Carlo
 method~\cite{halton_1962,halton_1994} to the one-dimensional (1D) equilibrium
 thermal radiation diffusion equation.  At that time, Halton's method was not
 widely known in the general computational physics community.  While extending
-our method to three spatial dimensions, we realized that the Sequential Monte
+our method to three spatial dimensions, we realized that the sequential Monte
 Carlo method is actually a variant of iterative refinement cast as a residual
 method. We have developed a new method in which Monte Carlo is used to
 accelerate a fixed-point (Richardson) iteration. This algorithm surpasses our
@@ -228,7 +228,7 @@ distinguished by very slow, statistically noisy convergence properties; thus,
 they have not made any significant impact in the physics community.
 
 In order to address the convergence issues plaguing Monte Carlo
-solvers, Halton \cite{halton_1962,halton_1994} proposed a Sequential
+solvers, Halton \cite{halton_1962,halton_1994} proposed a sequential
 Monte Carlo method.  This algorithm demonstrated dramatically improved
 convergence over regular Monte Carlo.  Nonetheless, Halton's method
 has not gained widespread use in computational physics
@@ -342,15 +342,14 @@ straightforward approach is to set
   p_{ij} = \frac{|h_{ij}|}{\sum_{j}|h_{ij}|}\:.
   \label{eq:probability}
 \end{equation}
-Each row of the transition probability matrix, $\vP$, represents a
-discrete probability density function that can be sampled to select a
-new state $j$, given that the current state is $i$.  Random walks can
-be terminated in two ways: the matrix can be augmented with a
-terminating event equation that describes the probability that a
-history ends its walk, or the random walk can be terminated by weight
-cutoff, $W_c$.  Generally, we choose to terminate random walks using a
-weight cutoff as opposed to augmenting the matrix such that the random
-walk terminates when $W_m < W_c$.
+Each row of the transition probability matrix, $\vP$, represents a discrete
+probability density function that can be sampled to select a new state $j$,
+given that the current state is $i$.  Random walks can be terminated in two
+ways: the matrix can be augmented with a terminating event equation that
+describes the probability that a history ends its walk, or the random walk can
+be terminated by weight cutoff, $W_c$.  Generally, we choose to terminate
+random walks using a weight cutoff such that the random walk terminates when
+$W_m < W_c$.
 
 %%---------------------------------------------------------------------------%%
 \subsubsection{Adjoint Method}
@@ -383,11 +382,11 @@ reverse order.  Correspondingly, the estimator for this method is
 Here, $\hat{b}_{i_0}$ is the sampled source and initial weight in state $i_0$.
 The Kronecker delta implies that tallies are only made in the state where the
 random walk currently resides.  This is the common approach in standard Monte
-Carlo transport simulations. Unlike the direct method, because tallies are
-made in the state in which the random walk currently resides, we are no longer
-required to start a history in each state for each random walk
-permutation. Instead, sampling the source is sufficient and requires only one
-random walk per permutation.
+Carlo transport simulations. Thus, unlike the direct method, we are no longer
+required to start a history in each state for each random walk permutation
+because tallies are made in the state in which the random walk currently
+resides. Instead, sampling the source is sufficient, and one random walk per
+permutation is required.
 
 Similar to the direct method, the adjoint method random walk process
 requires a terminating condition.  In all of the work that follows we
@@ -408,25 +407,26 @@ $m^\text{th}$ step if $W_m < W_f$.
 The methods presented in \S~\ref{sec:background} are characterized by slow
 convergence rates bound by the Central Limit Theorem.
 Halton~\cite{halton_1962,halton_1994} proposed a staged residual scheme called
-Sequential Monte Carlo to speed up the convergence of these methods.  A
+sequential Monte Carlo to speed up the convergence of these methods.  A
 variant of this scheme has been successfully applied to the 1D nonlinear
 thermal radiation diffusion equation in Ref.~\cite{evans_2003}.
 
-Concisely, the Sequential Monte Carlo method solves Eq.~(\ref{eq:Ax=b}) using
+Concisely, the sequential Monte Carlo method solves Eq.~(\ref{eq:Ax=b}) using
 the adjoint solution technique described in \S~\ref{sec:adjoint-method}.  The
 following iteration scheme is applied:
 \begin{subequations}
   \begin{gather}
-    \vr^{l} = \vb - \vA\vx^{l}\:, \\ \vA\delta\vx^{l+1} =
+    \vr^{l} = \vb - \vA\vx^{l}\:, \\ \hat{\vA}\delta\vx^{l+1} =
     \vr^{l}\:, \label{eq:residual_solve}\\ \vx^{l+1} = \vx^{l} +
     \delta\vx^{l+1}\:.
   \end{gather}
+  \label{eq:sequential_mc}
 \end{subequations}
 In this scheme, the Monte Carlo adjoint method is used to estimate the
-solution to Eq.~(\ref{eq:residual_solve}), and the residual is iterated to
-convergence.  This iteration sequence is closely related to iterative
-refinement, the exception being that there is no update to $x^{l+1}$ between
-residual iterations.
+solution to Eq.~(\ref{eq:residual_solve}) as represented by the hat on $\vA$,
+and the residual is iterated to convergence.  This iteration sequence is
+closely related to iterative refinement, the exception being that there is no
+update to $x^{l+1}$ between residual iterations.
 
 We propose a modification of this scheme that uses Monte Carlo as a
 synthetic acceleration for the fixed-point iteration given by
@@ -475,13 +475,15 @@ Synthetic-Acceleration (MCSA) method can be defined as follows:
     \label{eq:MCSA-residual_solve}\\
      \vx^{l+1}=\vx^{l+1/2}+\delta\vx^{l+1/2}\:.
   \end{gather}
+  \label{eq:MCSA}
 \end{subequations}
-The hat on $\vA$ in Eq.~(\ref{eq:MCSA-residual_solve}) indicates that the
-Monte Carlo solution only approximately inverts this operator.  Thus, we have
-defined a scheme in which the initial estimate of $\vx$ in each iteration is
-updated using a single fixed-point iteration\footnote{A subspace method could
-  be used instead of a stationary method here.}.  The residual is calculated
-and used as a source to estimate the error, $\delta\vx^{l+1/2}$, by solving
+As in the sequential method, the hat on $\vA$ in
+Eq.~(\ref{eq:MCSA-residual_solve}) indicates that the Monte Carlo solution
+only approximately inverts this operator.  Thus, we have defined a scheme in
+which the initial estimate of $\vx$ in each iteration is updated using a
+single fixed-point iteration\footnote{A subspace method could be used instead
+  of a stationary method here.}.  The residual is calculated and used as a
+source to estimate the error, $\delta\vx^{l+1/2}$, by solving
 Eq.~(\ref{eq:MCSA-residual_solve}) via the Monte Carlo adjoint method. The
 error is then used to calculate an updated iterate of the solution vector,
 $\vx^{l+1}$.  The entire sequence is iterated to convergence based on the
@@ -490,6 +492,23 @@ following stopping criterion~\cite{kelley_1995}:
   \|\vr\|_{2} < \epsilon\cdot\|\vb\|_2\:.
   \label{eq:stopping-criteria}
 \end{equation}
+
+A closer examination of the sequential method in Eq.~(\ref{eq:sequential_mc})
+shows that this scheme is equivalent to a single preconditioned Richardson
+iteration,
+\begin{equation}
+  \vx^{l+1} = \vx^{l} + \hat{\vA}^{-1}\vr^l\:,
+\end{equation}
+in which $\vA^{-1}$ indicates the approximate inversion of $\vA$ via the
+adjoint Monte Carlo method.  MCSA, on the other hand, is identical to a
+Richardson iteration followed by a preconditioned Richardson iteration,
+\begin{align}
+  \vx^{l+1/2} &= \vx^{l} + \vr^{l}\:,\\
+  \vx^{l+1} &= \vx^{l+1/2} + \hat{\vA}^{-1}\vr^{l+1/2}\:.
+\end{align}
+As above, the adjoint Monte Carlo process is used to approximately invert
+$\vA$.
+
 
 \subsection{Monte Carlo Method Selection}
 
@@ -528,25 +547,23 @@ to be solved with the MCSA method:
 Both the stencils will be used to vary the size and density of the sparse
 linear system in Eq.~(\ref{eq:poisson_eq_lin_sys}).
 
-A timing and convergence study is used to demonstrate the
-effectiveness of the adjoint method as compared to the direct
-method. To assess both the CPU time and number of iterations required
-to converge to a solution, a problem of constant $\Delta$ was used
-with varying values of grid size, fixing the spectral radius of the
-system at a constant value for each variation. Both the five-point and
-nine-point stencils were used with both the direct and adjoint
-solvers. For each case, $N \times N$ total random walk permutations
-were computed per MCSA iteration where $N \times N$ is the number of
-discrete grid points in the system. Solver parameters were set to a
-weight cutoff of \sn{1}{-4} for the stochastic linear solver and a
-convergence tolerance of \sn{1}{-8} for the MCSA iterative solver.
-Figure~\ref{fig:poisson_cpu_time} gives the CPU time needed for each
-case to converge in seconds and Figure~\ref{fig:poisson_iterations}
-gives the number of iterations needed for each case to converge to the
-specified tolerance as a function of the problem size. All
-computations presented in this section and
-\S~\ref{subsec:sequential_comparison} were completed on a 3.0 GHz
-Intel Core 2 Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
+A timing and convergence study is used to demonstrate the effectiveness of the
+adjoint method as compared to the direct method. To assess both the CPU time
+and number of iterations required to converge to a solution, a problem of
+constant $\Delta$ was used with varying number of grid points, fixing the
+spectral radius of the system at a constant value for each variation. Both the
+five-point and nine-point stencils were used with both the direct and adjoint
+solvers. For each case, $N \times N$ total random walk permutations were
+computed per MCSA iteration where $N \times N$ is the number of discrete grid
+points in the system. Solver parameters were set to a weight cutoff of
+\sn{1}{-4} for the stochastic linear solver and a convergence tolerance of
+\sn{1}{-8} for the MCSA iterative solver.  Figure~\ref{fig:poisson_cpu_time}
+gives the CPU time needed for each case to converge in seconds and
+Figure~\ref{fig:poisson_iterations} gives the number of iterations needed for
+each case to converge to the specified tolerance as a function of the problem
+size. All computations presented in this section and
+\S~\ref{subsec:sequential_comparison} were completed on a 3.0 GHz Intel Core 2
+Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{dir_adj_cpu.pdf}
@@ -597,28 +614,25 @@ with a large residual, further reducing the stochastic error in the
 correction in those regions and subsequently reducing the required
 number of iterations to converge.
 
-As an additional comparison, the convergence behavior of MCSA can be
-analyzed using both the adjoint and direct solvers to detect any
-performance benefits. To assess the convergence properties of MCSA
-using each solver and stencil, the infinity norm of the residual
-computed in Eq.~(\ref{eq:MCSA-residual}) was collected at each
-iteration for a fixed problem size of
-$N=500$. Figure~\ref{fig:poisson_convergence} gives the results of
-these computations. First, it is worthy to note on the semilog plot
-that we are indeed achieving the expected exponential convergence from
-MCSA with both Monte Carlo solvers. Second, we note that using the
-adjoint method with the same number of stochastic histores per MCSA
-iteration gives a faster rate of converge for the same reasons as
-above. We also note here that fewer iterations are required for
-convergence when the 9-point stencil is used to discretize the
-Laplacian operator (although at no gain in speed as given by the
-results in Figure~\ref{fig:poisson_cpu_time}). This is due to the fact
-that the smaller discretization error directly corresponds to a more
-well defined residual source generated by the Richardson extrapolation
-for the Monte Carlo calculation. In addition, the better defined
-source is transported through a domain described more accurately by
-the 9-point stencil, thus yielding a more accuracte correction vector
-from the Monte Carlo calculation.
+As an additional comparison, the convergence behavior of MCSA can be analyzed
+using both the adjoint and direct solvers to detect any performance
+benefits. To assess the convergence properties of MCSA using each solver and
+stencil, the infinity norm of the residual computed in
+Eq.~(\ref{eq:MCSA-residual}) was collected at each iteration for a fixed
+problem size of $N=500$. Figure~\ref{fig:poisson_convergence} gives the
+results of these computations. First, it is worthy to note on the semilog plot
+that we are indeed achieving the expected exponential convergence from MCSA
+with both Monte Carlo solvers. Second, we note that using the adjoint method
+with the same number of stochastic histories per MCSA iteration gives a faster
+rate of converge for the same reasons as above. We also note here that fewer
+iterations are required for convergence when the 9-point stencil is used to
+discretize the Laplacian operator (although at no gain in speed as given by
+the results in Figure~\ref{fig:poisson_cpu_time}). This is due to the fact
+that the smaller discretization error directly corresponds to a more well
+defined residual source generated by the Richardson iteration for the Monte
+Carlo calculation. In addition, the better defined source is transported
+through a domain described more accurately by the 9-point stencil, thus
+yielding a more accuracte correction vector from the Monte Carlo calculation.
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{dir_adj_conv.pdf}
@@ -633,38 +647,36 @@ from the Monte Carlo calculation.
 
 \subsection{Comparison to Sequential Monte Carlo}
 \label{subsec:sequential_comparison}
-To further motivate using Monte Carlo Synthetic Acceleration, we
-compare its performance to Halton's Sequential Monte Carlo method on
-which our previous work in this area was based. For this comparison,
-we use the same transient Poisson problem as described in the previous
-section and choose only the 5-point stencil to discretize the
-Laplacian operator as the previous results yielded little qualitative
-difference between the discretizations. Both MCSA and Halton's method
-are used with the adjoint Monte Carlo solver. In order to complete the
-same study as in the previous section, the number of histories
-computed by the Monte Carlo solver at each iteration had to be doubled
-to $2 \times N \times N$ in order to ensure convergence in Sequential
-Monte Carlo Method. Figure~\ref{fig:seq_cpu_time} gives the CPU time
-results for this comparison as a function of problem size while
-Figure~\ref{fig:seq_iterations} gives the number of iterations to
-converge as a function of problem size. In both cases, using the Monte
-Carlo solver as a synthetic acceleration rather than in a pure
-residual Monte Carlo scheme resulted in a reduction in both CPU time
-and iterations required to converge. The additional Richardson
-extrapolation between each Monte Carlo solve in the MCSA method gives
-a better converged residual source to use with the Monte Carlo
-calculation while the Sequential method requires more iterations to
-achieve the same level of convergence in the residual.
+To further motivate using Monte Carlo Synthetic Acceleration, we compare its
+performance to Halton's sequential Monte Carlo method on which our previous
+work in this area was based. For this comparison, we use the same transient
+Poisson problem as described in the previous section and choose only the
+5-point stencil to discretize the Laplacian operator as the previous results
+yielded little qualitative difference between the discretizations. Both MCSA
+and Halton's method are used with the adjoint Monte Carlo solver. In order to
+complete the same study as in the previous section, the number of histories
+computed by the Monte Carlo solver at each iteration had to be doubled to $2
+\times N \times N$ in order to ensure convergence in sequential Monte Carlo
+Method. Figure~\ref{fig:seq_cpu_time} gives the CPU time results for this
+comparison as a function of problem size while Figure~\ref{fig:seq_iterations}
+gives the number of iterations to converge as a function of problem size. In
+both cases, using the Monte Carlo solver as a synthetic acceleration rather
+than in a sequential Monte Carlo scheme resulted in a reduction in both CPU
+time and iterations required to converge. The additional Richardson iteration
+between each Monte Carlo solve in the MCSA method gives a better converged
+residual source to use with the Monte Carlo calculation while the sequential
+method requires more iterations to achieve the same level of convergence in
+the residual.
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{seq_cpu.pdf}
   \caption{\sl CPU Time (s) to converge vs. Problem Size ($N$ for an
-    $N \times N$ square mesh). Both the Sequential Monte Carlo and
+    $N \times N$ square mesh). Both the sequential Monte Carlo and
     MCSA solvers are used with the five point stencils and the adjoint
     Monte Carlo solver. The number of random walks was twice the
     number of discrete states in the system in order to ensure
-    convergence in the Sequential Monte Carlo method.}
+    convergence in the sequential Monte Carlo method.}
   \label{fig:seq_cpu_time}
 \end{figure}
 
@@ -672,32 +684,30 @@ achieve the same level of convergence in the residual.
   \centering
   \includegraphics[width=5in,clip]{seq_iterations.pdf}
   \caption{\sl Iterations to converge vs. Problem Size ($N$ for an $N
-    \times N$ square mesh). Both the Sequential Monte Carlo and MCSA
+    \times N$ square mesh). Both the sequential Monte Carlo and MCSA
     solvers are used with the five point stencils and the adjoint
     Monte Carlo solver.}
   \label{fig:seq_iterations}
 \end{figure}
 
-The benefits of using a synthetic acceleration scheme are also noted
-when the infinity norm of the residual computed at each iteration for
-both methods was collected at each iteration for a fixed problem sizes
-of $N=100$ and $N=500$ as shown in figures Figure~\ref{fig:seq_100}
-and \ref{fig:seq_500} respectively. In both cases, the Sequential
-method is subject to two regimes of exponential convergence with the
-later regime converging the slowest while the MCSA method exhibits a
-single rate of exponential convergence observed to be much higher than
-that computed by Halton's method. Even with the doubling of the number
-of stochastic histories computed per time step in order to ensure
-convergence for the Sequential method, we still see robustness issues
-with a non-monotonically decreasing residual observed for the $N=100$
-case. In both cases the MCSA solver is observed to be robust with a
-monotonically decreasing residual.
+The benefits of using a synthetic acceleration scheme are also noted when the
+infinity norm of the residual computed at each iteration for both methods was
+collected at each iteration for a fixed problem sizes of $N=100$ and $N=500$
+as shown in figures Figure~\ref{fig:seq_100} and \ref{fig:seq_500}
+respectively. In both cases, the sequential method is characterized by a slow
+approach to the asymptotic rate of convergence.  Conversely, the MCSA method
+reaches its asymptotic convergence rate more quickly and is faster than
+Halton's method. Even with the doubling of the number of stochastic histories
+computed per time step in order to ensure convergence for the sequential
+method, we still see robustness issues with a non-monotonically decreasing
+residual observed for the $N=100$ case. In both cases the MCSA solver is
+observed to be robust with a monotonically decreasing residual.
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=5in,clip]{seq_conv_100.pdf}
   \caption{\sl Infinity norm of the solution residual vs. iteration
-    number for a problem of size $N=100$. Both the Sequential Monte
+    number for a problem of size $N=100$. Both the sequential Monte
     Carlo and MCSA solvers are used with the five point stencils and
     the adjoint Monte Carlo solver.}
   \label{fig:seq_100}
@@ -707,7 +717,7 @@ monotonically decreasing residual.
   \centering
   \includegraphics[width=5in,clip]{seq_conv_500.pdf}
   \caption{\sl Infinity norm of the solution residual vs. iteration
-    number for a problem of size $N=500$. Both the Sequential Monte
+    number for a problem of size $N=500$. Both the sequential Monte
     Carlo and MCSA solvers are used with the five point stencils and
     the adjoint Monte Carlo solver.}
   \label{fig:seq_500}
@@ -725,7 +735,8 @@ generated.
 
 \subsection{Equilibrium Diffusion Model}
 
-The general form of the equilibrium diffusion equation is \cite{morel_1996}
+The general form of the equilibrium radiation diffusion equation is
+\cite{morel_1996}
 \begin{equation}
   (\rho\Cv + 4aT^{3})\pder{T}{t} -
   \nabla\cdot{\Bigl(\frac{4acT^{3}}{3\ros}\Bigr)\grad{T}} = Q\:,
@@ -934,7 +945,7 @@ face of a cell.  The off-diagonal terms then represent sources into the cell,
 or, equivalently, these terms are leakage out of the neighboring cells.  A
 limitation of this interpretation is that it requires a symmetric system to
 implement the Monte Carlo scheme.  More specifically, the operator $\ve{D}$
-must be an H-matrix \cite{kelley_1995} such that the off-diagonal elements are
+must be an M-matrix \cite{kelley_1995} such that the off-diagonal elements are
 negative and symmetric.  In other words, the leakage out of a cell must be
 equivalent to the source into the adjacent cell.
 
@@ -1071,7 +1082,7 @@ Eq.~(\ref{eq:preconditioned-discrete-diffusion}) using the MCSA method.  As
 discussed in \S~\ref{sec:iter-refin-monte}, the MCSA method requires two
 solutions:
 \begin{enumerate}
-\item A fixed-point iteration to estimate $\bphi^{l+1/2}$.  This is a
+\item A Richardson iteration to estimate $\bphi^{l+1/2}$.  This is a
   matrix-vector multiply operation.
 \item An adjoint Monte Carlo solve to estimate $\delta\bphi^{l+1/2}$.
 \end{enumerate}
@@ -1079,21 +1090,22 @@ For clarity, we rewrite the iteration scheme in Eq.~(\ref{eq:MCSA-iteration})
 using the diffusion operator notation from
 Eq.~(\ref{eq:preconditioned-diffusion}):
 \begin{align*}
-   \bphi^{l+1/2} = (\vI - \ve{M}^{-1}\ve{D})\bphi^{l} +
-  \ve{M}^{-1}\ve{q}\:, \quad & (\text{fixed-point iteration})\\
+   \bphi^{l+1/2} = (\vI - \ve{T})\bphi^{l} +
+  \ve{M}^{-1}\ve{q}\:, \quad & (\text{Richardson iteration})\\
   %%
-  \vr^{l+1/2} = \ve{M}^{-1}\ve{q} - \ve{M}^{-1}\ve{D}\bphi^{l+1/2}\:,
+  \vr^{l+1/2} = \ve{M}^{-1}\ve{q} - \ve{\ve{T}}\bphi^{l+1/2}\:,
   \quad & (\text{compute residual})\\
   %%
-  \ve{M}^{-1}\hat{\ve{D}}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:, \quad&
+  \hat{\ve{T}}\delta\bphi^{l+1/2} = \vr^{l+1/2}\:, \quad&
   (\text{estimate $\delta\phi$ using adjoint Monte Carlo method})\\
   %%
-  \bphi^{l+1} = \bphi^{l+1/2} + \delta\bphi^{l+1/2}\:. \quad&
+  \bphi^{l+1} = \bphi^{l+1/2} + \delta\bphi^{l+1/2}\:, \quad&
   (\text{update}\ \bphi)
 \end{align*}
-As described in \S~\ref{sec:iter-refin-monte}, the adjoint Monte Carlo method
-only approximately inverts $\ve{M}^{-1}\hat{\ve{D}}$ as indicated by the
-$\hat{\cdot}$ notation.  We now describe each of these in turn.
+where $\ve{T} = \ve{M}^{-1}\ve{D}$.  As described in
+\S~\ref{sec:iter-refin-monte}, the adjoint Monte Carlo method only
+approximately inverts $\ve{T}$ as indicated by the $\hat{\cdot}$ notation.
+We now describe each of these steps in turn.
 
 First, we use Eq.~(\ref{eq:preconditioned-discrete-diffusion}) to evaluate
 $\bphi^{l+1/2}$ via a single fixed-point iteration as follows:
@@ -1278,8 +1290,8 @@ $1/\sqrt{N}$~\cite{halton_1994,evans_2003}.
 
 As stated in \S~\ref{sec:monte-carlo-matrix}, the MCSA method will converge
 when $\rho(\ve{H})< 1$, where $\ve{H}$ is the iteration matrix and is defined
-$\ve{H} = (\vI - \ve{M}^{-1}\ve{D})$.  The spectral radius for the Marshak
-problem is plotted in Figure~\ref{fig:marshak_spectral}.  As described in
+$\ve{H} = (\vI - \ve{T})$.  The spectral radius for the Marshak problem is
+plotted in Figure~\ref{fig:marshak_spectral}.  As described in
 \S~\ref{sec:preconditioning}, the preconditioning effectively reduces the
 spectral radius of $\ve{H}$ to less than 1.
 \begin{figure}[ht!]
@@ -1289,31 +1301,31 @@ spectral radius of $\ve{H}$ to less than 1.
   \label{fig:marshak_spectral}
 \end{figure}
 
-There are two principal degrees of freedom when utilizing the MCSA method: (1)
-the number of particles per stage and (2) the weight cutoff.
+There are two principal parameters when utilizing the MCSA method: (1) the
+number of particles per iteration and (2) the weight cutoff.
 Figure~\ref{fig:CPU_Np} shows the CPU time as a function of the requested
-number of particles per stage for a relative weight cutoff of $\sn{1}{-4}$.
-For less than five particles per stage, the method does not converge.
-Figure~\ref{fig:CPU_Ns} shows the variation in the maximum number of stages
-(iterations) per cycle with number of particles.  Analysis of these two
-figures shows that increasing the number of particles per stage reduces the
-number of iterations required to converge the solution.  However, the cost of
-the Monte Carlo transport is high; thus, better performance is attained by
-running more stages with fewer particles per stage \cite{evans_2003}.
+number of particles per iteration for a relative weight cutoff of
+$\sn{1}{-4}$.  For less than five particles per iteration, the method does not
+converge.  Figure~\ref{fig:CPU_Ns} shows the variation in the maximum number
+of iterations per cycle with number of particles.  Analysis of these two
+figures shows that increasing the number of particles per iteration reduces
+the number of iterations required to converge the solution.  However, the cost
+of the Monte Carlo transport is high; thus, better performance is attained by
+running more iterations with fewer particles per iteration \cite{evans_2003}.
 \begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{mrshk_np_CPU.pdf}}
-  \caption{CPU time versus number of particles per stage for the
+  \caption{CPU time versus number of particles per iteration for the
     Marshak problem.  The number of particles is the requested number.
-    In each stage the exact number can vary depending upon the number
+    In each iteration the exact number can vary depending upon the number
     of cells and source strength per cell.}
   \label{fig:CPU_Np}
 \end{figure}
 
 \begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{mrshk_np_Ns.pdf}}
-  \caption{ Maximum number of stages per cycle versus number of
-    particles per stage for the Marshak problem.  The number of
-    particles is the requested number.  In each stage the exact number
+  \caption{ Maximum number of iterations per cycle versus number of
+    particles per iteration for the Marshak problem.  The number of
+    particles is the requested number.  In each iteration the exact number
     can vary depending upon the number of cells and source strength
     per cell.}
   \label{fig:CPU_Ns}
@@ -1322,15 +1334,15 @@ running more stages with fewer particles per stage \cite{evans_2003}.
 Figure~\ref{fig:CPU_wc} shows the CPU time as a function of relative weight
 cutoff.  These results indicate that the performance of the MCSA method is
 relatively insensitive to the weight cutoff.  This is especially true when
-running small numbers of particles per stage.  The weight cutoff has a more
+running small numbers of particles per iteration.  The weight cutoff has a more
 pronounced effect on the efficiency of the method when larger numbers of
 particles are used.
 \begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{mrshk_wc_CPU.pdf}}
   \caption{ CPU time versus relative weight cutoff for the Marshak
     problem.  Results are shown for 10 and 50 requested particles per
-    stage.  The numbers in parentheses show the maximum number of
-    particles run in a stage during the course of the problem.}
+    iteration.  The numbers in parentheses show the maximum number of
+    particles run in a iteration during the course of the problem.}
   \label{fig:CPU_wc}
 \end{figure}
 
