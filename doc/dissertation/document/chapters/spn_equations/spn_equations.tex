@@ -1327,10 +1327,60 @@ that the residual matrix formed by the factorization
   \mathbf{R} = \mathbf{L} \mathbf{U} - \mathbf{A} \:,
   \label{eq:ilu_residual_matrix}
 \end{equation}
-has a specified sparsity sparsity pattern and element magnitude.
+has a specified sparsity pattern and element magnitude. When a
+magnitude threshold is used, elements generated in the factors below
+that maginitude are dropped, resulting in ILU threshold (ILUT)
+preconditioning. The sparsity pattern in this case is determined from
+the input matrix to be preconditioned and the number of elements
+maintained in the factor is specified by a fill level parameter. A
+fill level of 1 will generate the same number of elements as the
+sparsity pattern of the input matrix while a fill level of 2 will
+contain twice as many elements in the factorization, resulting in a
+better representation of the true LU factorization. The inverse of the
+lower and upper triangular factors may then be easily inverted by
+means of simple elimination to produce the preconditioner. For MCSA,
+$\mathbf{L}^{-1}$ will be used on the left and $\mathbf{U}^{-1}$ on
+the right to precondition the system.
+
+For modern subspace methods, only the action to the preconditioner on
+a vector is required for efficient implementations and therefore a
+triangular solve can be used for this purpose. For the explicit
+preconditioning scheme presented in Eq~(\ref{eq:left_right_mcsa}), the
+fully inverted operator must be generated in order to build the set of
+probabilities and weights required for Monte Carlo
+sampling. Therefore, for a linear system of size $N$, $N$ triangular
+solves will be required in order to extract the inverse matrices from
+production ILU implementations. In addition, parallel implementations
+typically generate lower and upper factors that are only triangular
+locally, providing an easily parallelizable mechanism to generate the
+action of the inverse. A consequence of this choice for parallel
+scalability is a degradation of the preconditioning quality as the
+size of the parallel system is increased. For serial computations, the
+triangular factorization is potentially exact depending on the
+parameters chosen while at thousands of parallel tasks, the global
+triangular factors differ signficantly from the true factorization. As
+a result, more iterations are required at higher levels of parallelism
+to converge the system and will ultimately degrade overall scalability
+of the system with respect to total wall time to converge.
+
+MCSA preconditioned with ILUT was used to solve the fuel assembly
+problem presented in the previous section for a 1-group $SP_1$
+discretization. Unlike the Jacobi preconditioned strategy, convergence
+was achieved with ILUT preconditioning. To study convergence
+sensitivity to ILUT parameters, the fill level and drop tolerance were
+parametrically varied with the number of iterations to converge
+recorded along with the maximum number of non-zero entries observed in
+all matrix rows. To provide some sparsity to the factorization, the
+ILUT drop tolerance was used to drop elements in the extracted inverse
+factors. For each calculation, the number of iterations required to
+converge reported was for the first eigenvalue iteration with
+\sn{3}{4} histories at each MCSA iteration to compute the Monte Carlo
+correction.
 
 \subsection{Sparse Approximate Inverse Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
+Explicit formation of the preconditioner inverse is requirement of
+MCSA preconditioning.
 
 \subsection{SPAINV Improved ILUT Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
