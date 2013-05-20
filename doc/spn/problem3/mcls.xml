@@ -7,18 +7,18 @@
         <ParameterList name = "MCSA">
           <Parameter name="Fixed Point Type" type="string" value="Richardson"/>
           <Parameter name="MC Type" type="string" value="Adjoint"/>
-          <Parameter name="Estimator Type" type="string" value="Expected Value"/>
+          <Parameter name="Estimator Type" type="string" value="Collision"/>
           <Parameter name="Number of Sets" type="int" value="1"/>
           <Parameter name="Reproducible MC Mode" type="bool" value="false"/>
           <Parameter name="Overlap Size" type="int" value="0"/>
           <Parameter name="Weight Cutoff" type="double" value="1.0e-4"/>
-          <Parameter name="Set Number of Histories" type="int" value="25000"/>
+          <Parameter name="Set Number of Histories" type="int" value="30000"/>
           <Parameter name="Iteration Print Frequency" type="int" value="1"/>
           <Parameter name="Richardson Relaxation" type="double" value="1.0"/>
           <Parameter name="Neumann Relaxation" type="double" value="1.0"/>
           <Parameter name="Absorption Probability" type="double" value="0.0"/>
-          <Parameter name="Domain Filter Tolerance" type="double" value="1.0e-8"/>
-          <Parameter name="Domain Fill Value" type="int" value="5000"/>
+          <Parameter name="Domain Filter Tolerance" type="double" value="0.0"/>
+          <Parameter name="Domain Fill Value" type="int" value="10000"/>
           <Parameter name="Domain Weight Recovery" type="double" value="0.0"/>
         </ParameterList>
         <ParameterList name = "Fixed Point">
@@ -38,7 +38,7 @@
         </ParameterList>
         <ParameterList name="ILUT">
           <Parameter name="fact: ilut level-of-fill" type="double" value="1.5"/>
-          <Parameter name="fact: drop tolerance" type="double" value="1.0e-4"/>
+          <Parameter name="fact: drop tolerance" type="double" value="5.0e-3"/>
         </ParameterList>
         <ParameterList name="ParaSails">
           <Parameter name="ParaSails: Threshold" type="double" value="0.05"/>
