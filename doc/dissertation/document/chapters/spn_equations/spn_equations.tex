@@ -623,7 +623,7 @@ elements reduced to $2 \times 2 \times 2$ to show the blocks generated
 by the discretization.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=3in]{chapters/spn_equations/group1.png}
+    \includegraphics[width=4in]{chapters/spn_equations/group1.png}
   \end{center}
   \caption{\textbf{Sparsity pattern for 1-group $SP_7$
       discretization.} \textit{A $2\times 2 \times 2$ element mesh was
@@ -632,7 +632,7 @@ by the discretization.
 \end{figure}
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=3in]{chapters/spn_equations/group10ds.png}
+    \includegraphics[width=4in]{chapters/spn_equations/group10ds.png}
   \end{center}
   \caption{\textbf{Sparsity pattern for 10-group $SP_7$ discretization
       with downscatter only.} \textit{A $2\times 2 \times 2$ element
@@ -642,7 +642,7 @@ by the discretization.
 \end{figure}
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=3in]{chapters/spn_equations/group10us.png}
+    \includegraphics[width=4in]{chapters/spn_equations/group10us.png}
   \end{center}
   \caption{\textbf{Sparsity pattern for 10-group $SP_7$ discretization
       with downscatter and upscatter.} \textit{A $2\times 2 \times 2$ element
@@ -661,6 +661,8 @@ Eq~(\ref{eq:A_block_matrix}) are readily apparent. Our first attempt
 at preconditioning this system will be to use the point Jacobi
 preconditioning from \S\ref{subsubsec:basic_mcsa_preconditioning} due
 to this diagonal form.
+
+\clearpage
 
 \subsection{Point Jacobi Spectral Analysis Results}
 \label{subsec:spn_analysis_results}
@@ -1045,7 +1047,7 @@ the first eigenvalue iteration using 25,000 stochastic histories at
 every iteration for the adjoint Neumann-Ulam solve.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/block_jacobi_res.pdf}
+    \includegraphics[width=6in]{chapters/spn_equations/block_jacobi_res.pdf}
   \end{center}
   \caption{\textbf{Residual infinity norm vs. iteration for the block
       Jacobi preconditioned MCSA solve during the first eigenvalue
@@ -1068,7 +1070,7 @@ residual infinity norm as a function of iteration for the Richardson
 linear solve in the first eigenvalue iteration.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/block_jacobi_rich_res.pdf}
+    \includegraphics[width=6in]{chapters/spn_equations/block_jacobi_rich_res.pdf}
   \end{center}
   \caption{\textbf{Residual infinity norm vs. iteration for the block
       Jacobi preconditioned Richardson solve during the first
@@ -1245,7 +1247,7 @@ factor and flux spectrum within the $SP_N$ eigenvalue scheme for more
 difficult problems like the fuel assembly, making the method unusable.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/breakdown_iterations.pdf}
+    \includegraphics[width=6in]{chapters/spn_equations/breakdown_iterations.pdf}
   \end{center}
   \caption{\textbf{Iterations required to converge as a function of
       spectral radius for the neutron diffusion problem.} \textit{The
@@ -1256,7 +1258,7 @@ difficult problems like the fuel assembly, making the method unusable.
 \end{figure}
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/breakdown_histories.pdf}
+    \includegraphics[width=6in]{chapters/spn_equations/breakdown_histories.pdf}
   \end{center}
   \caption{\textbf{Histories per DOF required to converge as a
       function of spectral radius for the neutron diffusion problem.}
@@ -1287,7 +1289,7 @@ to move the eigenvalue spectrum of the $SP_N$ problem into a regime in
 which MCSA is more applicable and in which performance is improved.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/breakdown_time.pdf}
+    \includegraphics[width=6in]{chapters/spn_equations/breakdown_time.pdf}
   \end{center}
   \caption{\textbf{CPU time per history as a function of spectral
       radius for the neutron diffusion problem.} \textit{As the
@@ -1377,6 +1379,44 @@ factors. For each calculation, the number of iterations required to
 converge reported was for the first eigenvalue iteration with
 \sn{3}{4} histories at each MCSA iteration to compute the Monte Carlo
 correction.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/ilut_iterations.pdf}
+  \end{center}
+  \caption{\textbf{Number of MCSA iterations required to converge the
+      second eigenvalue iteration for the fuel assembly problem as a
+      function of ILUT drop tolerance.} \textit{Each colored curve
+      represents the iteration behavior for a different ILUT fill
+      level. Fill levels of 1.5, 2.0, 2.5, and 3.0 were used.}}
+  \label{fig:ilut_iterations}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/ilut_size.pdf}
+  \end{center}
+  \caption{\textbf{Maximum number of non-zero entries observed for all
+      rows in the composite linear operator for the fuel assembly
+      problem given as a function of ILUT drop tolerance.}
+    \textit{Each colored curve represents the row size for a different
+      ILUT fill level. Fill levels of 1.5, 2.0, 2.5, and 3.0 were
+      used.}}
+  \label{fig:ilut_size}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/ilut_quality.pdf}
+  \end{center}
+  \caption{\textbf{ILUT preconditioning quality metric for the fuel
+      assembly problem given as a function of ILUT drop tolerance.}
+    \textit{Each colored curve represents the quality metric behavior
+      for a different ILUT fill level. Fill levels of 1.5, 2.0, 2.5,
+      and 3.0 were used.}}
+  \label{fig:ilut_quality}
+\end{figure}
+
+\clearpage
 
 \subsection{Sparse Approximate Inverse Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
