@@ -1421,18 +1421,19 @@ row in the system. As observed in Figure~\ref{fig:ilut_size},
 performing the explicit preconditioning yields composite linear
 operators with $O(1,000)$ elements in a row for all combinations of
 fill level and drop tolerance, over 10\% of the row size for this
-particular. This massive number of row entires, observed for a
+particular. This massive number of row entries, observed for a
 significant fraction of rows in the system, creates several
 problems. First, sparsity is completely destroyed with each state in
-the system now coupled to over 10\% of the states in the system
-through the composite matrix. This means that Monte Carlo sampling
-tables will be large, requiring significant memory to store them and a
-substantial overhead in the sampling procedure during transport. In
-addition, the matrix-matrix multiply operations required to build the
-composite operator see significant performance losses due to the
-amount of data that must be handled. In parallel, losing sparsity
-severely inhibits performance where now parallel operations require
-communications amongst orders of magnitude more processors.
+the system now coupled to over 10\% of the total states in the system
+through the composite iteration matrix. This means that Monte Carlo
+sampling tables will be large, requiring significant memory to store
+them and a substantial overhead in the sampling procedure during
+transport. In addition, the matrix-matrix multiply operations required
+to build the composite operator see significant performance losses due
+to the amount of data that must be handled. In parallel, losing
+sparsity severely inhibits performance where now parallel operations
+require communications amongst orders of magnitude more processors for
+nearest-neighbor type algorithms.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/spn_equations/ilut_size.pdf}
@@ -1454,8 +1455,9 @@ required to converge the problem desired. For Monte Carlo
 calculations, this improved performance is balanced by the creation of
 a dense composite system and we seek to reduce the number of non-zero
 entries to a minimum value in order to lower the amount of coupling
-amongst states in the system. Given these two objectives, the
-following metric is proposed:
+amongst states in the system and reduce the amount of memory used
+along with the potentially latency overhead. Given these two
+objectives, the following metric is proposed:
 \begin{equation}
   \text{Quality Metric} = (\text{\# iterations})*(\text{maximum \# of
     non-zero values})\:,
@@ -1494,13 +1496,13 @@ $||\mathbf{b}||_1 \neq 0$.
 
 \subsection{Sparse Approximate Inverse Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
-Explicit formation of the preconditioner inverse is requirement of the
-chosen MCSA preconditioning strategy. As a result, although ILUT
+Explicit formation of the preconditioner inverse is a requirement of
+the chosen MCSA preconditioning strategy. As a result, although ILUT
 preconditioning provided excellent iterative performance, a
 significant time penalty is paid to extract the inverse of the
 triangular factors through $N$ triangular solves. In addition, this
 explicit inversion yielded a composite linear operator that was dense,
-requiring modification of the system in order to achieve marginal
+requiring modification of the system in order to achieve better
 scalability. Sparse approximate inverse (SPAINV) preconditioning is a
 technique that may potentially alleviate both of these constraints at
 the cost of reduced iterative performance. The method produces a
@@ -1513,22 +1515,22 @@ Frobenius norm of the residual matrix \citep{saad_iterative_2003}:
 \end{equation}
 where the inverse preconditioning matrix $\mathbf{M}$ minimizes the
 norm on the right and $\mathbf{e}_j$ and $\mathbf{m}_j$ are the
-$j^{th}$ columns of the identity and preconditioning matrix
+$j^{th}$ columns of the identity and preconditioning matrices
 respectively. Here, $\mathbf{M}$ is the actual inverse of the
 preconditioner and is formed directly by the algorithm. On the right
 hand side of Eq~(\ref{eq:frobenius_norm_min}), the Frobenius norm is
 represented as a effective sum of $N$ linear system residual norms. A
 few iterations of a subspace method or other iterative scheme can be
-used to effectively solve these systems and yield the columns of the
-approximate preconditioning matrix. At each iteration, tolerance
-values are used to eliminate the components of each $\mathbf{m}_j$
-column to maintain the desired level of sparsity. In addition, a
-sparsity pattern can be predetermined and enforced during this
-process. By using the norm minimization strategy instead of a
-factorization such as ILUT, parallel results are reproduced regardless
-of parallel problem size, meaning that a serial computation will
-converge in the same number of iterations as a computation with
-thousands of cores.
+used to effectively solve these systems to a loose tolerance and yield
+the columns of the approximate preconditioning matrix. At each
+iteration, threshold values are used to eliminate the components of
+each $\mathbf{m}_j$ column to maintain the desired level of
+sparsity. In addition, a sparsity pattern can be predetermined and
+enforced during this process. By using the norm minimization strategy
+instead of a factorization such as ILUT, parallel results are
+reproduced regardless of parallel problem size, meaning that a serial
+computation will converge in the same number of iterations as a
+computation with thousands of cores.
 
 MCSA preconditioned with SPAINV was used to solve the fuel assembly
 problem as with ILUT for a 1-group $SP_1$ discretization. To study
