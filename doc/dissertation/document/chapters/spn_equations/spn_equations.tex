@@ -1493,6 +1493,31 @@ problem is changing, however, we expect the same convergence behavior
 for all source vectors $\mathbf{b} \in \mathbb{R}^{N}$ where
 $||\mathbf{b}||_1 \neq 0$.
 
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/ilut_rda_iterations.pdf}
+  \end{center}
+  \caption{\textbf{Number of MCSA iterations required to converge the
+      second eigenvalue iteration for the fuel assembly problem with
+      ILUT preconditioning as a function of reduced domain
+      approximation fill level.}  \textit{The largest fill level
+      presented is that using the ILUT parameters that gave the best
+      results with the approximation.}}
+  \label{fig:ilut_rda_iterations}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/ilut_rda_quality.pdf}
+  \end{center}
+  \caption{\textbf{ILUT preconditioning quality metric for the fuel
+      assembly problem given as a function of reduced domain
+      approximation fill level.}  \textit{The largest fill level
+      presented is that using the ILUT parameters that gave the best
+      results with the approximation.}}
+  \label{fig:ilut_rda_quality}
+\end{figure}
+
 \clearpage
 
 \subsection{Sparse Approximate Inverse Preconditioning}
@@ -1560,9 +1585,9 @@ sparsity pattern was varied from 3 to 7 with convergence of the fuel
 assembly problem not achieved for smaller level values. Compared to
 ILUT preconditioning, at higher levels we see comparable iterative
 performance with a relative invariance to the threshold value. The
-threshold did have a significant effect on the time required to
-generate the preconditioner with a threshold of 0.001 over an order of
-magnitude slower than a threshold of 0.01 due to the inclusion of a
+threshold did have a significant effect, however, on the time required
+to generate the preconditioner with a threshold of 0.001 over an order
+of magnitude slower than a threshold of 0.01 due to the inclusion of a
 significant number of extra values in the input operator. In addition
 to comparable iterative performance, the sparsity of the composite
 operator is greatly improved with nearly an order of magnitude
@@ -1618,6 +1643,31 @@ the preconditioner grows in size.
   \label{fig:spainv_quality}
 \end{figure}
 
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/spainv_rda_iterations.pdf}
+  \end{center}
+  \caption{\textbf{Number of MCSA iterations required to converge the
+      second eigenvalue iteration for the fuel assembly problem with
+      SPAINV preconditioning as a function of reduced domain
+      approximation fill level.}  \textit{The largest fill level
+      presented is that using the SPAINV parameters that gave the best
+      results with the approximation.}}
+  \label{fig:spainv_rda_iterations}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/spainv_rda_quality.pdf}
+  \end{center}
+  \caption{\textbf{SPAINV preconditioning quality metric for the fuel
+      assembly problem given as a function of reduced domain
+      approximation fill level.}  \textit{The largest fill level
+      presented is that using the SPAINV parameters that gave the best
+      results with the approximation.}}
+  \label{fig:spainv_rda_quality}
+\end{figure}
+
 \clearpage
 
 \subsection{SPAINV Improved ILUT Preconditioning}
@@ -1650,6 +1700,39 @@ lower-order sparsity pattern to be used with SPAINV, giving more
 sparsity in the resulting composite linear operator while maintaining
 good iterative performance.
 
+MCSA preconditioned with SPAINV-ILUT was also used to solve the same
+fuel assembly problem as with the other preconditioners for the same
+1-group $SP_1$ discretization. To study convergence sensitivity to
+SPAINV parameters, the ILUT drop tolerance and ILUT fill level were
+parametrically varied with the number of iterations to converge the
+second eigenvalue iteration for the fuel assembly problem recorded
+along with the maximum number of non-zero entries observed in all
+matrix rows for the left/right preconditioned composite linear
+operator. For each calculation, the number of iterations required to
+converge reported was for the first eigenvalue iteration with
+\sn{3}{4} histories at each MCSA iteration to compute the Monte Carlo
+correction using the adjoint collision estimator. All SPAINV-ILUT
+calculations reported here were performed on a single
+CPU.
+
+Figure~\ref{fig:spainv_ilut_iterations} gives the number of iterations
+required to converge as a function of ILUT drop tolerance for ILUT
+fill levels of 1.5, 2.0, 3.0, 4.0 and 5.0 with a fixed SPAINV
+threshold of 1.0 and sparsity level of 1. Threshold values and higher
+resorted in loss of convergence while larger sparsity levels resulted
+in composite operator that was too dense. At smaller levels of fill,
+the benefits of using an addition step of SPAINV preconditioning are
+readily observed with the number of iterations required to converge
+cut in half for large drop tolerances. For smaller drop tolerances and
+higher ILUT levels of fill, the additional step of SPAINV
+preconditioning offers marginal improvement to iterative
+performance. As shown in Figure~\ref{fig:spainv_ilut_size},
+because ILUT is used in the preconditioning sequence, sparsity is
+again loss with only marginally improved non-zero entry numbers due to
+the application of the SPAINV threshold. As a result, the quality
+metrics given by Figure~\ref{fig:spainv_ilut_quality} are only
+marginally better than those observed for ILUT preconditioning and
+much larger than the SPAINV quality metric values.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/spn_equations/psilut_iterations.pdf}
