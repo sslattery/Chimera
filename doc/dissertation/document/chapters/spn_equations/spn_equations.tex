@@ -1403,10 +1403,11 @@ problem with a drop tolerance larger than \sn{1}{-3}.
     \includegraphics[width=6in]{chapters/spn_equations/ilut_iterations.pdf}
   \end{center}
   \caption{\textbf{Number of MCSA iterations required to converge the
-      second eigenvalue iteration for the fuel assembly problem as a
-      function of ILUT drop tolerance.} \textit{Each colored curve
-      represents the iteration behavior for a different ILUT fill
-      level. Fill levels of 1.5, 2.0, 2.5, and 3.0 were used.}}
+      second eigenvalue iteration for the fuel assembly problem with
+      ILUT preconditioning as a function of ILUT drop tolerance.}
+    \textit{Each colored curve represents the iteration behavior for a
+      different ILUT fill level. Fill levels of 1.5, 2.0, 2.5, and 3.0
+      were used.}}
   \label{fig:ilut_iterations}
 \end{figure}
 
@@ -1440,10 +1441,10 @@ nearest-neighbor type algorithms.
   \end{center}
   \caption{\textbf{Maximum number of non-zero entries observed for all
       rows in the composite linear operator for the fuel assembly
-      problem given as a function of ILUT drop tolerance.}
-    \textit{Each colored curve represents the row size for a different
-      ILUT fill level. Fill levels of 1.5, 2.0, 2.5, and 3.0 were
-      used.}}
+      problem with ILUT preconditioning given as a function of ILUT
+      drop tolerance.}  \textit{Each colored curve represents the row
+      size for a different ILUT fill level. Fill levels of 1.5, 2.0,
+      2.5, and 3.0 were used.}}
   \label{fig:ilut_size}
 \end{figure}
 
@@ -1526,11 +1527,15 @@ the columns of the approximate preconditioning matrix. At each
 iteration, threshold values are used to eliminate the components of
 each $\mathbf{m}_j$ column to maintain the desired level of
 sparsity. In addition, a sparsity pattern can be predetermined and
-enforced during this process. By using the norm minimization strategy
-instead of a factorization such as ILUT, parallel results are
-reproduced regardless of parallel problem size, meaning that a serial
-computation will converge in the same number of iterations as a
-computation with thousands of cores.
+enforced during this process. For the SPAINV implementation used for
+this work, the sparsity pattern was defined by levels such that a
+level of $N$ for an input operator $\mathbf{A}$ will generate a
+preconditioning matrix $\mathbf{M}$ with the same sparsity pattern as
+$\mathbf{A}^{N+1}$. By using the norm minimization strategy instead of
+a factorization such as ILUT, parallel results are reproduced
+regardless of parallel problem size, meaning that a serial computation
+will converge in the same number of iterations as a computation with
+thousands of cores.
 
 MCSA preconditioned with SPAINV was used to solve the fuel assembly
 problem as with ILUT for a 1-group $SP_1$ discretization. To study
@@ -1546,15 +1551,82 @@ to compute the Monte Carlo correction using the adjoint collision
 estimator. All SPAINV calculations reported here were performed on a
 single CPU.
 
+Figure~\ref{fig:spainv_iterations} gives the number of MCSA iterations
+needed to converge the fuel assembly problem and
+Figure~\ref{fig:spainv_size} the maximum number of non-zero entries
+per row obeserved in the composite linear operator as a function the
+SPAINV threshold. For this analysis, the number of levels in the
+sparsity pattern was varied from 3 to 7 with convergence of the fuel
+assembly problem not achieved for smaller level values. Compared to
+ILUT preconditioning, at higher levels we see comparable iterative
+performance with a relative invariance to the threshold value. The
+threshold did have a significant effect on the time required to
+generate the preconditioner with a threshold of 0.001 over an order of
+magnitude slower than a threshold of 0.01 due to the inclusion of a
+significant number of extra values in the input operator. In addition
+to comparable iterative performance, the sparsity of the composite
+operator is greatly improved with nearly an order of magnitude
+reduction in number of non-zero entries per row for lower level
+values.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/spainv_iterations.pdf}
+  \end{center}
+  \caption{\textbf{Number of MCSA iterations required to converge the
+      second eigenvalue iteration for the fuel assembly problem with
+      SPAINV preconditioning as a function of SPAINV threshold.}
+    \textit{Each colored curve represents the iteration behavior for a
+      different SPAINV level pattern. Levels of 3, 4, 5, 6, and 7 were
+      used.}}
+  \label{fig:spainv_iterations}
+\end{figure}
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/spainv_size.pdf}
+  \end{center}
+  \caption{\textbf{Maximum number of non-zero entries observed for all
+      rows in the composite linear operator for the fuel assembly
+      problem with SPAINV preconditioning given as a function of
+      SPAINV threshold.}  \textit{Each colored curve represents the
+      row size for a different SPAINV level pattern. Levels of 3, 4,
+      5, 6, and 7 were used.}}
+  \label{fig:spainv_size}
+\end{figure}
+
+With the comparable iterative performance and improved sparsity,
+SPAINV preconditioning should then have a more favorable quality
+metric than ILUT preconditioning. Figure~\ref{fig:spainv_quality}
+gives the quality metric as a function of the threshold value for each
+of the sparsity levels computed. Not only do we see an improved
+quality metric over ILUT preconditioning (about an order of magnitude
+less), but we also note that the ideal sparsity level is not the largest
+nor the smallest. In fact, the largest and smallest levels (3 and 7)
+performed the worst in terms of the quality metric with a level of 4
+performing the best. When CPU time to generate the preconditioner is
+considered, 4 is the clear choice for this problem as more time is
+required to do the approximate inversion as the sparsity pattern of
+the preconditioner grows in size.
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/spainv_quality.pdf}
+  \end{center}
+  \caption{\textbf{SPAINV preconditioning quality metric for the fuel
+      assembly problem given as a function of SPAINV threshold.}
+    \textit{Each colored curve represents the quality metric behavior
+      for a different SPAINV level pattern. Levels of 3, 4, 5, 6, and
+      7 were used.}}
+  \label{fig:spainv_quality}
+\end{figure}
+
 \clearpage
 
 \subsection{SPAINV Improved ILUT Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
 For improved convergence over SPAINV preconditioning while maintaining
 sparsity, ILUT preconditioning may be improved through an additional
-application of SPAINV \citep{saad_iterative_2003}. For the ILUT
-preconditioning case we have the following linear problem to solve for
-the substituted variable:
+application of SPAINV (SPAINV-ILUT)\citep{saad_iterative_2003}. For
+the ILUT preconditioning case we have the following linear problem to
+solve for the substituted variable:
 \begin{equation}
   \mathbf{L}^{-1} \mathbf{A} \mathbf{U}^{-1} \mathbf{u} =
   \mathbf{L}^{-1} \mathbf{b}\:.
@@ -1577,6 +1649,44 @@ Doing this permits a smaller fill level to be used with ILUT and a
 lower-order sparsity pattern to be used with SPAINV, giving more
 sparsity in the resulting composite linear operator while maintaining
 good iterative performance.
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/psilut_iterations.pdf}
+  \end{center}
+  \caption{\textbf{Number of MCSA iterations required to converge the
+      second eigenvalue iteration for the fuel assembly problem with
+      SPAINV-ILUT preconditioning as a function of ILUT drop
+      tolerance.} \textit{Each colored curve represents the row size
+      for a different ILUT fill level. Fill levels of 1.5, 2.0, 3.0,
+      4.0, and 5.0 were used.}}
+  \label{fig:spainv_ilut_iterations}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/psilut_size.pdf}
+  \end{center}
+  \caption{\textbf{Maximum number of non-zero entries observed for all
+      rows in the composite linear operator for the fuel assembly
+      problem with SPAINV-ILUT preconditioning given as a function of
+      ILUT drop tolerance.}  \textit{Each colored curve represents the
+      row size for a different ILUT fill level. Fill levels of 1.5,
+      2.0, 3.0, 4.0 and 5.0 were used.}}
+ \label{fig:spainv_ilut_size}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/psilut_quality.pdf}
+  \end{center}
+  \caption{\textbf{SPAINV-ILUT preconditioning quality metric for the
+      fuel assembly problem given as a function of ILUT drop
+      tolerance.}  \textit{Each colored curve represents the row size
+      for a different ILUT fill level. Fill levels of 1.5, 2.0, 3.0,
+      4.0 and 5.0 were used.}}
+  \label{fig:spainv_ilut_quality}
+\end{figure}
 
 \clearpage
 
