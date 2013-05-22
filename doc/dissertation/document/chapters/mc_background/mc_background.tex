@@ -1411,12 +1411,13 @@ the Monte Carlo method to generate the correction within MCSA by
 removing terms in the iteration matrix through some predetermined
 criteria in order to recover sparsity. As the Neumann-Ulam scheme is a
 stochastic realization of multiple matrix-vector multiplies, the
-criteria we choose should be based on maintain those elements that
-will make the largest contributions to the multiplication. For each
-row in the preconditioned system, we can then apply the reduced domain
-approximation to eliminate those elements that either fall below a
-specified tolerance level, keep the $N$ largest elements in a row, or
-both giving:
+criteria we choose should be based on maintaining those elements that
+will make the largest contributions to the multiplication and
+therefore recover as much of the original product as possible. For
+each row in the preconditioned system, we can then apply the reduced
+domain approximation to eliminate those elements that either fall
+below a specified tolerance level, keep the $N$ largest elements in
+each row, or both giving:
 \begin{subequations}
   \begin{gather}
     \ve{x}^{k+1/2} = \ve{x}^k + \ve{r}^k\:,\\
@@ -1433,6 +1434,8 @@ reduced domain approximation has been applied to the iteration matrix
 in the Monte Carlo method. If enough of the terms in the original
 iteration matrix have been maintained, the character of the original
 iteration matrix should be retained and continue to accelerate the
-iterative scheme.
+iterative scheme. The effects of the reduced domain approximation on
+systems where it is required due to the explicit preconditioning
+strategy chosen will be presented in Chapter~\ref{ch:spn_equations}.
 
 \clearpage
