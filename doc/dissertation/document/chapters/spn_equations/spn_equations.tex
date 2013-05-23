@@ -1304,13 +1304,13 @@ which MCSA is more applicable and in which performance is improved.
 \section{Advanced Preconditioning Strategies}
 \label{subsec:spn_advanced_preconditioning}
 For the fuel assembly criticality problem presented in the previous
-section, the spectral radius was near one and in a regime in which
-MCSA breakdown is observed. In this regime the number of stochastic
-histories required to converge MCSA increases rapidly and the
-resulting poor performance is compounded by those histories being
-increasingly expensive to compute. To overcome this difficulty,
-advanced preconditioning strategies for the $SP_N$ problem are
-required beyond simple Jacobi methods that can reduce the spectral
+section, the spectral radius was near one using Jacobi preconditioning
+and in a regime in which MCSA breakdown is observed. In this regime
+the number of stochastic histories required to converge MCSA increases
+rapidly and the resulting poor performance is compounded by those
+histories being increasingly expensive to compute. To overcome this
+difficulty, advanced preconditioning strategies for the $SP_N$ problem
+are required beyond simple Jacobi methods that can reduce the spectral
 radius into a region of better MCSA performance. Several modern
 algebraic preconditioning strategies will be presented here and used
 within the explicit preconditioning framework given by
@@ -1378,7 +1378,7 @@ matrix rows for the left/right preconditioned composite linear
 operator. To provide some sparsity to the factorization, the ILUT drop
 tolerance was used to drop elements in the extracted inverse
 triangular factors. For each calculation, the number of iterations
-required to converge reported was for the first eigenvalue iteration
+required to converge reported was for the secon deigenvalue iteration
 with \sn{3}{4} histories at each MCSA iteration to compute the Monte
 Carlo correction using the adjoint collision estimator. All ILUT
 calculations reported here were performed on a single CPU and
@@ -1421,9 +1421,9 @@ linear operator will contain only a maximum of 7 non-zero entries per
 row in the system. As observed in Figure~\ref{fig:ilut_size},
 performing the explicit preconditioning yields composite linear
 operators with $O(1,000)$ elements in a row for all combinations of
-fill level and drop tolerance, over 10\% of the row size for this
-particular. This massive number of row entries, observed for a
-significant fraction of rows in the system, creates several
+fill level and drop tolerance, over 10\% of the total row size for
+this particular problem. This large number of row entries, observed
+for a significant fraction of rows in the system, creates several
 problems. First, sparsity is completely destroyed with each state in
 the system now coupled to over 10\% of the total states in the system
 through the composite iteration matrix. This means that Monte Carlo
@@ -1460,8 +1460,8 @@ amongst states in the system and reduce the amount of memory used
 along with the potentially latency overhead. Given these two
 objectives, the following metric is proposed:
 \begin{equation}
-  \text{Quality Metric} = (\text{\# iterations})*(\text{maximum \# of
-    non-zero values})\:,
+  \text{Quality Metric} = (\text{\# iterations}) \times (\text{maximum
+    \# of non-zero values})\:,
 \end{equation}
 where the highest quality preconditioning is one that minimizes this
 metric. For the ILUT preconditioned data provided,
@@ -1504,11 +1504,12 @@ significant time penalty is paid to extract the inverse of the
 triangular factors through $N$ triangular solves. In addition, this
 explicit inversion yielded a composite linear operator that was dense,
 requiring modification of the system in order to achieve better
-scalability. Sparse approximate inverse (SPAINV) preconditioning is a
-technique that may potentially alleviate both of these constraints at
-the cost of reduced iterative performance. The method produces a
-sparse approximation of the inverse matrix directly by minimizing the
-Frobenius norm of the residual matrix \citep{saad_iterative_2003}:
+scalability and Monte Carlo performance. Sparse approximate inverse
+(SPAINV) preconditioning is a technique that may potentially alleviate
+both of these constraints at the cost of reduced iterative
+performance. The method produces a sparse approximation of the inverse
+matrix directly by minimizing the Frobenius norm of the residual
+matrix \citep{saad_iterative_2003}:
 \begin{equation}
   || \mathbf{I} - \mathbf{A} \mathbf{M} ||^2_F =
   \sum_{j=1}^N ||\mathbf{e}_j - \mathbf{A} \mathbf{m}_j||^2_2 \:,
@@ -1545,11 +1546,11 @@ number of iterations to converge the second eigenvalue iteration for
 the fuel assembly problem recorded along with the maximum number of
 non-zero entries observed in all matrix rows for the left/right
 preconditioned composite linear operator. For each calculation, the
-number of iterations required to converge reported was for the first
-eigenvalue iteration with \sn{3}{4} histories at each MCSA iteration
-to compute the Monte Carlo correction using the adjoint collision
-estimator. All SPAINV calculations reported here were performed on a
-single CPU.
+number of iterations required to converge reported was for the second
+eigenvalue iteration also with \sn{3}{4} histories at each MCSA
+iteration to compute the Monte Carlo correction using the adjoint
+collision estimator. All SPAINV calculations reported here were
+performed on a single CPU.
 
 Figure~\ref{fig:spainv_iterations} gives the number of MCSA iterations
 needed to converge the fuel assembly problem and
@@ -1622,11 +1623,12 @@ the preconditioner grows in size.
 
 \subsection{SPAINV Improved ILUT Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
-For improved convergence over SPAINV preconditioning while maintaining
-sparsity, ILUT preconditioning may be improved through an additional
-application of SPAINV (SPAINV-ILUT)\citep{saad_iterative_2003}. For
-the ILUT preconditioning case we have the following linear problem to
-solve for the substituted variable:
+As a means to improve convergence over using only SPAINV
+preconditioning, ILUT preconditioning may be improved through an
+additional application of SPAINV
+(SPAINV-ILUT)\citep{saad_iterative_2003}. For the ILUT preconditioning
+case we have the following linear problem to solve for the substituted
+variable:
 \begin{equation}
   \mathbf{L}^{-1} \mathbf{A} \mathbf{U}^{-1} \mathbf{u} =
   \mathbf{L}^{-1} \mathbf{b}\:.
@@ -1646,39 +1648,47 @@ giving a new preconditioned system:
   \label{eq:ilut_spainv}
 \end{equation}
 Doing this permits a smaller fill level to be used with ILUT and a
-lower-order sparsity pattern to be used with SPAINV, giving more
-sparsity in the resulting composite linear operator while maintaining
-good iterative performance.
+lower-order sparsity pattern to be used with SPAINV, giving marginally
+more sparsity in the resulting composite linear operator while
+maintaining good iterative performance.
 
 MCSA preconditioned with SPAINV-ILUT was also used to solve the same
 fuel assembly problem as with the other preconditioners for the same
 1-group $SP_1$ discretization. To study convergence sensitivity to
-SPAINV parameters, the ILUT drop tolerance and ILUT fill level were
-parametrically varied with the number of iterations to converge the
-second eigenvalue iteration for the fuel assembly problem recorded
+SPAINV-ILUT parameters, the ILUT drop tolerance and ILUT fill level
+were parametrically varied with the number of iterations to converge
+the second eigenvalue iteration for the fuel assembly problem recorded
 along with the maximum number of non-zero entries observed in all
 matrix rows for the left/right preconditioned composite linear
-operator. For each calculation, the number of iterations required to
-converge reported was for the first eigenvalue iteration with
-\sn{3}{4} histories at each MCSA iteration to compute the Monte Carlo
-correction using the adjoint collision estimator. All SPAINV-ILUT
-calculations reported here were performed on a single
-CPU.
+operator. SPAINV parameters for the data presented here were fixed as
+it was found that the preconditioning quality was largely insenstive
+to their variation. In addition, the fact that SPAINV is being used to
+preconditioned a problem already preconditioned with ILUT means that
+the input matrix sparsity pattern is already somewhat dense and large
+SPAINV levels would result in an even denser system. Therefore, a
+smaller sparsity pattern level will be used for this
+preconditioning. For each calculation, the number of iterations
+required to converge reported was for the second eigenvalue iteration.
+Again, \sn{3}{4} histories are used at each MCSA iteration to compute
+the Monte Carlo correction using the adjoint collision estimator. All
+SPAINV-ILUT calculations reported here were performed on a single CPU.
 
 Figure~\ref{fig:spainv_ilut_iterations} gives the number of iterations
 required to converge as a function of ILUT drop tolerance for ILUT
 fill levels of 1.5, 2.0, 3.0, 4.0 and 5.0 with a fixed SPAINV
-threshold of 1.0 and sparsity level of 1. Threshold values and higher
-resorted in loss of convergence while larger sparsity levels resulted
-in composite operator that was too dense. At smaller levels of fill,
-the benefits of using an addition step of SPAINV preconditioning are
-readily observed with the number of iterations required to converge
-cut in half for large drop tolerances. For smaller drop tolerances and
-higher ILUT levels of fill, the additional step of SPAINV
-preconditioning offers marginal improvement to iterative
-performance. As shown in Figure~\ref{fig:spainv_ilut_size},
+threshold of 1.0 and sparsity level of 1. Threshold values higher than
+1.0 resulted in a loss of convergence and lower values did not
+significantly affect performance. Larger sparsity levels resulted in a
+composite operator that was too dense and a prohibitive amount of CPU
+time required to compute the preconditioner. At smaller levels of
+fill, the benefits of using an additional step of SPAINV
+preconditioning are readily observed with the number of iterations
+required to converge cut in half for large drop tolerances. For
+smaller drop tolerances and higher ILUT levels of fill, the additional
+step of SPAINV preconditioning offers marginal improvement to
+iterative performance. As shown in Figure~\ref{fig:spainv_ilut_size},
 because ILUT is used in the preconditioning sequence, sparsity is
-again loss with only marginally improved non-zero entry numbers due to
+again lost with only marginally improved non-zero entry numbers due to
 the application of the SPAINV threshold. As a result, the quality
 metrics given by Figure~\ref{fig:spainv_ilut_quality} are only
 marginally better than those observed for ILUT preconditioning and
@@ -1725,17 +1735,67 @@ much larger than the SPAINV quality metric values.
 
 \subsection{Applying the Reduced Domain Approximation}
 \label{subsec:spn_prec_rda}
-For each preconditioning technique presented, although convergence was
-achieved a primary concern is the number of non-zero states in each
-row of the system generated by the explicit preconditioning
-strategy. In many cases, orders of magnitude more matrix elements were
-generated resulting in poor scalability for domain decomposed
-algorithms. As outlined in
+For each preconditioning technique presented convergence was achieved
+for the single fuel assembly problem. However, a primary concern is
+the number of non-zero states in each row of the system generated by
+the explicit preconditioning strategy. In many cases, orders of
+magnitude more matrix elements were generated resulting in poor
+scalability for domain decomposed algorithms and overall performance
+issues for Monte Carlo. As outlined in
 \S~\ref{subsec:reduced_domain_approximation}, the reduced domain
 approximation may be used as a mechanism to potentially alleviate this
 problem by filtering elements of the composite matrix in each row that
 fall below a certain threshold value or by maintaining the largest $N$
 elements in each row where $N$ is a designated fill level.
+
+For the ILUT, SPAINV, and SPAINV-ILUT preconditioning strategies the
+reduced domain approximation will be applied to reduce the density of
+the composite linear operator to more manageable levels. For each
+preconditioner, the parameters that achieved the best quality metric
+results from the previous analysis were used with the reduced domain
+threshold was set to \sn{1}{-10} in order to eliminate any exceedingly
+small values from the matrix (generally this is simply removing
+non-zero elements within the floating point tolerance of zero). The
+reduced domain fill level was then varied, starting with the largest
+non-zero entries per row value observed for each of the
+preconditioning types in order to assess its effects relative to the
+case where no reduced domain approximation was applied. 
+
+Figure~\ref{fig:rda_iterations} gives the number of iterations
+required to converge for each preconditioner type as a function of
+reduced domain fill level. Figure~\ref{fig:rda_quality} gives the
+corresponding quality metric for each data point where the number of
+non-zero entries used to compute the metric is equivalent to the
+reduced domain fill level. We first note the SPAINV preconditioning
+alone is signficantly more sensitive to the reduction in domain size
+over the ILUT-based methods, although the preconditioner was of
+$O(100)$ non-zero entries per row without any approximation
+applied. For the ILUT-based methods, performance was significantly
+better with converge achieved in less than 40 MCSA iterations with
+only 10 non-zero entries in each row (vs. 7 non-zero entries for the
+case with no preconditioning). SPAINV-ILUT iterative performance was
+marginally better than ILUT alone for all reduced domain fill
+levels. However, it should be noted that the ILUT level of fill used
+for the ILUT only calculations was set to 4 for this case while the
+SPAINV-ILUT preconditioner used an ILUT level of fill of 5 and
+therefore the marginally better performance is more likely a result of
+this addition of fill rather than the extra SPAINV
+preconditioning. Looking at the quality metric data, we see a nice
+power-law reduction in the quality metric as a function of the reduced
+domain fill level, achieving 2 orders of magnitude reduction in the
+quality metric for the ILUT-based preconditioning methods.
+
+Although applying the reduced domain approximation results in a
+successful recovery of sparsity for the Monte Carlo problem while
+maintaining good convergence properties, there is still an issue of
+forming the composite operator before applying the approximation and
+potentially generating the transpose of this operator in the case of
+the adjoint Monte Carlo method. Because of this, memory and scaling
+issues may still be observed when building the Monte Carlo problem. In
+addition, the expensive extraction of the inverse of the
+preconditioning operators for the explicit scheme creates a
+significant cost in overall performance. Future work in this area
+should be considerate of these important components of the algorithm.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1743,10 +1803,10 @@ elements in each row where $N$ is a designated fill level.
   \end{center}
   \caption{\textbf{Number of MCSA iterations required to converge the
       second eigenvalue iteration for the fuel assembly problem with
-      preconditioning as a function of reduced domain approximation
-      fill level.}  \textit{The largest fill level for each
-      preconditioning presented is that using the parameters that gave
-      the best results without the approximation.}}
+      each preconditioning as a function of reduced domain
+      approximation fill level.}  \textit{The largest fill level for
+      each preconditioning presented is that using the parameters that
+      gave the best results without the approximation.}}
   \label{fig:rda_iterations}
 \end{figure}
 
@@ -1773,11 +1833,12 @@ adjusted to improve convergence:
   \mathbf{x} = \mathbf{x} + \omega \mathbf{r}\:,
   \label{eq:richardson_relaxation}
 \end{equation}
-where $\omega$ is the relaxation parameter. Analogously, these
-relaxation parameter techniques can be applied to Monte Carlo to
-improve convergence as demonstrated by Dimov
-\citep{dimov_new_1998}. In this case, building an iteration matrix
-from Eq~(\ref{eq:richardson_relaxation} gives:
+where $\omega$ is the relaxation parameter. This is effectively a form
+of preconditioning where the system is being scaled on the left by a
+constant value in all rows. Analogously, these relaxation parameter
+techniques can be applied to Monte Carlo to improve convergence as
+demonstrated by Dimov \citep{dimov_new_1998}. In this case, building
+an iteration matrix from Eq~(\ref{eq:richardson_relaxation}) gives:
 \begin{equation}
   \mathbf{H} = \mathbf{I} - \omega \mathbf{A}\:,
   \label{eq:relaxed_iteration_matrix}
@@ -1786,7 +1847,7 @@ with the probabilities and weights for the Monte Carlo game
 appropriately scaled. By inspection, such a scaling is a simple form
 of preconditioning on the left where all rows in the system are scaled
 by the same scalar parameter. For MCSA, we can stage this scheme with
-two separate relaxation parameters: one for the outer Richardson
+two separate relaxation parameters; one for the outer Richardson
 iteration and one for the inner Monte Carlo solve:
 \begin{subequations}
   \begin{gather}
