@@ -1,0 +1,762 @@
+===============================
+Denovo-Neutronics, CASL VERA-CS
+(C) ORNL, Batelle, 2007-2012
+-------------------------------
+Release      :    denovo-3_0_0
+Release date :      3-MAR-2011
+Build date   :        20130523
+===============================
+WARNING: Dancoff Factors are disabled!!
+>>> Building/partitioning mesh
+>>> Setting up cross section builder
+>>> Building the cross sections
+************************************************************
+
+Database for Neutronics_PL->INSILICO has:
+        15 integer entries
+         4 double entries
+        11 bool entries
+         8 string entries
+         0 vector<int> entries
+         2 vector<double> entries
+         5 nested database entries
+
+============================================================
+Entries in                  Neutronics_PL->INSILICO database
+============================================================
+integer entries
+------------------------------------------------------------
+                           Pn_order                        1
+                          SPN_order                        1
+                cell_broadcast_size                      289
+                          dimension                        3
+                        first_group                        0
+                         last_group                        0
+                            max_itr                      100
+                               mesh                        2
+                     neutron_groups                        1
+                       num_blocks_i                        1
+                       num_blocks_j                        1
+                         num_groups                        1
+                           num_sets                        1
+                       num_z_blocks                        1
+                      photon_groups                        0
+
+double entries
+------------------------------------------------------------
+                     axial_geom_eps                     0.01
+                        max_delta_z                       30
+                    radial_geom_eps                   0.0001
+                          tolerance                    1e-06
+
+bool entries
+------------------------------------------------------------
+                            adjoint                        0
+                    cell_homogenize                        1
+                 create_unique_pins                        0
+                          do_output                        1
+                       do_transport                        1
+                        downscatter                        0
+                iterate_downscatter                        0
+                partition_upscatter                        0
+                 spn_block_matrices                        0
+               store_fulcrum_string                        1
+                       use_symmetry                        1
+
+string entries
+------------------------------------------------------------
+                           boundary                  reflect
+                       eigen_solver                  arnoldi
+                             eq_set                   spn_fv
+                        mat_library            casl_comp.sh5
+                          mg_solver                   krylov
+                       problem_name               neutronics
+                       problem_type               EIGENVALUE
+                         xs_librarylib252_HetBondOneAbs-NoAbsSigP
+
+vector<double> entries                (number of elements)
+------------------------------------------------------------
+                        neutron_bnd                        2
+                     new_grp_bounds                        1
+
+============================================================
+Entries in                                 boundary database
+============================================================
+vector<int> entries                   (number of elements)
+------------------------------------------------------------
+                            reflect                        6
+
+============================================================
+Entries in                            eigenvalue_db database
+============================================================
+integer entries
+------------------------------------------------------------
+                         Block Size                        1
+                   diagnostic_level                        2
+                           subspace                       20
+
+double entries
+------------------------------------------------------------
+              Convergence Tolerance                    1e-06
+                       L2_tolerance                    1e-05
+
+string entries
+------------------------------------------------------------
+                        eigensolver                  Arnoldi
+
+============================================================
+Entries in                               quadrature database
+============================================================
+integer entries
+------------------------------------------------------------
+                           Pn_order                        1
+                  azimuthals_octant                        8
+                      polars_octant                        6
+
+bool entries
+------------------------------------------------------------
+                            adjoint                        0
+
+string entries
+------------------------------------------------------------
+                          quad_type                       qr
+
+============================================================
+Entries in                                  silo_db database
+============================================================
+bool entries
+------------------------------------------------------------
+                       mixing_table                        0
+
+string entries
+------------------------------------------------------------
+                        silo_output                       p3
+
+============================================================
+Entries in                             upscatter_db database
+============================================================
+integer entries
+------------------------------------------------------------
+                         aztec_diag                        0
+                       aztec_output                        0
+
+double entries
+------------------------------------------------------------
+                          tolerance                    1e-05
+
+************************************************************
+=================================
+     GLOBAL MESH DESCRIPTION     
+=================================
+num cells I                    18
+num cells J                    18
+num cells K                    62
+I-Partitions                    1
+J-Partitions                    1
+K-Blocks                        1
+---------------------------------
+Num blocks                      1
+Num cells                   20088
+=================================
+      MATERIAL DESCRIPTION       
+=================================
+Clean materials                34
+Mixed materials              3981
+=================================
+ MULTILEVEL ENERGY DECOMPOSITION 
+=================================
+num groups                      1
+num solved groups               1
+num upscatter groups            0
+---------------------------------
+num sets                        1
+num replicated groups           0
+num decomposed groups           1
+---------------------------------
+Domains (blocks X sets)         1
+=================================
+       MEMORY  ALLOCATIONS       
+=================================
+state                       20088
+(GB)                   1.4967e-04
+DoF                         20088
+(GB)                   1.4967e-04
+=================================
+>>> Running the transport calculation
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 0
+The block size is         1
+The number of blocks is   20
+The current basis size is 0
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 0
+
+CURRENT RITZ VALUES             
+   [ NONE COMPUTED ]
+
+================================================================================
+
+ 
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.063072 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 1
+The block size is         1
+The number of blocks is   20
+The current basis size is 1
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 1
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   8.617097e-01 + i   0.000000e+00        4.254152e-01
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.0604498 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 2
+The block size is         1
+The number of blocks is   20
+The current basis size is 2
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 2
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.097342e+00 + i   0.000000e+00        3.737523e-02
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.0603151 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 3
+The block size is         1
+The number of blocks is   20
+The current basis size is 3
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 3
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.102743e+00 + i   0.000000e+00        1.927841e-02
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 13 cumulative iterations for an average of 13 iterations/RHS and total CPU time of 0.0656891 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 4
+The block size is         1
+The number of blocks is   20
+The current basis size is 4
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 4
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.103695e+00 + i   0.000000e+00        1.517648e-02
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.060622 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 5
+The block size is         1
+The number of blocks is   20
+The current basis size is 5
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 5
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.104424e+00 + i   0.000000e+00        1.118359e-02
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.060292 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 6
+The block size is         1
+The number of blocks is   20
+The current basis size is 6
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 6
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.104844e+00 + i   0.000000e+00        9.450329e-03
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.060183 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 7
+The block size is         1
+The number of blocks is   20
+The current basis size is 7
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 7
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105203e+00 + i   0.000000e+00        8.592360e-03
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.06006 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 8
+The block size is         1
+The number of blocks is   20
+The current basis size is 8
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 8
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105689e+00 + i   0.000000e+00        7.029117e-03
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 13 cumulative iterations for an average of 13 iterations/RHS and total CPU time of 0.0652041 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 9
+The block size is         1
+The number of blocks is   20
+The current basis size is 9
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 9
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105480e+00 + i   0.000000e+00        5.655309e-03
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 13 cumulative iterations for an average of 13 iterations/RHS and total CPU time of 0.0652759 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 10
+The block size is         1
+The number of blocks is   20
+The current basis size is 10
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 10
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105940e+00 + i   0.000000e+00        5.041821e-03
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.0603199 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 11
+The block size is         1
+The number of blocks is   20
+The current basis size is 11
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 11
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105859e+00 + i   0.000000e+00        4.476655e-03
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 13 cumulative iterations for an average of 13 iterations/RHS and total CPU time of 0.0656409 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 12
+The block size is         1
+The number of blocks is   20
+The current basis size is 12
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 12
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105645e+00 + i   0.000000e+00        3.781062e-03
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.06025 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 13
+The block size is         1
+The number of blocks is   20
+The current basis size is 13
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 13
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.106143e+00 + i   0.000000e+00        2.794702e-03
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 13 cumulative iterations for an average of 13 iterations/RHS and total CPU time of 0.0652361 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 14
+The block size is         1
+The number of blocks is   20
+The current basis size is 14
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 14
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105846e+00 + i   0.000000e+00        2.199641e-03
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 13 cumulative iterations for an average of 13 iterations/RHS and total CPU time of 0.0652001 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 15
+The block size is         1
+The number of blocks is   20
+The current basis size is 15
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 15
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.106039e+00 + i   0.000000e+00        1.507929e-03
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.060303 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 16
+The block size is         1
+The number of blocks is   20
+The current basis size is 16
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 16
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105986e+00 + i   0.000000e+00        8.736433e-04
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 13 cumulative iterations for an average of 13 iterations/RHS and total CPU time of 0.0654011 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 17
+The block size is         1
+The number of blocks is   20
+The current basis size is 17
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 17
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105986e+00 + i   0.000000e+00        4.821271e-04
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.060281 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 18
+The block size is         1
+The number of blocks is   20
+The current basis size is 18
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 18
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105971e+00 + i   0.000000e+00        2.161431e-04
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.0604808 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 19
+The block size is         1
+The number of blocks is   20
+The current basis size is 19
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 19
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105992e+00 + i   0.000000e+00        6.816748e-05
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 13 cumulative iterations for an average of 13 iterations/RHS and total CPU time of 0.0652909 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 20
+The block size is         1
+The number of blocks is   20
+The current basis size is 20
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 20
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105983e+00 + i   0.000000e+00        2.327029e-05
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 13 cumulative iterations for an average of 13 iterations/RHS and total CPU time of 0.0652061 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 21
+The block size is         1
+The number of blocks is   20
+The current basis size is 21
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 21
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105987e+00 + i   0.000000e+00        8.142024e-06
+
+================================================================================
+
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 21
+The block size is         1
+The number of blocks is   20
+The current basis size is 1
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 21
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105987e+00 + i   0.000000e+00        8.142024e-06
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.0602489 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 22
+The block size is         1
+The number of blocks is   20
+The current basis size is 2
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 22
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105986e+00 + i   0.000000e+00        4.570797e-06
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.0602462 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 23
+The block size is         1
+The number of blocks is   20
+The current basis size is 3
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 23
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105987e+00 + i   0.000000e+00        3.192553e-06
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 12 cumulative iterations for an average of 12 iterations/RHS and total CPU time of 0.0601661 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 24
+The block size is         1
+The number of blocks is   20
+The current basis size is 4
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 24
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105986e+00 + i   0.000000e+00        1.874039e-06
+
+================================================================================
+
+  
+AztecOO solver converged on m = 1 RHSs using 13 cumulative iterations for an average of 13 iterations/RHS and total CPU time of 0.065321 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 25
+The block size is         1
+The number of blocks is   20
+The current basis size is 5
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 25
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.105987e+00 + i   0.000000e+00        9.216064e-07
+
+================================================================================
+
+>>> Preparing to do SILO output to 1 concurrent files.
+
+===================
+Final Timing Report
+===================
+
+                                 Routine   Max Fraction   Min Fraction
+======================================================================
+                         Mesh_generation     3.6099e-04     3.6099e-04
+                                  Output     9.4544e-04     9.4544e-04
+                                   Setup     9.6720e-01     9.6720e-01
+                               Transport     3.1782e-02     3.1782e-02
+                           XS_generation     8.0037e-01     8.0037e-01
+======================================================================
+
+Total execution time : 5.0666e+01 seconds.
