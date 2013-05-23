@@ -1,0 +1,1074 @@
+===============================
+Denovo-Neutronics, CASL VERA-CS
+(C) ORNL, Batelle, 2007-2012
+-------------------------------
+Release      :    denovo-3_0_0
+Release date :      3-MAR-2011
+Build date   :        20130523
+===============================
+WARNING: Dancoff Factors are disabled!!
+>>> Building/partitioning mesh
+>>> Setting up cross section builder
+>>> Building the cross sections
+MCLS PSILUT: Generating ILUT Factorization
+MCLS PSILUT: Inverting ILUT Factorization
+MCLS PSILUT: Building Composite Operator
+MCLS PSILUT: Computing SPAINV Preconditioner
+MCLS PSILUT: Building Composite Left Preconditioner
+MCLS PSILUT: Complete in 585.627 seconds.
+************************************************************
+
+Database for Neutronics_PL->INSILICO has:
+        15 integer entries
+         4 double entries
+        11 bool entries
+         8 string entries
+         0 vector<int> entries
+         2 vector<double> entries
+         5 nested database entries
+
+============================================================
+Entries in                  Neutronics_PL->INSILICO database
+============================================================
+integer entries
+------------------------------------------------------------
+                           Pn_order                        1
+                          SPN_order                        1
+                cell_broadcast_size                      289
+                          dimension                        3
+                        first_group                        0
+                         last_group                        1
+                            max_itr                      100
+                               mesh                        2
+                     neutron_groups                        2
+                       num_blocks_i                        1
+                       num_blocks_j                        1
+                         num_groups                        2
+                           num_sets                        1
+                       num_z_blocks                        1
+                      photon_groups                        0
+
+double entries
+------------------------------------------------------------
+                     axial_geom_eps                     0.01
+                        max_delta_z                       30
+                    radial_geom_eps                   0.0001
+                          tolerance                    1e-06
+
+bool entries
+------------------------------------------------------------
+                            adjoint                        0
+                    cell_homogenize                        1
+                 create_unique_pins                        0
+                          do_output                        1
+                       do_transport                        1
+                        downscatter                        0
+                iterate_downscatter                        0
+                partition_upscatter                        0
+                 spn_block_matrices                        0
+               store_fulcrum_string                        1
+                       use_symmetry                        1
+
+string entries
+------------------------------------------------------------
+                           boundary                  reflect
+                       eigen_solver                  arnoldi
+                             eq_set                   spn_fv
+                        mat_library            casl_comp.sh5
+                          mg_solver                   krylov
+                       problem_name               neutronics
+                       problem_type               EIGENVALUE
+                         xs_librarylib252_HetBondOneAbs-NoAbsSigP
+
+vector<double> entries                (number of elements)
+------------------------------------------------------------
+                        neutron_bnd                        3
+                     new_grp_bounds                        2
+
+============================================================
+Entries in                                 boundary database
+============================================================
+vector<int> entries                   (number of elements)
+------------------------------------------------------------
+                            reflect                        6
+
+============================================================
+Entries in                            eigenvalue_db database
+============================================================
+integer entries
+------------------------------------------------------------
+                         Block Size                        1
+                   diagnostic_level                        2
+                           subspace                       20
+
+double entries
+------------------------------------------------------------
+              Convergence Tolerance                    1e-06
+                       L2_tolerance                    1e-05
+
+string entries
+------------------------------------------------------------
+                        eigensolver                  Arnoldi
+
+============================================================
+Entries in                               quadrature database
+============================================================
+integer entries
+------------------------------------------------------------
+                           Pn_order                        1
+                  azimuthals_octant                        8
+                      polars_octant                        6
+
+bool entries
+------------------------------------------------------------
+                            adjoint                        0
+
+string entries
+------------------------------------------------------------
+                          quad_type                       qr
+
+============================================================
+Entries in                                  silo_db database
+============================================================
+bool entries
+------------------------------------------------------------
+                       mixing_table                        0
+
+string entries
+------------------------------------------------------------
+                        silo_output                       p3
+
+============================================================
+Entries in                             upscatter_db database
+============================================================
+integer entries
+------------------------------------------------------------
+                         aztec_diag                        0
+                       aztec_output                        0
+
+double entries
+------------------------------------------------------------
+                          tolerance                    1e-05
+
+************************************************************
+=================================
+     GLOBAL MESH DESCRIPTION     
+=================================
+num cells I                    18
+num cells J                    18
+num cells K                    62
+I-Partitions                    1
+J-Partitions                    1
+K-Blocks                        1
+---------------------------------
+Num blocks                      1
+Num cells                   20088
+=================================
+      MATERIAL DESCRIPTION       
+=================================
+Clean materials                34
+Mixed materials              3981
+=================================
+ MULTILEVEL ENERGY DECOMPOSITION 
+=================================
+num groups                      2
+num solved groups               2
+num upscatter groups            2
+---------------------------------
+num sets                        1
+num replicated groups           0
+num decomposed groups           2
+---------------------------------
+Domains (blocks X sets)         1
+=================================
+       MEMORY  ALLOCATIONS       
+=================================
+state                       40176
+(GB)                   2.9933e-04
+DoF                         40176
+(GB)                   2.9933e-04
+=================================
+>>> Running the transport calculation
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 0
+The block size is         1
+The number of blocks is   20
+The current basis size is 0
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 0
+
+CURRENT RITZ VALUES             
+   [ NONE COMPUTED ]
+
+================================================================================
+
+COMPOSITE SIZE 5252
+MCSA / Minimal Residual Iteration 10: Residual = 2.435074e-03
+MCSA / Minimal Residual Iteration 20: Residual = 3.004555e-05
+MCSA / Minimal Residual Iteration 30: Residual = 4.330848e-07
+MCSA / Minimal Residual Iteration 38: Residual = 6.354737e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 38 cumulative iterations for an average of 38 iterations/RHS and with total CPU time of 160.587 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 1
+The block size is         1
+The number of blocks is   20
+The current basis size is 1
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 1
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   3.545754e+00 + i   0.000000e+00        3.747155e+00
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 2.579870e-03
+MCSA / Minimal Residual Iteration 20: Residual = 2.373933e-05
+MCSA / Minimal Residual Iteration 30: Residual = 5.831551e-08
+MCSA / Minimal Residual Iteration 33: Residual = 7.938919e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 33 cumulative iterations for an average of 33 iterations/RHS and with total CPU time of 8.45303 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 2
+The block size is         1
+The number of blocks is   20
+The current basis size is 2
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 2
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.101894e+00 + i   0.000000e+00        4.678722e-02
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 8.571723e-03
+MCSA / Minimal Residual Iteration 20: Residual = 5.639674e-05
+MCSA / Minimal Residual Iteration 30: Residual = 3.219537e-07
+MCSA / Minimal Residual Iteration 36: Residual = 9.112283e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 36 cumulative iterations for an average of 36 iterations/RHS and with total CPU time of 9.23054 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 3
+The block size is         1
+The number of blocks is   20
+The current basis size is 3
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 3
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.153808e+00 + i   0.000000e+00        2.377374e-02
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.415029e-03
+MCSA / Minimal Residual Iteration 20: Residual = 1.169464e-05
+MCSA / Minimal Residual Iteration 30: Residual = 7.822744e-08
+MCSA / Minimal Residual Iteration 33: Residual = 9.084477e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 33 cumulative iterations for an average of 33 iterations/RHS and with total CPU time of 8.40422 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 4
+The block size is         1
+The number of blocks is   20
+The current basis size is 4
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 4
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.154791e+00 + i   0.000000e+00        1.654478e-02
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 2.755137e-03
+MCSA / Minimal Residual Iteration 20: Residual = 1.282967e-05
+MCSA / Minimal Residual Iteration 30: Residual = 5.776780e-08
+MCSA / Minimal Residual Iteration 34: Residual = 6.096961e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 34 cumulative iterations for an average of 34 iterations/RHS and with total CPU time of 8.78676 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 5
+The block size is         1
+The number of blocks is   20
+The current basis size is 5
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 5
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.151646e+00 + i   0.000000e+00        1.536017e-02
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 7.344856e-04
+MCSA / Minimal Residual Iteration 20: Residual = 4.711476e-06
+MCSA / Minimal Residual Iteration 30: Residual = 1.705230e-08
+MCSA / Minimal Residual Iteration 31: Residual = 4.878989e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 31 cumulative iterations for an average of 31 iterations/RHS and with total CPU time of 7.96084 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 6
+The block size is         1
+The number of blocks is   20
+The current basis size is 6
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 6
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.153849e+00 + i   0.000000e+00        1.193566e-02
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.094468e-03
+MCSA / Minimal Residual Iteration 20: Residual = 1.517035e-05
+MCSA / Minimal Residual Iteration 30: Residual = 2.001953e-07
+MCSA / Minimal Residual Iteration 35: Residual = 9.495492e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 35 cumulative iterations for an average of 35 iterations/RHS and with total CPU time of 8.98996 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 7
+The block size is         1
+The number of blocks is   20
+The current basis size is 7
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 7
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.154413e+00 + i   0.000000e+00        9.193508e-03
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.374539e-03
+MCSA / Minimal Residual Iteration 20: Residual = 1.148001e-05
+MCSA / Minimal Residual Iteration 30: Residual = 1.919475e-06
+MCSA / Minimal Residual Iteration 34: Residual = 5.870174e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 34 cumulative iterations for an average of 34 iterations/RHS and with total CPU time of 8.5323 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 8
+The block size is         1
+The number of blocks is   20
+The current basis size is 8
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 8
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155108e+00 + i   0.000000e+00        8.194691e-03
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 6.816473e-04
+MCSA / Minimal Residual Iteration 20: Residual = 3.113287e-06
+MCSA / Minimal Residual Iteration 30: Residual = 1.059669e-08
+MCSA / Minimal Residual Iteration 31: Residual = 4.715663e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 31 cumulative iterations for an average of 31 iterations/RHS and with total CPU time of 7.8703 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 9
+The block size is         1
+The number of blocks is   20
+The current basis size is 9
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 9
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.154455e+00 + i   0.000000e+00        7.206749e-03
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 4.283551e-04
+MCSA / Minimal Residual Iteration 20: Residual = 1.691049e-06
+MCSA / Minimal Residual Iteration 29: Residual = 7.310900e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 29 cumulative iterations for an average of 29 iterations/RHS and with total CPU time of 7.43637 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 10
+The block size is         1
+The number of blocks is   20
+The current basis size is 10
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 10
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.154630e+00 + i   0.000000e+00        5.866513e-03
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 9.189030e-05
+MCSA / Minimal Residual Iteration 20: Residual = 9.782301e-07
+MCSA / Minimal Residual Iteration 30: Residual = 8.486229e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 30 cumulative iterations for an average of 30 iterations/RHS and with total CPU time of 7.70074 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 11
+The block size is         1
+The number of blocks is   20
+The current basis size is 11
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 11
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155644e+00 + i   0.000000e+00        4.914500e-03
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.107094e-03
+MCSA / Minimal Residual Iteration 20: Residual = 6.124647e-06
+MCSA / Minimal Residual Iteration 30: Residual = 5.245265e-08
+MCSA / Minimal Residual Iteration 36: Residual = 4.958194e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 36 cumulative iterations for an average of 36 iterations/RHS and with total CPU time of 9.17506 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 12
+The block size is         1
+The number of blocks is   20
+The current basis size is 12
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 12
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.154881e+00 + i   0.000000e+00        4.130164e-03
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 8.095650e-04
+MCSA / Minimal Residual Iteration 20: Residual = 2.110209e-06
+MCSA / Minimal Residual Iteration 30: Residual = 1.289484e-08
+MCSA / Minimal Residual Iteration 31: Residual = 7.321372e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 31 cumulative iterations for an average of 31 iterations/RHS and with total CPU time of 7.94593 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 13
+The block size is         1
+The number of blocks is   20
+The current basis size is 13
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 13
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.154926e+00 + i   0.000000e+00        3.536459e-03
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 2.023070e-03
+MCSA / Minimal Residual Iteration 20: Residual = 1.445929e-05
+MCSA / Minimal Residual Iteration 30: Residual = 6.241537e-08
+MCSA / Minimal Residual Iteration 35: Residual = 3.774309e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 35 cumulative iterations for an average of 35 iterations/RHS and with total CPU time of 8.88196 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 14
+The block size is         1
+The number of blocks is   20
+The current basis size is 14
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 14
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155546e+00 + i   0.000000e+00        2.537776e-03
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 7.601986e-04
+MCSA / Minimal Residual Iteration 20: Residual = 2.450251e-06
+MCSA / Minimal Residual Iteration 30: Residual = 1.308095e-07
+MCSA / Minimal Residual Iteration 31: Residual = 5.968530e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 31 cumulative iterations for an average of 31 iterations/RHS and with total CPU time of 7.78232 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 15
+The block size is         1
+The number of blocks is   20
+The current basis size is 15
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 15
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155150e+00 + i   0.000000e+00        1.704971e-03
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.785359e-04
+MCSA / Minimal Residual Iteration 20: Residual = 8.382988e-07
+MCSA / Minimal Residual Iteration 29: Residual = 9.412278e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 29 cumulative iterations for an average of 29 iterations/RHS and with total CPU time of 7.4541 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 16
+The block size is         1
+The number of blocks is   20
+The current basis size is 16
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 16
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155143e+00 + i   0.000000e+00        1.086035e-03
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 3.567126e-04
+MCSA / Minimal Residual Iteration 20: Residual = 2.334935e-06
+MCSA / Minimal Residual Iteration 30: Residual = 1.263207e-08
+MCSA / Minimal Residual Iteration 33: Residual = 3.062743e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 33 cumulative iterations for an average of 33 iterations/RHS and with total CPU time of 8.42393 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 17
+The block size is         1
+The number of blocks is   20
+The current basis size is 17
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 17
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155295e+00 + i   0.000000e+00        5.430475e-04
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.150407e-03
+MCSA / Minimal Residual Iteration 20: Residual = 4.722886e-06
+MCSA / Minimal Residual Iteration 30: Residual = 4.973962e-08
+MCSA / Minimal Residual Iteration 34: Residual = 6.488085e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 34 cumulative iterations for an average of 34 iterations/RHS and with total CPU time of 8.72019 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 18
+The block size is         1
+The number of blocks is   20
+The current basis size is 18
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 18
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155238e+00 + i   0.000000e+00        2.269339e-04
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 2.900917e-04
+MCSA / Minimal Residual Iteration 20: Residual = 6.607891e-07
+MCSA / Minimal Residual Iteration 29: Residual = 6.636343e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 29 cumulative iterations for an average of 29 iterations/RHS and with total CPU time of 7.44752 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 19
+The block size is         1
+The number of blocks is   20
+The current basis size is 19
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 19
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155228e+00 + i   0.000000e+00        9.442436e-05
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.169167e-04
+MCSA / Minimal Residual Iteration 20: Residual = 6.236347e-07
+MCSA / Minimal Residual Iteration 29: Residual = 7.038068e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 29 cumulative iterations for an average of 29 iterations/RHS and with total CPU time of 7.42183 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 20
+The block size is         1
+The number of blocks is   20
+The current basis size is 20
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 20
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155240e+00 + i   0.000000e+00        2.914371e-05
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 3.165023e-04
+MCSA / Minimal Residual Iteration 20: Residual = 1.327532e-06
+MCSA / Minimal Residual Iteration 30: Residual = 1.438007e-08
+MCSA / Minimal Residual Iteration 32: Residual = 7.632992e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 32 cumulative iterations for an average of 32 iterations/RHS and with total CPU time of 8.19389 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 21
+The block size is         1
+The number of blocks is   20
+The current basis size is 21
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 21
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155239e+00 + i   0.000000e+00        1.004185e-05
+
+================================================================================
+
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 21
+The block size is         1
+The number of blocks is   20
+The current basis size is 1
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 21
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155239e+00 + i   0.000000e+00        1.004185e-05
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.046172e-03
+MCSA / Minimal Residual Iteration 20: Residual = 3.834534e-06
+MCSA / Minimal Residual Iteration 30: Residual = 1.164753e-08
+MCSA / Minimal Residual Iteration 33: Residual = 3.399715e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 33 cumulative iterations for an average of 33 iterations/RHS and with total CPU time of 8.45051 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 22
+The block size is         1
+The number of blocks is   20
+The current basis size is 2
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 22
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155238e+00 + i   0.000000e+00        5.217510e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.540982e-04
+MCSA / Minimal Residual Iteration 20: Residual = 3.481292e-07
+MCSA / Minimal Residual Iteration 27: Residual = 9.495812e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 27 cumulative iterations for an average of 27 iterations/RHS and with total CPU time of 6.95345 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 23
+The block size is         1
+The number of blocks is   20
+The current basis size is 3
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 23
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155240e+00 + i   0.000000e+00        4.231565e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 2.190980e-03
+MCSA / Minimal Residual Iteration 20: Residual = 5.376861e-06
+MCSA / Minimal Residual Iteration 30: Residual = 5.820566e-08
+MCSA / Minimal Residual Iteration 34: Residual = 8.372299e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 34 cumulative iterations for an average of 34 iterations/RHS and with total CPU time of 8.71595 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 24
+The block size is         1
+The number of blocks is   20
+The current basis size is 4
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 24
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155237e+00 + i   0.000000e+00        4.490203e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.331796e-03
+MCSA / Minimal Residual Iteration 20: Residual = 8.843898e-06
+MCSA / Minimal Residual Iteration 30: Residual = 4.832887e-08
+MCSA / Minimal Residual Iteration 33: Residual = 8.689772e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 33 cumulative iterations for an average of 33 iterations/RHS and with total CPU time of 8.38291 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 25
+The block size is         1
+The number of blocks is   20
+The current basis size is 5
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 25
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155239e+00 + i   0.000000e+00        3.206395e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 2.632425e-03
+MCSA / Minimal Residual Iteration 20: Residual = 1.708497e-05
+MCSA / Minimal Residual Iteration 30: Residual = 4.685836e-08
+MCSA / Minimal Residual Iteration 33: Residual = 9.534318e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 33 cumulative iterations for an average of 33 iterations/RHS and with total CPU time of 8.42217 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 26
+The block size is         1
+The number of blocks is   20
+The current basis size is 6
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 26
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155238e+00 + i   0.000000e+00        4.161833e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 7.999865e-04
+MCSA / Minimal Residual Iteration 20: Residual = 4.602300e-06
+MCSA / Minimal Residual Iteration 30: Residual = 4.448432e-08
+MCSA / Minimal Residual Iteration 34: Residual = 9.514992e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 34 cumulative iterations for an average of 34 iterations/RHS and with total CPU time of 8.73544 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 27
+The block size is         1
+The number of blocks is   20
+The current basis size is 7
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 27
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155239e+00 + i   0.000000e+00        3.888605e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.401759e-04
+MCSA / Minimal Residual Iteration 20: Residual = 5.967435e-07
+MCSA / Minimal Residual Iteration 27: Residual = 7.370528e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 27 cumulative iterations for an average of 27 iterations/RHS and with total CPU time of 6.94186 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 28
+The block size is         1
+The number of blocks is   20
+The current basis size is 8
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 28
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155238e+00 + i   0.000000e+00        2.429104e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 1.506865e-03
+MCSA / Minimal Residual Iteration 20: Residual = 1.104131e-05
+MCSA / Minimal Residual Iteration 30: Residual = 8.578898e-08
+MCSA / Minimal Residual Iteration 35: Residual = 4.518551e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 35 cumulative iterations for an average of 35 iterations/RHS and with total CPU time of 9.00072 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 29
+The block size is         1
+The number of blocks is   20
+The current basis size is 9
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 29
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155239e+00 + i   0.000000e+00        2.403900e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 2.364169e-05
+MCSA / Minimal Residual Iteration 20: Residual = 1.561030e-07
+MCSA / Minimal Residual Iteration 26: Residual = 7.491115e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 26 cumulative iterations for an average of 26 iterations/RHS and with total CPU time of 6.62111 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 30
+The block size is         1
+The number of blocks is   20
+The current basis size is 10
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 30
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155238e+00 + i   0.000000e+00        2.342907e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 5.072154e-05
+MCSA / Minimal Residual Iteration 20: Residual = 2.562456e-08
+MCSA / Minimal Residual Iteration 22: Residual = 9.767732e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 22 cumulative iterations for an average of 22 iterations/RHS and with total CPU time of 5.58847 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 31
+The block size is         1
+The number of blocks is   20
+The current basis size is 11
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 31
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155239e+00 + i   0.000000e+00        3.045471e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 4.618243e-04
+MCSA / Minimal Residual Iteration 20: Residual = 2.487321e-06
+MCSA / Minimal Residual Iteration 30: Residual = 1.076047e-08
+MCSA / Minimal Residual Iteration 31: Residual = 8.624997e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 31 cumulative iterations for an average of 31 iterations/RHS and with total CPU time of 7.90043 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 32
+The block size is         1
+The number of blocks is   20
+The current basis size is 12
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 32
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155238e+00 + i   0.000000e+00        2.918513e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 6.460034e-04
+MCSA / Minimal Residual Iteration 20: Residual = 4.151280e-06
+MCSA / Minimal Residual Iteration 30: Residual = 5.209556e-08
+MCSA / Minimal Residual Iteration 35: Residual = 9.471683e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 35 cumulative iterations for an average of 35 iterations/RHS and with total CPU time of 8.93199 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 33
+The block size is         1
+The number of blocks is   20
+The current basis size is 13
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 33
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155239e+00 + i   0.000000e+00        1.988074e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 2.187288e-03
+MCSA / Minimal Residual Iteration 20: Residual = 1.787357e-05
+MCSA / Minimal Residual Iteration 30: Residual = 2.656591e-07
+MCSA / Minimal Residual Iteration 36: Residual = 7.943839e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 36 cumulative iterations for an average of 36 iterations/RHS and with total CPU time of 9.1787 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 34
+The block size is         1
+The number of blocks is   20
+The current basis size is 14
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 34
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155238e+00 + i   0.000000e+00        1.195878e-06
+
+================================================================================
+
+MCSA / Minimal Residual Iteration 10: Residual = 4.320848e-05
+MCSA / Minimal Residual Iteration 20: Residual = 3.031570e-07
+MCSA / Minimal Residual Iteration 26: Residual = 8.282666e-09
+MCLS solver "MCLS::MCSASolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 26 cumulative iterations for an average of 26 iterations/RHS and with total CPU time of 6.54197 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 35
+The block size is         1
+The number of blocks is   20
+The current basis size is 15
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 35
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.155239e+00 + i   0.000000e+00        8.720144e-07
+
+================================================================================
+
+>>> Preparing to do SILO output to 1 concurrent files.
+
+===================
+Final Timing Report
+===================
+
+                                 Routine   Max Fraction   Min Fraction
+======================================================================
+                         Mesh_generation     1.6238e-05     1.6238e-05
+                                  Output     4.6776e-05     4.6776e-05
+                                   Setup     5.9241e-01     5.9241e-01
+                               Transport     4.0754e-01     4.0754e-01
+                           XS_generation     3.8020e-02     3.8020e-02
+======================================================================
+
+Total execution time : 1.0696e+03 seconds.

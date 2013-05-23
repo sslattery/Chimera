@@ -1752,14 +1752,19 @@ For the ILUT, SPAINV, and SPAINV-ILUT preconditioning strategies the
 reduced domain approximation will be applied to reduce the density of
 the composite linear operator to more manageable levels. For each
 preconditioner, the parameters that achieved the best quality metric
-results from the previous analysis were used with the reduced domain
-threshold was set to \sn{1}{-10} in order to eliminate any exceedingly
-small values from the matrix (generally this is simply removing
-non-zero elements within the floating point tolerance of zero). The
-reduced domain fill level was then varied, starting with the largest
-non-zero entries per row value observed for each of the
-preconditioning types in order to assess its effects relative to the
-case where no reduced domain approximation was applied. 
+results from the previous analysis were used with ILUT parameters of a
+fill level of 5.0 and a drop tolerance of \sn{1}{-5}, SPAINV
+parameters of a sparsity level of 4 and a threshold of 0.1 and
+SPAINV-ILUT with ILUT parameters of a fill level of 4.0 and a drop
+tolerance of \sn{1}{-5} and SPAINV parameters of a sparsity level of 1
+and a threshold of 1.0. The reduced domain threshold was set to
+\sn{1}{-10} in order to eliminate any exceedingly small values from
+the matrix (generally this is simply removing non-zero elements within
+the floating point tolerance of zero). The reduced domain fill level
+was then varied, starting with the largest non-zero entries per row
+value observed for each of the preconditioning types in order to
+assess its effects relative to the case where no reduced domain
+approximation was applied.
 
 Figure~\ref{fig:rda_iterations} gives the number of iterations
 required to converge for each preconditioner type as a function of
