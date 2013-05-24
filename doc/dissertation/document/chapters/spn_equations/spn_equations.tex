@@ -1888,3 +1888,44 @@ orders of magnitude more states at every transition event.
 \section{MCSA Comparison to Conventional Methods}
 \label{sec:spn_comparison}
 
+\subsection{Results}
+\label{subsec:spn_comparison_results}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/solver_iters.pdf}
+  \end{center}
+  \caption{\textbf{Average number of iterations required to converge
+      each eigenvalue iteration for the fuel assembly problem as a
+      function of energy groups.} \textit{All methods were
+      preconditioned with identical ILUT paramters. For MCSA, several
+      variations of fixed point iterations and estimators were used.}}
+  \label{fig:comparison_iterations}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/solver_time.pdf}
+  \end{center}
+  \caption{\textbf{Average CPU time per iteration in seconds for the
+      fuel assembly problem as a function of energy groups.}
+    \textit{All linear solver iterations over all eigenvalue
+      iterations were used to compute the averge. All methods were
+      preconditioned with identical ILUT paramters. For MCSA, several
+      variations of fixed point iterations and estimators were used.}}
+  \label{fig:comparison_time}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/solver_p_time.pdf}
+  \end{center}
+  \caption{\textbf{Average CPU time per iteration in seconds for the
+      fuel assembly problem as a function of energy groups with
+      preconditioning time included for the MCSA methods.}
+    \textit{All linear solver iterations over all eigenvalue
+      iterations were used to compute the averge. All methods were
+      preconditioned with identical ILUT paramters. For MCSA, several
+      variations of fixed point iterations and estimators were used.}}
+  \label{fig:comparison_prec_time}
+\end{figure}
