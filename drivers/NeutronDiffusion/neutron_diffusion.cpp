@@ -139,9 +139,9 @@ int main( int argc, char * argv[] )
     else if ( "Belos" == plist->get<std::string>("Solver Package") )
     {
         Teuchos::RCP<Teuchos::ParameterList> belosList = Teuchos::parameterList();
-        belosList->set( "Maximum Iterations", 1000 );
+        belosList->set( "Maximum Iterations", plist->get<int>("Maximum Iterations") );
+        belosList->set( "Convergence Tolerance", plist->get<double>("Convergence Tolerance") );
         belosList->set( "Maximum Restarts", 10 );
-        belosList->set( "Convergence Tolerance", 1.0e-8 );
         int verbosity = Belos::Errors + Belos::Warnings + 
                         Belos::TimingDetails + Belos::StatusTestDetails;
         belosList->set( "Verbosity", verbosity );
