@@ -3,7 +3,7 @@
 <ParameterList name="Linear Solver Types">
   <ParameterList name="AztecOO">
     <ParameterList name="Forward Solve">
-      <Parameter name="Tolerance" type="double" value="1e-6"/>
+      <Parameter name="Tolerance" type="double" value="1e-8"/>
       <ParameterList name="AztecOO Settings">
         <Parameter name="Aztec Solver" type="string" value="BiCGStab"/>
         <Parameter name="Convergence Test" type="string" value="rhs"/>
@@ -19,8 +19,8 @@
     <Parameter name="Prec Type" type="string" value="ILUT"/>
     <Parameter name="Overlap" type="int" value="0"/>
     <ParameterList name="Ifpack Settings">
-      <Parameter name="fact: drop tolerance" type="double" value="5.0e-4"/>
-      <Parameter name="fact: ilut level-of-fill" type="double" value="2.0"/>
+      <Parameter name="fact: drop tolerance" type="double" value="1.0e-5"/>
+      <Parameter name="fact: ilut level-of-fill" type="double" value="5.0"/>
     </ParameterList>
   </ParameterList>
 </ParameterList>

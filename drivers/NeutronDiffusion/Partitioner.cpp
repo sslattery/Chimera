@@ -133,7 +133,7 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 	testPrecondition( plist->get<std::string>("GRID_TYPE") == "UNIFORM" );
     }
 
-    // Create th mesh.
+    // Create the mesh.
     d_mesh = Teuchos::rcp( new Mesh( global_num_i, global_num_j,
 				     global_i_min, global_j_min,
 				     global_i_max, global_j_max,

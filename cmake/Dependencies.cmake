@@ -2,6 +2,7 @@ SET(LIB_REQUIRED_DEP_PACKAGES
   Teuchos
   Tpetra
   Anasazi
+  Belos
   MCLS
 )
 
