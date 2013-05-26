@@ -151,6 +151,7 @@ int main( int argc, char * argv[] )
                                 diffusion_problem->getProblem()->getOperator(),
                                 diffusion_problem->getProblem()->getLHS(),
                                 diffusion_problem->getProblem()->getRHS() ) );
+        linear_problem->setProblem();
 
         Teuchos::RCP<Belos::SolverManager<double,MV,OP> > solver_manager;
         
