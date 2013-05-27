@@ -1,0 +1,19 @@
+#!/bin/sh
+
+#PBS -m abe
+#PBS -l nodes=13:me4170:procCore2:ppn=8
+#PBS -N run_104
+
+###Change to the PBS_O_WORKDIR
+cd $PBS_O_WORKDIR
+
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
+
+### Run coupler test
+
+mpiexec -verbose -kill -allstdin /home/zeep/stuart/builds/Chimera/Chimera/drivers/NeutronDiffusion/Chimera_Diffusion.exe --xml-in-file=run_104.xml >&run_104.out
+
+###END
+
+
+
