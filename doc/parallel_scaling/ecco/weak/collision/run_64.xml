@@ -1,13 +1,13 @@
 <ParameterList name="Neutron Diffusion">
   <!-- GRID PARAMETERS -->
-  <Parameter name="I_BLOCKS" type="int" value="4"/>
-  <Parameter name="J_BLOCKS" type="int" value="4"/>
+  <Parameter name="I_BLOCKS" type="int" value="8"/>
+  <Parameter name="J_BLOCKS" type="int" value="8"/>
   <Parameter name="X_MIN" type="double" value="0.0"/>
-  <Parameter name="X_MAX" type="double" value="200.0"/>
+  <Parameter name="X_MAX" type="double" value="156.8"/>
   <Parameter name="Y_MIN" type="double" value="0.0"/>
-  <Parameter name="Y_MAX" type="double" value="200.0"/>
-  <Parameter name="X_NUM_CELLS" type="int" value="2000"/>
-  <Parameter name="Y_NUM_CELLS" type="int" value="2000"/>
+  <Parameter name="Y_MAX" type="double" value="156.8"/>
+  <Parameter name="X_NUM_CELLS" type="int" value="1568"/>
+  <Parameter name="Y_NUM_CELLS" type="int" value="1568"/>
   <Parameter name="GRID_TYPE" type="string" value="UNIFORM"/>
   <!-- PHYSICS PARAMETERS -->
   <Parameter name="BC TYPE" type="string" value="VACUUM"/>
@@ -33,8 +33,8 @@
   <Parameter name="Maximum Iterations" type="int" value="1000"/>
   <Parameter name="Fixed Point Type" type="string" value="Richardson"/>
   <Parameter name="MC Type" type="string" value="Adjoint"/>
-  <Parameter name="Estimator Type" type="string" value="Expected Value"/>
-  <Parameter name="Set Number of Histories" type="int" value="800000"/>
+  <Parameter name="Estimator Type" type="string" value="Collision"/>
+  <Parameter name="Set Number of Histories" type="int" value="2458624"/>
   <Parameter name="Weight Cutoff" type="double" value="1.0e-2"/>
   <Parameter name="MC Check Frequency" type="int" value="1000"/>
   <Parameter name="MC Buffer Size" type="int" value="1000"/>
