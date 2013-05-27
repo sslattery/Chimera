@@ -1,0 +1,19 @@
+#!/bin/sh
+
+#PBS -m abe
+#PBS -l nodes=8:erb1010a:procCore2:ppn=8
+#PBS -N param_1024
+
+###Change to the PBS_O_WORKDIR
+cd $PBS_O_WORKDIR
+
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
+
+### Run coupler test
+
+mpiexec -verbose -kill -allstdin /home/zeep/stuart/builds/Chimera/Chimera/drivers/NeutronDiffusion/Chimera_Diffusion.exe --xml-in-file=param_1024.xml >&param_1024.out
+
+###END
+
+
+

@@ -1,7 +1,7 @@
 <ParameterList name="Neutron Diffusion">
   <!-- GRID PARAMETERS -->
-  <Parameter name="I_BLOCKS" type="int" value="8"/>
-  <Parameter name="J_BLOCKS" type="int" value="8"/>
+  <Parameter name="I_BLOCKS" type="int" value="1"/>
+  <Parameter name="J_BLOCKS" type="int" value="1"/>
   <Parameter name="X_MIN" type="double" value="0.0"/>
   <Parameter name="X_MAX" type="double" value="200.0"/>
   <Parameter name="Y_MIN" type="double" value="0.0"/>
@@ -34,7 +34,7 @@
   <Parameter name="Fixed Point Type" type="string" value="Richardson"/>
   <Parameter name="MC Type" type="string" value="Adjoint"/>
   <Parameter name="Estimator Type" type="string" value="Collision"/>
-  <Parameter name="Set Number of Histories" type="int" value="4000000"/>
+  <Parameter name="Set Number of Histories" type="int" value="4.0e6"/>
   <Parameter name="Weight Cutoff" type="double" value="1.0e-2"/>
   <Parameter name="MC Check Frequency" type="int" value="1000"/>
   <Parameter name="MC Buffer Size" type="int" value="1000"/>

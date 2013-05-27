@@ -23,7 +23,7 @@
   <Parameter name="SPLIT TYPE" type="string" value="JACOBI"/>
   <Parameter name="MC TYPE" type="string" value="ADJOINT"/>
   <Parameter name="WEIGHT CUTOFF" type="double" value="1e-004"/>
-  <Parameter name="HISTORIES PER STAGE" type="int" value="10000"/>
+  <Parameter name="HISTORIES PER STAGE" type="int" value="4000000"/>
   <Parameter name="NUM OVERLAP" type="int" value="0"/>
   <Parameter name="OUTPUT_FILENAME" type="string" value="diffusion_out.vtk"/>
   <!-- GENERAL SOLVER PARAMETERS -->
@@ -33,11 +33,11 @@
   <Parameter name="Maximum Iterations" type="int" value="1000"/>
   <Parameter name="Fixed Point Type" type="string" value="Richardson"/>
   <Parameter name="MC Type" type="string" value="Adjoint"/>
-  <Parameter name="Estimator Type" type="string" value="Collision"/>
-  <Parameter name="Set Number of Histories" type="int" value="4000000"/>
+  <Parameter name="Estimator Type" type="string" value="Expected Value"/>
+  <Parameter name="Set Number of Histories" type="int" value="500000"/>
   <Parameter name="Weight Cutoff" type="double" value="1.0e-2"/>
-  <Parameter name="MC Check Frequency" type="int" value="1000"/>
-  <Parameter name="MC Buffer Size" type="int" value="1000"/>
+  <Parameter name="MC Check Frequency" type="int" value="2048"/>
+  <Parameter name="MC Buffer Size" type="int" value="512"/>
   <Parameter name="Iteration Print Frequency" type="int" value="10"/>
   <Parameter name="Reproducible MC Mode" type="bool" value="false"/>
   <Parameter name="Overlap Size" type="int" value="0"/>
