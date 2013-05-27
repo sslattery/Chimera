@@ -121,7 +121,7 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
     }
     if ( my_i_block == (int) d_num_blocks.first-1 )
     {
-        testInvariant( global_i_max == i_edges.back() );
+        testInvariant( std::abs(global_i_max-i_edges.back()) < 1.0e-6 );
     }
 
     // Set the local J edges.
@@ -133,7 +133,7 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
     }
     if ( my_j_block == (int) d_num_blocks.second-1)
     {
-        testInvariant( global_j_max == j_edges.back() );
+        testInvariant( std::abs(global_j_max-j_edges.back()) < 1.0e-6 );
     }
 
     // Set the global I edges.
