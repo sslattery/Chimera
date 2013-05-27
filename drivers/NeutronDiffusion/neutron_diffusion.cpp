@@ -89,20 +89,20 @@ int main( int argc, char * argv[] )
     Teuchos::RCP<Chimera::DiffusionProblem> diffusion_problem = Teuchos::rcp(
 	new Chimera::DiffusionProblem( comm, partitioner, plist, true ) );
 
-    // // CHIMERA SOLVE
-    // Build the solver.
-    Teuchos::RCP<Chimera::LinearSolver<double,int,int> > csolver =
-        Chimera::LinearSolverFactory::create( 
-            plist, diffusion_problem->getProblem() );
+//     // // CHIMERA SOLVE
+//     // Build the solver.
+//     Teuchos::RCP<Chimera::LinearSolver<double,int,int> > csolver =
+//         Chimera::LinearSolverFactory::create( 
+//             plist, diffusion_problem->getProblem() );
 
-    // Compute the iteration matrix spectral radius.
-    double spec_rad = Chimera::OperatorTools::spectralRadius(
-        csolver->linearOperatorSplit()->iterationMatrix() );
-    if ( comm->getRank() == 0 )
-    {
-        std::cout << "SPECTRAL RADIUS: " << spec_rad << std::endl; 
-    }
-    comm->barrier();
+//     // Compute the iteration matrix spectral radius.
+//     double spec_rad = Chimera::OperatorTools::spectralRadius(
+//         csolver->linearOperatorSplit()->iterationMatrix() );
+//     if ( comm->getRank() == 0 )
+//     {
+//         std::cout << "SPECTRAL RADIUS: " << spec_rad << std::endl; 
+//     }
+//     comm->barrier();
 
     typedef Tpetra::Vector<double,int,int> Vector;
     typedef Tpetra::CrsMatrix<double,int,int> Matrix;
@@ -182,12 +182,12 @@ int main( int argc, char * argv[] )
         }
     }
 
-    // Write the solution to VTK.
-    Chimera::VTKOutput vtk_output( comm, partitioner, plist );
-    vtk_output.addField( Chimera::VTKOutput::VERTEX_FIELD,
-                         diffusion_problem->getProblem()->getLHS(),
-                         "NEUTRON_FLUX" );
-    vtk_output.write();
+//     // Write the solution to VTK.
+//     Chimera::VTKOutput vtk_output( comm, partitioner, plist );
+//     vtk_output.addField( Chimera::VTKOutput::VERTEX_FIELD,
+//                          diffusion_problem->getProblem()->getLHS(),
+//                          "NEUTRON_FLUX" );
+//     vtk_output.write();
 
     return 0;
 }
