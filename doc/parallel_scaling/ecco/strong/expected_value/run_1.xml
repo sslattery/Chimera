@@ -36,8 +36,8 @@
   <Parameter name="Estimator Type" type="string" value="Expected Value"/>
   <Parameter name="Set Number of Histories" type="int" value="800000"/>
   <Parameter name="Weight Cutoff" type="double" value="1.0e-2"/>
-  <Parameter name="MC Check Frequency" type="int" value="1000"/>
-  <Parameter name="MC Buffer Size" type="int" value="1000"/>
+  <Parameter name="MC Check Frequency" type="int" value="1024"/>
+  <Parameter name="MC Buffer Size" type="int" value="64"/>
   <Parameter name="Iteration Print Frequency" type="int" value="10"/>
   <Parameter name="Reproducible MC Mode" type="bool" value="false"/>
   <Parameter name="Overlap Size" type="int" value="0"/>
