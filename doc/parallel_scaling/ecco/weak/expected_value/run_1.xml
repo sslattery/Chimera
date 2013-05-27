@@ -33,7 +33,7 @@
   <Parameter name="Maximum Iterations" type="int" value="1000"/>
   <Parameter name="Fixed Point Type" type="string" value="Richardson"/>
   <Parameter name="MC Type" type="string" value="Adjoint"/>
-  <Parameter name="Estimator Type" type="string" value="Collision"/>
+  <Parameter name="Estimator Type" type="string" value="Expected Value"/>
   <Parameter name="Set Number of Histories" type="int" value="7684"/>
   <Parameter name="Weight Cutoff" type="double" value="1.0e-2"/>
   <Parameter name="MC Check Frequency" type="int" value="1024"/>

@@ -29,12 +29,12 @@
   <!-- GENERAL SOLVER PARAMETERS -->
   <Parameter name="Solver Package" type="string" value="MCLS"/>
   <Parameter name="Solver Type" type="string" value="MCSA"/>
-  <Parameter name="Convergence Tolerance" type="double" value="614656"/>
+  <Parameter name="Convergence Tolerance" type="double" value="1.0e-8"/>
   <Parameter name="Maximum Iterations" type="int" value="1000"/>
   <Parameter name="Fixed Point Type" type="string" value="Richardson"/>
   <Parameter name="MC Type" type="string" value="Adjoint"/>
   <Parameter name="Estimator Type" type="string" value="Collision"/>
-  <Parameter name="Set Number of Histories" type="int" value="4000000"/>
+  <Parameter name="Set Number of Histories" type="int" value="614656"/>
   <Parameter name="Weight Cutoff" type="double" value="1.0e-2"/>
   <Parameter name="MC Check Frequency" type="int" value="1024"/>
   <Parameter name="MC Buffer Size" type="int" value="64"/>
