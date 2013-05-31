@@ -1,0 +1,123 @@
+\chapter{Derivation of the Multigroup $SP_N$ Equations}
+\label{chap:mg_spn_equations}
+In the text, we formulated the $SP_N$ equations for a single neutron
+energy. To expand these equations for multiple energies, we start by
+stating the multigroup neutron transport equation for a single
+dimension in planar geometry:
+\begin{multline}
+  \mu \frac{\partial}{\partial x} \psi^g(x,\mu) + \sigma^g(x)
+  \psi^g(x,\mu) = \\ \sum_{g'=0}^{G} \int
+  \sigma_s^{gg'}(x,\hat{\Omega}' \rightarrow \hat{\Omega})
+  \psi^{g'}(x,\hat{\Omega}') d\Omega' + \frac{q^g(x)}{4 \pi}\:,
+  \label{eq:cart_1d_multigroup}
+\end{multline}
+where $g$ denotes the group index of $0$ to $G$ groups, $G=N_g-1$, and
+the integration of the scattering emission term over energy has been
+replaced by a discrete summation. For scattering, $\sigma_s^{gg'}$
+provides the probability of scattering at a particular angle from
+group $g$ to $g'$. The result is an equation nearly identical in form
+to Eq~(\ref{eq:cart_1d_transport}) where now instead of forming the
+$SP_N$ equations for a single energy group, we form them for each of
+the energy groups with group coupling occurring through the scattering
+term. The multigroup $P_N$ equations are then:
+\begin{equation}
+   \frac{1}{2n+1} \frac{\partial}{\partial x}\Big[ (n+1) \phi^g_{n+1}
+     + n \phi^g_{n-1} \Big] +
+   \sum_{g'}(\sigma^g\delta_{gg'}-\sigma^{gg'}_{sn}) \phi^g_n =
+   q\delta_{n0} \:,
+  \label{eq:multigroup_pn_equations}
+\end{equation}
+for $n = 0,1,\dotsc,N$ where the flux and scattering moments are
+defined in a group. We observe that a $N_g \times N_g$ scattering
+matrix is formed:
+\begin{equation}
+  \mathbf{\Sigma}_n =
+  \sum_{g'}(\sigma^g\delta_{gg'}-\sigma^{gg'}_{sn})\:,
+  \label{eq:scattering_matrix}
+\end{equation}
+and when expanded gives:
+%% Also grabbed this matrix from Tom's tech note.
+\begin{equation}
+  \mathbf{\Sigma}_n =
+  \begin{bmatrix}
+    (\sigma^0-\sigma_{sn}^{00}) & -\sigma_{sn}^{01} & \dots &
+    -\sigma_{sn}^{0G} \\ &&&\\ -\sigma_{sn}^{10} &
+    (\sigma^1-\sigma_{sn}^{11}) & \dots & -\sigma_{sn}^{1G}
+    \\ &&&\\ \vdots & \vdots & \ddots & \vdots
+    \\ &&&\\ -\sigma_{sn}^{G0} & -\sigma_{sn}^{G1} & \dots &
+    (\sigma^G-\sigma_{sn}^{GG})
+  \end{bmatrix}\:.
+\end{equation}
+It is also useful to combine the group flux moments and sources into a
+single vector for more compact notation:
+\begin{equation}
+  \mathbf{\Phi_n} = (\phi^0_n\ \phi^1_n\ \cdots \phi^G_n )^T\:,
+  \label{eq:group_flux_vector}
+\end{equation}
+\begin{equation}
+  \mathbf{q} = (q^0\ q^1\ \cdots q^G )^T\:.
+  \label{eq:group_source_vector}
+\end{equation}
+Next, we apply the $SP_N$ approximation to
+Eq~(\ref{eq:multigroup_pn_equations}) in identical fashion to the
+monoenergetic case. This gives:
+\begin{multline}
+  -\nabla \cdot \Bigg[\frac{n}{2n+1}\mathbf{\Sigma_{n-1}}^{-1} \nabla
+    \Big(\frac{n-1}{2n-1} \mathbf{\Phi_{n-2}} +
+    \frac{n}{2n-1}\mathbf{\Phi_n} \Big) \\+
+    \frac{n+1}{2n+1}\mathbf{\Sigma_{n+1}}^{-1} \nabla
+    \Big(\frac{n+1}{2n+3}\mathbf{\Phi_n} +
+    \frac{n+2}{2n+3}\mathbf{\Phi_{n+2}}\Big) \Bigg] \\+
+  \mathbf{\Sigma_n} \mathbf{\Phi_n} = \mathbf{q}
+  \delta_{n0}\ \ \ \ \ \ \ \ \ n = 0,2,4,\cdots,N\:.
+  \label{eq:multigroup_spn_equations}
+\end{multline}
+This adds more complexity than the monoenergetic formulation in that
+all unknowns in this group of equations are now vector quantities and
+scattering relationships are contained in matrices rather than a
+scalar quantity. Because of this, the same sequence of variable
+changes and algebra can be used to build a set of matrix equations,
+this time in a block formulation:
+\begin{equation}
+  -\nabla \cdot \mathbb{D}_n \nabla \mathbb{U}_n + \sum_{m=1}^4
+  \mathbb{A}_{nm} \mathbb{U}_m = \mathbb{Q}_n\:,
+  \label{eq:spn_multigroup_system}
+\end{equation}
+where the definition of all quantities are the same with internal
+scalar values replaced by the group-vector values. In addition,
+$\mathbb{A}$ is now a block matrix of $N_g \times N_g$ sub-matrices
+generated from the moment scattering matrices:
+\begin{equation}
+  \mathbf{A} =
+  {\tiny \begin{bmatrix}
+    (\mathbf{\Sigma}_0) &
+    (-\frac{2}{3}\mathbf{\Sigma}_0) &
+    (\frac{8}{15}\mathbf{\Sigma}_0) &
+    (-\frac{16}{35}\mathbf{\Sigma}_0) \\
+    %%
+    &&&\\
+    %%
+    (-\frac{2}{3}\mathbf{\Sigma}_0) &
+    (\frac{4}{9}\mathbf{\Sigma}_0 + \frac{5}{9}\mathbf{\Sigma}_2) &
+    (-\frac{16}{45}\mathbf{\Sigma}_0 - \frac{4}{9}\mathbf{\Sigma}_2) &
+    (\frac{32}{105}\mathbf{\Sigma}_0 + \frac{8}{21}\mathbf{\Sigma}_2) \\
+    %%
+    &&&\\
+    %%
+    (\frac{8}{15}\mathbf{\Sigma}_0) &
+    (-\frac{16}{45}\mathbf{\Sigma}_0 - \frac{4}{9}\mathbf{\Sigma}_2) &
+    (\frac{64}{225}\mathbf{\Sigma}_0 + \frac{16}{45}\mathbf{\Sigma}_2 + \frac{9}{25}\mathbf{\Sigma}_4) &
+    (-\frac{128}{525}\mathbf{\Sigma}_0 - \frac{32}{105}\mathbf{\Sigma}_2 - \frac{54}{175}\mathbf{\Sigma}_4)
+    \\
+    %%
+    &&&\\
+    %%
+    (-\frac{16}{35}\mathbf{\Sigma}_0) &
+    (\frac{32}{105}\mathbf{\Sigma}_0 + \frac{8}{21}\mathbf{\Sigma}_2) &
+    (-\frac{128}{525}\mathbf{\Sigma}_0 - \frac{32}{105}\mathbf{\Sigma}_2 - \frac{54}{175}\mathbf{\Sigma}_4)
+    &
+    (\frac{256}{1225}\mathbf{\Sigma}_0 + \frac{64}{245}\mathbf{\Sigma}_2 +
+    \frac{324}{1225}\mathbf{\Sigma}_4 + \frac{13}{49}\mathbf{\Sigma}_6)
+  \end{bmatrix}}\:.
+  \label{eq:A_block_matrix}
+\end{equation}
