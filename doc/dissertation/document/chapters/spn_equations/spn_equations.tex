@@ -134,8 +134,8 @@ Eq~(\ref{eq:general_transport}) in 1-dimensional Cartesian geometry:
 \end{multline}
 where the angular component of the solution is no longer dependent on
 the azimuthal direction of travel and an isotropic source of neutrons
-is assumed. In addition, for fission systems the eigenvalue form of the transport
-equation is:
+is assumed. In addition, for fission systems the eigenvalue form of
+the transport equation is:
 \begin{multline}
   \hat{\Omega} \cdot \vec{\nabla} \psi(\vec{r},\hat{\Omega},E) +
   \sigma(\vec{r},E) \psi(\vec{r},\hat{\Omega},E) = \\ \iint
@@ -937,7 +937,7 @@ representation of one quarter of the assembly.
   \begin{center}
     \includegraphics[width=6.0in]{chapters/spn_equations/problem3_axial_mat.png}
   \end{center}
-  \caption{\textbf{Fuel assembly geometry cross section.}  \textit{The
+  \caption{\textbf{Fuel assembly geometry cross section.} \textit{The
       geometry is subdivided along the axial direction into 50 zones
       spaced to capture material boundaries. Important details include
       spacer grids along the length of the fuel pins and reactor core
@@ -1075,7 +1075,7 @@ linear solve in the first eigenvalue iteration.
   \caption{\textbf{Residual infinity norm vs. iteration for the block
       Jacobi preconditioned Richardson solve during the first
       eigenvalue iteration of the 1-group $17 \times 17$ fuel assembly
-      problem.}  \textit{A spectral radius near 1 was observed for the
+      problem.} \textit{A spectral radius near 1 was observed for the
       iteration matrix.}}
   \label{fig:block_jacobi_res_richardson}
 \end{figure}
@@ -1129,18 +1129,18 @@ neutron diffusion equation as a model problem
   \label{eq:diffusion_eq}
 \end{equation}
 where $\phi$ is the neutron flux, $\Sigma_a$ is the absorption cross
-subsection, and $S$ is the source of neutrons. In addition, $D$ is the
+section, and $S$ is the source of neutrons. In addition, $D$ is the
 diffusion coefficient defined as:
 \begin{equation}
   D = \frac{1}{3 ( \Sigma_t - \bar{\mu}\Sigma_s )}\:,
   \label{eq:diffusion_coeff}
 \end{equation}
-where $\Sigma_s$ is the scattering cross subsection, $\Sigma_t = \Sigma_a
-+ \Sigma_s$ is the total cross subsection, and $\bar{\mu}$ is the cosine
+where $\Sigma_s$ is the scattering cross section, $\Sigma_t = \Sigma_a
++ \Sigma_s$ is the total cross section, and $\bar{\mu}$ is the cosine
 of the average scattering angle. For simplicity, we will take
 $\bar{\mu} = 0$ for our analysis giving $D=(3 \Sigma_t)^{-1}$. In
 addition, to further simplify we will assume a homogeneous domain such
-that the cross subsections remain constant throughout. Doing this permits
+that the cross sections remain constant throughout. Doing this permits
 us to rewrite Eq~(\ref{eq:diffusion_eq}) as:
 \begin{equation}
   -D \boldsymbol{\nabla}^2 \phi + \Sigma_a \phi = S\:.
@@ -1320,7 +1320,7 @@ solutions of the fuel assembly criticality problem will be presented.
 \subsection{ILUT Preconditioning}
 \label{subsec:spn_ilut_preconditioning}
 Incomplete lower-upper (ILU) factorizations of the linear operator can
-be used a simple mechanism to form an approximate inverse as a
+be used a simple mechanism to form an approximate inverse of a
 preconditioner. To build the factorization, the sparse upper and lower
 triangular factors, $\mathbf{L}$ and $\mathbf{U}$, are computed such
 that the residual matrix formed by the factorization
@@ -1371,20 +1371,19 @@ problem presented in the previous section for a 1-group $SP_1$
 discretization. Unlike the Jacobi preconditioned strategy, convergence
 was achieved with ILUT preconditioning. To study convergence
 sensitivity to ILUT parameters, the fill level and drop tolerance were
-parametrically varied with the number of iterations to converge the
-second eigenvalue iteration for the fuel assembly problem recorded
-along with the maximum number of non-zero entries observed in all
-matrix rows for the left/right preconditioned composite linear
-operator. To provide some sparsity to the factorization, the ILUT drop
-tolerance was used to drop elements in the extracted inverse
-triangular factors. For each calculation, the number of iterations
-required to converge reported was for the secon deigenvalue iteration
-with \sn{3}{4} histories at each MCSA iteration to compute the Monte
-Carlo correction using the adjoint collision estimator. All ILUT
-calculations reported here were performed on a single CPU and
-therefore this data does not take into account the aforementioned
-effects of parallel decomposition on the quality of the ILUT
-preconditioning.
+parametrically varied with the number of iterations to converge an
+eigenvalue iteration for the fuel assembly problem recorded along with
+the maximum number of non-zero entries observed in all matrix rows for
+the left/right preconditioned composite linear operator. To provide
+some sparsity to the factorization, the ILUT drop tolerance was used
+to drop elements in the extracted inverse triangular factors. For each
+calculation, the number of iterations required to converge reported
+was for a single eigenvalue iteration with \sn{3}{4} histories at each
+MCSA iteration to compute the Monte Carlo correction using the adjoint
+collision estimator. All ILUT calculations reported here were
+performed on a single CPU and therefore this data does not take into
+account the aforementioned effects of parallel decomposition on the
+quality of the ILUT preconditioning.
 
 Figure~\ref{fig:ilut_iterations} gives the number of iterations to
 converge the fixed source problem to a tolerance of \sn{1}{8}. As
@@ -1402,9 +1401,9 @@ problem with a drop tolerance larger than \sn{1}{-3}.
   \begin{center}
     \includegraphics[width=6in]{chapters/spn_equations/ilut_iterations.pdf}
   \end{center}
-  \caption{\textbf{Number of MCSA iterations required to converge the
-      second eigenvalue iteration for the fuel assembly problem with
-      ILUT preconditioning as a function of ILUT drop tolerance.}
+  \caption{\textbf{Number of MCSA iterations required to converge an
+      eigenvalue iteration for the fuel assembly problem with ILUT
+      preconditioning as a function of ILUT drop tolerance.}
     \textit{Each colored curve represents the iteration behavior for a
       different ILUT fill level. Fill levels of 1.5, 2.0, 2.5, and 3.0
       were used.}}
@@ -1442,7 +1441,7 @@ nearest-neighbor type algorithms.
   \caption{\textbf{Maximum number of non-zero entries observed for all
       rows in the composite linear operator for the fuel assembly
       problem with ILUT preconditioning given as a function of ILUT
-      drop tolerance.}  \textit{Each colored curve represents the row
+      drop tolerance.} \textit{Each colored curve represents the row
       size for a different ILUT fill level. Fill levels of 1.5, 2.0,
       2.5, and 3.0 were used.}}
   \label{fig:ilut_size}
@@ -1457,8 +1456,8 @@ calculations, this improved performance is balanced by the creation of
 a dense composite system and we seek to reduce the number of non-zero
 entries to a minimum value in order to lower the amount of coupling
 amongst states in the system and reduce the amount of memory used
-along with the potentially latency overhead. Given these two
-objectives, the following metric is proposed:
+along with the potential latency overhead. Given these two objectives,
+the following metric is proposed:
 \begin{equation}
   \text{Quality Metric} = (\text{\# iterations}) \times (\text{maximum
     \# of non-zero values})\:,
@@ -1483,22 +1482,22 @@ a smaller fraction over drop tolerances tested.
 \end{figure}
 
 It should be noted here that although only the behavior of the linear
-solve during the second eigenvalue iteration is reported, the behavior
+solve during a single eigenvalue iteration is reported, the behavior
 of the linear solver was observed to be consistent throughout the
-eigenvalue iterations (25 were required to converge the 1-group $SP_1$
-problem). We expect this as the linear operator (which is unchanging
-in the fuel assembly criticality problem) dictates the convergence of
-MCSA. At each iteration the fission source provided to the linear
-problem is changing, however, we expect the same convergence behavior
-for all source vectors $\mathbf{b} \in \mathbb{R}^{N}$ where
-$||\mathbf{b}||_1 \neq 0$.
+eigenvalue iterations (25 total eigenvalue iterations were required to
+converge the 1-group $SP_1$ problem). We expect this as the linear
+operator (which is unchanging in the fuel assembly criticality
+problem) dictates the convergence of MCSA. At each iteration the
+fission source provided to the linear problem is changing, however, we
+expect the same convergence behavior for all source vectors
+$\mathbf{b} \in \mathbb{R}^{N}$ where $||\mathbf{b}||_1 \neq 0$.
 
 \clearpage
 
 \subsection{Sparse Approximate Inverse Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
 Explicit formation of the preconditioner inverse is a requirement of
-the chosen MCSA preconditioning strategy. As a result, although ILUT
+the current MCSA preconditioning strategy. As a result, although ILUT
 preconditioning provided excellent iterative performance, a
 significant time penalty is paid to extract the inverse of the
 triangular factors through $N$ triangular solves. In addition, this
@@ -1542,15 +1541,15 @@ MCSA preconditioned with SPAINV was used to solve the fuel assembly
 problem as with ILUT for a 1-group $SP_1$ discretization. To study
 convergence sensitivity to SPAINV parameters, the number of levels in
 the sparsity pattern and threshold were parametrically varied with the
-number of iterations to converge the second eigenvalue iteration for
-the fuel assembly problem recorded along with the maximum number of
+number of iterations to converge a single eigenvalue iteration for the
+fuel assembly problem recorded along with the maximum number of
 non-zero entries observed in all matrix rows for the left/right
 preconditioned composite linear operator. For each calculation, the
-number of iterations required to converge reported was for the second
-eigenvalue iteration also with \sn{3}{4} histories at each MCSA
-iteration to compute the Monte Carlo correction using the adjoint
-collision estimator. All SPAINV calculations reported here were
-performed on a single CPU.
+number of iterations required to converge reported was for a single
+eigenvalue iteration with \sn{3}{4} histories at each MCSA iteration
+to compute the Monte Carlo correction using the adjoint collision
+estimator. All SPAINV calculations reported here were performed on a
+single CPU.
 
 Figure~\ref{fig:spainv_iterations} gives the number of MCSA iterations
 needed to converge the fuel assembly problem and
@@ -1573,8 +1572,8 @@ values.
   \begin{center}
     \includegraphics[width=6in]{chapters/spn_equations/spainv_iterations.pdf}
   \end{center}
-  \caption{\textbf{Number of MCSA iterations required to converge the
-      second eigenvalue iteration for the fuel assembly problem with
+  \caption{\textbf{Number of MCSA iterations required to converge a
+      single eigenvalue iteration for the fuel assembly problem with
       SPAINV preconditioning as a function of SPAINV threshold.}
     \textit{Each colored curve represents the iteration behavior for a
       different SPAINV level pattern. Levels of 3, 4, 5, 6, and 7 were
@@ -1588,9 +1587,9 @@ values.
   \caption{\textbf{Maximum number of non-zero entries observed for all
       rows in the composite linear operator for the fuel assembly
       problem with SPAINV preconditioning given as a function of
-      SPAINV threshold.}  \textit{Each colored curve represents the
-      row size for a different SPAINV level pattern. Levels of 3, 4,
-      5, 6, and 7 were used.}}
+      SPAINV threshold.} \textit{Each colored curve represents the row
+      size for a different SPAINV level pattern. Levels of 3, 4, 5, 6,
+      and 7 were used.}}
   \label{fig:spainv_size}
 \end{figure}
 
@@ -1624,7 +1623,7 @@ the preconditioner grows in size.
 \subsection{SPAINV Improved ILUT Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
 As a means to improve convergence over using only SPAINV
-preconditioning, ILUT preconditioning may be improved through an
+preconditioning, ILUT preconditioning may be modified through an
 additional application of SPAINV
 (SPAINV-ILUT)\citep{saad_iterative_2003}. For the ILUT preconditioning
 case we have the following linear problem to solve for the substituted
@@ -1656,8 +1655,8 @@ MCSA preconditioned with SPAINV-ILUT was also used to solve the same
 fuel assembly problem as with the other preconditioners for the same
 1-group $SP_1$ discretization. To study convergence sensitivity to
 SPAINV-ILUT parameters, the ILUT drop tolerance and ILUT fill level
-were parametrically varied with the number of iterations to converge
-the second eigenvalue iteration for the fuel assembly problem recorded
+were parametrically varied with the number of iterations to converge a
+single eigenvalue iteration for the fuel assembly problem recorded
 along with the maximum number of non-zero entries observed in all
 matrix rows for the left/right preconditioned composite linear
 operator. SPAINV parameters for the data presented here were fixed as
@@ -1666,9 +1665,9 @@ to their variation. In addition, the fact that SPAINV is being used to
 preconditioned a problem already preconditioned with ILUT means that
 the input matrix sparsity pattern is already somewhat dense and large
 SPAINV levels would result in an even denser system. Therefore, a
-smaller sparsity pattern level will be used for this
+smaller SPAINV sparsity pattern level will be used for this
 preconditioning. For each calculation, the number of iterations
-required to converge reported was for the second eigenvalue iteration.
+required to converge reported was for a single eigenvalue iteration.
 Again, \sn{3}{4} histories are used at each MCSA iteration to compute
 the Monte Carlo correction using the adjoint collision estimator. All
 SPAINV-ILUT calculations reported here were performed on a single CPU.
@@ -1676,11 +1675,11 @@ SPAINV-ILUT calculations reported here were performed on a single CPU.
 Figure~\ref{fig:spainv_ilut_iterations} gives the number of iterations
 required to converge as a function of ILUT drop tolerance for ILUT
 fill levels of 1.5, 2.0, 3.0, 4.0 and 5.0 with a fixed SPAINV
-threshold of 1.0 and sparsity level of 1. Threshold values higher than
-1.0 resulted in a loss of convergence and lower values did not
-significantly affect performance. Larger sparsity levels resulted in a
-composite operator that was too dense and a prohibitive amount of CPU
-time required to compute the preconditioner. At smaller levels of
+threshold of 1.0 and sparsity level of 1. SPAINV threshold values
+higher than 1.0 resulted in a loss of convergence and lower values did
+not significantly affect performance. Larger sparsity levels resulted
+in a composite operator that was too dense and a prohibitive amount of
+CPU time required to compute the preconditioner. At smaller levels of
 fill, the benefits of using an additional step of SPAINV
 preconditioning are readily observed with the number of iterations
 required to converge cut in half for large drop tolerances. For
@@ -1697,8 +1696,8 @@ much larger than the SPAINV quality metric values.
   \begin{center}
     \includegraphics[width=6in]{chapters/spn_equations/psilut_iterations.pdf}
   \end{center}
-  \caption{\textbf{Number of MCSA iterations required to converge the
-      second eigenvalue iteration for the fuel assembly problem with
+  \caption{\textbf{Number of MCSA iterations required to converge a
+      single eigenvalue iteration for the fuel assembly problem with
       SPAINV-ILUT preconditioning as a function of ILUT drop
       tolerance.} \textit{Each colored curve represents the row size
       for a different ILUT fill level. Fill levels of 1.5, 2.0, 3.0,
@@ -1713,7 +1712,7 @@ much larger than the SPAINV quality metric values.
   \caption{\textbf{Maximum number of non-zero entries observed for all
       rows in the composite linear operator for the fuel assembly
       problem with SPAINV-ILUT preconditioning given as a function of
-      ILUT drop tolerance.}  \textit{Each colored curve represents the
+      ILUT drop tolerance.} \textit{Each colored curve represents the
       row size for a different ILUT fill level. Fill levels of 1.5,
       2.0, 3.0, 4.0 and 5.0 were used.}}
  \label{fig:spainv_ilut_size}
@@ -1725,7 +1724,7 @@ much larger than the SPAINV quality metric values.
   \end{center}
   \caption{\textbf{SPAINV-ILUT preconditioning quality metric for the
       fuel assembly problem given as a function of ILUT drop
-      tolerance.}  \textit{Each colored curve represents the row size
+      tolerance.} \textit{Each colored curve represents the row size
       for a different ILUT fill level. Fill levels of 1.5, 2.0, 3.0,
       4.0 and 5.0 were used.}}
   \label{fig:spainv_ilut_quality}
@@ -1752,9 +1751,9 @@ For the ILUT, SPAINV, and SPAINV-ILUT preconditioning strategies the
 reduced domain approximation will be applied to reduce the density of
 the composite linear operator to more manageable levels. For each
 preconditioner, the parameters that achieved the best quality metric
-results from the previous analysis were used with ILUT parameters of a
-fill level of 5.0 and a drop tolerance of \sn{1}{-5}, SPAINV
-parameters of a sparsity level of 4 and a threshold of 0.1 and
+results from the previous analysis were used. These correspond to ILUT
+parameters of a fill level of 5.0 and a drop tolerance of \sn{1}{-5},
+SPAINV parameters of a sparsity level of 4 and a threshold of 0.1 and
 SPAINV-ILUT with ILUT parameters of a fill level of 4.0 and a drop
 tolerance of \sn{1}{-5} and SPAINV parameters of a sparsity level of 1
 and a threshold of 1.0. The reduced domain threshold was set to
@@ -1776,7 +1775,7 @@ alone is signficantly more sensitive to the reduction in domain size
 over the ILUT-based methods, although the preconditioner was of
 $O(100)$ non-zero entries per row without any approximation
 applied. For the ILUT-based methods, performance was significantly
-better with converge achieved in less than 40 MCSA iterations with
+better with convergence achieved in less than 40 MCSA iterations with
 only 10 non-zero entries in each row (vs. 7 non-zero entries for the
 case with no preconditioning). SPAINV-ILUT iterative performance was
 marginally better than ILUT alone for all reduced domain fill
@@ -1796,20 +1795,21 @@ maintaining good convergence properties, there is still an issue of
 forming the composite operator before applying the approximation and
 potentially generating the transpose of this operator in the case of
 the adjoint Monte Carlo method. Because of this, memory and scaling
-issues may still be observed when building the Monte Carlo problem. In
-addition, the expensive extraction of the inverse of the
-preconditioning operators for the explicit scheme creates a
-significant cost in overall performance. Future work in this area
-should be considerate of these important components of the algorithm.
+issues may still be observed when building the probability and weight
+matrices for the Monte Carlo problem. In addition, the expensive
+extraction of the inverse of the preconditioning operators for the
+explicit scheme creates a significant cost in overall
+performance. Future work in this area should be considerate of these
+important components of the preconditioned MCSA algorithm.
 
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/spn_equations/rda_iterations.pdf}
   \end{center}
-  \caption{\textbf{Number of MCSA iterations required to converge the
-      second eigenvalue iteration for the fuel assembly problem with
+  \caption{\textbf{Number of MCSA iterations required to converge a
+      single eigenvalue iteration for the fuel assembly problem with
       each preconditioning as a function of reduced domain
-      approximation fill level.}  \textit{The largest fill level for
+      approximation fill level.} \textit{The largest fill level for
       each preconditioning presented is that using the parameters that
       gave the best results without the approximation.}}
   \label{fig:rda_iterations}
@@ -1821,7 +1821,7 @@ should be considerate of these important components of the algorithm.
   \end{center}
   \caption{\textbf{Preconditioning quality metric for the fuel
       assembly problem given as a function of reduced domain
-      approximation fill level.}  \textit{The largest fill level for
+      approximation fill level.} \textit{The largest fill level for
       each preconditioning presented is that using the parameters that
       gave the best results without the approximation.}}
   \label{fig:rda_quality}
@@ -1867,6 +1867,65 @@ iteration and one for the inner Monte Carlo solve:
 where $\omega_R$ is the Richardson iteration relaxation parameter and
 $\omega_N$ is the Neumann-Ulam Monte Carlo solve relaxation parameter.
 
+We apply these relaxation parameters to the fuel assembly problem
+along with the reduced domain approximation as a means of studying
+their effects. For each calculation presented, the number of
+iterations required to converge reported was for a single eigenvalue
+iteration.  Again, \sn{3}{4} histories are used at each MCSA iteration
+to compute the Monte Carlo correction using the adjoint collision
+estimator. A reduced domain fill level of 100 is used with a threshold
+of \sn{1}{-10} to filter small values.
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/rich_relax_iters.pdf}
+  \end{center}
+  \caption{\textbf{Number of iterations to converge a single
+      eigenvalue iteration of the fuel assembly problem as a function
+      of the Richardson relaxation parameter.} \textit{The Neumann
+      relaxation parameter was fixed at 1.0 and \sn{3}{4} stochastic
+      histories were used to compute the MCSA correction at each
+      iteration.}}
+  \label{fig:rich_relax_iters}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/rich_relax_time.pdf}
+  \end{center}
+  \caption{\textbf{CPU time in seconds to converge a single eigenvalue
+      iteration of the fuel assembly problem as a function of the
+      Richardson relaxation parameter.} \textit{The Neumann relaxation
+      parameter was fixed at 1.0 and \sn{3}{4} stochastic histories
+      were used to compute the MCSA correction at each iteration.}}
+  \label{fig:rich_relax_time}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/neumann_relax_iters.pdf}
+  \end{center}
+  \caption{\textbf{Number of iterations to converge a single
+      eigenvalue iteration of the fuel assembly problem as a function
+      of the Neumann relaxation parameter.} \textit{The Richardson
+      relaxation parameter was fixed at 1.0 and \sn{3}{4} stochastic
+      histories were used to compute the MCSA correction at each
+      iteration.}}
+  \label{fig:neumann_relax_iters}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/neumann_relax_time.pdf}
+  \end{center}
+  \caption{\textbf{CPU time in seconds to converge a single eigenvalue
+      iteration of the fuel assembly problem as a function of the
+      Neumann relaxation parameter.} \textit{The Richardson relaxation
+      parameter was fixed at 1.0 and \sn{3}{4} stochastic histories
+      were used to compute the MCSA correction at each iteration.}}
+  \label{fig:neumann_relax_time}
+\end{figure}
+
 \clearpage
 
 \subsection{Monte Carlo Estimator Comparison}
@@ -1898,7 +1957,7 @@ orders of magnitude more states at every transition event.
   \caption{\textbf{Average number of iterations required to converge
       each eigenvalue iteration for the fuel assembly problem as a
       function of energy groups.} \textit{All methods were
-      preconditioned with identical ILUT paramters. For MCSA, several
+      preconditioned with identical ILUT parameters. For MCSA, several
       variations of fixed point iterations and estimators were used.}}
   \label{fig:comparison_iterations}
 \end{figure}
@@ -1911,7 +1970,7 @@ orders of magnitude more states at every transition event.
       fuel assembly problem as a function of energy groups.}
     \textit{All linear solver iterations over all eigenvalue
       iterations were used to compute the averge. All methods were
-      preconditioned with identical ILUT paramters. For MCSA, several
+      preconditioned with identical ILUT parameters. For MCSA, several
       variations of fixed point iterations and estimators were used.}}
   \label{fig:comparison_time}
 \end{figure}
@@ -1925,7 +1984,7 @@ orders of magnitude more states at every transition event.
       preconditioning time included for the MCSA methods.}
     \textit{All linear solver iterations over all eigenvalue
       iterations were used to compute the averge. All methods were
-      preconditioned with identical ILUT paramters. For MCSA, several
+      preconditioned with identical ILUT parameters. For MCSA, several
       variations of fixed point iterations and estimators were used.}}
   \label{fig:comparison_prec_time}
 \end{figure}
