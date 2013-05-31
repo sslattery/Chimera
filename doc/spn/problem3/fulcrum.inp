@@ -549,8 +549,8 @@ read celldata
     multiregion cylindrical  right_bdy=white end 1 0.475  2 0.710879  end zone
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
       source(1)=252
@@ -559,8 +559,8 @@ read celldata
     infhommedium 3 end 
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
       source(1)=252
@@ -569,8 +569,8 @@ read celldata
     multiregion cylindrical  right_bdy=white end 4 0.561  5 0.602  6 0.710879  end zone
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
       source(1)=252
@@ -579,8 +579,8 @@ read celldata
     infhommedium 7 end 
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
       source(1)=252
@@ -589,16 +589,16 @@ read celldata
     latticecell squarepitch  fuelr=0.4096 8  gapr=0.418 9  cladr=0.475 10  pitch=1.26 11  end
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
      end more data
     infhommedium 12 end 
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
       source(1)=252
@@ -607,16 +607,16 @@ read celldata
     latticecell squarepitch  fuelr=0.4096 13  gapr=0.418 14  cladr=0.475 15  pitch=1.26 16  end
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
      end more data
     multiregion cylindrical  right_bdy=white end 17 0.418  18 0.475  19 0.710879  end zone
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
       source(1)=252
@@ -625,8 +625,8 @@ read celldata
     multiregion cylindrical  right_bdy=white end 20 0.418  21 0.475  22 0.710879  end zone
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
       source(1)=252
@@ -635,8 +635,8 @@ read celldata
     multiregion cylindrical  right_bdy=white end 23 0.561  24 0.602  25 0.710879  end zone
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
       source(1)=252
@@ -645,8 +645,8 @@ read celldata
     multiregion cylindrical  right_bdy=white end 26 0.561  27 0.602  28 0.710879  end zone
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
       source(1)=252
@@ -655,8 +655,8 @@ read celldata
     infhommedium 29 end 
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
       source(1)=252
@@ -665,8 +665,8 @@ read celldata
     latticecell squarepitch  fuelr=0.4096 30  gapr=0.418 31  cladr=0.475 32  pitch=1.26 33  end
      more data
       iropt=1
-      igmf=4
-           1.0000e+01  1.0000e+00  1.0000e-01  1.0000e-05
+      igmf=1
+           1.0000e-05
       wgt=2
       icon=cell
      end more data
