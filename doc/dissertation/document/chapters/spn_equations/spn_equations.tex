@@ -744,7 +744,10 @@ top and right boundaries in
 Figure~\ref{fig:problem3_radial_mat}. Reflecting conditions are used
 on the left and bottom boundaries of
 Figure~\ref{fig:problem3_radial_mat}, effectively giving a
-representation of one quarter of the assembly.
+representation of one quarter of the assembly. For the spatial
+discretization, each fuel pin (gray regions in
+Figure~\ref{fig:problem3_radial_mat}) is resolved by a $2 \times 2$
+mesh with materials and cross sections homgenized over this region.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4in]{chapters/spn_equations/problem3_radial_mat.png}
@@ -780,6 +783,7 @@ representation of one quarter of the assembly.
       figure is moderator and darker purple/red material is fuel.}}
   \label{fig:problem3_end}
 \end{figure}
+
 Significant geometric details are contained in the model including
 spacer grids, fuel pins with homogenized cladding and gas gap, core
 plenum, and moderator with boron. Group cross sections and other
@@ -856,6 +860,8 @@ computation\footnote{The operator will change if, for example, physics
   $\mathbf{M}$.} while the addition of fission to the system will only
 modify the source of neutrons and the multiplication factor while not
 affecting Monte Carlo transport.
+ 
+\clearpage 
 
 \subsection{Preliminary Jacobi Preconditioned Calculations}
 \label{subsec:jacobi_prec_assembly_calc}
@@ -1316,8 +1322,6 @@ fission source provided to the linear problem is changing, however, we
 expect the same convergence behavior for all source vectors
 $\mathbf{b} \in \mathbb{R}^{N}$ where $||\mathbf{b}||_1 \neq 0$.
 
-\clearpage
-
 \subsection{Sparse Approximate Inverse Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
 Explicit formation of the preconditioner inverse is a requirement of
@@ -1672,7 +1676,7 @@ an iteration matrix from Eq~(\ref{eq:richardson_relaxation}) gives:
   \mathbf{H} = \mathbf{I} - \omega \mathbf{A}\:,
   \label{eq:relaxed_iteration_matrix}
 \end{equation}
-with the probabilities and weights for the Monte Carlo game
+with the probabilities and weights for the Monte Carlo procedure
 appropriately scaled. By inspection, such a scaling is a simple form
 of preconditioning on the left where all rows in the system are scaled
 by the same scalar parameter. For MCSA, we can stage this scheme with
@@ -1698,7 +1702,36 @@ iterations required to converge reported was for a single eigenvalue
 iteration.  Again, \sn{3}{4} histories are used at each MCSA iteration
 to compute the Monte Carlo correction using the adjoint collision
 estimator. A reduced domain fill level of 100 is used with a threshold
-of \sn{1}{-10} to filter small values.
+of \sn{1}{-10} to filter small values. ILUT preconditioning with a
+drop tolerance of \sn{1}{-5} and fill level of 5 is used as
+well. 
+
+Figure~\ref{fig:relax_iters} gives the number of iterations required
+to converge the fuel assembly problem for a 1-group SP1 discretization
+using varying combinations of the relaxation parameters. First, both
+parameters were fixed at the base case of 1 while the other parameter
+was varied as shown in the left-hand side plots of
+Figure~\ref{fig:relax_iters}. For the Richardson relaxation parameter,
+using a value larger than 1 gave better iterative performance up to a
+point, effectively providing a stronger extrapolation using the
+residual at each iteration. For the Neumann relaxation parameter, a
+value of less than 1 is observed to be ideal. Although initially
+counter-intuitive, the fact that the correction computed by the Monte
+Carlo solver has a stochastic error associated with it means that by
+using a Neumann relaxation parameter less than 1, the correction and
+its error are effectively dampened to improve iterative
+performance. Considering the CPU time required to converge a single
+eigenvalue iteration, similar results are also observed for the
+relaxation parameters as given by Figure~\ref{fig:relax_time}. For the
+base cases given by the plots on the left, it was found the a
+Richardson relaxation parameter of 1.1 and a Neumann relaxation
+parameter of 0.7 provided the fastest CPU time for convergence. Fixing
+each parameter at these new values, the calculations were repeated as
+shown for the plots on the right hand sides of both
+Figures~\ref{fig:relax_iters} and \ref{fig:relax_time}. For each
+repeated timing calculation, it was found that the same combination of
+relaxation parameters found in the base cases performed the best
+although they did not necessarily have the best iterative performance.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1706,10 +1739,14 @@ of \sn{1}{-10} to filter small values.
   \end{center}
   \caption{\textbf{Number of iterations to converge a single
       eigenvalue iteration of the fuel assembly problem as a function
-      of the relaxation parameters.} \textit{The Neumann relaxation
-      parameter was fixed at 1.0 and \sn{3}{4} stochastic histories
-      were used to compute the MCSA correction at each iteration.}}
-  \label{fig:rich_relax_iters}
+      of the relaxation parameters.} \textit{Starting in upper left
+      and moving counter-clockwise: Neumann relaxation parameter fixed
+      at 1.0, Richardson relaxation parameter fixed at 1.0, Neumann
+      relaxation parameter fixed at 0.7, Richardson relaxation
+      parameter fixed at 1.1. For each calculation \sn{3}{4}
+      stochastic histories were used to compute the MCSA correction at
+      each iteration.}}
+  \label{fig:relax_iters}
 \end{figure}
 
 \begin{figure}[t!]
@@ -1718,10 +1755,14 @@ of \sn{1}{-10} to filter small values.
   \end{center}
   \caption{\textbf{CPU time in seconds to converge a single eigenvalue
       iteration of the fuel assembly problem as a function of the
-      relaxation parameters.} \textit{The Neumann relaxation parameter
-      was fixed at 1.0 and \sn{3}{4} stochastic histories were used to
-      compute the MCSA correction at each iteration.}}
-  \label{fig:rich_relax_time}
+      relaxation parameters.} \textit{Starting in upper left and
+      moving counter-clockwise: Neumann relaxation parameter fixed at
+      1.0, Richardson relaxation parameter fixed at 1.0, Neumann
+      relaxation parameter fixed at 0.7, Richardson relaxation
+      parameter fixed at 1.1. For each calculation \sn{3}{4}
+      stochastic histories were used to compute the MCSA correction at
+      each iteration.}}
+  \label{fig:relax_time}
 \end{figure}
 
 \clearpage
@@ -1738,6 +1779,31 @@ deterministic component of the expected value estimator that couples
 the current state to other local states through the iteration matrix
 stencil requires application of the estimator to potentially several
 orders of magnitude more states at every transition event.
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/estimator_5000_convergence.pdf}
+  \end{center}
+  \caption{\textbf{Residual infinity norm as a function of MCSA
+      iteration with 5,000 stochastic histories per iteration.}
+    \textit{Both the collision and expected value estimators were used
+      with the adjoint Monte Carlo solver to compute the correction at
+      each iteration.}}
+  \label{fig:estimator_5000}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/estimator_1000_convergence.pdf}
+  \end{center}
+  \caption{\textbf{Residual infinity norm as a function of MCSA
+      iteration with 1,000 stochastic histories per iteration.}
+    \textit{Both the collision and expected value estimators were used
+      with the adjoint Monte Carlo solver to compute the correction at
+      each iteration.}}
+  \label{fig:estimator_1000}
+\end{figure}
+
 
 \clearpage
 
