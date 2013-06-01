@@ -875,7 +875,43 @@ as specified by $\epsilon$.
 
 \subsubsection{Alternative Fixed Point Iterations}
 \label{subsubsec:alternative_fixed_point}
-
+In addition to the basic Richardson iteration, the MCSA algorithm
+presented in Eq~(\ref{eq:mcsa}) can be used to accelerate any fixed
+point iteration which only depends on the state (typically the
+residual) of the last iteration. As outlined in
+Appendix~\ref{ch:linear_problem}, subspace methods take on a general
+form in one-dimension using the Petrov-Galerkin conditions as
+constraints for extracting a correction from the search subspace as
+given by Eq~(\ref{eq:linear_projection_iteration}) that may be used
+with MCSA. As an example, for positive-definite but not necessarily
+symmetric problems, the minimal residual (MINRES) iteration
+\citep{saad_iterative_2003} can be used in conjuction with MCSA where
+the residual vector, $\mathbf{r}$, defines the search subspace and the
+action of the linear operator on the residual vector,
+$\mathbf{A}\mathbf{r}$, defines the constraint subspace. Using this,
+we can then define an MCSA scheme that accelerates the MINRES
+iteration:
+\begin{subequations}
+  \begin{gather}
+    \alpha = \frac{\langle \mathbf{A}\mathbf{r}^k, \mathbf{r}^k
+      \rangle}{\langle \mathbf{A}\mathbf{r}^k, \mathbf{A}\mathbf{r}^k
+      \rangle}\:, \\
+    \ve{x}^{k+1/2} = \ve{x}^k + \alpha \ve{r}^k\:,
+    \label{eq:minres_correction}\\
+    \ve{r}^{k+1/2} = \ve{b} - \ve{A}\ve{x}^{k+1/2}\:,\\ 
+    \ve{A}\delta\ve{x}^{k+1/2} = \ve{r}^{k+1/2}\:,\\ 
+    \ve{x}^{k+1} = \ve{x}^{k+1/2} + \delta\ve{x}^{k+1/2}\:,\\ 
+    \ve{r}^{k+1} = \ve{b} - \ve{A}\ve{x}^{k+1}\:.
+  \end{gather}
+  \label{eq:mcsa_minres}
+\end{subequations}
+where $\alpha$ is an optimal extrapolation parameter generated the
+constraints. Interestingly, this scheme is nearly identical to the
+Richardson iteration version in Eq~(\ref{eq:mcsa}) except now the
+additional extrapolation parameter, $\alpha$, is applied to the
+residual correction in Eq~(\ref{eq:minres_correction}) as a means of
+selecting a more optimal search direction at each iteration,
+potentially further accelerating convergence.
 
 \subsection{Preconditioning MCSA}
 \label{subsec:stochastic_preconditioning}

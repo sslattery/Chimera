@@ -861,8 +861,13 @@ themselves here as the quality of the correction will be of intense
 study.
 
 %%---------------------------------------------------------------------------%%
-\section{Parallel Scaling Studies}
-\label{sec:scaling_studies}
+\section{Small Cluster Scaling Studies}
+\label{sec:small_scaling_studies}
+
+
+%%---------------------------------------------------------------------------%%
+\section{Leadership-Class Parallel Scaling Studies}
+\label{sec:leadership_scaling_studies}
 For all cases, we explore scaling for just the Monte Carlo transport
 kernel and MCSA as a whole iterative scheme. This will be necessary to
 determine if the initial relaxation step required at each iteration is
@@ -873,6 +878,18 @@ diffusion length ratio. In addition, all of these studies should
 hopefully have data from both the cluster and Titan and should all be
 compared to Aztec GMRES and CG implementations with appropriate
 preconditioning.
+
+\subsection{Communication Parameters}
+\label{subsec:comm_parameters}
+
+\subsection{Pure Domain Decomposition}
+\label{subsec:pure_domain_decomp}
+
+\subsubsection{Weak Scaling}
+\label{subsubsec:pure_weak}
+
+\subsubsection{Strong Scaling}
+\label{subsubsec:pure_strong}
 
 \subsection{Overlapping Domain Decomposition}
 \label{subsec:overlapping_domain_decomp}

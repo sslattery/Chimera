@@ -1,19 +1,20 @@
-\chapter{Monte Carlo Solution Methods Applied to Nonlinear Systems}
+\chapter{Monte Carlo Solution Methods Applied to the Navier-Stokes Equations}
 \label{ch:nonlinear_problem}
-Nonlinear equation sets are a common occurrence in multiphysics
-problems. Systems of partial differential equations such as those that
-describe fluid flow or more general transport processes when
-discretized by conventional methods yield discrete sets of stiff
-equations with nonlinearities present in the variables. Traditionally,
-such systems have been solved by linearizing them in a form where the
-nonlinearities in the variables are eliminated and more traditional
-linear methods can be used for solutions. Often characterized as
-segregated methods where physics operators are split and their action
-on the system approximated in steps, such methods lack consistency and
-accuracy in resolving the nonlinear component of the solution. In the
-last 30 years, fully consistent nonlinear methods based on Newton's
-method have become more popular and many advances have been made in
-the computational physics field to employ these methods.
+Nonlinear transport problems are a common occurrence in single and
+multiple physics problems. Systems of partial differential equations
+such as those that describe fluid flow or more general transport
+processes when discretized by conventional methods yield discrete sets
+of stiff equations with nonlinearities present in the
+variables. Traditionally, such systems have been solved by linearizing
+them in a form where the nonlinearities in the variables are
+eliminated and more traditional linear methods can be used for
+solutions. Often characterized as segregated methods where physics
+operators are split and their action on the system approximated in
+steps, such methods lack consistency and accuracy in resolving the
+nonlinear component of the solution. In the last 30 years, fully
+consistent nonlinear methods based on Newton's method have become more
+popular and many advances have been made in the computational physics
+field to employ these methods.
 
 In the context of solving standalone linear systems, Monte Carlo
 methods do not provide significant merit over Krylov methods due to
