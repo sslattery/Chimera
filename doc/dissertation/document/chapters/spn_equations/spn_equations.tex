@@ -1770,40 +1770,108 @@ although they did not necessarily have the best iterative performance.
 \subsection{Monte Carlo Estimator Comparison}
 \label{subsec:spn_estimator_comparison}
 With convergence obtained for the fuel assembly problem, the advanced
-preconditioners will next be studied with each Monte Carlo
-estimator. Although the expected value estimator has achieved the best
-iterative performance in the previous comparison and analysis, it is
-possible that the other estimators may perform better from a timing
-perspective due to the sparsity lost by explicit preconditioning. The
-deterministic component of the expected value estimator that couples
-the current state to other local states through the iteration matrix
-stencil requires application of the estimator to potentially several
-orders of magnitude more states at every transition event.
+preconditioners will next be studied with both the collision and
+expected value estimators using the best preconditioning and
+relaxation parameter combinations found by the previous
+analysis. Although the expected value estimator has achieved the best
+iterative performance in the previous comparison and analysis for the
+simple Poisson problem in \S~\ref{sec:parameter_estimator_analysis},
+it is possible that the collision estimator may perform better from a
+timing perspective due to the sparsity lost by explicit
+preconditioning. The deterministic component of the expected value
+estimator that couples the current state to other local states through
+the iteration matrix stencil requires application of the estimator to
+potentially several orders of magnitude more states at every
+transition event.
+
+For this study, the fuel assemby problem with a 1-group $SP_1$
+discretization was solved using MCSA with the adjoint Monte Carlo
+solver using both the collision and expected value estimators. Using
+the results from the previous section, a Neumann relaxation parameter
+of 0.7 was used with both estimators. For the collision estimator, a
+Richardson relaxation parameter of 1.1 was used while it was found the
+expected value estimator had the best performance when a a relaxation
+parameter of 1.0 was used instead. In addition, ILUT preconditioning
+with a drop tolerance of \sn{1}{-5} and a fill level of 5 was used
+with a reduced domain approximation fill level of 100 and a threshold
+of \sn{1}{-10} as in the previous analysis. For each estimator, the
+number of stochastic histories used to compute the MCSA correction was
+varied from 25 to 50,000 with the number of MCSA iterations required
+to converge to a tolerance of \sn{1}{-8} recorded for a single
+eigenvalue iteration along with the CPU time required to achieve
+convergence. 
+
+Figure~\ref{fig:spn_estimator_iters} gives the iteration count results
+and Figure~\ref{fig:spn_estimator_iters} gives the timing
+results. Remarkably, although the fuel assembly problem is
+significantly more complicated than the simple Poisson problem studied
+in \S~\ref{sec:parameter_estimator_analysis}, the results here are
+largely the same with Figure~\ref{fig:spn_estimator_iters} and
+Figure~\ref{fig:estimator_nh_iters} having identical qualitative
+behavior. Using the expected value estimator creates a relative
+insensitivity to the number of histories used to compute the
+correction. With respect to CPU time, there is a more pronounced
+effect due to the larger density of states created by the explicit
+ILUT preconditioning. Using a reduced domain fill level of 100 creates
+a situation where the expected value estimator is significantly more
+expensive per history to compute that the collision estimator due to
+the coupling of states.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6in]{chapters/spn_equations/estimator_5000_convergence.pdf}
+    \includegraphics[width=6in]{chapters/spn_equations/estimator_iters.pdf}
   \end{center}
-  \caption{\textbf{Residual infinity norm as a function of MCSA
-      iteration with 5,000 stochastic histories per iteration.}
-    \textit{Both the collision and expected value estimators were used
-      with the adjoint Monte Carlo solver to compute the correction at
-      each iteration.}}
-  \label{fig:estimator_5000}
+  \caption{\textbf{MCSA iterations required to converge the fuel
+      assembly problem to a tolerance of \sn{1}{-8}.} \textit{Both the
+      collision and expected value estimators were used with the
+      adjoint Monte Carlo solver to compute the correction at each
+      iteration.}}
+  \label{fig:spn_estimator_iters}
 \end{figure}
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6in]{chapters/spn_equations/estimator_1000_convergence.pdf}
+    \includegraphics[width=6in]{chapters/spn_equations/estimator_time.pdf}
+  \end{center}
+  \caption{\textbf{Total CPU time in seconds required to converge the
+      fuel assembly problem to a tolerance of \sn{1}{-8}.}
+    \textit{Both the collision and expected value estimators were used
+      with the adjoint Monte Carlo solver to compute the correction at
+      each iteration.}}
+  \label{fig:spn_estimator_time}
+\end{figure}
+
+From both Figure~\ref{fig:spn_estimator_iters} and
+Figure~\ref{fig:spn_estimator_iters} we see that both estimators have
+comparable iterative and timing performance when 1,000 histories are
+used at each MCSA iteration. Using 1,000 histories per iteration, the
+infinity norm of the residual vector is presented at every MCSA
+iteration for both estimators in
+Figure~\ref{fig:spn_estimator_convergence} as an additional means of
+comparison. At this number of histories, both estimators converge the
+fuel assembly problem monotonically at and approximately the same
+rate, giving little reason to choose one over the other. The end
+result is that both estimators provide a viable method for getting
+good MCSA iterative performance with reasonable timing
+performance. For the collision estimator, using around 20,000
+stochastic histories at every iteration gave the best iterative
+performance while 500 histories per iteration gave the best iterative
+performance when using the expected value estimator. For purely serial
+computational performance, there is not a distinguishing feature for
+the fuel assembly problem presented that would cause one to choose one
+of the estimators over the other.
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/spn_equations/estimator_convergence.pdf}
   \end{center}
   \caption{\textbf{Residual infinity norm as a function of MCSA
       iteration with 1,000 stochastic histories per iteration.}
     \textit{Both the collision and expected value estimators were used
       with the adjoint Monte Carlo solver to compute the correction at
       each iteration.}}
-  \label{fig:estimator_1000}
+  \label{fig:spn_estimator_convergence}
 \end{figure}
-
 
 \clearpage
 
@@ -1811,7 +1879,10 @@ orders of magnitude more states at every transition event.
 \section{MCSA Comparison to Conventional Methods}
 \label{sec:spn_comparison}
 
-\subsection{Results}
+\subsection{MCSA Verification}
+\label{subsec:spn_mcsa_verification}
+
+\subsection{Performance Results}
 \label{subsec:spn_comparison_results}
 
 \begin{figure}[t!]
