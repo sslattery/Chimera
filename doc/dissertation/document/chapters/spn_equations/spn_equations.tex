@@ -1996,13 +1996,38 @@ will be directly compared to the production Krylov solvers in terms of
 both iterative performance and CPU timing. In addition to the
 parameters used for the verification analysis, artificial absorption
 was also introduced with a value of 0.2 for the MCSA calculations that
-used to collision esitmator as CPU timing performance was improved
+used the collision esitmator as CPU timing performance was improved
 without a loss in iterative performance. Adding this absorption did
 not change the numerical results of the
-calculation. Figure~\ref{fig:spn_comparison_iterations} gives the
-average number of linear solver iterations required to converge a
-single eigenvalue iteration of the fuel assembly problem as a function
-of the number of energy groups.
+calculation. 
+
+Figure~\ref{fig:spn_comparison_iterations} gives the average number of
+linear solver iterations required to converge a single eigenvalue
+iteration of the fuel assembly problem as a function of the number of
+energy groups. In general, the iterative performance of all the
+solvers tested is comparable with BiCGStab performing the best. We
+expect this because not only are the multigroup $SP_N$ equations
+elliptic and positive-definite, but they are also nearly symmetric and
+therefore we expect the conjugate gradient-based methods to perform
+well. It also important to note that the iterative performance of each
+solver is not a strong function of the number of energy groups in the
+problem (and therefore the problem size). For MCSA, we are linearly
+increasing the number of stochastic histories used to compute the
+correction at each iteration as the number of energy groups are
+increased and therefore the work performed for the problem is of
+$O(N)$. It is also important to note the the reduced domain
+approximation parameters, particularly the fill level, were fixed as
+the number of energy groups was increased. By fixing the fill level,
+we are effectively fixing the amount of information contained in the
+composite linear operator available for the Monte Carlo
+problem. Limiting this information to 100 entries per row in the
+preconditioned system did not appear to have a significant effect on
+the iterative performance of the solver. For larger numbers of energy
+groups (and therefore DOFs) this may be an issue and this number may
+need to be increased to maintain iterative performance. Currently,
+memory restrictions arising from the explicit preconditioning strategy
+prevent larger energy groups to be analyzed using the appropriate
+preconditioning for the fuel assembly problem.
 
 \begin{figure}[t!]
   \begin{center}
@@ -2016,18 +2041,62 @@ of the number of energy groups.
   \label{fig:spn_comparison_iterations}
 \end{figure}
 
+Although iterative performance for MCSA was comparable to that
+observed for production Krylov implementations using exactly the same
+preconditioning scheme, timing performance is not as
+comparable. Figure~\ref{fig:spn_comparison_time} gives the average CPU
+time per linear solver iteration required to converge the fuel
+assembly problem with all linear solver iterations over all eigenvalue
+iterations used to compute the average. The production Krylov solver
+implementations are approximately an order of magnitude faster than
+the MCSA implementations presented here. We expect these results for
+several reasons. First, even when the reduced domain approximation is
+used there are O(100) elements in each row of the system and each of
+those elements must be processed during a transition in the Monte
+Carlo random walk sequence. In addition, although the preconditioned
+fixed point iterations used in the MCSA sequence do not use the
+composite linear operator but rather a sequence of matrix vector
+multiplies to achieve the same effect, they do use the explicitly
+extracted inverses of the preconditioning matrices which themselves
+are dense, leading to exceedingly slow computation times even in the
+fixed point iteration. Second, the implementation presented here has
+not been optimized and it is likely several components of the
+algorithm can be implemented in a more desireable time complexity. The
+production Krylov solvers presented here have enjoyed decades of
+professional development and optimization. However, it is most
+important to note here that the CPU timing data presented here shows
+that all methods have the same time complexity; their differences are
+merely the manifestation of a large time constant due to the effects
+of the explicit preconditioning scheme. For transport systems where
+this is not a problem, the literature explcitly shows that MCSA can be
+competetive with these production Krylov methods using CPU time as a
+measure \citep{evans_monte_2012}.
+
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/spn_equations/solver_time.pdf}
   \end{center}
-  \caption{\textbf{Average CPU time per iteration in seconds for the
-      fuel assembly problem as a function of energy groups.}
-    \textit{All linear solver iterations over all eigenvalue
-      iterations were used to compute the averge. All methods were
-      preconditioned with identical ILUT parameters. For MCSA, several
-      variations of fixed point iterations and estimators were used.}}
+  \caption{\textbf{Average CPU time per linear solver iteration in
+      seconds for the fuel assembly problem as a function of energy
+      groups.}  \textit{All linear solver iterations over all
+      eigenvalue iterations were used to compute the averge. All
+      methods were preconditioned with identical ILUT parameters. For
+      MCSA, several variations of fixed point iterations and
+      estimators were used.}}
   \label{fig:spn_comparison_time}
 \end{figure}
+
+Finally, not considered in Figure~\ref{fig:spn_comparison_time} is the
+time required to actually form the explicit inverse preconditioner
+matrices and the composite operator through matrix-matrix
+multiplication. The timing numbers reported were simply to perform the
+CMSA iteration procedure with the composite operator already
+formed. Figure~\ref{fig:spn_comparison_prec_time} additionally
+presents the CPU times for MCSA convergence with the time to form the
+preconditioners and the composite linear operator through
+matrix-matrix multiplication amortized over all iterations. As is
+readily observed including the costs of these operations increases the
+MCSA computation time by another order of magnitude.
 
 \begin{figure}[t!]
   \begin{center}
@@ -2042,3 +2111,20 @@ of the number of energy groups.
       variations of fixed point iterations and estimators were used.}}
   \label{fig:spn_comparison_prec_time}
 \end{figure}
+
+Based on the results in this section, MCSA shows promise as a
+competitive and perhaps even superior method for solutions to the
+neutron transport problem discretized with the $SP_N$
+approximation. Not only are the correct answers produced when compared
+to production linear solvers, but the iterative performance is
+comparable to production Krylov methods with identical preconditioning
+that would typically be used every-day calculations. From a CPU timing
+perspective, the methods yield the same time complexity as a function
+of the number of energy groups in the problem when compared to the
+production Krylov methods. Here, a large time constant is generated
+due to the explicit preconditioning strategy and the generation of
+dense linear operators as a result. To improve these results and put
+general MCSA schemes into a performance regime where they are
+competitive with Krylov methods for neutron transport problems,
+significant research will be required to improve upon the explicit
+preconditioning shceme presented here.
