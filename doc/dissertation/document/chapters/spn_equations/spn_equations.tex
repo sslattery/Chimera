@@ -1773,11 +1773,11 @@ With convergence obtained for the fuel assembly problem, the advanced
 preconditioners will next be studied with both the collision and
 expected value estimators using the best preconditioning and
 relaxation parameter combinations found by the previous
-analysis. Additionally, both the Richardson-based MCSA iteration and
-the MINRES-based MCSA iteration given by Eq~(\ref{eq:mcsa_minres})
-will be used. Although the expected value estimator has achieved the
-best iterative performance in the previous comparison and analysis for
-the simple Poisson problem in
+analysis. Additionally, both the Richardson-based MCSA iteration given
+by Eq~(\ref{eq:mcsa}) and the MINRES-based MCSA iteration given by
+Eq~(\ref{eq:mcsa_minres}) will be used. Although the expected value
+estimator achieved the best iterative performance in the previous
+comparison and analysis for the simple Poisson problem in
 \S~\ref{sec:parameter_estimator_analysis}, it is possible that the
 collision estimator may perform better from a timing perspective due
 to the sparsity lost by explicit preconditioning. The deterministic
@@ -1794,15 +1794,16 @@ from the previous section, a Neumann relaxation parameter of 0.7 was
 used with both estimators and fixed point iterations. For the
 collision estimator, a Richardson relaxation parameter of 1.1 was used
 with the Richardson iteration while it was found the expected value
-estimator had the best performance when a a relaxation parameter of
-1.0 was used instead. In addition, ILUT preconditioning with a drop
-tolerance of \sn{1}{-5} and a fill level of 5 was used with a reduced
-domain approximation fill level of 100 and a threshold of \sn{1}{-10}
-as in the previous analysis. For each estimator, the number of
-stochastic histories used to compute the MCSA correction was varied
-from 25 to 50,000 with the number of MCSA iterations required to
-converge to a tolerance of \sn{1}{-8} recorded for a single eigenvalue
-iteration along with the CPU time required to achieve convergence.
+estimator had the best performance when a Richardson relaxation
+parameter of 1.0 was used instead. In addition, ILUT preconditioning
+with a drop tolerance of \sn{1}{-5} and a fill level of 5 was used
+with a reduced domain approximation fill level of 100 and a threshold
+of \sn{1}{-10} as in the previous analysis. For each estimator, the
+number of stochastic histories used to compute the MCSA correction was
+varied from 25 to 50,000 with the number of MCSA iterations required
+to converge to a tolerance of \sn{1}{-8} recorded for a single
+eigenvalue iteration along with the CPU time required to achieve
+convergence.
 
 Figure~\ref{fig:spn_estimator_iters} gives the iteration count results
 and Figure~\ref{fig:spn_estimator_time} gives the timing
@@ -1813,15 +1814,24 @@ largely the same with Figure~\ref{fig:spn_estimator_iters} and
 Figure~\ref{fig:estimator_nh_iters} having identical qualitative
 behavior. Using the expected value estimator with both fixed point
 iterations creates a relative insensitivity to the number of histories
-used to compute the correction. For the collision estimator, the
-MINRES iteration permits fewer stochastic histories to be used with
-each MCSA iteration while still maintaining good iterative
-performance. With respect to CPU time, there is a more pronounced
-effect due to the larger density of states created by the explicit
-ILUT preconditioning. Using a reduced domain fill level of 100 creates
-a situation where the expected value estimator is significantly more
-expensive per history to compute that the collision estimator due to
-the coupling of states.
+used to compute the correction. Marginally better iterative and timing
+performance was observed for the expected value estimator when using
+the Richardson iteration. Better timing performance is expected as
+computing the extrapolation parameter in the MINRES iteration requires
+several additional parallel operations. However, we expect that
+because the MINRES iteration will converge faster on its own when
+compared to the Richardson iteration that better iterative performance
+will be observed when it is accelerated with MCSA. The fact that this
+was not observed signals that an MCSA scheme leveraging the expected
+value estimator is also effectively insensitive to the fixed point
+iteration used. For the collision estimator, the MINRES iteration
+permits fewer stochastic histories to be used with each MCSA iteration
+while still maintaining good iterative performance. With respect to
+CPU time, there is a more pronounced effect due to the larger density
+of states created by the explicit ILUT preconditioning. Using a
+reduced domain fill level of 100 creates a situation where the
+expected value estimator is significantly more expensive per history
+to compute that the collision estimator due to the coupling of states.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1850,24 +1860,26 @@ the coupling of states.
 \end{figure}
 
 From both Figure~\ref{fig:spn_estimator_iters} and
-Figure~\ref{fig:spn_estimator_time} we see that both estimators have
-comparable iterative and timing performance when 1,000 histories are
-used at each MCSA iteration. Using 1,000 histories per iteration, the
-infinity norm of the residual vector is presented at every MCSA
-iteration for both estimators in
+Figure~\ref{fig:spn_estimator_time} we see that both estimators and
+fixed point iterations have comparable iterative and timing
+performance when 1,000 histories are used at each MCSA
+iteration. Using 1,000 histories per MCSA iteration, the infinity norm
+of the residual vector is presented at every MCSA iteration for both
+estimators and both fixed point iterations in
 Figure~\ref{fig:spn_estimator_convergence} as an additional means of
-comparison. At this number of histories, both estimators converge the
-fuel assembly problem monotonically at and approximately the same
-rate, giving little reason to choose one over the other. The end
-result is that both estimators provide a viable method for getting
-good MCSA iterative performance with reasonable timing
+comparison. At this number of histories, all MCSA combinations
+converge the fuel assembly problem monotonically at and approximately
+the same rate, giving little reason to choose one over the other. The
+end result is that both estimators provide a viable method for getting
+good MCSA iterative performance with comparable timing
 performance. For the collision estimator, using around 20,000
 stochastic histories at every iteration gave the best iterative
 performance while 500 histories per iteration gave the best iterative
 performance when using the expected value estimator. For purely serial
 computational performance, there is not a distinguishing feature for
 the fuel assembly problem presented that would cause one to choose one
-of the estimators over the other.
+of the estimators and fixed point iterations over the other as they
+all have similar minimum CPU times over the range of values tested.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1887,12 +1899,110 @@ of the estimators over the other.
 %%---------------------------------------------------------------------------%%
 \section{MCSA Comparison to Conventional Methods}
 \label{sec:spn_comparison}
+Through the numerical studies presented up to this point in this
+chapter, we have developed a set of preconditioning techniques that
+permit MCSA to be used with the $SP_N$ form of the neutron transport
+equation and applied to a difficult fuel assembly criticality
+problem. Along with these preconditioning techniques, a set a varying
+MCSA parameters were analyzed to find those that yielded the best
+performance for this particular problem. In addition, several steps
+were taken to mitigate the dense composite linear operators that arise
+when performing explicit MCSA preconditioning in order to achieve
+convergence. Using these results, we compare MCSA directly to
+conventional linear solvers that would be typically used to solve the
+$SP_N$ form of the transport equation as presented here. In
+particular, we will use a pair of production Krylov solvers with which
+we will compare direct numerical results in order to verify MCSA
+solutions and iterative and CPU timing performance in order to gauge
+feasibility and identify areas that require further research.
 
 \subsection{MCSA Verification}
 \label{subsec:spn_mcsa_verification}
+In order to verify the correctness of the MCSA method and
+implementation used for this work, MCSA solutions to the fuel assembly
+problem with 1, 2, and 4 energy groups using $SP_1$ discretization
+will be directly compared over all group and cell fluxes computed by
+converging the criticality problem using both BiCGStab and GMRES
+production implementations from the Trilinos scientific computing
+library Aztec \citep{heroux_overview_2005}. In addition to comparing
+the cell and group fluxes, the number of eigenvalue iterations
+required to converge the problem along with the eigenvalue itself will
+be compared as a means of verification. For the verification, all
+solvers will be preconditioned with ILUT using a drop tolerance of
+\sn{1}{-5} and a fill level of 5. For GMRES, no restrictions were
+placed on the size of the subspace and therefore no restarts
+occurred. When the collision estimator was used with MCSA, 20,000
+stochastic histories were used to compute the correction for every
+energy group in the problem (40,000 and 80,000 histories total for the
+2 and 4 group calculations respectively) and 500 stochastic histories
+used for each energy group when the expected value estimator was used
+(1,000 and 1,500 histories total for the 2 and 4 group
+calculations). The reduced domain approximation was also applied in
+conjuction with the ILUT preconditioning using a fill level of 100 and
+a threshold value of \sn{1}{-10} to reduce the density of states in
+the Monte Carlo problem. For relaxation parameters, all MCSA
+compuations used a Neumann relaxation parameter of 0.7 while a
+Richardson relaxation of 1.1 was used with the collision estimator and
+1.0 with the expected value estimator as determined by the previous
+analysis. Table~\ref{tab:spn_solver_defs} gives definitions for the
+solvers used to generate the results in the remainder of this section.
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{ll}\hline\hline
+      \multicolumn{1}{l}{\textbf{Name}} & 
+      \multicolumn{1}{l}{\textbf{Definition}} \\
+      BiCGStab-ILUT & ILUT preconditioned BiCGStab \\
+      GMRES-ILUT & ILUT preconditioned GMRES \\
+      MCSA-ILUT-R-C & ILUT preconditioned MCSA with Richardson \\ 
+                    & fixed point iteration and collision estimator \\
+      MCSA-ILUT-MR-C & ILUT preconditioned MCSA with MINRES \\
+                     & fixed point iteration and collision estimator \\
+      MCSA-ILUT-R-EV & ILUT preconditioned MCSA with Richardson \\
+                     & fixed point iteration and expected value estimator \\
+      MCSA-ILUT-MR-EV & ILUT preconditioned MCSA with MINRES \\
+                      & fixed point iteration and expected value estimator \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Solver definitions used for MCSA verification and
+      performance analysis.}}
+  \label{tab:spn_solver_defs}
+\end{table}
+For the energy group structures,
+Table~\ref{tab:spn_group_structure} gives the lower bounds of each
+group in eV (an implicit upper bound of 20 MeV is assumed).
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{cl}\hline\hline
+      \multicolumn{1}{c}{\textbf{Number of Groups}} & 
+      \multicolumn{1}{l}{\textbf{Lower Bounds (eV)}} \\
+      1 & \{ \sn{1}{-5} \} \\
+      2 & \{ \sn{1}{-1}, \sn{1}{-5} \} \\
+      4 & \{ \sn{1}{1}, \sn{1}{0}, \sn{1}{-1}, \sn{1}{-5} \} \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Energy group lower bounds for the multigroup fuel
+      assembly criticality problem in electron volts.}}
+  \label{tab:spn_group_structure}
+\end{table}
 
 \subsection{Performance Results}
 \label{subsec:spn_comparison_results}
+Using the same set of solver parameters used for verification, MCSA
+will be directly compared to the production Krylov solvers in terms of
+both iterative performance and CPU timing. In addition to the
+parameters used for the verification analysis, artificial absorption
+was also introduced with a value of 0.2 for the MCSA calculations that
+used to collision esitmator as CPU timing performance was improved
+without a loss in iterative performance. Adding this absorption did
+not change the numerical results of the
+calculation. Figure~\ref{fig:spn_comparison_iterations} gives the
+average number of linear solver iterations required to converge a
+single eigenvalue iteration of the fuel assembly problem as a function
+of the number of energy groups.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1903,7 +2013,7 @@ of the estimators over the other.
       function of energy groups.} \textit{All methods were
       preconditioned with identical ILUT parameters. For MCSA, several
       variations of fixed point iterations and estimators were used.}}
-  \label{fig:comparison_iterations}
+  \label{fig:spn_comparison_iterations}
 \end{figure}
 
 \begin{figure}[t!]
@@ -1916,7 +2026,7 @@ of the estimators over the other.
       iterations were used to compute the averge. All methods were
       preconditioned with identical ILUT parameters. For MCSA, several
       variations of fixed point iterations and estimators were used.}}
-  \label{fig:comparison_time}
+  \label{fig:spn_comparison_time}
 \end{figure}
 
 \begin{figure}[t!]
@@ -1930,5 +2040,5 @@ of the estimators over the other.
       iterations were used to compute the averge. All methods were
       preconditioned with identical ILUT parameters. For MCSA, several
       variations of fixed point iterations and estimators were used.}}
-  \label{fig:comparison_prec_time}
+  \label{fig:spn_comparison_prec_time}
 \end{figure}
