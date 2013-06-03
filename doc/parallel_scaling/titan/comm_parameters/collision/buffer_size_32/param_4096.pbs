@@ -1,19 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
-#PBS -m abe
-#PBS -l nodes=8:erb1010a:procCore2:ppn=8
-#PBS -N param_4096
+#PBS -A nfi004
+#PBS -l nodes=4
+#PBS -l walltime=0:10:00
+#PBS -o param_4096.out
+#PBS -e param_4096.err
+#PBS -N Chimera_Diffusion
+#PBS -m a
+#PBS -m b
+#PBS -m e
+#PBS -M sslattery@wisc.edu
+#PBS -l gres=widow2
 
-###Change to the PBS_O_WORKDIR
 cd $PBS_O_WORKDIR
-
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
-
-### Run coupler test
-
-mpiexec -verbose -kill -allstdin /home/zeep/stuart/builds/Chimera/Chimera/drivers/NeutronDiffusion/Chimera_Diffusion.exe --xml-in-file=param_4096.xml >&param_4096.out
-
-###END
-
-
-
+export MPICH_PTL_MATCH_OFF=1
+date
+time aprun -n 64 /ccs/proj/nfi004/uy7/builds/MCLS/Chimera/drivers/NeutronDiffusion/Chimera_Diffusion.exe --xml-in-file=param_4096.xml
