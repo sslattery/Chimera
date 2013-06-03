@@ -1,0 +1,48 @@
+<ParameterList name="Neutron Diffusion">
+  <!-- GRID PARAMETERS -->
+  <Parameter name="I_BLOCKS" type="int" value="2"/>
+  <Parameter name="J_BLOCKS" type="int" value="2"/>
+  <Parameter name="X_MIN" type="double" value="0.0"/>
+  <Parameter name="X_MAX" type="double" value="39.2"/>
+  <Parameter name="Y_MIN" type="double" value="0.0"/>
+  <Parameter name="Y_MAX" type="double" value="39.2"/>
+  <Parameter name="X_NUM_CELLS" type="int" value="392"/>
+  <Parameter name="Y_NUM_CELLS" type="int" value="392"/>
+  <Parameter name="GRID_TYPE" type="string" value="UNIFORM"/>
+  <!-- PHYSICS PARAMETERS -->
+  <Parameter name="BC TYPE" type="string" value="VACUUM"/>
+  <Parameter name="ABSORPTION XS" type="double" value="5.0"/>
+  <Parameter name="SCATTERING XS" type="double" value="1.0"/>
+  <Parameter name="SOURCE TYPE" type="string" value="UNIFORM"/>
+  <Parameter name="SOURCE STRENGTH" type="double" value="1.0"/>
+  <!-- CHIMERA SOLVER PARAMETERS -->
+  <Parameter name="SOLVER TYPE" type="string" value="MCSA"/>
+  <Parameter name="RNG TYPE" type="string" value="MT19937"/>
+  <Parameter name="TOLERANCE" type="double" value="1e-008"/>
+  <Parameter name="MAX ITERS" type="int" value="1"/>
+  <Parameter name="SPLIT TYPE" type="string" value="JACOBI"/>
+  <Parameter name="MC TYPE" type="string" value="ADJOINT"/>
+  <Parameter name="WEIGHT CUTOFF" type="double" value="1e-004"/>
+  <Parameter name="HISTORIES PER STAGE" type="int" value="10000"/>
+  <Parameter name="NUM OVERLAP" type="int" value="0"/>
+  <Parameter name="OUTPUT_FILENAME" type="string" value="diffusion_out.vtk"/>
+  <!-- GENERAL SOLVER PARAMETERS -->
+  <Parameter name="Solver Package" type="string" value="Belos"/>
+  <Parameter name="Solver Type" type="string" value="GMRES"/>
+  <Parameter name="Convergence Tolerance" type="double" value="1.0e-8"/>
+  <Parameter name="Maximum Iterations" type="int" value="1000"/>
+  <Parameter name="Fixed Point Type" type="string" value="Richardson"/>
+  <Parameter name="MC Type" type="string" value="Adjoint"/>
+  <Parameter name="Estimator Type" type="string" value="Collision"/>
+  <Parameter name="Set Number of Histories" type="int" value="4.0e6"/>
+  <Parameter name="Weight Cutoff" type="double" value="1.0e-2"/>
+  <Parameter name="MC Check Frequency" type="int" value="1000"/>
+  <Parameter name="MC Buffer Size" type="int" value="1000"/>
+  <Parameter name="Iteration Print Frequency" type="int" value="10"/>
+  <Parameter name="Reproducible MC Mode" type="bool" value="false"/>
+  <Parameter name="Overlap Size" type="int" value="0"/>
+  <Parameter name="Number of Sets" type="int" value="1"/>
+  <Parameter name="Richardson Relaxation" type="double" value="1.0"/>
+  <Parameter name="Neumann Relaxation" type="double" value="1.0"/>
+  <Parameter name="Absorption Probability" type="double" value="0.0"/>
+</ParameterList>
