@@ -1897,8 +1897,8 @@ all have similar minimum CPU times over the range of values tested.
 \clearpage
 
 %%---------------------------------------------------------------------------%%
-\section{MCSA Comparison to Conventional Methods}
-\label{sec:spn_comparison}
+\section{MCSA Verification}
+\label{sec:spn_mcsa_verification}
 Through the numerical studies presented up to this point in this
 chapter, we have developed a set of preconditioning techniques that
 permit MCSA to be used with the $SP_N$ form of the neutron transport
@@ -1914,10 +1914,8 @@ $SP_N$ form of the transport equation as presented here. In
 particular, we will use a pair of production Krylov solvers with which
 we will compare direct numerical results in order to verify MCSA
 solutions and iterative and CPU timing performance in order to gauge
-feasibility and identify areas that require further research.
+feasibility and identify areas that require further research. 
 
-\subsection{MCSA Verification}
-\label{subsec:spn_mcsa_verification}
 In order to verify the correctness of the MCSA method and
 implementation used for this work, MCSA solutions to the fuel assembly
 problem with 1, 2, and 4 energy groups using $SP_1$ discretization
@@ -1927,7 +1925,7 @@ production implementations from the Trilinos scientific computing
 library Aztec \citep{heroux_overview_2005}. In addition to comparing
 the cell and group fluxes, the number of eigenvalue iterations
 required to converge the problem along with the eigenvalue itself will
-be compared as a means of verification. 
+be compared as a means of verification.
 
 For the verification, all solvers will be preconditioned with ILUT
 using a drop tolerance of \sn{1}{-5} and a fill level of 5. For GMRES,
@@ -1990,8 +1988,9 @@ group in eV (an implicit upper bound of 20 MeV is assumed).
   \label{tab:spn_group_structure}
 \end{table}
 
-\subsection{Performance Results}
-\label{subsec:spn_comparison_results}
+%%---------------------------------------------------------------------------%%
+\section{MCSA Performance Comparison to Conventional Methods}
+\label{sec:spn_comparison}
 Using the same set of solver parameters used for verification, MCSA
 will be directly compared to the production Krylov solvers in terms of
 both iterative performance and CPU timing. In addition to the
@@ -1999,8 +1998,7 @@ parameters used for the verification analysis, artificial absorption
 was also introduced with a value of 0.2 for the MCSA calculations that
 used the collision esitmator as CPU timing performance was improved
 without a loss in iterative performance. Adding this absorption did
-not change the numerical results of the
-calculation. 
+not change the numerical results of the calculation.
 
 Figure~\ref{fig:spn_comparison_iterations} gives the average number of
 linear solver iterations required to converge a single eigenvalue
