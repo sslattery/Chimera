@@ -9,18 +9,18 @@ the general parallel implementations of Krylov methods and modern
 parallel strategies for Monte Carlo as developed by the reactor
 physics community. In order to formulate a parallel MCSA algorithm, we
 recognize that the algorithm occurs in two stages, an outer iteration
-performing Richardson's iteration and applying the correction, and an
+performing fixed point iteration and applying the correction, and an
 inner Monte Carlo solver that is generating the correction via the
-adjoint method. The parallel aspects of both these components must be
-considered. 
+adjoint or forward methods. The parallel aspects of both these
+components must be considered.
 
-In this chapter we briefly review particle transport
-methods for domain decomposed Monte Carlo and then provide an analytic
-framework from which to estimate its performance. We then devise an
-algorithm based on these methods for efficient parallel solutions
-using the adjoint Neumann-Ulam method and MCSA and perform parallel
-scaling studings to test its performance and compare this performance
-to conventional methods.
+In this chapter we briefly review particle transport methods for
+domain decomposed Monte Carlo and then provide an analytic framework
+from which to estimate its performance. We then devise an algorithm
+based on these methods for efficient parallel solutions using the
+adjoint Neumann-Ulam method and MCSA and perform parallel scaling
+studings to test its performance and compare this performance to
+conventional methods.
 
 %%---------------------------------------------------------------------------%%
 \section{Domain Decomposition for Monte Carlo}
@@ -146,19 +146,18 @@ overlap implemented with a domain decomposed Monte Carlo setting
 reduces the amount of nearest neighbor communication that must occur
 during transport. To date, parallel Neumann-Ulam methods have been
 limited to full domain replication with parallelism exploited through
-individual histories \citep{alexandrov_efficient_1998} and in the
-previous chapter we exploited Wagner's work to alleviate this. To
-accomplish this, we recognized from the literature that stochastic
-histories must be transported from domain to domain as the simulation
-progresses and they transition to states that are not in the local
-domain. Because we have chosen a domain decomposition strategy in a
-parallel environment, this means that communication of these histories
-must occur between compute nodes owning neighboring pieces of the
-global domain as outlined in our algorithms. We wish to characterize
-this communication not only because communication is in general
-expensive, but also because these nearest-neighbor communication
-sequences, specifically, have poor algorithmic strong scaling
-\citep{gropp_high-performance_2001} in much the same way as a
+individual histories \citep{alexandrov_efficient_1998} and in this
+chapter we will exploit Wagner's work to alleviate this. To accomplish
+this, we recognize from the literature that stochastic histories must
+be transported from domain to domain as the simulation progresses and
+they transition to states that are not in the local domain. Because we
+have chosen a domain decomposition strategy in a parallel environment,
+this means that communication of these histories must occur between
+compute nodes owning neighboring pieces of the global domain. We wish
+to characterize this communication not only because communication is
+in general expensive, but also because these nearest-neighbor
+communication sequences, specifically, have poor algorithmic strong
+scaling \citep{gropp_high-performance_2001} in much the same way as a
 matrix-vector multiply operation. Therefore, we desire a framework to
 provide a simple, analytic theory based on the properties of the
 linear system that will allow for estimates of the domain decomposed
@@ -620,9 +619,6 @@ fractions within 0.05 of the measured results. As the domain becomes
 more optically thick (with both increasing $n_i$ and decreasing
 $\rho(\ve{H})$), the approximations are more accurate.
 
-\subsection{Reduction in Domain Leakage from Overlap}
-\label{sec:overlap_reduction}
-
 \subsection{Communication Costs for Symmetric Systems}
 \label{sec:symmetric_comm_costs}
 Use Seigel's work to get communication costs.
@@ -706,131 +702,6 @@ Eq~(\ref{eq:direct_permutation_weight}).
 \subsection{Multiple Set Algorithm}
 \label{subsec:multiple_sets_algorithm}
 
-\subsection{Load Balancing Concerns}
-\label{sec:mc_load_balancing}
-Although domain decomposition was shown to be efficient in a perfectly
-load balanced situation in Siegel's work \citep{siegel_analysis_2012},
-careful consideration must be made for situations where this is not
-the case. Given the stochastic nature of the problem and lack of a
-globally homogeneous domain, parallel Monte Carlo simulations are
-inherently load imbalanced. Procassini and others worked to alleviate
-some of the load imbalances that are generated by both particle and
-spatial parallelism and are therefore applicable to the MSOD algorithm
-\citep{procassini_dynamic_2005}. They chose a dynamic balancing scheme
-in which the number of times a particular domain was replicated was
-dependent on the amount of work in that domain (i.e. domains with a
-high particle flux and therefore more particle histories to compute
-require more work). In this variation, domains that require more work
-will be replicated more frequently at reduced particle counts in each
-replication. Furthermore, Procassini and colleagues noted that as the
-simulation progressed and particles were transported throughout the
-domain, the amount of replication for each domain would vary as
-particle histories began to diffuse, causing some regions to have
-higher work loads and some to have smaller work loads than the initial
-conditions.
-
-Consider the example in Figure~\ref{fig:procassini_example} adapted
-from Procassini's work.
-\begin{figure}[t!]
-  \begin{center}
-    \scalebox{1.5}{
-      \input{chapters/parallel_mc/procassini_example.pdftex_t} }
-  \end{center}
-  \caption{\textbf{Example illustrating how domain decomposition can
-      create load balance issues in Monte Carlo.}  \textit{A domain is
-      decomposed into 4 zones on 8 processors with a point source in
-      the lower left zone. As the particles diffuse from the source in
-      the random walk sequence as shown in the top row, their tracks
-      populate the entire domain. As given in the bottom row, as the
-      global percentage of particles increases in a zone, that zone's
-      replication count is increased.}}
-  \label{fig:procassini_example}
-\end{figure}
-In this example, a geometry is decomposed into 4 domains on 8
-processors with a point source in the bottom left domain. To begin,
-because the point source is concentrated in one domain, that domain is
-replicated 5 times such the amount of work it has to do per processor
-is roughly balanced with the others. As the particles begin to diffuse
-away from the point source, the amount of replication is adjusted to
-maintain load balance. Near the end of the simulation, the diffusion
-of particles is enough that all domains have equal replication.  By
-doing this, load balance is improved as each domain has approximately
-equal work although each domain may represent a different spatial
-location and have a differing number of histories to
-compute. Compared to Wagner's work where the fission source was
-distributed relatively evenly throughout the domain, fixed source
-problems (and especially those that have a point-like source) like
-those presented in Procassini's work will be more prone to changing
-load balance requirements.
-
-\subsection{Reproducible Domain Decomposed Results}
-\label{sec:reproducible_mc}
-The 2006 work of Brunner is notable in that the Monte Carlo codes used
-to implement and test the algorithms adhered to a strict policy of
-generating identical results independent of domain decomposition or
-domain replication as derived from the work of Gentile and colleagues
-\citep{gentile_obtaining_2005}. In Gentile's work, a procedure is
-given for obtaining results reproducible to machine precision for an
-arbitrary number of processors and domains. Differences can arise from
-using a different random number sequence in each domain and performing
-a sequence of floating point operations on identical data in a
-different order, leading to variations in round-off error and
-ultimately a non-identical answer. They use a simple example,
-recreated below in Figure~\ref{fig:gentile_example}, that illustrates
-these issues.
-\begin{figure}[t!]
-  \begin{center}
-    \scalebox{1.5}{
-      \input{chapters/parallel_mc/gentile_example.pdftex_t} }
-  \end{center}
-  \caption{\textbf{Gentile's example illustrating how domain
-      decomposition can create reproducibility issues in Monte Carlo.}
-    \textit{Both particles A and B start in zone 1 on processor
-      1. Particle A moves to zone 2 on processor 2 and scatters back
-      to zone 1 while B scatters in zone 1 and remains there. A1 and
-      A2 denote the track of particle A that is in zone 1 while B1 and
-      B2 denote the track of particle B that is in zone 1.}}
-  \label{fig:gentile_example}
-\end{figure}
-In this example, the domain is decomposed on two processors with each
-processor owning one of the two zones. Starting with particle A, it is
-born in zone 1 and is transported to zone 2 where a scattering event
-occurs. Concerning the first reproducibility issue, if the same
-sequence of random numbers is not used to compute the trajectory from
-the new scattering event, we cannot expect to achieve the same result
-if the domain were not decomposed. If the numbers are different, the
-scattering event in zone 2 may keep the particle there or even eject
-it from the domain if the sequence were different. The second issue is
-demonstrated by adding another particle B that remains in the
-domain. In this case, an efficient algorithm will transport particle A
-on processor 1 until it leaves zone 1 and then transport particle
-B. Particle A will not renter the domain until it has been
-communicated to processor 2, processor 2 performs the transport, and
-it is communicated back to processor 1. If we are doing a track-length
-tally in zone 1, then we sum the tracks lengths observed in that
-zone. In the single processor, single zone case particle A would be
-transported in its entirety and then particle B transported. This
-would result in a tally sum with the following order of operations:
-$(((A1+A2)+B1)+B2)$. If we were instead to use 2 processors, we would
-instead have the following order: $(((A1+B1)+B2)+A2)$. In the context
-of floating point operations, we cannot expect these to have an
-identical result to machine precision as round-off approximations will
-differ resulting in non-commutative addition.
-
-Procassini's solutions to these problems are elegant in that they
-require a minimal amount of modification to be applied to the Monte
-Carlo algorithm. To solve the first issue, in order to ensure each
-particle maintains an invariant random number sequence that determines
-its behavior regardless of domain decomposition, each particle is
-assigned a random number seed that describes its current state upon
-entering the domain of a new processor. These seeds are derived from
-the actual geometric location of the particle such that it is
-decomposition invariant. Non-commutative floating point operations are
-overcome by instead mapping floating point values to 64-bit integer
-values for which additions will always be commutative. Once the
-operations are complete, these integers are mapped back to floating
-point values.
-
 %%---------------------------------------------------------------------------%%
 \section{Parallel MCSA}
 \label{sec:parallel_mcsa}
@@ -878,6 +749,9 @@ diffusion length ratio. In addition, all of these studies should
 hopefully have data from both the cluster and Titan and should all be
 compared to Aztec GMRES and CG implementations with appropriate
 preconditioning.
+
+\subsection{Titan}
+\label{subsec:titan}
 
 \subsection{Communication Parameters}
 \label{subsec:comm_parameters}

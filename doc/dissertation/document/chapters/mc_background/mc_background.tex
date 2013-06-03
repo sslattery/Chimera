@@ -1050,13 +1050,16 @@ be necessary for convergence.
 
 %%---------------------------------------------------------------------------%%
 \section{Monte Carlo Method Selection}
-\label{sec:mc_method_selection}p
+\label{sec:mc_method_selection}
 The MCSA method defined in Eq.~(\ref{eq:mcsa}) uses the adjoint method
 to estimate the error in a residual Monte Carlo solve instead of the
 direct method outlined in \S\ref{sec:direct_mc}. To demonstrate the
 effectiveness of the adjoint method over the direct method within the
 context of MCSA, we choose the two-dimensional time-dependent Poisson
-equation as a simple model problem:
+equation as a simple model transport problem\footnote{The Poisson
+  equation is simple form of the diffusion equation and has a similar
+  elliptic character in its time-dependent form to the neutron
+  transport equations that will be solved in the next chapter.}:
 \begin{equation}
   \frac{\partial \ve{u}}{\partial t} = \nabla^2 \ve{u}\:.
   \label{eq:poisson_equation}
@@ -1103,9 +1106,9 @@ Figure~\ref{fig:poisson_cpu_time} gives the CPU time needed for each
 case to converge in seconds and Figure~\ref{fig:poisson_iterations}
 gives the number of iterations needed for each case to converge to the
 specified tolerance as a function of the problem size. All
-computations presented in this section and
-\S\ref{subsec:sequential_comparison} were completed on a 3.0 GHz Intel
-Core 2 Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
+computations presented in this section and the remaining sections of
+this chapter were completed on a 3.0 GHz Intel Core 2 Quad Q9650 CPU
+machine with 16 GB 1067 MHz DDR3 memory.
 \begin{figure}[t!]
   \centering
   \includegraphics[width=6in,clip]{chapters/mc_background/dir_adj_cpu.pdf}
