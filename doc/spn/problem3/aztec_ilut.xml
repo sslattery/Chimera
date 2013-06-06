@@ -5,7 +5,7 @@
     <ParameterList name="Forward Solve">
       <Parameter name="Tolerance" type="double" value="1e-8"/>
       <ParameterList name="AztecOO Settings">
-        <Parameter name="Aztec Solver" type="string" value="BiCGStab"/>
+        <Parameter name="Aztec Solver" type="string" value="GMRES"/>
         <Parameter name="Convergence Test" type="string" value="rhs"/>
       </ParameterList>
     </ParameterList>
