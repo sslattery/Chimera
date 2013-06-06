@@ -33,6 +33,10 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
 {
     // Get the local rows from the partitioner.
     Teuchos::ArrayView<int> local_rows = partitioner->getLocalRows();
+    Teuchos::ArrayView<int> local_i = partitioner->getLocalI();
+    Teuchos::ArrayView<int> local_j = partitioner->getLocalJ();
+    Teuchos::ArrayView<int>::const_iterator local_i_it;
+    Teuchos::ArrayView<int>::const_iterator local_j_it;
 
     // Build the map.
     Teuchos::RCP<const Tpetra::Map<int> > row_map = 
@@ -53,299 +57,743 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
     std::cout << "Mesh Size " << dx << std::endl;
     std::cout << "L/dx " << d_length/dx << std::endl;
 
-    Teuchos::Array<double> diag( 1, xs_a + D*10.0/(3.0*dx*dx) );
-    Teuchos::Array<double> iminus1( 1, -2.0*D/(3.0*dx*dx) );
-    Teuchos::Array<double> iplus1( 1, -2.0*D/(3.0*dx*dx) );
-    Teuchos::Array<double> jminus1( 1, -2.0*D/(3.0*dy*dy) );
-    Teuchos::Array<double> jplus1( 1, -2.0*D/(3.0*dy*dy) );
-    Teuchos::Array<double> iminus1jminus1( 1, -D/(6.0*dx*dx) );
-    Teuchos::Array<double> iplus1jminus1( 1, -D/(6.0*dx*dx) );
-    Teuchos::Array<double> iminus1jplus1( 1, -D/(6.0*dy*dy) );
-    Teuchos::Array<double> iplus1jplus1( 1, -D/(6.0*dy*dy) );
-
+    double diag = xs_a + D*10.0/(3.0*dx*dx);
+    double iminus1 = -2.0*D/(3.0*dx*dx);
+    double iplus1 = -2.0*D/(3.0*dx*dx);
+    double jminus1 = -2.0*D/(3.0*dy*dy);
+    double jplus1 = -2.0*D/(3.0*dy*dy);
+    double iminus1jminus1 = -D/(6.0*dx*dx);
+    double iplus1jminus1 = -D/(6.0*dx*dx);
+    double iminus1jplus1 = -D/(6.0*dy*dy);
+    double iplus1jplus1 = -D/(6.0*dy*dy);
 
     // Apply preconditioning.
-    double jacobi_scale = diag[0];
+    double jacobi_scale = diag;
     if ( jacobi_precondition )
     {
-	iminus1[0] /= jacobi_scale;
-	iplus1[0] /= jacobi_scale;
-	jminus1[0] /= jacobi_scale;
-	jplus1[0] /= jacobi_scale;
-	iminus1jminus1[0] /= jacobi_scale;
-	iplus1jminus1[0] /= jacobi_scale;
-	iminus1jplus1[0] /= jacobi_scale;
-	iplus1jplus1[0] /= jacobi_scale;
-	diag[0] /= jacobi_scale;
+	iminus1 /= jacobi_scale;
+	iplus1 /= jacobi_scale;
+	jminus1 /= jacobi_scale;
+	jplus1 /= jacobi_scale;
+	iminus1jminus1 /= jacobi_scale;
+	iplus1jminus1 /= jacobi_scale;
+	iminus1jplus1 /= jacobi_scale;
+	iplus1jplus1 /= jacobi_scale;
+	diag /= jacobi_scale;
     }
 
-    Teuchos::Array<int> idx(1);
-    Teuchos::Array<int> idx_iminus1(1);
-    Teuchos::Array<int> idx_iplus1(1);
-    Teuchos::Array<int> idx_jminus1(1);
-    Teuchos::Array<int> idx_jplus1(1);
-    Teuchos::Array<int> idx_iminus1jminus1(1);
-    Teuchos::Array<int> idx_iplus1jminus1(1);
-    Teuchos::Array<int> idx_iminus1jplus1(1);
-    Teuchos::Array<int> idx_iplus1jplus1(1);
+    int idx;
+    int idx_iminus1;
+    int idx_iplus1;
+    int idx_jminus1;
+    int idx_jplus1;
+    int idx_iminus1jminus1;
+    int idx_iplus1jminus1;
+    int idx_iminus1jplus1;
+    int idx_iplus1jplus1;
 
-    // Fill the operator from global data on proc 0.
-    if ( comm->getRank() == 0 )
+    // Determine if the local mesh is on a boundary.
+    bool has_lo_x = false;
+    bool has_lo_y = false;
+    bool has_hi_x = false;
+    bool has_hi_y = false;
+    if ( partitioner->getMyBlocks().first == 0 )
     {
+        has_lo_x = true;
+    }
+    if ( partitioner->getMyBlocks().second == 0 )
+    {
+        has_lo_y = true;
+    }
+    if ( partitioner->getMyBlocks().first == partitioner->getNumBlocks().first-1 )
+    {
+        has_hi_x = true;
+    }
+    if ( partitioner->getMyBlocks().second == partitioner->getNumBlocks().second-1 )
+    {
+        has_hi_y = true;
+    }
 
-	// Vacuum boundaries.
-	if ( plist->get<std::string>("BC TYPE") == "VACUUM" )
-	{
-	    // Min X boundary vacuum (nonreentrant current).
-	    for ( int j = 1; j < N-1; ++j )
-	    {
-		int i = 0;
+    // Vacuum boundaries.
+    Teuchos::Array<int> corner_idx(4);
+    Teuchos::Array<double> corner_values(4);
 
-		idx[0]                = i + j*N;
-		idx_iplus1[0]         = (i+1) + j*N;
-		idx_jminus1[0]        = i + (j-1)*N;
-		idx_jplus1[0]         = i + (j+1)*N;
-		idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
-		idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+    // Lower left boundary vacuum (nonreentrant current).
+    if ( has_lo_x && has_lo_y )
+    {
+        int i = 0;
+        int j = 0;
 
-		A->insertGlobalValues( idx[0], idx(),                diag() );
-		A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
-		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-		A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
-		A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
-	    }
+        idx                = i + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iplus1jplus1   = (i+1) + (j+1)*N;
 
-	    // Max X boundary vacuum (nonreentrant current).
-	    for ( int j = 1; j < N-1; ++j )
-	    {
-		int i = N-1;
+        corner_idx[0] = idx;
+        corner_idx[1] = idx_iplus1;
+        corner_idx[2] = idx_jplus1;
+        corner_idx[3] = idx_iplus1jplus1;
 
-		idx[0]                = i + j*N;
-		idx_iminus1[0]        = (i-1) + j*N;
-		idx_jminus1[0]        = i + (j-1)*N;
-		idx_jplus1[0]         = i + (j+1)*N;
-		idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
-		idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
+        corner_values[0] = diag;
+        corner_values[1] = iplus1;
+        corner_values[2] = jplus1;
+        corner_values[3] = iplus1jplus1;
 
-		A->insertGlobalValues( idx[0], idx(),                diag() );
-		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-		A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
-		A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
-	    }
+        A->insertGlobalValues( idx, corner_idx(), corner_values() );
+    }
 
-	    // Min Y boundary vacuum (nonreentrant current).
-	    for ( int i = 1; i < N-1; ++i )
-	    {
-		int j = 0;
+    // Lower right boundary vacuum (nonreentrant current).
+    if ( has_lo_x && has_hi_y )
+    {
+        int i = N-1;
+        int j = 0;
 
-		idx[0]                = i + j*N;
-		idx_iminus1[0]        = (i-1) + j*N;
-		idx_iplus1[0]         = (i+1) + j*N;
-		idx_jplus1[0]         = i + (j+1)*N;
-		idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
-		idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iminus1jplus1  = (i-1) + (j+1)*N;
 
-		A->insertGlobalValues( idx[0], idx(),                diag() );
-		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-		A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
-		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-		A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
-		A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
-	    }
+        corner_idx[0] = idx;
+        corner_idx[1] = idx_iminus1;
+        corner_idx[2] = idx_jplus1;
+        corner_idx[3] = idx_iminus1jplus1;
 
-	    // Max Y boundary vacuum (nonreentrant current).
-	    for ( int i = 1; i < N-1; ++i )
-	    {
-		int j = N-1;
+        corner_values[0] = diag;
+        corner_values[1] = iminus1;
+        corner_values[2] = jplus1;
+        corner_values[3] = iminus1jplus1;
 
-		idx[0]                = i + j*N;
-		idx_iminus1[0]        = (i-1) + j*N;
-		idx_iplus1[0]         = (i+1) + j*N;
-		idx_jminus1[0]        = i + (j-1)*N;
-		idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
-		idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
+        A->insertGlobalValues( idx, corner_idx(), corner_values() );
+    }
 
-		A->insertGlobalValues( idx[0], idx(),                diag() );
-		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-		A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1()  );
-		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-		A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
-		A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
-	    }
+    // Upper left boundary vacuum (nonreentrant current).
+    if ( has_hi_x && has_lo_y )
+    {
+        int i = 0;
+        int j = N-1;
 
-	    // Lower left boundary vacuum (nonreentrant current).
-	    {
-		int i = 0;
-		int j = 0;
+        idx                = i + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_iplus1jminus1  = (i+1) + (j-1)*N;
 
-		idx[0]                = i + j*N;
-		idx_iplus1[0]         = (i+1) + j*N;
-		idx_jplus1[0]         = i + (j+1)*N;
-		idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+        corner_idx[0] = idx;
+        corner_idx[1] = idx_iplus1;
+        corner_idx[2] = idx_jminus1;
+        corner_idx[3] = idx_iplus1jminus1;
 
-		A->insertGlobalValues( idx[0], idx(),                diag() );
-		A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
-		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-		A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
-	    }
+        corner_values[0] = diag;
+        corner_values[1] = iplus1;
+        corner_values[2] = jminus1;
+        corner_values[3] = iplus1jminus1;
 
-	    // Lower right boundary vacuum (nonreentrant current).
-	    {
-		int i = N-1;
-		int j = 0;
+        A->insertGlobalValues( idx, corner_idx(), corner_values() );
+    }
 
-		idx[0]                = i + j*N;
-		idx_iminus1[0]        = (i-1) + j*N;
-		idx_jplus1[0]         = i + (j+1)*N;
-		idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
+    // Upper right boundary vacuum (nonreentrant current).
+    if ( has_hi_x && has_lo_y )
+    {
+        int i = N-1;
+        int j = N-1;
 
-		A->insertGlobalValues( idx[0], idx(),                diag() );
-		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-		A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-		A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
-	    }
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_iminus1jminus1 = (i-1) + (j-1)*N;
 
-	    // Upper left boundary vacuum (nonreentrant current).
-	    {
-		int i = 0;
-		int j = N-1;
+        corner_idx[0] = idx;
+        corner_idx[1] = idx_iminus1;
+        corner_idx[2] = idx_jminus1;
+        corner_idx[3] = idx_iminus1jminus1;
 
-		idx[0]                = i + j*N;
-		idx_iplus1[0]         = (i+1) + j*N;
-		idx_jminus1[0]        = i + (j-1)*N;
-		idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
+        corner_values[0] = diag;
+        corner_values[1] = iminus1;
+        corner_values[2] = jminus1;
+        corner_values[3] = iminus1jminus1;
+        A->insertGlobalValues( idx, corner_idx(), corner_values() );
+    }
 
-		A->insertGlobalValues( idx[0], idx(),                diag() );
-		A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
-		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-		A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
-	    }
+    Teuchos::Array<int> bnd_idx(6);
+    Teuchos::Array<double> bnd_values(6);
 
-	    // Upper right boundary vacuum (nonreentrant current).
-	    {
-		int i = N-1;
-		int j = N-1;
+    // Min X boundary vacuum (nonreentrant current).
+    if ( has_lo_x )
+    {
+        for ( local_j_it = local_j.begin()+1; 
+              local_j_it != local_j.end()-1;
+              ++local_j_it )
+        {
+            int i = 0;
+            int j = *local_j_it;
 
-		idx[0]                = i + j*N;
-		idx_iminus1[0]        = (i-1) + j*N;
-		idx_jminus1[0]        = i + (j-1)*N;
-		idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
+            idx                = i + j*N;
+            idx_iplus1         = (i+1) + j*N;
+            idx_jminus1        = i + (j-1)*N;
+            idx_jplus1         = i + (j+1)*N;
+            idx_iplus1jminus1  = (i+1) + (j-1)*N;
+            idx_iplus1jplus1   = (i+1) + (j+1)*N;
 
-		A->insertGlobalValues( idx[0], idx(),                diag() );
-		A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-		A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-		A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
-	    }
+            bnd_idx[0] = idx;
+            bnd_idx[1] = idx_iplus1;
+            bnd_idx[2] = idx_jminus1;
+            bnd_idx[3] = idx_jplus1;
+            bnd_idx[4] = idx_iplus1jminus1;
+            bnd_idx[5] = idx_iplus1jplus1;
 
-	    // Central grid points
-	    for ( int j = 1; j < N-1; ++j )
-	    {
-		for ( int i = 1; i < N-1; ++i )
-		{
-		    idx[0]                = i + j*N;
-		    idx_iminus1[0]        = (i-1) + j*N;
-		    idx_iplus1[0]         = (i+1) + j*N;
-		    idx_jminus1[0]        = i + (j-1)*N;
-		    idx_jplus1[0]         = i + (j+1)*N;
-		    idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
-		    idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
-		    idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
-		    idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+            bnd_values[0] = diag;
+            bnd_values[1] = iplus1;
+            bnd_values[2] = jminus1;
+            bnd_values[3] = jplus1;
+            bnd_values[4] = iplus1jminus1;
+            bnd_values[5] = iplus1jplus1;
 
-		    A->insertGlobalValues( idx[0], idx(),                diag() );
-		    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-		    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
-		    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-		    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-		    A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
-		    A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
-		    A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
-		    A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
-		}
-	    }
-	}
+            A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+        }
+    }
+    if ( has_lo_x && !has_lo_y )
+    {
+        int i = 0;
+        int j = local_j.front();
 
-	// Periodic boundaries.
-	else if ( plist->get<std::string>("BC TYPE") == "PERIODIC" )
-	{
-	    for ( int i = 0; i < N; ++i )
-	    {
-		for ( int j = 0; j < N; ++j )
-		{
-		    idx[0]                = i + j*N;
-		    idx_iminus1[0]        = (i-1) + j*N;
-		    idx_iplus1[0]         = (i+1) + j*N;
-		    idx_jminus1[0]        = i + (j-1)*N;
-		    idx_jplus1[0]         = i + (j+1)*N;
+        idx                = i + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iplus1jminus1  = (i+1) + (j-1)*N;
+        idx_iplus1jplus1   = (i+1) + (j+1)*N;
 
-		    idx_iminus1jminus1[0] = (i-1) + (j-1)*N;
-		    idx_iplus1jminus1[0]  = (i+1) + (j-1)*N;
-		    idx_iminus1jplus1[0]  = (i-1) + (j+1)*N;
-		    idx_iplus1jplus1[0]   = (i+1) + (j+1)*N;
+        bnd_idx[0] = idx;
+        bnd_idx[1] = idx_iplus1;
+        bnd_idx[2] = idx_jminus1;
+        bnd_idx[3] = idx_jplus1;
+        bnd_idx[4] = idx_iplus1jminus1;
+        bnd_idx[5] = idx_iplus1jplus1;
 
-		    if ( i == 0 )
-		    {
-			idx_iminus1[0]        = (N-1) + j*N;
-			idx_iminus1jminus1[0] = (N-1) + (j-1)*N;
-			idx_iminus1jplus1[0]  = (N-1) + (j+1)*N;
-		    }
+        bnd_values[0] = diag;
+        bnd_values[1] = iplus1;
+        bnd_values[2] = jminus1;
+        bnd_values[3] = jplus1;
+        bnd_values[4] = iplus1jminus1;
+        bnd_values[5] = iplus1jplus1;
 
-		    if ( i == N-1 )
-		    {
-			idx_iplus1[0]         = j*N;
-			idx_iplus1jminus1[0]  = (j-1)*N;
-			idx_iplus1jplus1[0]   = (j+1)*N;
-		    }
+        A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+    }
+    if ( has_lo_x && !has_hi_y )
+    {
+        int i = 0;
+        int j = local_j.back();
 
-		    if ( j == 0 )
-		    {
-			idx_jminus1[0]        = i + (N-1)*N;
-			idx_iminus1jminus1[0] = (i-1) + (N-1)*N;
-			idx_iplus1jminus1[0]  = (i+1) + (N-1)*N;
-		    }
+        idx                = i + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iplus1jminus1  = (i+1) + (j-1)*N;
+        idx_iplus1jplus1   = (i+1) + (j+1)*N;
 
-		    if ( j == N-1 )
-		    {
-			idx_jplus1[0]         = i;
-			idx_iminus1jplus1[0]  = (i-1);
-			idx_iplus1jplus1[0]   = (i+1);
-		    }
+        bnd_idx[0] = idx;
+        bnd_idx[1] = idx_iplus1;
+        bnd_idx[2] = idx_jminus1;
+        bnd_idx[3] = idx_jplus1;
+        bnd_idx[4] = idx_iplus1jminus1;
+        bnd_idx[5] = idx_iplus1jplus1;
 
-		    if ( i == 0 && j == 0 )
-		    {
-			idx_iminus1jminus1[0] = (N-1) + (N-1)*N;
-		    }
+        bnd_values[0] = diag;
+        bnd_values[1] = iplus1;
+        bnd_values[2] = jminus1;
+        bnd_values[3] = jplus1;
+        bnd_values[4] = iplus1jminus1;
+        bnd_values[5] = iplus1jplus1;
 
-		    if ( i == 0 && j == N-1 )
-		    {
-			idx_iminus1jplus1[0] = (N-1);			
-		    }
+        A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+    }
 
-		    if ( i == N-1 && j == 0 )
-		    {
-			idx_iplus1jminus1[0] = (N-1)*N;
-		    }
+    // Max X boundary vacuum (nonreentrant current).
+    if ( has_hi_x )
+    {
+        for ( local_j_it = local_j.begin()+1;
+              local_j_it != local_j.end()-1;
+              ++local_j_it )
+        {
+            int i = N-1;
+            int j = *local_j_it;
 
-		    if ( i == N-1 && j == N-1 )
-		    {
-			idx_iplus1jplus1[0] = 0;
-		    }
+            idx = i + j*N;
+            idx_iminus1        = (i-1) + j*N;
+            idx_jminus1        = i + (j-1)*N;
+            idx_jplus1         = i + (j+1)*N;
+            idx_iminus1jminus1 = (i-1) + (j-1)*N;
+            idx_iminus1jplus1  = (i-1) + (j+1)*N;
 
-		    A->insertGlobalValues( idx[0], idx(),                diag() );
-		    A->insertGlobalValues( idx[0], idx_iminus1(),        iminus1()  );
-		    A->insertGlobalValues( idx[0], idx_iplus1(),         iplus1  );
-		    A->insertGlobalValues( idx[0], idx_jminus1(),        jminus1()  );
-		    A->insertGlobalValues( idx[0], idx_jplus1(),         jplus1()  );
-		    A->insertGlobalValues( idx[0], idx_iminus1jminus1(), iminus1jminus1() );
-		    A->insertGlobalValues( idx[0], idx_iplus1jminus1(),  iplus1jminus1() );
-		    A->insertGlobalValues( idx[0], idx_iminus1jplus1(),  iminus1jplus1() );
-		    A->insertGlobalValues( idx[0], idx_iplus1jplus1(),   iplus1jplus1() );
-		}
-	    }
-	}
+            bnd_idx[0] = idx;
+            bnd_idx[1] = idx_iminus1;
+            bnd_idx[2] = idx_jminus1;
+            bnd_idx[3] = idx_jplus1;
+            bnd_idx[4] = idx_iminus1jminus1;
+            bnd_idx[5] = idx_iminus1jplus1;
+
+            bnd_values[0] = diag;
+            bnd_values[1] = iminus1;
+            bnd_values[2] = jminus1;
+            bnd_values[3] = jplus1;
+            bnd_values[4] = iminus1jminus1;
+            bnd_values[5] = iminus1jplus1;
+
+            A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+        }
+    }
+    if ( has_hi_x && !has_lo_y )
+    {
+        int i = N-1;
+        int j = local_j.front();
+
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iminus1jminus1 = (i-1) + (j-1)*N;
+        idx_iminus1jplus1  = (i-1) + (j+1)*N;
+
+        bnd_idx[0] = idx;
+        bnd_idx[1] = idx_iminus1;
+        bnd_idx[2] = idx_jminus1;
+        bnd_idx[3] = idx_jplus1;
+        bnd_idx[4] = idx_iminus1jminus1;
+        bnd_idx[5] = idx_iminus1jplus1;
+
+        bnd_values[0] = diag;
+        bnd_values[1] = iminus1;
+        bnd_values[2] = jminus1;
+        bnd_values[3] = jplus1;
+        bnd_values[4] = iminus1jminus1;
+        bnd_values[5] = iminus1jplus1;
+
+        A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+    }
+    if ( has_hi_x && !has_hi_y )
+    {
+        int i = N-1;
+        int j = local_j.back();
+
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iminus1jminus1 = (i-1) + (j-1)*N;
+        idx_iminus1jplus1  = (i-1) + (j+1)*N;
+
+        bnd_idx[0] = idx;
+        bnd_idx[1] = idx_iminus1;
+        bnd_idx[2] = idx_jminus1;
+        bnd_idx[3] = idx_jplus1;
+        bnd_idx[4] = idx_iminus1jminus1;
+        bnd_idx[5] = idx_iminus1jplus1;
+
+        bnd_values[0] = diag;
+        bnd_values[1] = iminus1;
+        bnd_values[2] = jminus1;
+        bnd_values[3] = jplus1;
+        bnd_values[4] = iminus1jminus1;
+        bnd_values[5] = iminus1jplus1;
+
+        A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+    }
+
+    // Min Y boundary vacuum (nonreentrant current).
+    if ( has_lo_y )
+    {
+        for ( local_i_it = local_i.begin()+1;
+              local_i_it != local_i.end()-1;
+              ++local_i_it )
+        {
+            int i = *local_i_it;
+            int j = 0;
+
+            idx                = i + j*N;
+            idx_iminus1        = (i-1) + j*N;
+            idx_iplus1         = (i+1) + j*N;
+            idx_jplus1         = i + (j+1)*N;
+            idx_iminus1jplus1  = (i-1) + (j+1)*N;
+            idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+            bnd_idx[0] = idx;
+            bnd_idx[1] = idx_iminus1;
+            bnd_idx[2] = idx_iplus1;
+            bnd_idx[3] = idx_jplus1;
+            bnd_idx[4] = idx_iminus1jplus1;
+            bnd_idx[5] = idx_iplus1jplus1;
+
+            bnd_values[0] = diag;
+            bnd_values[1] = iminus1;
+            bnd_values[2] = iplus1;
+            bnd_values[3] = jplus1;
+            bnd_values[4] = iminus1jplus1;
+            bnd_values[5] = iplus1jplus1;
+
+            A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+        }
+    }
+    if ( has_lo_y && !has_lo_x )
+    {
+        int i = local_i.front();
+        int j = 0;
+
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iminus1jplus1  = (i-1) + (j+1)*N;
+        idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+        bnd_idx[0] = idx;
+        bnd_idx[1] = idx_iminus1;
+        bnd_idx[2] = idx_iplus1;
+        bnd_idx[3] = idx_jplus1;
+        bnd_idx[4] = idx_iminus1jplus1;
+        bnd_idx[5] = idx_iplus1jplus1;
+
+        bnd_values[0] = diag;
+        bnd_values[1] = iminus1;
+        bnd_values[2] = iplus1;
+        bnd_values[3] = jplus1;
+        bnd_values[4] = iminus1jplus1;
+        bnd_values[5] = iplus1jplus1;
+
+        A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+    }
+    if ( has_lo_y && !has_hi_x )
+    {
+        int i = local_i.back();
+        int j = 0;
+
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iminus1jplus1  = (i-1) + (j+1)*N;
+        idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+        bnd_idx[0] = idx;
+        bnd_idx[1] = idx_iminus1;
+        bnd_idx[2] = idx_iplus1;
+        bnd_idx[3] = idx_jplus1;
+        bnd_idx[4] = idx_iminus1jplus1;
+        bnd_idx[5] = idx_iplus1jplus1;
+
+        bnd_values[0] = diag;
+        bnd_values[1] = iminus1;
+        bnd_values[2] = iplus1;
+        bnd_values[3] = jplus1;
+        bnd_values[4] = iminus1jplus1;
+        bnd_values[5] = iplus1jplus1;
+
+        A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+    }
+
+    // Max Y boundary vacuum (nonreentrant current).
+    if ( has_hi_y )
+    {
+        for ( local_i_it = local_i.begin()+1;
+              local_i_it != local_i.end()-1;
+              ++local_i_it )
+        {
+            int i = *local_i_it;
+            int j = N-1;
+
+            idx                = i + j*N;
+            idx_iminus1        = (i-1) + j*N;
+            idx_iplus1         = (i+1) + j*N;
+            idx_jminus1        = i + (j-1)*N;
+            idx_iminus1jminus1 = (i-1) + (j-1)*N;
+            idx_iplus1jminus1  = (i+1) + (j-1)*N;
+
+            bnd_idx[0] = idx;
+            bnd_idx[1] = idx_iminus1;
+            bnd_idx[2] = idx_iplus1;
+            bnd_idx[3] = idx_jminus1;
+            bnd_idx[4] = idx_iminus1jminus1;
+            bnd_idx[5] = idx_iplus1jminus1;
+
+            bnd_values[0] = diag;
+            bnd_values[1] = iminus1;
+            bnd_values[2] = iplus1;
+            bnd_values[3] = jminus1;
+            bnd_values[4] = iminus1jminus1;
+            bnd_values[5] = iplus1jminus1;
+
+            A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+        }
+    }
+    if ( has_hi_y && !has_lo_x )
+    {
+        int i = local_i.front();
+        int j = N-1;
+
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_iminus1jminus1 = (i-1) + (j-1)*N;
+        idx_iplus1jminus1  = (i+1) + (j-1)*N;
+
+        bnd_idx[0] = idx;
+        bnd_idx[1] = idx_iminus1;
+        bnd_idx[2] = idx_iplus1;
+        bnd_idx[3] = idx_jminus1;
+        bnd_idx[4] = idx_iminus1jminus1;
+        bnd_idx[5] = idx_iplus1jminus1;
+
+        bnd_values[0] = diag;
+        bnd_values[1] = iminus1;
+        bnd_values[2] = iplus1;
+        bnd_values[3] = jminus1;
+        bnd_values[4] = iminus1jminus1;
+        bnd_values[5] = iplus1jminus1;
+
+        A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+    }
+    if ( has_hi_y && !has_hi_x )
+    {
+        int i = local_i.back();
+        int j = N-1;
+
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_iminus1jminus1 = (i-1) + (j-1)*N;
+        idx_iplus1jminus1  = (i+1) + (j-1)*N;
+
+        bnd_idx[0] = idx;
+        bnd_idx[1] = idx_iminus1;
+        bnd_idx[2] = idx_iplus1;
+        bnd_idx[3] = idx_jminus1;
+        bnd_idx[4] = idx_iminus1jminus1;
+        bnd_idx[5] = idx_iplus1jminus1;
+
+        bnd_values[0] = diag;
+        bnd_values[1] = iminus1;
+        bnd_values[2] = iplus1;
+        bnd_values[3] = jminus1;
+        bnd_values[4] = iminus1jminus1;
+        bnd_values[5] = iplus1jminus1;
+
+        A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
+    }
+
+    // Central grid points
+    Teuchos::Array<int> center_idx(9);
+    Teuchos::Array<double> center_values(9);
+    for ( local_j_it = local_j.begin()+1;
+          local_j_it != local_j.end()-1;
+          ++local_j_it )
+    {
+        for ( local_i_it = local_i.begin()+1;
+              local_i_it != local_i.end()-1;
+              ++local_i_it )
+        {
+            int i = *local_i_it;
+            int j = *local_j_it;
+
+            idx                = i + j*N;
+            idx_iminus1        = (i-1) + j*N;
+            idx_iplus1         = (i+1) + j*N;
+            idx_jminus1        = i + (j-1)*N;
+            idx_jplus1         = i + (j+1)*N;
+            idx_iminus1jminus1 = (i-1) + (j-1)*N;
+            idx_iplus1jminus1  = (i+1) + (j-1)*N;
+            idx_iminus1jplus1  = (i-1) + (j+1)*N;
+            idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+            center_idx[0] = idx;
+            center_idx[1] = idx_iminus1;
+            center_idx[2] = idx_iplus1;
+            center_idx[3] = idx_jminus1;
+            center_idx[4] = idx_jplus1;
+            center_idx[5] = idx_iminus1jminus1;
+            center_idx[6] = idx_iplus1jminus1;
+            center_idx[7] = idx_iminus1jplus1;
+            center_idx[8] = idx_iplus1jplus1;
+
+            center_values[0] = diag;
+            center_values[1] = iminus1;
+            center_values[2] = iplus1;
+            center_values[3] = jminus1;
+            center_values[4] = jplus1;
+            center_values[5] = iminus1jminus1;
+            center_values[6] = iplus1jminus1;
+            center_values[7] = iminus1jplus1;
+            center_values[8] = iplus1jplus1;
+
+            A->insertGlobalValues( idx, center_idx(), center_values() );
+        }
+    }
+    if ( !has_lo_x )
+    {
+        for ( local_j_it = local_j.begin()+1;
+              local_j_it != local_j.end()-1;
+              ++local_j_it )
+        {
+            int i = local_i.front();
+            int j = *local_j_it;
+
+            idx                = i + j*N;
+            idx_iminus1        = (i-1) + j*N;
+            idx_iplus1         = (i+1) + j*N;
+            idx_jminus1        = i + (j-1)*N;
+            idx_jplus1         = i + (j+1)*N;
+            idx_iminus1jminus1 = (i-1) + (j-1)*N;
+            idx_iplus1jminus1  = (i+1) + (j-1)*N;
+            idx_iminus1jplus1  = (i-1) + (j+1)*N;
+            idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+            center_idx[0] = idx;
+            center_idx[1] = idx_iminus1;
+            center_idx[2] = idx_iplus1;
+            center_idx[3] = idx_jminus1;
+            center_idx[4] = idx_jplus1;
+            center_idx[5] = idx_iminus1jminus1;
+            center_idx[6] = idx_iplus1jminus1;
+            center_idx[7] = idx_iminus1jplus1;
+            center_idx[8] = idx_iplus1jplus1;
+
+            center_values[0] = diag;
+            center_values[1] = iminus1;
+            center_values[2] = iplus1;
+            center_values[3] = jminus1;
+            center_values[4] = jplus1;
+            center_values[5] = iminus1jminus1;
+            center_values[6] = iplus1jminus1;
+            center_values[7] = iminus1jplus1;
+            center_values[8] = iplus1jplus1;
+
+            A->insertGlobalValues( idx, center_idx(), center_values() );
+        }
+    }
+    if ( !has_hi_x )
+    {
+        for ( local_j_it = local_j.begin()+1;
+              local_j_it != local_j.end()-1;
+              ++local_j_it )
+        {
+            int i = local_i.back();
+            int j = *local_j_it;
+
+            idx                = i + j*N;
+            idx_iminus1        = (i-1) + j*N;
+            idx_iplus1         = (i+1) + j*N;
+            idx_jminus1        = i + (j-1)*N;
+            idx_jplus1         = i + (j+1)*N;
+            idx_iminus1jminus1 = (i-1) + (j-1)*N;
+            idx_iplus1jminus1  = (i+1) + (j-1)*N;
+            idx_iminus1jplus1  = (i-1) + (j+1)*N;
+            idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+            center_idx[0] = idx;
+            center_idx[1] = idx_iminus1;
+            center_idx[2] = idx_iplus1;
+            center_idx[3] = idx_jminus1;
+            center_idx[4] = idx_jplus1;
+            center_idx[5] = idx_iminus1jminus1;
+            center_idx[6] = idx_iplus1jminus1;
+            center_idx[7] = idx_iminus1jplus1;
+            center_idx[8] = idx_iplus1jplus1;
+
+            center_values[0] = diag;
+            center_values[1] = iminus1;
+            center_values[2] = iplus1;
+            center_values[3] = jminus1;
+            center_values[4] = jplus1;
+            center_values[5] = iminus1jminus1;
+            center_values[6] = iplus1jminus1;
+            center_values[7] = iminus1jplus1;
+            center_values[8] = iplus1jplus1;
+
+            A->insertGlobalValues( idx, center_idx(), center_values() );
+        }
+    }
+    if ( !has_lo_y )
+    {
+        for ( local_i_it = local_i.begin()+1;
+              local_i_it != local_i.end()-1;
+              ++local_i_it )
+        {
+            int i = *local_i_it;
+            int j = local_j.front();
+
+            idx                = i + j*N;
+            idx_iminus1        = (i-1) + j*N;
+            idx_iplus1         = (i+1) + j*N;
+            idx_jminus1        = i + (j-1)*N;
+            idx_jplus1         = i + (j+1)*N;
+            idx_iminus1jminus1 = (i-1) + (j-1)*N;
+            idx_iplus1jminus1  = (i+1) + (j-1)*N;
+            idx_iminus1jplus1  = (i-1) + (j+1)*N;
+            idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+            center_idx[0] = idx;
+            center_idx[1] = idx_iminus1;
+            center_idx[2] = idx_iplus1;
+            center_idx[3] = idx_jminus1;
+            center_idx[4] = idx_jplus1;
+            center_idx[5] = idx_iminus1jminus1;
+            center_idx[6] = idx_iplus1jminus1;
+            center_idx[7] = idx_iminus1jplus1;
+            center_idx[8] = idx_iplus1jplus1;
+
+            center_values[0] = diag;
+            center_values[1] = iminus1;
+            center_values[2] = iplus1;
+            center_values[3] = jminus1;
+            center_values[4] = jplus1;
+            center_values[5] = iminus1jminus1;
+            center_values[6] = iplus1jminus1;
+            center_values[7] = iminus1jplus1;
+            center_values[8] = iplus1jplus1;
+
+            A->insertGlobalValues( idx, center_idx(), center_values() );
+        }
+    }
+    if ( !has_hi_y )
+    {
+        for ( local_i_it = local_i.begin()+1;
+              local_i_it != local_i.end()-1;
+              ++local_i_it )
+        {
+            int i = *local_i_it;
+            int j = local_j.back();
+
+            idx                = i + j*N;
+            idx_iminus1        = (i-1) + j*N;
+            idx_iplus1         = (i+1) + j*N;
+            idx_jminus1        = i + (j-1)*N;
+            idx_jplus1         = i + (j+1)*N;
+            idx_iminus1jminus1 = (i-1) + (j-1)*N;
+            idx_iplus1jminus1  = (i+1) + (j-1)*N;
+            idx_iminus1jplus1  = (i-1) + (j+1)*N;
+            idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+            center_idx[0] = idx;
+            center_idx[1] = idx_iminus1;
+            center_idx[2] = idx_iplus1;
+            center_idx[3] = idx_jminus1;
+            center_idx[4] = idx_jplus1;
+            center_idx[5] = idx_iminus1jminus1;
+            center_idx[6] = idx_iplus1jminus1;
+            center_idx[7] = idx_iminus1jplus1;
+            center_idx[8] = idx_iplus1jplus1;
+
+            center_values[0] = diag;
+            center_values[1] = iminus1;
+            center_values[2] = iplus1;
+            center_values[3] = jminus1;
+            center_values[4] = jplus1;
+            center_values[5] = iminus1jminus1;
+            center_values[6] = iplus1jminus1;
+            center_values[7] = iminus1jplus1;
+            center_values[8] = iplus1jplus1;
+
+            A->insertGlobalValues( idx, center_idx(), center_values() );
+        }
     }
     comm->barrier();
 

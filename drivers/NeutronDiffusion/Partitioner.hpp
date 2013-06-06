@@ -44,6 +44,10 @@ class Partitioner
     const SizePair& getNumBlocks() const
     { return d_num_blocks; }
 
+    //! Get my block ids.
+    const SizePair& getMyBlocks() const
+    { return d_my_blocks; }
+
     //! Get the global edge vectors.
     const VecPair& getGlobalEdges() const
     { return d_global_edges; }
@@ -51,6 +55,14 @@ class Partitioner
     //! Get the mesh.
     const RCP_Mesh& getMesh() const
     { return d_mesh; }
+
+    //! Get the i-indices (vertex-based global ids).
+    Teuchos::ArrayView<int> getLocalI()
+    { return d_local_i(); }
+
+    //! Get the j-indices (vertex-based global ids).
+    Teuchos::ArrayView<int> getLocalJ()
+    { return d_local_j(); }
 
     //! Get the local rows (vertex-based global ids).
     Teuchos::ArrayView<int> getLocalRows()
@@ -69,6 +81,9 @@ class Partitioner
     // Number of blocks.
     SizePair d_num_blocks;
 
+    // My block ids.
+    SizePair d_my_blocks;
+
     // Global edge vectors.
     VecPair d_global_edges;
 
@@ -77,6 +92,12 @@ class Partitioner
 
     // Cell size.
     std::pair<double,double> d_cell_size;
+
+    // Local i-indices (vertex-based global ids).
+    Teuchos::Array<int> d_local_i;
+
+    // Local j-indices (vertex-based global ids).
+    Teuchos::Array<int> d_local_j;
 
     // Local rows (vertex-based global ids).
     Teuchos::Array<int> d_local_rows;

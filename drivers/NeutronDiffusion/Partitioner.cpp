@@ -38,6 +38,8 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
     // Block indices.
     int my_j_block = std::floor( my_rank / d_num_blocks.first );
     int my_i_block = my_rank - d_num_blocks.first*my_j_block;
+    d_my_blocks.first = my_i_block;   
+    d_my_blocks.second = my_j_block;   
 
     // Uniform grid case.
     std::vector<double> i_edges, j_edges;
@@ -163,6 +165,16 @@ Partitioner::Partitioner( const RCP_Comm &comm, const RCP_ParameterList &plist )
 
     // Set the local rows.
     int row_idx, idx_i, idx_j;
+    for ( int i = 0; i < (int) i_edges.size(); ++i )
+    {
+        idx_i = i_offset + i;
+        d_local_i.push_back( idx_i );
+    }
+    for ( int j = 0; j < (int) j_edges.size(); ++j )
+    {
+        idx_j = j_offset + j;
+        d_local_j.push_back( idx_j );
+    }
     for ( int j = 0; j < (int) j_edges.size(); ++j )
     {
 	for ( int i = 0; i < (int) i_edges.size(); ++i )
