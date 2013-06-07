@@ -139,11 +139,12 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         corner_values[2] = jplus1;
         corner_values[3] = iplus1jplus1;
 
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, corner_idx(), corner_values() );
     }
 
     // Lower right boundary vacuum (nonreentrant current).
-    if ( has_lo_x && has_hi_y )
+    if ( has_hi_x && has_lo_y )
     {
         int i = N-1;
         int j = 0;
@@ -163,11 +164,12 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         corner_values[2] = jplus1;
         corner_values[3] = iminus1jplus1;
 
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, corner_idx(), corner_values() );
     }
 
     // Upper left boundary vacuum (nonreentrant current).
-    if ( has_hi_x && has_lo_y )
+    if ( has_lo_x && has_hi_y )
     {
         int i = 0;
         int j = N-1;
@@ -187,11 +189,12 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         corner_values[2] = jminus1;
         corner_values[3] = iplus1jminus1;
 
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, corner_idx(), corner_values() );
     }
 
     // Upper right boundary vacuum (nonreentrant current).
-    if ( has_hi_x && has_lo_y )
+    if ( has_hi_x && has_hi_y )
     {
         int i = N-1;
         int j = N-1;
@@ -210,6 +213,8 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         corner_values[1] = iminus1;
         corner_values[2] = jminus1;
         corner_values[3] = iminus1jminus1;
+
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, corner_idx(), corner_values() );
     }
 
@@ -247,6 +252,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
             bnd_values[4] = iplus1jminus1;
             bnd_values[5] = iplus1jplus1;
 
+            testInvariant( row_map->isNodeGlobalElement(idx) );
             A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
         }
     }
@@ -276,6 +282,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         bnd_values[4] = iplus1jminus1;
         bnd_values[5] = iplus1jplus1;
 
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
     }
     if ( has_lo_x && !has_hi_y )
@@ -304,6 +311,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         bnd_values[4] = iplus1jminus1;
         bnd_values[5] = iplus1jplus1;
 
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
     }
 
@@ -338,6 +346,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
             bnd_values[4] = iminus1jminus1;
             bnd_values[5] = iminus1jplus1;
 
+            testInvariant( row_map->isNodeGlobalElement(idx) );
             A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
         }
     }
@@ -367,6 +376,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         bnd_values[4] = iminus1jminus1;
         bnd_values[5] = iminus1jplus1;
 
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
     }
     if ( has_hi_x && !has_hi_y )
@@ -395,6 +405,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         bnd_values[4] = iminus1jminus1;
         bnd_values[5] = iminus1jplus1;
 
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
     }
 
@@ -429,6 +440,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
             bnd_values[4] = iminus1jplus1;
             bnd_values[5] = iplus1jplus1;
 
+            testInvariant( row_map->isNodeGlobalElement(idx) );
             A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
         }
     }
@@ -458,6 +470,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         bnd_values[4] = iminus1jplus1;
         bnd_values[5] = iplus1jplus1;
 
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
     }
     if ( has_lo_y && !has_hi_x )
@@ -486,6 +499,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         bnd_values[4] = iminus1jplus1;
         bnd_values[5] = iplus1jplus1;
 
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
     }
 
@@ -520,6 +534,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
             bnd_values[4] = iminus1jminus1;
             bnd_values[5] = iplus1jminus1;
 
+            testInvariant( row_map->isNodeGlobalElement(idx) );
             A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
         }
     }
@@ -549,6 +564,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         bnd_values[4] = iminus1jminus1;
         bnd_values[5] = iplus1jminus1;
 
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
     }
     if ( has_hi_y && !has_hi_x )
@@ -577,6 +593,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
         bnd_values[4] = iminus1jminus1;
         bnd_values[5] = iplus1jminus1;
 
+        testInvariant( row_map->isNodeGlobalElement(idx) );
         A->insertGlobalValues( idx, bnd_idx(), bnd_values() );
     }
 
@@ -624,6 +641,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
             center_values[7] = iminus1jplus1;
             center_values[8] = iplus1jplus1;
 
+            testInvariant( row_map->isNodeGlobalElement(idx) );
             A->insertGlobalValues( idx, center_idx(), center_values() );
         }
     }
@@ -666,6 +684,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
             center_values[7] = iminus1jplus1;
             center_values[8] = iplus1jplus1;
 
+            testInvariant( row_map->isNodeGlobalElement(idx) );
             A->insertGlobalValues( idx, center_idx(), center_values() );
         }
     }
@@ -708,6 +727,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
             center_values[7] = iminus1jplus1;
             center_values[8] = iplus1jplus1;
 
+            testInvariant( row_map->isNodeGlobalElement(idx) );
             A->insertGlobalValues( idx, center_idx(), center_values() );
         }
     }
@@ -750,6 +770,7 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
             center_values[7] = iminus1jplus1;
             center_values[8] = iplus1jplus1;
 
+            testInvariant( row_map->isNodeGlobalElement(idx) );
             A->insertGlobalValues( idx, center_idx(), center_values() );
         }
     }
@@ -792,8 +813,161 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
             center_values[7] = iminus1jplus1;
             center_values[8] = iplus1jplus1;
 
+            testInvariant( row_map->isNodeGlobalElement(idx) );
             A->insertGlobalValues( idx, center_idx(), center_values() );
         }
+    }
+    if ( !has_lo_x && !has_lo_y )
+    {
+        int i = local_i.front();
+        int j = local_j.front();
+
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iminus1jminus1 = (i-1) + (j-1)*N;
+        idx_iplus1jminus1  = (i+1) + (j-1)*N;
+        idx_iminus1jplus1  = (i-1) + (j+1)*N;
+        idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+        center_idx[0] = idx;
+        center_idx[1] = idx_iminus1;
+        center_idx[2] = idx_iplus1;
+        center_idx[3] = idx_jminus1;
+        center_idx[4] = idx_jplus1;
+        center_idx[5] = idx_iminus1jminus1;
+        center_idx[6] = idx_iplus1jminus1;
+        center_idx[7] = idx_iminus1jplus1;
+        center_idx[8] = idx_iplus1jplus1;
+
+        center_values[0] = diag;
+        center_values[1] = iminus1;
+        center_values[2] = iplus1;
+        center_values[3] = jminus1;
+        center_values[4] = jplus1;
+        center_values[5] = iminus1jminus1;
+        center_values[6] = iplus1jminus1;
+        center_values[7] = iminus1jplus1;
+        center_values[8] = iplus1jplus1;
+
+        testInvariant( row_map->isNodeGlobalElement(idx) );
+        A->insertGlobalValues( idx, center_idx(), center_values() );
+    }
+    if ( !has_lo_x && !has_hi_y )
+    {
+        int i = local_i.front();
+        int j = local_j.back();
+
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iminus1jminus1 = (i-1) + (j-1)*N;
+        idx_iplus1jminus1  = (i+1) + (j-1)*N;
+        idx_iminus1jplus1  = (i-1) + (j+1)*N;
+        idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+        center_idx[0] = idx;
+        center_idx[1] = idx_iminus1;
+        center_idx[2] = idx_iplus1;
+        center_idx[3] = idx_jminus1;
+        center_idx[4] = idx_jplus1;
+        center_idx[5] = idx_iminus1jminus1;
+        center_idx[6] = idx_iplus1jminus1;
+        center_idx[7] = idx_iminus1jplus1;
+        center_idx[8] = idx_iplus1jplus1;
+
+        center_values[0] = diag;
+        center_values[1] = iminus1;
+        center_values[2] = iplus1;
+        center_values[3] = jminus1;
+        center_values[4] = jplus1;
+        center_values[5] = iminus1jminus1;
+        center_values[6] = iplus1jminus1;
+        center_values[7] = iminus1jplus1;
+        center_values[8] = iplus1jplus1;
+
+        testInvariant( row_map->isNodeGlobalElement(idx) );
+        A->insertGlobalValues( idx, center_idx(), center_values() );
+    }
+    if ( !has_hi_x && !has_lo_y )
+    {
+        int i = local_i.back();
+        int j = local_j.front();
+
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iminus1jminus1 = (i-1) + (j-1)*N;
+        idx_iplus1jminus1  = (i+1) + (j-1)*N;
+        idx_iminus1jplus1  = (i-1) + (j+1)*N;
+        idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+        center_idx[0] = idx;
+        center_idx[1] = idx_iminus1;
+        center_idx[2] = idx_iplus1;
+        center_idx[3] = idx_jminus1;
+        center_idx[4] = idx_jplus1;
+        center_idx[5] = idx_iminus1jminus1;
+        center_idx[6] = idx_iplus1jminus1;
+        center_idx[7] = idx_iminus1jplus1;
+        center_idx[8] = idx_iplus1jplus1;
+
+        center_values[0] = diag;
+        center_values[1] = iminus1;
+        center_values[2] = iplus1;
+        center_values[3] = jminus1;
+        center_values[4] = jplus1;
+        center_values[5] = iminus1jminus1;
+        center_values[6] = iplus1jminus1;
+        center_values[7] = iminus1jplus1;
+        center_values[8] = iplus1jplus1;
+
+        testInvariant( row_map->isNodeGlobalElement(idx) );
+        A->insertGlobalValues( idx, center_idx(), center_values() );
+    }
+    if ( !has_hi_x && !has_hi_y )
+    {
+        int i = local_i.back();
+        int j = local_j.back();
+
+        idx                = i + j*N;
+        idx_iminus1        = (i-1) + j*N;
+        idx_iplus1         = (i+1) + j*N;
+        idx_jminus1        = i + (j-1)*N;
+        idx_jplus1         = i + (j+1)*N;
+        idx_iminus1jminus1 = (i-1) + (j-1)*N;
+        idx_iplus1jminus1  = (i+1) + (j-1)*N;
+        idx_iminus1jplus1  = (i-1) + (j+1)*N;
+        idx_iplus1jplus1   = (i+1) + (j+1)*N;
+
+        center_idx[0] = idx;
+        center_idx[1] = idx_iminus1;
+        center_idx[2] = idx_iplus1;
+        center_idx[3] = idx_jminus1;
+        center_idx[4] = idx_jplus1;
+        center_idx[5] = idx_iminus1jminus1;
+        center_idx[6] = idx_iplus1jminus1;
+        center_idx[7] = idx_iminus1jplus1;
+        center_idx[8] = idx_iplus1jplus1;
+
+        center_values[0] = diag;
+        center_values[1] = iminus1;
+        center_values[2] = iplus1;
+        center_values[3] = jminus1;
+        center_values[4] = jplus1;
+        center_values[5] = iminus1jminus1;
+        center_values[6] = iplus1jminus1;
+        center_values[7] = iminus1jplus1;
+        center_values[8] = iplus1jplus1;
+
+        testInvariant( row_map->isNodeGlobalElement(idx) );
+        A->insertGlobalValues( idx, center_idx(), center_values() );
     }
     comm->barrier();
 
