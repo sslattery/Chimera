@@ -1,4 +1,4 @@
-\chapter{Monte Carlo Solution Methods for the Simplified $P_N$ Equations}
+\chapter{Monte Carlo Synthetic Acceleration Methods for the $SP_N$ Equations}
 \label{ch:spn_equations}
 
 The neutron transport problem is complicated. Solutions cover a large
@@ -2051,34 +2051,51 @@ eigensolver in the same number of eigenvalue iterations.
   \label{tab:serial_ev_results}
 \end{table}
 
-For each calculation, the scalar flux in each energy group was
-compared over the entire spatial with the GMRES solution used as the
-reference.
+For each converged eigenvalue calculation, the scalar flux in each
+energy group was compared over the entire spatial with the
+BiCGStab-ILUT solution used as the reference to compute an absolute
+difference. For the 1 group calculations, these absolute differences
+are plotted spatially along the centerline of the fuel assembly in
+Figure~\ref{fig:serial_1_group_diff}. Interestingly, except for the
+MCSA-ILUT-MR-C calculation, all other 1-group calculations including
+GMRES had a maximum global flux difference of \sn{9.313}{-10} even
+though different spatial results were observed. For the MCSA-ILUT-MR-C
+calculation, a slightly larger maximum error of \sn{2.205}{-9} was
+observed for reasons that remain unexplained. All 1-group calculations
+have a minimum observed absolute difference of 0 with respect to the
+BiCGStab calculation.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6in]{chapters/spn_equations/gmres_mcsa_1_1_diff.pdf}
+    \includegraphics[width=6in]{chapters/spn_equations/serial_1_group.pdf}
   \end{center}
   \caption{\textbf{Absolute difference of the group 0 scalar flux
-      between the MCSA and Aztec GMRES calculations for the 1-group
-      calculation.} \textit{Over the entire domain a maximum absolute
-      difference of \sn{9}{-10} between the scalar flux computed by
-      MCSA and GMRES was observed. The solvers were converged to a
-      tolerance of \sn{1}{-8}.}}
-  \label{fig:gmres_mcsa_1_1_diff}
+      between the Aztec BiCGStab calculations and Aztec GMRES and the
+      MCSA variations for the 1-group calculation.} \textit{Left to
+      right: GMRES-ILUT, MCSA-ILUT-R-C, MCSA-ILUT-MR-C,
+      MCSA-ILUT-R-EV, MCSA-ILUT-MR-EV.}}
+  \label{fig:serial_1_group_diff}
 \end{figure}
+
+Table~\ref{tab:serial_differences} gives the maximum and minimum
+absolute differences for all calculations and all energy groups using
+the BiCGStab calculation as the reference. All comparisons were
+performed within a group such that the MCSA-ILUT-R-C results in group
+3 for the 4-group calculation were computed with the BiCGStab-ILUT
+solution in group 3 for the 4-group calculation as a reference.
 
 %%---------------------------------------------------------------------------%%
 \section{MCSA Performance Comparison to Conventional Methods}
 \label{sec:spn_comparison}
 Using the same set of solver parameters used for verification, MCSA
 will be directly compared to the production Krylov solvers in terms of
-both iterative performance and CPU timing. In addition to the
-parameters used for the verification analysis, artificial absorption
-was also introduced with a value of 0.2 for the MCSA calculations that
-used the collision esitmator as CPU timing performance was improved
-without a loss in iterative performance. Adding this absorption did
-not change the numerical results of the calculation.
+both iterative performance and CPU timing for solutions to the fuel
+assembly problem. In addition to the parameters used for the
+verification analysis, artificial absorption was also introduced with
+a value of 0.2 for the MCSA calculations that used the collision
+esitmator as CPU timing performance was improved without a loss in
+iterative performance. Adding this absorption did not change the
+numerical results of the calculation.
 
 Figure~\ref{fig:spn_comparison_iterations} gives the average number of
 linear solver iterations required to converge a single eigenvalue

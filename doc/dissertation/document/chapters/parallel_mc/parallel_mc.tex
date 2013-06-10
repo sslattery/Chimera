@@ -1,4 +1,4 @@
-\chapter{Parallel Monte Carlo Solution Methods for Linear Systems}
+\chapter{Parallel Monte Carlo Synthetic Acceleration}
 \label{ch:parallel_methods}
 For Monte Carlo methods, and in particular MCSA, to be viable at the
 production scale, scalable parallel implementations are required. In a
@@ -18,20 +18,23 @@ In this chapter we briefly review particle transport methods for
 domain decomposed Monte Carlo and then provide an analytic framework
 from which to estimate its performance. We then devise an algorithm
 based on these methods for efficient parallel solutions using the
-adjoint Neumann-Ulam method and MCSA and perform parallel scaling
-studings to test its performance and compare this performance to
-conventional methods.
+Neumann-Ulam method and MCSA and verify its correctness by comparing
+the numerical results against production Krylov methods. We then
+perform parallel scaling studings to test its performance on both a
+small computing cluster and a leadership class machine and compare
+this performance to the production Krylov methods.
 
 %%---------------------------------------------------------------------------%%
 \section{Domain Decomposition for Monte Carlo}
 \label{sec:msod}
-As observed in the discussion on parallel Krylov methods, large-scale
-problems will surely have their data partitioned such that each
-parallel process owns a subset of the equations in the linear
-system. Given this convention, the adjoint Monte Carlo algorithm must
-perform random walks over a domain that is decomposed and must remain
-decomposed due to memory limitations. This naturally leads us to seek
-parallel Monte Carlo algorithms that handle domain decomposition.
+As observed in the discussion on parallel Krylov methods in
+Appendix~\ref{ch:linear_problem}, large-scale problems will surely
+have their data partitioned such that each parallel process owns a
+subset of the equations in the linear system. Given this convention,
+the adjoint Monte Carlo algorithm must perform random walks over a
+domain that is decomposed and must remain decomposed due to memory
+limitations. This naturally leads us to seek parallel Monte Carlo
+algorithms that handle domain decomposition.
 
 In the context of radiation transport, Brunner and colleagues provided
 a survey of algorithms for achieving this as implemented in production
