@@ -1905,22 +1905,22 @@ all have similar minimum CPU times over the range of values tested.
 %%---------------------------------------------------------------------------%%
 \section{MCSA Verification}
 \label{sec:spn_mcsa_verification}
-Through the numerical studies presented up to this point in this
-chapter, we have developed a set of preconditioning techniques that
-permit MCSA to be used with the $SP_N$ form of the neutron transport
-equation and applied to a difficult fuel assembly criticality
-problem. Along with these preconditioning techniques, a set a varying
-MCSA parameters were analyzed to find those that yielded the best
-performance for this particular problem. In addition, several steps
-were taken to mitigate the dense composite linear operators that arise
-when performing explicit MCSA preconditioning in order to achieve
-convergence. Using these results, we compare MCSA directly to
-conventional linear solvers that would be typically used to solve the
-$SP_N$ form of the transport equation as presented here. In
-particular, we will use a pair of production Krylov solvers with which
-we will compare direct numerical results in order to verify MCSA
-solutions and iterative and CPU timing performance in order to gauge
-feasibility and identify areas that require further research. 
+Through the numerical studies presented in this chapter, we have
+developed a set of preconditioning techniques that permit MCSA to be
+used with the $SP_N$ form of the neutron transport equation and
+applied to a difficult fuel assembly criticality problem. Along with
+these preconditioning techniques, a set a varying MCSA parameters were
+analyzed to find those that yielded the best performance for this
+particular problem. In addition, several steps were taken to mitigate
+the dense composite linear operators that arise when performing
+explicit MCSA preconditioning in order to achieve convergence. Using
+these results, we compare MCSA directly to conventional linear solvers
+that would be typically used to solve the $SP_N$ form of the transport
+equation as presented here. In particular, we will use a pair of
+production Krylov solvers with which we will compare direct numerical
+results in order to verify MCSA solutions in this section and
+iterative and CPU timing performance in the next order to gauge
+feasibility and identify areas that require further research.
 
 In order to verify the correctness of the MCSA method and
 implementation used for this work, MCSA solutions to the fuel assembly
@@ -1931,29 +1931,38 @@ production implementations from the Trilinos scientific computing
 library Aztec \citep{heroux_overview_2005}. In addition to comparing
 the cell and group fluxes, the number of eigenvalue iterations
 required to converge the problem along with the eigenvalue itself will
-be compared as a means of verification.
+be compared as a means of verification. If all values computed using
+MCSA agree with the results from the production Krylov solvers within
+the solution tolerance then the MCSA solutions will be deemed verified
+for these problems. Additionaly, this verification is only applicable
+to serial results with parallel verification for this problem provided
+in Chapter~\ref{ch:parallel_methods}.
 
-For the verification, all solvers will be preconditioned with ILUT
-using a drop tolerance of \sn{1}{-5} and a fill level of 5. For GMRES,
-no restrictions were placed on the size of the subspace and therefore
-no restarts occurred. When the collision estimator was used with MCSA,
-20,000 stochastic histories were used to compute the correction for
-every energy group in the problem (40,000 and 80,000 histories total
-for the 2 and 4 group calculations respectively) and 500 stochastic
-histories used for each energy group when the expected value estimator
-was used (1,000 and 1,500 histories total for the 2 and 4 group
-calculations). The reduced domain approximation was also applied in
-conjuction with the ILUT preconditioning using a fill level of 100 and
-a threshold value of \sn{1}{-10} to reduce the density of states in
-the Monte Carlo problem. For relaxation parameters, all MCSA
-compuations used a Neumann relaxation parameter of 0.7 while a
-Richardson relaxation of 1.1 was used with the collision estimator and
-1.0 with the expected value estimator as determined by the previous
-analysis. Table~\ref{tab:spn_solver_defs} gives definitions for the
-solvers used to generate the results in the remainder of this
-section. For the energy group structures,
+For the verification calculations, all solvers will be preconditioned
+with ILUT using a drop tolerance of \sn{1}{-5} and a fill level of
+5. For GMRES, no restrictions were placed on the size of the subspace
+and therefore no restarts occurred. When the collision estimator was
+used with MCSA, \sn{2}{4} stochastic histories were used to compute
+the correction for every energy group in the problem (\sn{4}{4} and
+\sn{8}{4} histories total for the 2 and 4 group calculations
+respectively) corresponding to approximately 1 stochastic history per
+DOF. When the expected value estimator was used, \sn{5}{2} stochastic
+histories used for each energy group (\sn{1}{3} and \sn{1.5}{3}
+histories total for the 2 and 4 group calculations) giving
+approximately 1 stochastic history for every 5 DOFs. The reduced
+domain approximation was also applied in conjuction with the ILUT
+preconditioning using a fill level of 100 and a threshold value of
+\sn{1}{-10} to reduce the density of states in the Monte Carlo
+problem. For relaxation parameters, all MCSA compuations used a
+Neumann relaxation parameter of 0.7 while a Richardson relaxation of
+1.1 was used with the collision estimator and 1.0 with the expected
+value estimator as determined by the previous analysis of the
+relaxation parameters. Table~\ref{tab:spn_solver_defs} gives
+definitions for the solvers used to generate the results in the
+remainder of this section. For the energy group structures,
 Table~\ref{tab:spn_group_structure} gives the lower bounds of each
-group in eV (an implicit upper bound of 20 MeV is assumed).
+group in eV (an implicit upper bound of \sn{2}{6} eV is assumed for
+group 0).
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{ll}\hline\hline
@@ -1974,7 +1983,8 @@ group in eV (an implicit upper bound of 20 MeV is assumed).
     \end{tabular}
   \end{center}
   \caption{\textbf{Solver definitions used for MCSA verification and
-      performance analysis.}}
+      performance analysis.} \textit{The ILUT preconditioner
+      parameters were identical for all calculations and solvers.}}
   \label{tab:spn_solver_defs}
 \end{table}
 \begin{table}[h!]
@@ -1990,9 +2000,60 @@ group in eV (an implicit upper bound of 20 MeV is assumed).
     \end{tabular}
   \end{center}
   \caption{\textbf{Energy group lower bounds for the multigroup fuel
-      assembly criticality problem in electron volts.}}
+      assembly criticality problem in electron volts.} \textit{An
+      implicit upper bound of \sn{2}{6} eV is assumedfor group zero.}}
   \label{tab:spn_group_structure}
 \end{table}
+
+For every combination of energy group structure and solver, the
+eigenvalue problem was converged with an eigensolver tolerance of
+\sn{1}{-6} and a linear solver tolerance of \sn{1}{-8} in a serial
+calculation. Table~\ref{tab:serial_ev_results} gives the eigenvalue
+computed by each solver for each problem as well as the number of
+eigenvalue iterations required to converge. For every problem, each
+solver converged to the same eigenvalue within the tolerance of the
+eigensolver in the same number of eigenvalue iterations.
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lccc}\hline\hline
+      \multicolumn{1}{c}{\textbf{Solver}} & 
+      \multicolumn{1}{c}{\textbf{Number of Groups}} & 
+      \multicolumn{1}{c}{\textbf{Iterations}} &
+      \multicolumn{1}{c}{\textbf{Eigenvalue}} \\
+      \hline
+      BiCGStab-ILUT & 1 & 25 & 1.1059870 \\
+      GMRES-ILUT & 1 & 25 & 1.1059870 \\
+      MCSA-ILUT-R-C & 1 & 25 & 1.1059870 \\
+      MCSA-ILUT-MR-C & 1 & 25 & 1.1059870 \\
+      MCSA-ILUT-R-EV & 1 & 25 & 1.1059870 \\
+      MCSA-ILUT-MR-EV & 1 & 25 & 1.1059870 \\
+      \hline
+      BiCGStab-ILUT & 2 & 35 & 1.1552390 \\
+      GMRES-ILUT & 2 & 35 & 1.1552390 \\
+      MCSA-ILUT-R-C & 2 & 35 & 1.1552390 \\
+      MCSA-ILUT-MR-C & 2 & 35 & 1.1552390 \\
+      MCSA-ILUT-R-EV & 2 & 35 & 1.1552390 \\
+      MCSA-ILUT-MR-EV & 2 & 35 & 1.1552390 \\
+      \hline
+      BiCGStab-ILUT & 4 & 31 & 1.1758500 \\
+      GMRES-ILUT & 4 & 31 & 1.1758500 \\
+      MCSA-ILUT-R-C & 4 & 31 & 1.1758500 \\
+      MCSA-ILUT-MR-C & 4 & 31 & 1.1758500 \\
+      MCSA-ILUT-R-EV & 4 & 31 & 1.1758500 \\
+      MCSA-ILUT-MR-EV & 4 & 31 & 1.1758500 \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Serial eigensolver verification results for the
+      fuel assembly problem.} \textit{Each calculation was converged
+      with the same eigensolver and linear solver tolerances.}}
+  \label{tab:serial_ev_results}
+\end{table}
+
+For each calculation, the scalar flux in each energy group was
+compared over the entire spatial with the GMRES solution used as the
+reference.
 
 \begin{figure}[t!]
   \begin{center}
