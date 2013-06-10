@@ -5,24 +5,38 @@ Monte Carlo methods that sample a distribution with an expectation
 value equivalent to that of the inverted operator. Such methods have
 been in existence for decades with the earliest reference noted here a
 manuscript published in 1950 by Forsythe and Leibler
-\citep{forsythe_matrix_1950}. In their outline, Forsythe and Liebler
+\citep{forsythe_matrix_1950}. In their outline, Forsythe and Leibler
 in fact credit the creation of this technique to J. Von Neumann and
 S.M. Ulam some years earlier than its publication. In 1952 Wasow
 provided a more formal explanation of Von Neumann and Ulam's method
 \citep{wasow_note_1952} and Hammersley and Handscomb's 1964 monograph
 \citep{hammersley_monte_1964} and Spanier and Gelbard's 1969 book
 \citep{spanier_monte_1969} present additional detail on this topic
-using a collection of references from the 1950's and early 1960's.
+using a collection of references from the 1950's and early
+1960's. 
+
+Following this work, Halton presented a residual Monte Carlo scheme
+that improved dramatically on the performance of these methods
+\citep{halton_sequential_1962}. Recent work in this area has utilized
+these residual Monte Carlo methods in particle transport
+\citep{evans_residual_2003}, giving accelerated convergence over
+traditional methods. As an expansion of Halton's work, Evans and
+others have leveraged these methods in a synthetic acceleration scheme
+that has been shown to be competitive with production Krylov methods
+for radiation transport problems and improve performance significantly
+over Halton's sequential method \citep{evans_monte_2012}.
 
 In this chapter, we will present the fundamentals of the Monte Carlo
 method for discrete linear systems. Both the forward and adjoint
 methods will be presented and analyzed including a brief variance
 analysis of several Monte Carlo estimators. The Sequential Monte Carlo
-and Monte Carlo Synthetic Acceleration methods will then be presented
-as a means of leveraging the basic Monte Carlo methods in an iterative
-refinement scheme that accelerates their convergence. Using these
-iterative schemes, a set of modest variance reduction techniques will
-be introduced and their effects on the Monte Carlo methods explored.
+method of Halton and Monte Carlo Synthetic Acceleration methods will
+then be presented as a means of leveraging the basic Monte Carlo
+methods devised by Neumann and Ulam in an iterative refinement scheme
+that accelerates their convergence. Using these iterative schemes, a
+set of modest variance reduction techniques will be introduced and
+their effects along with other parameters of the algorithms on the
+Monte Carlo solutions explored using a simple model transport problem.
 
 \section{Preliminaries}
 \label{sec:linear_preliminaries}
@@ -163,13 +177,13 @@ decomposition.
 %%---------------------------------------------------------------------------%%
 \section{Direct Monte Carlo Method}
 \label{sec:direct_mc}
-In the context of matrix inversion, a direct (forward) method resembles an
-adjoint Monte Carlo method in the reactor physics community where the
-solution state is sampled and the source terms that contribute to it
-are assembled. To achieve this, we build the direct method
-Neumann-Ulam decomposition per Dimov's approach by first choosing a
-probability matrix that is a row scaling of $\ve{H}$ such that its
-components are:
+In the context of matrix inversion, a direct (forward) method
+resembles an adjoint Monte Carlo method in the reactor physics
+community where the solution state is sampled and the source terms
+that contribute to it are assembled. To achieve this, we build the
+forward Neumann-Ulam decomposition per Dimov's approach by first
+choosing a probability matrix that is a row scaling of $\ve{H}$ such
+that its components are:
 \begin{equation}
   p_{ij} = \frac{|h_{ij}|}{\sum_j |h_{ij}|}\:.
   \label{eq:direct_probability}
@@ -196,7 +210,7 @@ will not participate in the random walk and thus produce identical
 sparsity patterns for all matrices.
 
 Using these matrices, we can then form the expectation value of the
-direct solution. For a given random walk permutation $\nu$, we define
+forward solution. For a given random walk permutation $\nu$, we define
 the weight of that permutation on the $m^{th}$ step to be:
 \begin{equation}
   W_{m} = w_{i_0,i_1} w_{i_1,i_2} \cdots w_{i_{m-1},i_m}\:,
@@ -388,15 +402,14 @@ gives these results.
 \end{figure}
 As the number of histories used per state is increased, the
 statistical variance of the solutions is decreased as more tallies are
-made. Starting with single history at each state in the
-domain, the high variance prevents a precise solution from being
-obtained although we begin to see the solution take shape as
-expected. At 1000 histories per state, enough tallies have been made
-to generate a reasonable estimate for the structure of the
-solution. It is interesting to note here that as the statistical
-uncertainty is reduced at each grid point in the domain, the solution
-is resolved in a certain sense, analagous to the convergence of a
-traditional iterative method.
+made. Starting with a single history at each state in the domain, the
+high variance prevents a precise solution from being obtained although
+we begin to see the solution take shape as expected. At 1000 histories
+per state, enough tallies have been made to generate a reasonable
+estimate for the structure of the solution. It is interesting to note
+here that as the statistical uncertainty is reduced at each grid point
+in the domain, the solution is resolved in a certain sense, analogous
+to the convergence of a traditional iterative method.
 \clearpage
 
 %%---------------------------------------------------------------------------%%
@@ -598,7 +611,7 @@ that the variance in solution state $i$ does not depend on the
 variance in solution state $j$.
 
 Expanding the transition probabilities in the first sum again yields a
-Neumman series in the same form as that explored for the forward
+Neumann series in the same form as that explored for the forward
 estimator, this time with the terms in reverse order and the
 introduction of the Kronecker delta:
 \begin{multline}
@@ -730,9 +743,9 @@ structure of the solution. The visual difference between
 Figures~\ref{fig:direct_evolution} and \ref{fig:adjoint_evolution} is
 precisely that determined by their mathematics. As the adjoint
 solution evolves with the addition of histories, more histories
-emanate from the boundary and smaller uniform source with more
-penetrating from the boundary into the domain and making contributions
-to the tallies in those states.
+emanate from the boundary the smaller uniform source in the domain
+with more penetrating from the boundary into the domain and making
+contributions to the tallies in those states as they are transported.
 
 %%---------------------------------------------------------------------------%%
 \section{Sequential Monte Carlo}
@@ -744,12 +757,12 @@ presented a residual Monte Carlo method that moves towards exponential
 convergence rates \citep{halton_sequential_1962} and further refined
 his work some years later \citep{halton_sequential_1994}. Applications
 of his work by the transport community have confirmed convergence
-rates on the order of of $e^{-N}$ \citep{evans_residual_2003}. In
-much the same way as projection methods, Halton's method, sequential
-Monte Carlo, utilizes the adjoint Monte Carlo solver as a means of
-directly reducing the elements residual vector. He proposed the
-following iterative scheme as a solution to
-Eq~(\ref{eq:linear_problem})\:
+rates on the order of of $e^{-N}$ \citep{evans_residual_2003}. In much
+the same way as the projection methods outlined in
+Appendix~\ref{ch:linear_problem}, Halton's method, sequential Monte
+Carlo, utilizes the adjoint Monte Carlo solver as a means of directly
+reducing the elements residual vector. He proposed the following
+iterative scheme as a solution to Eq~(\ref{eq:linear_problem})\:
 \begin{subequations}
   \begin{gather}
     \ve{r}^k = \ve{b} - \ve{A}\ve{x}^k\:,\\  
@@ -781,7 +794,7 @@ of the initial guess for the system \citep{evans_monte_2009} and later
 applied it more rigorously as a solution mechanism for the radiation
 diffusion equation \citep{evans_monte_2012}. With their new methods,
 they achieved identical numerical results as conventional Krylov
-solvers well as comparable performance in both number of iterations
+solvers as well as comparable performance in both number of iterations
 and CPU time. Their approach was instead to use residual Monte Carlo
 as a synthetic acceleration for a stationary method. To derive this
 method, we begin by splitting the operator in
@@ -841,16 +854,16 @@ is defined as:
   \end{gather}
   \label{eq:mcsa}
 \end{subequations}
-where the adjoint Monte Carlo method is used to generate the solution
-correction from the residual and Richardson's iteration in the first
-step has been rewritten as a residual correction. Using Monte Carlo in
-this way achieves the same effect as Halton's method, decoupling its
-convergence rate from the overall convergence rate of the
-method. Here, the approximate Monte Carlo solution is not driven to a
-particular convergence as it merely supplies a correction for the
+where a Neumann-Ulam Monte Carlo method is used to generate the
+solution correction from the residual and Richardson's iteration in
+the first step has been rewritten as a residual correction. Using
+Monte Carlo in this way achieves the same effect as Halton's method,
+decoupling its convergence rate from the overall convergence rate of
+the method. Here, the approximate Monte Carlo solution is not driven
+to a particular convergence as it merely supplies a correction for the
 initial guess generated by Richardson's iteration. Rather, only a set
-number of histories are required using the adjoint method to generate
-the correction. In addition, the fact that the scheme in
+number of histories are required using the Neumann-Ulam method to
+generate the correction. In addition, the fact that the scheme in
 Eq~(\ref{eq:mcsa_setup_3}) will converge in one iteration if $\ve{A}$
 is inverted exactly means that as more and more stochastic histories
 are used to compute the correction and the error is reduced towards
@@ -869,9 +882,9 @@ method, other stopping criteria using other vector norms could be
 computed, however, for this work we will only use
 Eq~(\ref{eq:mcsa_stopping_criteria}). We therefore have 3 parameters
 to tune in an MCSA implementation: the number of Monte Carlo histories
-computed in the adjoint solve during each MCSA iteration, the weight
-cutoff for those histories, and the total MCSA convergence tolerance
-as specified by $\epsilon$.
+computed in the Neumann-Ulam solve during each MCSA iteration, the
+weight cutoff for those histories, and the total MCSA convergence
+tolerance as specified by $\epsilon$.
 
 \subsubsection{Alternative Fixed Point Iterations}
 \label{subsubsec:alternative_fixed_point}
@@ -880,17 +893,18 @@ presented in Eq~(\ref{eq:mcsa}) can be used to accelerate any fixed
 point iteration which only depends on the state (typically the
 residual) of the last iteration. As outlined in
 Appendix~\ref{ch:linear_problem}, subspace methods take on a general
-form in one-dimension using the Petrov-Galerkin conditions as
-constraints for extracting a correction from the search subspace as
-given by Eq~(\ref{eq:linear_projection_iteration}) that may be used
-with MCSA. As an example, for positive-definite but not necessarily
-symmetric problems, the minimal residual (MINRES) iteration
-\citep{saad_iterative_2003} can be used in conjuction with MCSA where
-the residual vector, $\mathbf{r}$, defines the search subspace and the
-action of the linear operator on the residual vector,
-$\mathbf{A}\mathbf{r}$, defines the constraint subspace. Using this,
-we can then define an MCSA scheme that accelerates the MINRES
-iteration:
+form using the Petrov-Galerkin conditions as constraints for
+extracting a correction from the search subspace as given by
+Eq~(\ref{eq:linear_projection_iteration}). Those that are
+one-dimensional may be used with fixed-point MCSA as they only depend
+the previous iteration for information. As an example, for
+positive-definite but not necessarily symmetric problems, the minimal
+residual (MINRES) iteration \citep{saad_iterative_2003} can be used in
+conjunction with MCSA where the residual vector, $\mathbf{r}$, defines
+the search subspace and the action of the linear operator on the
+residual vector, $\mathbf{A}\mathbf{r}$, defines the constraint
+subspace. Using this, we can then define an MCSA scheme that
+accelerates the MINRES iteration:
 \begin{subequations}
   \begin{gather}
     \alpha = \frac{\langle \mathbf{A}\mathbf{r}^k, \mathbf{r}^k
@@ -925,9 +939,10 @@ iteration matrix.
 
 \subsubsection{Basic Preconditioning}
 \label{subsubsec:basic_mcsa_preconditioning}
-As an example, to achieve a spectral radius of less than one for
-diagonally dominant matrices point Jacobi preconditioning can be used
-such that the preconditioning matrix $\ve{M}$ is:
+As an example of basic preconditioning, to achieve a spectral radius
+of less than one for diagonally dominant matrices point Jacobi
+preconditioning can be used such that the preconditioning matrix
+$\ve{M}$ is:
 \begin{equation}
   \ve{M} = diag(\ve{A})\:,
   \label{eq:jacobi_preconditioner}
@@ -952,22 +967,23 @@ Eq~(\ref{eq:jacobi_precond_linear_problem}):
     \label{eq:jacobi_preconditioned_mcsa}
   \end{gather}
 \end{subequations}
-where the adjoint Monte Carlo solve now has a preconditioned operator
-from which to build weights and probabilities for transport and a
-preconditioned source vector to sample. 
+where the Neumann-Ulam Monte Carlo solve now has a preconditioned
+operator from which to build weights and probabilities for transport
+and a preconditioned source vector to sample.
 
 Choosing point Jacobi preconditioning with MCSA is advantageous for
 several reasons. First, $\rho(\ve{I} - \ve{M}^{-1}\ve{A}) < 1$ is true
 for all $\ve{A}$ that is diagonally dominant and is easy to formulate
 because the inversion of $\ve{M}$ is trivial. Second, because the
-adjoint Monte Carlo method used within MCSA to compute the correction
-operates on a linear problem with the preconditioned operator, then
-$\ve{H}$ in the adjoint solver will have a zero term in each of its
-diagonal elements, thereby eliminating all in-state transitions during
-the random walk sequence. Because of this, point Jacobi
-preconditioning should be considered for many classes of problems,
-regardless of any other preconditioning that is applied to the
-system.
+Monte Carlo method used within MCSA to compute the correction operates
+on a linear problem with the preconditioned operator, then $\ve{H}$ in
+the Neumann-Ulam solver will have a zero term in each of its diagonal
+elements, thereby eliminating all in-state transitions during the
+random walk sequence. Because of this, point Jacobi preconditioning
+should be considered for many classes of problems, regardless of any
+other preconditioning that is applied to the system.
+
+\clearpage
 
 \subsubsection{General Preconditioning Strategies}
 \label{subsubsec:general_mcsa_preconditioning}
@@ -1013,7 +1029,7 @@ isolate the generation of the correction:
   \ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}\delta\ve{u}^{k+1/2} = \ve{r}^{k+1/2}\:,
   \label{eq:left_right_correction}
 \end{equation}
-and note that the precondtioned residual of the substituted variable
+and note that the preconditioned residual of the substituted variable
 is now serving as the source and the new iteration matrix is:
 \begin{equation}
   \ve{H} = \ve{I} - \ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}\:.
@@ -1167,10 +1183,10 @@ using each solver and stencil, the infinity norm of the residual
 computed in Eq.~(\ref{eq:mcsa}) was collected at each iteration for a
 fixed problem size of $N=500$. Figure~\ref{fig:poisson_convergence}
 gives the results of these computations. First, it is worthy to note
-on the semilog plot that we are indeed achieving the expected
+on the semi-log plot that we are indeed achieving the expected
 exponential convergence from MCSA with both Monte Carlo
 solvers. Second, we note that using the adjoint method with the same
-number of stochastic histores per MCSA iteration gives a faster rate
+number of stochastic histories per MCSA iteration gives a faster rate
 of converge for the same reasons as above. We also note here that
 fewer iterations are required for convergence when the 9-point stencil
 is used to discretize the Laplacian operator (although at no gain in
@@ -1180,7 +1196,7 @@ smaller discretization error directly corresponds to a more well
 defined residual source generated by the Richardson extrapolation for
 the Monte Carlo calculation. In addition, the better defined source is
 transported through a domain described more accurately by the 9-point
-stencil, thus yielding a more accuracte correction vector from the
+stencil, thus yielding a more accurate correction vector from the
 Monte Carlo calculation.
 \begin{figure}[t!]
   \centering
@@ -1307,25 +1323,27 @@ histories per MCSA iteration, the weight cutoff was fixed at
 6,000 to 100,000. It was observed that MCSA would not converge for
 this problem using the collision estimator with less than 6,000
 histories while the expected value estimator permitted convergence
-with only 2,000 histories. Figure~\ref{fig:estimator_nh_iters} gives
-the number of iterations required to converge for both estimators as a
-function of the number of histories per iteration. For smaller numbers
-of histories, the performance of the expected value estimator is
-significantly better than the collision estimator. This result is
-valuable in that less transport is required to achieve the same MCSA
-iterative performance with the expected value estimator, important for
-situations where transport is expensive (i.e. in domain decomposed
-calculations). Interstingly, as the number of histories per iteration
+with only 2,000 histories. 
+
+Figure~\ref{fig:estimator_nh_iters} gives the number of iterations
+required to converge for both estimators as a function of the number
+of histories per iteration. For smaller numbers of histories, the
+performance of the expected value estimator is significantly better
+than the collision estimator. This result is valuable in that less
+transport is required to achieve the same MCSA iterative performance
+with the expected value estimator, important for situations where
+transport is expensive (i.e. in domain decomposed
+calculations). Interestingly, as the number of histories per iteration
 are increased, the iterative performance with the collision estimator
 approaches that of the expected value estimator. However, given the
 performance of the expected value estimator at a fractional number of
-histories, one should strongly consider its use over using the collision
-estimator with more histories. The CPU time required to converge is
-presented in Figure~\ref{fig:estimator_nh_time} and reflects the
-results of the iterative performance. In general, using the collision
-estimator is slightly slower overall, but the time per iteration is
-faster due to the fact that the estimator does not have to cycle
-through multiple states during the tally procedure.
+histories, one should strongly consider its use over using the
+collision estimator with more histories. The CPU time required to
+converge is presented in Figure~\ref{fig:estimator_nh_time} and
+reflects the results of the iterative performance. In general, using
+the collision estimator is slightly slower overall, but the time per
+iteration is faster due to the fact that the estimator does not have
+to cycle through multiple states during the tally procedure.
 
 \begin{figure}[t!]
   \centering
@@ -1420,7 +1438,7 @@ effectively a form of biased variance reduction). This is due to the
 fact that all states to which a stochastic history may move in a given
 transition exist within the system and have a non-zero weight. A
 preliminary variance reduction scheme is to introduce
-\textit{artifical absorption} into the system such that at each
+\textit{artificial absorption} into the system such that at each
 transition event, a stochastic history will now have some finite
 probability of being terminated through absorption as well as
 transition to other states in the system. This probability, $p_{abs}$,
@@ -1432,7 +1450,7 @@ sequence as:
 \end{equation}
 and
 \begin{equation}
-  w_{ij} = \frac{sign(h_{ji})\sum_j|h_{ji}|}{(1-p_{abs})}\:.
+  w_{ij} = \frac{sign(h_{ji})}{(1-p_{abs})}\sum_j|h_{ji}|\:.
   \label{eq:absorption_weights}
 \end{equation}
 At each transition step, a history at state $i$ will then sample the
@@ -1446,7 +1464,7 @@ random walk (resulting in speedup), while the random walk has a higher
 weight contribution at every step. This higher weight means that each
 history is depositing more information near its birth site which will
 on average be located where the system residual is the largest. An
-additional advantage of this formulation is that the full Neumann Ulam
+additional advantage of this formulation is that the full Neumann-Ulam
 decomposition is maintained.
 
 To observe the effects of this variance reduction on MCSA solutions,
@@ -1455,18 +1473,19 @@ method, this time with varying values of artificial absorption. A $200
 \times 200$ grid was used with 40,000 histories at every iteration
 with the expected value estimator converged to a tolerance of
 \sn{1}{-8}. To reduce the effect of the weight cutoff on this study,
-the weight cutoff was set to \sn{1}{-12} such that it is signicantly
+the weight cutoff was set to \sn{1}{-12} such that it is significantly
 more likely that a history will be terminated by absorption rather
 than weight cutoff. Figure~\ref{fig:absorption_iters} gives the number
 of iterations to converge as a function of the artificial absorption
 probability. Up to a probability of roughly 0.5, the iterative
-performance is not significanltly affected with the information lost
+performance is not significantly affected with the information lost
 due to shortened random walks causing a small increase in the number
 of iterations. At a probability of 0.6, the number of iterations
 required grows rapidly as the bias creates an MCSA correction that
 pushes the solution in the wrong direction. Convergence was observed
-to be lost at probabilities of 0.7 and higher. The random walk length
-has a strong effect on CPU time as
+to be lost at probabilities of 0.7 and higher. 
+
+The random walk length has a strong effect on CPU time as
 well. Figure~\ref{fig:absorption_time} gives the CPU time in seconds
 required to converge as a function of artificial absorption
 probability. Initially, small absorption probabilities not only
@@ -1518,11 +1537,12 @@ criteria in order to recover sparsity. As the Neumann-Ulam scheme is a
 stochastic realization of multiple matrix-vector multiplies, the
 criteria we choose should be based on maintaining those elements that
 will make the largest contributions to the multiplication and
-therefore recover as much of the original product as possible. For
-each row in the preconditioned system, we can then apply the reduced
-domain approximation to eliminate those elements that either fall
-below a specified tolerance level, keep the $N$ largest elements in
-each row, or both giving:
+therefore recover as much of the original product as possible. 
+
+For each row in the preconditioned system, we can then apply the
+reduced domain approximation to eliminate those elements that either
+fall below a specified tolerance level, keep the $N$ largest elements
+in each row, or both giving:
 \begin{subequations}
   \begin{gather}
     \ve{x}^{k+1/2} = \ve{x}^k + \ve{r}^k\:,\\

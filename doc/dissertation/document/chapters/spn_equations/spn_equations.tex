@@ -1804,12 +1804,16 @@ estimator had the best performance when a Richardson relaxation
 parameter of 1.0 was used instead. In addition, ILUT preconditioning
 with a drop tolerance of \sn{1}{-5} and a fill level of 5 was used
 with a reduced domain approximation fill level of 100 and a threshold
-of \sn{1}{-10} as in the previous analysis. For each estimator, the
-number of stochastic histories used to compute the MCSA correction was
-varied from 25 to 50,000 with the number of MCSA iterations required
-to converge to a tolerance of \sn{1}{-8} recorded for a single
-eigenvalue iteration along with the CPU time required to achieve
-convergence.
+of \sn{1}{-10} as in the previous analysis. Artificial absorption was
+also introduced with a value of 0.2 for the MCSA calculations that
+used the collision estimator as CPU timing performance was improved
+without a loss in iterative performance while no absorption was used
+for calculations using the expected value estimator. For each
+estimator, the number of stochastic histories used to compute the MCSA
+correction was varied from 25 to 50,000 with the number of MCSA
+iterations required to converge to a tolerance of \sn{1}{-8} recorded
+for a single eigenvalue iteration along with the CPU time required to
+achieve convergence.
 
 Figure~\ref{fig:spn_estimator_iters} gives the iteration count results
 and Figure~\ref{fig:spn_estimator_time} gives the timing
@@ -1918,9 +1922,7 @@ these results, we compare MCSA directly to conventional linear solvers
 that would be typically used to solve the $SP_N$ form of the transport
 equation as presented here. In particular, we will use a pair of
 production Krylov solvers with which we will compare direct numerical
-results in order to verify MCSA solutions in this section and
-iterative and CPU timing performance in the next order to gauge
-feasibility and identify areas that require further research.
+results in order to verify MCSA solutions in this section.
 
 In order to verify the correctness of the MCSA method and
 implementation used for this work, MCSA solutions to the fuel assembly
@@ -2047,7 +2049,9 @@ eigensolver in the same number of eigenvalue iterations.
   \end{center}
   \caption{\textbf{Serial eigensolver verification results for the
       fuel assembly problem.} \textit{Each calculation was converged
-      with the same eigensolver and linear solver tolerances.}}
+      with the same eigensolver and linear solver
+      tolerances. Table~\ref{tab:spn_solver_defs} gives the
+      description for each solver type presented.}}
   \label{tab:serial_ev_results}
 \end{table}
 
@@ -2073,7 +2077,8 @@ BiCGStab calculation.
       between the Aztec BiCGStab calculations and Aztec GMRES and the
       MCSA variations for the 1-group calculation.} \textit{Left to
       right: GMRES-ILUT, MCSA-ILUT-R-C, MCSA-ILUT-MR-C,
-      MCSA-ILUT-R-EV, MCSA-ILUT-MR-EV.}}
+      MCSA-ILUT-R-EV, MCSA-ILUT-MR-EV. Table~\ref{tab:spn_solver_defs}
+      gives the description for each solver type presented.}}
   \label{fig:serial_1_group_diff}
 \end{figure}
 
@@ -2084,7 +2089,17 @@ absolute differences for all calculations and all energy groups using
 the BiCGStab calculation as the reference. All comparisons were
 performed within a group such that the MCSA-ILUT-R-C results in group
 3 for the 4-group calculation were computed with the BiCGStab-ILUT
-solution in group 3 for the 4-group calculation as a reference.
+solution in group 3 for the 4-group calculation as a reference. For
+all group flux results given in the table, the maximum differences for
+all cases was less than the linear solver tolerance used to converge
+the flux at each eigenvalue iteration meaning that all values over the
+entire energy and spatial domain are within these limits. In addition,
+the minimum error for all calculations was observed to be zero,
+meaning in at least one mesh cell in all calculations for all energy
+groups the scalar flux values computed by all solvers were
+identical. Based on the flux results and the eigenvalue results
+presented here, the MCSA results should be deemed correct for the fuel
+assembly problem for serial calculations.
 
 \begin{table}[h!]
   \begin{center}
@@ -2107,7 +2122,8 @@ solution in group 3 for the 4-group calculation as a reference.
       absolute differences over the entire spatial domain are
       presented with BiCGStab used as the reference. Each calculation
       was converged with the same eigensolver and linear solver
-      tolerances.}}
+      tolerances. Table~\ref{tab:spn_solver_defs} gives the
+      description for each solver type presented.}}
   \label{tab:serial_differences_g1}
 \end{table}
 
@@ -2138,7 +2154,8 @@ solution in group 3 for the 4-group calculation as a reference.
       absolute differences over the entire spatial domain are
       presented with BiCGStab used as the reference. Each calculation
       was converged with the same eigensolver and linear solver
-      tolerances.}}
+      tolerances. Table~\ref{tab:spn_solver_defs} gives the
+      description for each solver type presented.}}
   \label{tab:serial_differences_g2}
 \end{table}
 
@@ -2181,28 +2198,34 @@ solution in group 3 for the 4-group calculation as a reference.
       absolute differences over the entire spatial domain are
       presented with BiCGStab used as the reference. Each calculation
       was converged with the same eigensolver and linear solver
-      tolerances.}}
+      tolerances. Table~\ref{tab:spn_solver_defs} gives the
+      description for each solver type presented.}}
   \label{tab:serial_differences_g4}
 \end{table}
+ 
+\clearpage 
 
 %%---------------------------------------------------------------------------%%
 \section{MCSA Performance Comparison to Conventional Methods}
 \label{sec:spn_comparison}
-Using the same set of solver parameters used for verification, MCSA
-will be directly compared to the production Krylov solvers in terms of
-both iterative performance and CPU timing for solutions to the fuel
-assembly problem. In addition to the parameters used for the
-verification analysis, artificial absorption was also introduced with
-a value of 0.2 for the MCSA calculations that used the collision
-esitmator as CPU timing performance was improved without a loss in
-iterative performance. Adding this absorption did not change the
-numerical results of the calculation.
+In the previous section, numerical results using MCSA for the fuel
+assembly calculation were directly with production Krylov methods in
+order to verify their correctness. Deemed correct, with the same set
+of solver parameters used for verification MCSA will now be directly
+compared to the same production Krylov solvers in terms of both
+iterative performance and CPU timing for solutions to the fuel
+assembly problem.  This comparison of both iterative and CPU timing
+performance is necessary in order to gauge feasibility of the method
+and identify areas that require further research and development.
 
-Figure~\ref{fig:spn_comparison_iterations} gives the average number of
-linear solver iterations required to converge a single eigenvalue
-iteration of the fuel assembly problem as a function of the number of
-energy groups. In general, the iterative performance of all the
-solvers tested is comparable with BiCGStab performing the best. We
+To compare iterative performance, the number of linear solver
+iterations required to converge each eigenvalue iteration was recorded
+and then averaged over all eigenvalue iterations for each
+solver. Figure~\ref{fig:spn_comparison_iterations} gives the average
+number of linear solver iterations required to converge a single
+eigenvalue iteration of the fuel assembly problem as a function of the
+number of energy groups. In general, the iterative performance of all
+the solvers tested is comparable with BiCGStab performing the best. We
 expect this because not only are the multigroup $SP_N$ equations
 elliptic and positive-definite, but they are also nearly symmetric and
 therefore we expect the conjugate gradient-based methods to perform
@@ -2212,10 +2235,10 @@ problem (and therefore the problem size). For MCSA, we are linearly
 increasing the number of stochastic histories used to compute the
 correction at each iteration as the number of energy groups are
 increased and therefore the work performed for the problem is of
-$O(N)$. It is also important to note the the reduced domain
-approximation parameters, particularly the fill level, were fixed as
-the number of energy groups was increased. By fixing the fill level,
-we are effectively fixing the amount of information contained in the
+$O(N)$. It is also important to note the reduced domain approximation
+parameters, particularly the fill level, were fixed as the number of
+energy groups was increased. By fixing the fill level, we are
+effectively fixing the amount of information contained in the
 composite linear operator available for the Monte Carlo
 problem. Limiting this information to 100 entries per row in the
 preconditioned system did not appear to have a significant effect on
@@ -2240,8 +2263,11 @@ preconditioner for the fuel assembly problem.
 
 Although iterative performance for MCSA was comparable to that
 observed for production Krylov implementations using exactly the same
-preconditioning scheme, timing performance is not as
-comparable. Figure~\ref{fig:spn_comparison_time} gives the average CPU
+preconditioning scheme, timing performance is not as competetive. For
+this comparison, the amount of time to perform each linear solver
+iteration in every eigenvalue iteration was recorded and then averaged
+over all linear solver
+iterations. Figure~\ref{fig:spn_comparison_time} gives the average CPU
 time per linear solver iteration required to converge the fuel
 assembly problem with all linear solver iterations over all eigenvalue
 iterations used to compute the average. The production Krylov solver
