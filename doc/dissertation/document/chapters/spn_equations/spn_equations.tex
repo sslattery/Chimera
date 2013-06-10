@@ -2077,12 +2077,113 @@ BiCGStab calculation.
   \label{fig:serial_1_group_diff}
 \end{figure}
 
-Table~\ref{tab:serial_differences} gives the maximum and minimum
+Table~\ref{tab:serial_differences_g1},
+Table~\ref{tab:serial_differences_g2}, and
+Table~\ref{tab:serial_differences_g4} give the maximum and minimum
 absolute differences for all calculations and all energy groups using
 the BiCGStab calculation as the reference. All comparisons were
 performed within a group such that the MCSA-ILUT-R-C results in group
 3 for the 4-group calculation were computed with the BiCGStab-ILUT
 solution in group 3 for the 4-group calculation as a reference.
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lccc}\hline\hline
+      \multicolumn{1}{c}{\textbf{Solver}} & 
+      \multicolumn{1}{c}{\textbf{Group}} &
+      \multicolumn{1}{c}{\textbf{Minimum Difference}} &
+      \multicolumn{1}{c}{\textbf{Maximum Difference}} \\
+      \hline
+      GMRES-ILUT & 0 & 0.0 & \sn{9.313}{-10} \\
+      MCSA-ILUT-R-C & 0 & 0.0 & \sn{9.313}{-10} \\
+      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{2.205}{-9} \\
+      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{9.313}{-10} \\
+      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{9.313}{-10} \\
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Serial scalar flux verification results for the
+      1-group fuel assembly problem.} \textit{The maximum and minimum
+      absolute differences over the entire spatial domain are
+      presented with BiCGStab used as the reference. Each calculation
+      was converged with the same eigensolver and linear solver
+      tolerances.}}
+  \label{tab:serial_differences_g1}
+\end{table}
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lccc}\hline\hline
+      \multicolumn{1}{c}{\textbf{Solver}} & 
+      \multicolumn{1}{c}{\textbf{Group}} &
+      \multicolumn{1}{c}{\textbf{Minimum Difference}} &
+      \multicolumn{1}{c}{\textbf{Maximum Difference}} \\
+      \hline
+      GMRES-ILUT & 0 & 0.0 & \sn{2.794}{-9} \\
+      MCSA-ILUT-R-C & 0 & 0.0 & \sn{9.313}{-10} \\
+      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{9.313}{-10} \\
+      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{9.313}{-10} \\
+      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{9.313}{-10} \\
+      \hline
+      GMRES-ILUT & 1 & 0.0 & \sn{4.657}{-10} \\
+      MCSA-ILUT-R-C & 1 & 0.0 & \sn{1.364}{-10} \\
+      MCSA-ILUT-MR-C & 1 & 0.0 & \sn{1.261}{-9} \\
+      MCSA-ILUT-R-EV & 1 & 0.0 & \sn{2.474}{-10} \\
+      MCSA-ILUT-MR-EV & 1 & 0.0 & \sn{5.857}{-10} \\
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Serial scalar flux verification results for the
+      2-group fuel assembly problem.} \textit{The maximum and minimum
+      absolute differences over the entire spatial domain are
+      presented with BiCGStab used as the reference. Each calculation
+      was converged with the same eigensolver and linear solver
+      tolerances.}}
+  \label{tab:serial_differences_g2}
+\end{table}
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lccc}\hline\hline
+      \multicolumn{1}{c}{\textbf{Solver}} & 
+      \multicolumn{1}{c}{\textbf{Group}} &
+      \multicolumn{1}{c}{\textbf{Minimum Difference}} &
+      \multicolumn{1}{c}{\textbf{Maximum Difference}} \\
+      \hline
+      GMRES-ILUT & 0 & 0.0 & \sn{9.313}{-10} \\
+      MCSA-ILUT-R-C & 0 & 0.0 & \sn{1.397}{-9} \\
+      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{1.870}{-9} \\
+      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{1.397}{-9} \\
+      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{1.869}{-9} \\
+      \hline
+      GMRES-ILUT & 1 & 0.0 & \sn{5.821}{-11} \\
+      MCSA-ILUT-R-C & 1 & 0.0 & \sn{1.164}{-10} \\
+      MCSA-ILUT-MR-C & 1 & 0.0 & \sn{1.164}{-10} \\
+      MCSA-ILUT-R-EV & 1 & 0.0 & \sn{1.164}{-10} \\
+      MCSA-ILUT-MR-EV & 1 & 0.0 & \sn{1.164}{-10} \\
+      \hline
+      GMRES-ILUT & 2 & 0.0 & \sn{1.164}{-10} \\
+      MCSA-ILUT-R-C & 2 & 0.0 & \sn{2.328}{-10} \\
+      MCSA-ILUT-MR-C & 2 & 0.0 & \sn{2.328}{-10} \\
+      MCSA-ILUT-R-EV & 2 & 0.0 & \sn{2.328}{-10} \\
+      MCSA-ILUT-MR-EV & 2 & 0.0 & \sn{2.328}{-10} \\
+      \hline
+      GMRES-ILUT & 3 & 0.0 & \sn{1.164}{-10} \\
+      MCSA-ILUT-R-C & 3 & 0.0 & \sn{1.746}{-10} \\
+      MCSA-ILUT-MR-C & 3 & 0.0 & \sn{2.256}{-9} \\
+      MCSA-ILUT-R-EV & 3 & 0.0 & \sn{2.801}{-10} \\
+      MCSA-ILUT-MR-EV & 3 & 0.0 & \sn{2.256}{-10} \\
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Serial scalar flux verification results for the
+      4-group fuel assembly problem.} \textit{The maximum and minimum
+      absolute differences over the entire spatial domain are
+      presented with BiCGStab used as the reference. Each calculation
+      was converged with the same eigensolver and linear solver
+      tolerances.}}
+  \label{tab:serial_differences_g4}
+\end{table}
 
 %%---------------------------------------------------------------------------%%
 \section{MCSA Performance Comparison to Conventional Methods}
