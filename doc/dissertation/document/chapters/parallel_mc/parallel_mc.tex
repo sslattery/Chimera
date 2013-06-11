@@ -40,15 +40,32 @@ machine and compare this performance to the production Krylov methods.
 %%---------------------------------------------------------------------------%%
 \section{Domain Decomposed Monte Carlo}
 \label{sec:msod}
-As observed in the discussion on parallel Krylov methods in
-Appendix~\ref{ch:linear_problem}, large-scale problems will surely
-have their data partitioned such that each parallel process owns a
-subset of the equations in the linear system. Given this convention,
-the Neumann-Ulam Monte Carlo algorithm must perform random walks over
-a domain that is decomposed and must remain decomposed due to memory
-limitations. This naturally leads us to seek parallel Monte Carlo
-algorithms that handle domain decomposition.
+Large-scale problems will for reasons typically related to memory
+restrictions or performance have their data partitioned such that each
+parallel process owns a subset of the equations in the linear
+system. Given this convention, the Neumann-Ulam Monte Carlo algorithm
+must perform random walks over a domain that is decomposed and must
+remain decomposed to avoid the same performance and memory
+restrictions that required the domain to be decomposed. To parallelize
+this algorithm, we then seek parallel Monte Carlo algorithms that
+handle domain decomposition.
 
+To motivate this problem, consider the square domain presented in
+Figure~\ref{fig:ddmc_example}. Here, we imagine a Monte Carlo particle
+transport problem. If the domain were decomposed into 9 pieces as
+shown by the domain, each of those pieces could be parallel process in
+the computation. In Figure~\ref{fig:ddmc_example}, the tracks of 3
+particles that are born in the center domain are shown. For example,
+particle A is first transported from the center domain to the domain
+directly to the left. Before the scattering event in the new domain
+may be processed, particle A must be communicated between between the
+two parallel processes that own those domains. For any given particle
+in the transport simulation, this communication event may hardly occur
+during the lifetime of the particle (particle B), or may occur many
+times (particle C) depending on the problem parameters. Scalable
+parallel algorithms for domain Monte Carlo are those that handle this
+domain-to-domain communication of particles effectively and balance it
+with the physics computations.
 \begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{
@@ -59,6 +76,41 @@ algorithms that handle domain decomposition.
       communication of particles.}}
   \label{fig:ddmc_example}
 \end{figure}
+
+For a domain decomposed Neumann-Ulam method, the situation is very
+much the same where instead the transport process is now discrete and
+the "physics" of the transport process is the Monte Carlo game with
+probabilities and weights described by
+Eq~(\ref{eq:neumann_ulam_decomposition}) for the given linear
+problem. Figure~\ref{fig:ddnu_example} gives the domain decomposed
+Neumann-Ulam analog of particle transport problem in
+Figure~\ref{fig:ddmc_example}. Imagine in this problem that we are
+solving for the monoenergetic scalar neutron flux as in the model
+diffusion problem presented in Appendix~\ref{chap:diffusion_problem}
+such that the solution has only a spatial dependence. In
+Figure~\ref{fig:ddnu_example}, the domain has now been discretized by
+a mesh and again decomposed into 9 pieces. As we play the Monte Carlo
+game presented in Chapter~\ref{ch:stochastic_methods}, the
+discretization and resulting Neumann-Ulam decomposition of the problem
+describes how each state in the system is coupled to the other states
+in the system through the set of equations that forms the linear
+system. As discrete states (or rows in the linear system) are reached
+by stochastic histories that do not exist in the local domain, the
+histories must be computed in an analogous fashion to the particles in
+the previous example. Again consider history A in
+Figure~\ref{fig:ddnu_example}. This history begins in the center
+domain and through the course of transitioning through states in the
+system arrives at a state that exists in the domain directly to the
+left of the center domain. History A must then be communicated from
+the center domain to the domain immediately to the left. As with the
+particle transport system, we may find that histories in a domain
+decomposed Neumann-Ulam method are only communicated a few times
+(history B) if at all, or they may be communicated many times (history
+C) depending on the discretization and the outcome of the Monte Carlo
+game. The amount of communication of histories from domain to domain
+will be the primary factor in the parallel scalability of the
+algorithm. In the next section, the number of histories communicated in a given
+problem will be quantified analytically for a simple model problem.
 
 \begin{figure}[t!]
   \begin{center}
@@ -99,9 +151,9 @@ domain decomposed behavior of the Neumann-Ulam method in terms of the
 amount of information that must be communicated.
 
 When solving problems where the linear operator is symmetric, a host
-of analytic theories exist based on the eigenvalue spectrum of the
+of analytic techniques exist based on the eigenvalue spectrum of the
 operator that characterize their behavior in the context of
-deterministic linear solvers. Using past work, these theories are
+deterministic linear solvers. Using past work, these techniques are
 adapted to the domain decomposed Neumann-Ulam method using the
 one-speed, two-dimensional neutron diffusion equation and spatial
 discretization presented in
@@ -211,7 +263,7 @@ which simplifies to:
   \label{eq:iteration_spectrum}
 \end{equation}
 giving the eigenvalue spectrum for the Jacobi preconditioned iteration
-matrix. To find these maxium eigenvalue,
+matrix. To find the maxium eigenvalue,
 Eq~(\ref{eq:preconditioned_eigenvalues}) is plotted as a function of
 $p$ with $p=q$ in Figure~\ref{fig:diffusion_spectrum} for various
 values of $\Sigma_a$.
@@ -291,8 +343,8 @@ chapter in \citep{azmy_nuclear_2010}, we will use both the Wigner
 rational approximation and the mean chord approximation as a means to
 estimate the leakage fraction.
 
-In the case of domain decomposed linear operator equations, we can use
-diffusion theory to estimate the optical thickness of a domain in the
+In the case of domain decomposed linear systems, we can use diffusion
+theory to estimate the optical thickness of a domain in the
 decomposition and the corresponding leakage fraction in terms of
 properties of the linear operator and the discretization. To begin we
 must first calculate the mean distance a Monte Carlo history will move
@@ -457,18 +509,19 @@ subsection was varied from 1 to 100 while the scattering cross
 subsection was set to zero to create a purely absorbing environment
 with weight cutoff of \sn{1}{-4}. The optical thickness of these
 domains will vary as a function of the absorption cross subsection if
-the other parameters are fixed. To compute the optical thickness,
-along with the spectral radius as given by
-Eq~(\ref{eq:iteration_radius}), we also need the parameters $n_i$ and
-$n_s$ which respectively describe the typical domain length and the
-average number of states moved along that typical length per history
-transition. For our grid above, the domains are varied in size with
-$50 \times 50$, $100 \times 100$, and $200 \times 200$ cells giving
-$n_i=50$, $n_i=100$, and $n_i=200$ grid points or states along the
-typical length of the domain respectively. Looking at the Laplacian
-stencil in Eq~(\ref{eq:nine_point_stencil}), we see that all history
-transitions will only move a single state in either the $i$ or $j$
-directions due to the symmetry of the problem. Furthermore, if we
+the other parameters are fixed. 
+
+To compute the optical thickness, along with the spectral radius as
+given by Eq~(\ref{eq:iteration_radius}), we also need the parameters
+$n_i$ and $n_s$ which respectively describe the typical domain length
+and the average number of states moved along that typical length per
+history transition. For our grid above, the domains are varied in size
+with $50 \times 50$, $100 \times 100$, and $200 \times 200$ cells
+giving $n_i=50$, $n_i=100$, and $n_i=200$ grid points or states along
+the typical length of the domain respectively. Looking at the
+Laplacian stencil in Eq~(\ref{eq:nine_point_stencil}), we see that all
+history transitions will only move a single state in either the $i$ or
+$j$ directions due to the symmetry of the problem. Furthermore, if we
 choose the $i$ direction, not all states we will transition to will
 move the history in that direction. Therefore, we look to the
 definition of the iteration matrix in Eq~(\ref{eq:iteration_stencil})
@@ -515,11 +568,12 @@ matrix spectral radius.
 \end{figure}
 Again, we note good qualitative agreement between the measured and
 analytic quantities but we begin to see the limits of the leakage
-approximations. To compare the quality of the two approximations, the
-absolute difference between the computed leakage fraction and that
-generated by the Wigner rational and mean chord approximations is
-plotted in Figure~\ref{fig:leakage_error} for all domain sizes
-tested. 
+approximations. 
+
+To compare the quality of the two approximations, the absolute
+difference between the computed leakage fraction and that generated by
+the Wigner rational and mean chord approximations is plotted in
+Figure~\ref{fig:leakage_error} for all domain sizes tested.
 \begin{figure}[t!]
   \begin{spacing}{1.0}
     \begin{center}
@@ -550,10 +604,11 @@ fractions within 0.05 of the measured results. As the domain becomes
 more optically thick (with both increasing $n_i$ and decreasing
 $\rho(\ve{H})$), the approximations are more accurate.
 
-%%---------------------------------------------------------------------------%%
-\section{Fully Asynchronous Neumann-Ulam Algorithm}
-\label{sec:asynchronous_algorithm}
+\clearpage
 
+%%---------------------------------------------------------------------------%%
+\section{Domain Decomposed Neumann-Ulam Algorithm}
+\label{sec:asynchronous_algorithm}
 In the context of radiation transport, in 2009 Brunner and colleagues
 provided a fully asynchronous domain decomposed parallel aglorithm as
 implemented in production implicit Monte Carlo codes
@@ -635,8 +690,10 @@ Eq~(\ref{eq:direct_permutation_weight}).
 \subsection{Asynchronous Transport Kernel}
 \label{subsec:async_transport_kernel}
 
+\clearpage
+
 %%---------------------------------------------------------------------------%%
-\subsection{Multiple-Set Overlapping-Domain Neumann-Ulam Algorithm}
+\section{Multiple-Set Overlapping-Domain Neumann-Ulam Algorithm}
 \label{subsec:msod}
 In 2010, Wagner and colleagues developed the \textit{multiple-set
   overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
