@@ -1,103 +1,35 @@
 \chapter{Monte Carlo Synthetic Acceleration Methods for the $SP_N$ Equations}
 \label{ch:spn_equations}
 
-The neutron transport problem is complicated. Solutions cover a large
-phase space and the problems of interest are often geometrically
-complex, very large, or both, requiring tremendous computational
-resources to generate an adequate solution. Modern deterministic
-methods for large scale problems are commonly variants on the discrete
-ordinates ($S_N$) method \citep{evans_denovo:_2010}. For fission
-reactor neutronics simulations, the $S_N$ method requires potentially
-trillions of unknown angular flux moments to be computed to achieve
-good accuracy for the responses of interest
-\citep{slaybaugh_acceleration_2011}. Other forms of the transport
-problem, including the $P_N$ method, take on a simpler form than the
-more common $S_N$ methods but lack in accuracy when compared while
-still requiring considerable computational resources for solutions in
-multiple dimensions.
+In this chapter, we briefly derive the simplified $P_N$ ($SP_N$)
+equations, closely following the work of Evans
+\citep{evans_simpli_2013}\footnote{The $SP_N$ derivations in this
+  chapter and the associated appendices are heavily based on those
+  presented by Evans in \citep{evans_simpli_2013}}, in order to gain
+full understanding of the underlying system and its potential behavior
+in a Monte Carlo context. From the $P_N$ equations, we apply a set of
+approximations to yield the $SP_N$ equations for fixed source and
+criticality problems. Using the fully-formed linear operator for the
+transport problem, we explore solutions to the $SP_N$ equations with
+Monte Carlo Synthetic Acceleration using a light water reactor fuel
+assembly criticality calculation as the driving problem. Several
+difficulties arise when applying MCSA to these problems that were not
+observed when investigating the simpler transport systems.
 
-In the 1960's, Gelbard developed an ad-hoc multidimensional extension
-of the simple single dimension planar $P_N$ equations that created a
-system of coupled, diffusion-like equations known as the simplified
-$P_N$ ($SP_N$) equations. Up until around the 1990's, the $SP_N$
-method was either widely unknown, widely unused, or combination of
-both even though numerical studies showed promising results with
-better solutions than diffusion theory and a significant reduction in
-computational time over more accurate methods such as discrete
-ordinates. Why did this happen? A significant problem, pointed out by
-Brantley and Larsen \citep{brantley_simplified_2000}, was that little
-rigor had been applied to the formulation of the $SP_N$ equations
-since their derivation through primarily heuristic arguments. Instead,
-studies at that time focused on simply comparing the results of the
-method to other contemporary transport solution strategies. In
-addition, many problems of interest from the literature at the time
-were either solved using nodal-type methods for reactor-sized problems
-or $S_N$-type methods for benchmark problems with intricate material
-configurations and potentially large flux gradients over small spatial
-domains.
-
-So why reconsider the $SP_N$ equations? Starting in the 1990's and
-primarily due to Larsen and his colleagues, the $SP_N$ equations have
-been given a more rigorous treatment with both variational and
-asymptotic derivations performed as a means of verification. In
-addition, these equations have been more rigorously studied as
-solution methods to MOX fuel problems and have been shown to provide
-accurate solutions. With this mathematical literature to provide a
-solid numerical footing for the method, we look at its application to
-today's challenge problems in neutron transport for fission reactor
-analysis. The reduction in numerical complexity of current
-deterministic solution methods using the $S_N$ approximation could
-mean significant savings in both compute time and memory required. In
-addition, the characteristics of the solution to the transport problem
-for a steady state reactor core permit diffusion theory to be used; a
-staple of the nuclear industry since its inception. Therefore, if
-diffusion theory is applicable, then finer grained solutions that
-capture more of the physics contained in the transport equation should
-be possible with the $SP_N$ method. In doing so, we also expect from
-the literature to obtain computed responses on the order of accuracy
-we would expect from an appropriately discretized $S_N$ method at a
-fraction of the cost.
-
-To further motivate moving in this direction, recent developments in
-the Exnihilo neutronics package at Oak Ridge National Laboratory have
-permitted generation of the $SP_N$ system of equations for detailed
-neutronics models \citep{evans_simpli_2013}. By fully forming these
-equations and formulating them as a linear algebra problem instead of
-using the explicit iterative methods of the past, we now have access
-to all of the modern advancements in computational linear algebra
-including Krylov solvers for asymmetric systems and preconditioning
-methods such as algebraic multigrid. This leads us to then explore the
-applicability of our work in discrete Monte Carlo methods for linear
-systems as a possible solution method for the $SP_N$ equations. If
-formulated correctly, we hypothesize that significant improvement in
-usage of computational resources may be observed compared to modern
-solution techniques such as those suggested due to the form of the
-matrices generated by the discretization. In addition, solving the
-$SP_N$ equations in this way also breaks away from the $S_N$ forms of
-parallelism where spatial parallelism is achieved by an efficient
-parallel sweep, angular efficiency achieved by pipe-lining, and energy
-parallelism achieved by decoupling the groups. With the $SP_N$
-equations as a full matrix system, we now can parallelize the problem
-as prescribed by the linear solver, which may be significantly more
-scalable than current $S_N$ transport practices.
-
-In this chapter, we derive the $SP_N$ equations, closely following the
-work of Evans\footnote{The $SP_N$ derivations in this chapter are
-  heavily based on those presented by Evans in
-  \citep{evans_simpli_2013}}, in order to gain full understanding of
-the underlying system and its potential behavior in a Monte Carlo
-context. From the $P_N$ equations, we apply a set of approximations to
-yield the $SP_N$ equations for fixed source and criticality
-problems. Using the fully-formed linear operator for the transport
-problem, we explore solutions to the $SP_N$ equations using Monte
-Carlo Synthetic Acceleration using a light water reactor fuel assembly
-criticality calculation as the driving problem. In order to
-effectively solve this problem, a suite of preconditioners is
-developed and studied within the context of MCSA. Using these
-preconditioners, MCSA solutions for the fuel assembly problem are
-verified by comparing against production Krylov solvers and finally
-performance is analyzed through comparison with those same Krylov
-solvers.
+For Jacobi-based preconditioners, convergence with MCSA is difficult
+if not impossible for ill-conditioned systems with this behavior
+demonstrated using a simple neutron diffusion problem. In order to
+effectively solve the $SP_N$ equations for the fuel assembly problem,
+a suite of preconditioners along with a relaxation scheme is developed
+and studied within the context of MCSA. Using these preconditioners,
+several additional issues are observed and alleviated to a certain
+extent by applying the reduced domain approximation. MCSA solutions
+for the fuel assembly problem are then verified by comparing the
+solutions against production Krylov solvers for problems with varying
+energy groups. Finally performance is analyzed through comparison with
+those same Krylov solvers in terms of both iterative performance and
+CPU timing using the same set of problems utilized for the
+verification.
 
 %%---------------------------------------------------------------------------%%
 \section{The Neutron Transport Equation}
@@ -250,20 +182,9 @@ on a single vector:
     u_1 = \phi_0 + 2\phi_2 \\
     u_2 = 3\phi_2 + 4\phi_4 \\
     u_3 = 5\phi_4 + 6\phi_6 \\
-    u_4 = 7\phi_6 \:,
+    u_4 = 7\phi_6 \:.
   \end{gather}
   \label{eq:spn7_subs}
-\end{subequations}
-or equivalently:
-\begin{subequations}
-  \begin{gather}
-    \phi_0 = u_1 - \frac{2}{3}u_2 + \frac{8}{15}u_3 -
-    \frac{16}{35}u_4 \\
-    \phi_2 = \frac{1}{3}u_2 - \frac{4}{15}u_3 + \frac{8}{35}u_4\\ 
-    \phi_4 = \frac{1}{5}u_3 - \frac{6}{35}u_4\\
-    \phi_6 = \frac{1}{7}u_4\:.
-  \end{gather}
-  \label{eq:spn7_subs_inverse}
 \end{subequations}
 When substituted into Eq~(\ref{eq:sp7_equations}), these terms give:
 \begin{subequations}
@@ -363,7 +284,7 @@ Appendix~\ref{chap:spn_spatial_discretization}.
 \subsection{Eigenvalue Form of the $SP_N$ Equations}
 \label{subsec:eigenvalue_form}
 For criticality problems, the space, angle, and energy discretizations
-for the $SP_N$ equations can be applied to the general eigenvalue from
+for the $SP_N$ equations can be applied to the general eigenvalue form
 of the transport equation given by
 Eq~(\ref{eq:eigenvalue_transport}). We can readily replace the fixed
 source in Eq~(\ref{eq:multigroup_spn_equations}) with the fission
@@ -381,11 +302,16 @@ source derived in \S~\ref{sec:pn_eigenvalue}:
 \end{multline}
 with the fission matrix $\mathbf{F}$ given by
 Eq~(\ref{eq:fission_matrix}). We again apply the change of variables
-to yield the set of pseudo-moments $\mathbb{U}_n$ where now the
-application of the fission matrix to the moment vectors will be
+to yield the set of multigroup pseudo-moments $\mathbb{U}_n$ where now
+the application of the fission matrix to the moment vectors will be
 expanded into a set of block matrices in identical fashion to the
-scattering matrices.
-
+scattering matrices:
+\begin{equation}
+  -\nabla \cdot \mathbb{D}_n \nabla \mathbb{U}_n + \sum_{m=1}^4
+  \mathbb{A}_{nm} \mathbb{U}_m = \frac{1}{k} \sum_{m=1}^4
+  \mathbb{F}_{nm} \mathbb{U}_n\ \ \ \ \ \ \ n = 1,2,3,4\:.
+  \label{eq:spn_fission_matrix}
+\end{equation}
 It should be noted here that with respect to a general MCSA scheme,
 the introduction of the fission in the system will only affect the
 source vector in the linear system. The linear operator, and therefore
@@ -582,6 +508,8 @@ orders and therefore convergence is expected to be slow. These
 eigenvalues signal a need for a better preconditioning strategy to
 both ensure and improve convergence for Monte Carlo methods.
 
+\clearpage 
+
 \subsection{Block Jacobi Preconditioning}
 \label{sec:spn_preconditioning}
 If Monte Carlo methods are to be used to solve the $SP_N$ system of
@@ -753,7 +681,7 @@ Figure~\ref{fig:problem3_radial_mat}, effectively giving a
 representation of one quarter of the assembly. For the spatial
 discretization, each fuel pin (gray regions in
 Figure~\ref{fig:problem3_radial_mat}) is resolved by a $2 \times 2$
-mesh with materials and cross sections homgenized over this region.
+mesh with materials and cross sections homogenized over this region.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4in]{chapters/spn_equations/problem3_radial_mat.png}
@@ -916,10 +844,10 @@ linear solve in the first eigenvalue iteration.
   \label{fig:block_jacobi_res_richardson}
 \end{figure}
 Poor converge is observed for the Richardson iteration, however,
-convergence is achieved meaning that the preliminary criteria needed
-to satisfy MCSA convergence has also been met. The number of
-iterations required for the Richardson iteration to converge will give
-an approximation for the spectral radius via
+convergence is achieved meaning that the preliminary eigenvalue
+criteria needed to satisfy MCSA convergence has also been met. The
+number of iterations required for the Richardson iteration to converge
+will give an approximation for the spectral radius via
 Eq~(\ref{eq:linear_k_iter_norm3}). With 7291 iterations required to
 converge to a tolerance of $\sn{1}{-6}$, $\rho(\mathbf{H}) \approx
 0.998$, nearing the limits of MCSA applicability and well beyond the
@@ -946,105 +874,15 @@ preconditioned\footnote{For 1-group $SP_1$ problems the block size is
   1, giving a point Jacobi preconditioner.}  calculations used a
 one-speed $SP_1$ discretization, effectively giving a diffusion
 system. To study the breakdown of MCSA at iteration matrix spectral
-radii near one, we will use a simpler homogeneous 2-dimensional
-one-speed neutron diffusion system to isolate this behavior. In this
-system, we can vary the cross sections while maintaining a fixed grid
-in order to achieve varying spectral radii. For these studies, we
+radii near one, we will use the simpler homogeneous 2-dimensional
+one-speed neutron diffusion system presented in
+Appendix~\ref{chap:diffusion_problem} to isolate this behavior. In
+this system, we can vary the cross sections while maintaining a fixed
+grid in order to achieve varying spectral radii. For these studies, we
 neglect fission as MCSA behavior is dictated by the transport operator
 $\mathbf{M}$ in an eigenvalue scheme with the fission matrix used to
 generate a fixed source.
 
-\subsubsection{Model Diffusion Problem}
-\label{subsec:model_problem}
-For our breakdown study, we choose the one-speed, two-dimensional
-neutron diffusion equation as a model problem
-\citep{duderstadt_nuclear_1976}:
-\begin{equation}
-  -\boldsymbol{\nabla} \cdot D \boldsymbol{\nabla} \phi + \Sigma_a
-  \phi = S\:,
-  \label{eq:diffusion_eq}
-\end{equation}
-where $\phi$ is the neutron flux, $\Sigma_a$ is the absorption cross
-section, and $S$ is the source of neutrons. In addition, $D$ is the
-diffusion coefficient defined as:
-\begin{equation}
-  D = \frac{1}{3 ( \Sigma_t - \bar{\mu}\Sigma_s )}\:,
-  \label{eq:diffusion_coeff}
-\end{equation}
-where $\Sigma_s$ is the scattering cross section, $\Sigma_t = \Sigma_a
-+ \Sigma_s$ is the total cross section, and $\bar{\mu}$ is the cosine
-of the average scattering angle. For simplicity, we will take
-$\bar{\mu} = 0$ for our analysis giving $D=(3 \Sigma_t)^{-1}$. In
-addition, to further simplify we will assume a homogeneous domain such
-that the cross sections remain constant throughout. Doing this permits
-us to rewrite Eq~(\ref{eq:diffusion_eq}) as:
-\begin{equation}
-  -D \boldsymbol{\nabla}^2 \phi + \Sigma_a \phi = S\:.
-  \label{eq:diffusion_eq_simple}
-\end{equation}
-
-We choose a finite difference scheme on a square Cartesian grid to
-discretize the problem. For the Laplacian, we choose the 9-point
-stencil shown in Figure~\ref{fig:stencil} over a grid of size $h$
-\citep{leveque_finite_2007}:
-\begin{multline}
-  \nabla^2_9\phi = \frac{1}{6h^2}[4 \phi_{i-1,j} + 4 \phi_{i+1,j}
-    + 4 \phi_{i,j-1} + 4 \phi_{i,j+1} + \phi_{i-1,j-1}\\ +
-    \phi_{i-1,j+1} + \phi_{i+1,j-1} + \phi_{i+1,j+1} - 20
-    \phi_{i,j}]\:.
-  \label{eq:nine_point_stencil}
-\end{multline}
-\begin{figure}[t!]
-  \begin{center}
-    \scalebox{1.25}{\input{chapters/spn_equations/stencil.pdftex_t}}
-  \end{center}
-  \caption{\textbf{Nine-point Laplacian stencil.}}
-  \label{fig:stencil}
-\end{figure}
-We then have the following linear system to solve:
-\begin{multline}
-  -\frac{1}{6h^2}[4 \phi_{i-1,j} + 4 \phi_{i+1,j} + 4
-    \phi_{i,j-1} + 4 \phi_{i,j+1} + \phi_{i-1,j-1}\\ + \phi_{i-1,j+1}
-    + \phi_{i+1,j-1} + \phi_{i+1,j+1} - 20 \phi_{i,j}] + \Sigma_a
-  \phi_{i,j} = s_{i,j}\:,
-  \label{eq:fd_system}
-\end{multline}
-and in operator form:
-\begin{equation}
-  \ve{D}\boldsymbol{\phi}=\ve{s}\:,
-  \label{eq:operator_system}
-\end{equation}
-where $\ve{D}$ is the diffusion operator, $\ve{s}$ is the source in
-vector form and $\boldsymbol{\phi}$ is the vector of unknown fluxes.
-
-To close the system, a set of boundary conditions is required. In the
-case of a non-reentrant current condition applied to all global
-boundaries of the domain, we choose the formulation of Duderstadt by
-assuming the flux is zero at some ghost point beyond the
-grid. Consider for example the equations on the $i=0$ boundary of the
-domain:
-\begin{multline}
-  -\frac{1}{6h^2}[4 \phi_{-1,j} + 4 \phi_{1,j} + 4 \phi_{0,j-1} +
-    4 \phi_{0,j+1} + \phi_{-1,j-1}\\ + \phi_{-1,j+1} + \phi_{1,j-1} +
-    \phi_{1,j+1} - 20 \phi_{0,j}] + \Sigma_a \phi_{0,j} = s_{0,j}\:.
-  \label{eq:x_min_bnd}
-\end{multline}
-Here we note some terms where $i=-1$ and therefore are representative
-of grid points beyond the boundary of the domain. We set the flux at
-these points to be zero, giving a valid set of equations for the $i=0$
-boundary:
-\begin{multline}
-  -\frac{1}{6h^2}[4 \phi_{1,j} + 4 \phi_{0,j-1} + 4 \phi_{0,j+1}
-    \\ + \phi_{-1,j+1} + \phi_{1,j-1} + \phi_{1,j+1} - 20 \phi_{0,j}]
-  + \Sigma_a \phi_{0,j} = s_{0,j}\:.
-  \label{eq:x_min_bnd_2}
-\end{multline}
-We repeat this procedure for the other boundaries of the domain. For
-reflecting boundary conditions, the net current across a boundary is
-zero.
-
-\subsubsection{MCSA Breakdown Analysis}
-\label{subsubsec:breakdown_analysis}
 For each solver and estimator combination, the spectral radius of the
 iteration matrix generated by the diffusion problem was varied by
 changing the absorption cross section from 0.25 to 100 while fixing
@@ -1106,8 +944,8 @@ difficult problems like the fuel assembly, making the method unusable.
 \end{figure}
 
 In addition to the significantly larger number of histories required
-for to achieve convergence for ill-conditioned problems another
-penalty is paid due to histories that take longer to
+to achieve convergence for ill-conditioned problems another penalty is
+paid due to histories that take longer to
 compute. Figure~\ref{fig:breakdown_time} gives the CPU time in seconds
 required to compute a single random walk averaged over the entire set
 of histories run in the calculation over all iterations. As the
@@ -1264,11 +1102,11 @@ the system now coupled to over 10\% of the total states in the system
 through the composite iteration matrix. This means that Monte Carlo
 sampling tables will be large, requiring significant memory to store
 them and a substantial overhead in the sampling procedure during
-transport. In addition, the matrix-matrix multiply operations required
-to build the composite operator see significant performance losses due
-to the amount of data that must be handled. In parallel, losing
-sparsity severely inhibits performance where now parallel operations
-require communications amongst orders of magnitude more processors for
+transport. Second, the matrix-matrix multiply operations required to
+build the composite operator see significant performance losses due to
+the amount of data that must be handled. In parallel, losing sparsity
+severely inhibits performance where now parallel operations require
+communications amongst orders of magnitude more processors for
 nearest-neighbor type algorithms.
 \begin{figure}[t!]
   \begin{center}
@@ -1354,8 +1192,9 @@ $j^{th}$ columns of the identity and preconditioning matrices
 respectively. Here, $\mathbf{M}$ is the actual inverse of the
 preconditioner and is formed directly by the algorithm. On the right
 hand side of Eq~(\ref{eq:frobenius_norm_min}), the Frobenius norm is
-represented as a effective sum of $N$ linear system residual norms. A
-few iterations of a subspace method or other iterative scheme can be
+represented as a effective sum of $N$ linear system residual norms. 
+
+A few iterations of a subspace method or other iterative scheme can be
 used to effectively solve these systems to a loose tolerance and yield
 the columns of the approximate preconditioning matrix. At each
 iteration, threshold values are used to eliminate the components of
@@ -1388,7 +1227,7 @@ single CPU.
 Figure~\ref{fig:spainv_iterations} gives the number of MCSA iterations
 needed to converge the fuel assembly problem and
 Figure~\ref{fig:spainv_size} the maximum number of non-zero entries
-per row obeserved in the composite linear operator as a function the
+per row observed in the composite linear operator as a function the
 SPAINV threshold. For this analysis, the number of levels in the
 sparsity pattern was varied from 3 to 7 with convergence of the fuel
 assembly problem not achieved for smaller level values. Compared to
@@ -1494,7 +1333,7 @@ single eigenvalue iteration for the fuel assembly problem recorded
 along with the maximum number of non-zero entries observed in all
 matrix rows for the left/right preconditioned composite linear
 operator. SPAINV parameters for the data presented here were fixed as
-it was found that the preconditioning quality was largely insenstive
+it was found that the preconditioning quality was largely insensitive
 to their variation. In addition, the fact that SPAINV is being used to
 preconditioned a problem already preconditioned with ILUT means that
 the input matrix sparsity pattern is already somewhat dense and large
@@ -1604,8 +1443,8 @@ required to converge for each preconditioner type as a function of
 reduced domain fill level. Figure~\ref{fig:rda_quality} gives the
 corresponding quality metric for each data point where the number of
 non-zero entries used to compute the metric is equivalent to the
-reduced domain fill level. We first note the SPAINV preconditioning
-alone is signficantly more sensitive to the reduction in domain size
+reduced domain fill level. We first note that SPAINV preconditioning
+alone is significantly more sensitive to the reduction in domain size
 over the ILUT-based methods, although the preconditioner was of
 $O(100)$ non-zero entries per row without any approximation
 applied. For the ILUT-based methods, performance was significantly
@@ -1665,19 +1504,21 @@ important components of the preconditioned MCSA algorithm.
 
 \subsection{MCSA Relaxation Parameters}
 \label{subsec:spn_mcsa_relaxation}
-The Richardson iteration upon which the Neumann-Ulam method is built
-may be implemented with a scalar relaxation parameter that can be
-adjusted to improve convergence:
+As another means of preconditioning (or variance reduction), the
+Richardson iteration upon which the Neumann-Ulam method is built may
+be implemented with a scalar relaxation parameter that can be adjusted
+to improve convergence:
 \begin{equation}
   \mathbf{x} = \mathbf{x} + \omega \mathbf{r}\:,
   \label{eq:richardson_relaxation}
 \end{equation}
-where $\omega$ is the relaxation parameter. This is effectively a form
-of preconditioning where the system is being scaled on the left by a
-constant value in all rows. Analogously, these relaxation parameter
-techniques can be applied to Monte Carlo to improve convergence as
-demonstrated by Dimov \citep{dimov_new_1998}. In this case, building
-an iteration matrix from Eq~(\ref{eq:richardson_relaxation}) gives:
+where $\omega$ is the relaxation parameter. This is very similar to
+point Jacobi preconditioning where the system is being scaled on the
+left by a constant value in all rows. Analogously, these relaxation
+parameter techniques can be applied to Monte Carlo to improve
+convergence as demonstrated by Dimov \citep{dimov_new_1998}. In this
+case, building an iteration matrix from
+Eq~(\ref{eq:richardson_relaxation}) gives:
 \begin{equation}
   \mathbf{H} = \mathbf{I} - \omega \mathbf{A}\:,
   \label{eq:relaxed_iteration_matrix}
@@ -1792,7 +1633,7 @@ state to other local states through the iteration matrix stencil
 requires application of the estimator to potentially several orders of
 magnitude more states at every transition event.
 
-For this study, the fuel assemby problem with a 1-group $SP_1$
+For this study, the fuel assembly problem with a 1-group $SP_1$
 discretization was solved using MCSA with the adjoint Monte Carlo
 solver using both the collision and expected value estimators and both
 the Richardson and MINRES fixed point iterations. Using the results
@@ -1935,10 +1776,10 @@ the cell and group fluxes, the number of eigenvalue iterations
 required to converge the problem along with the eigenvalue itself will
 be compared as a means of verification. If all values computed using
 MCSA agree with the results from the production Krylov solvers within
-the solution tolerance then the MCSA solutions will be deemed verified
-for these problems. Additionaly, this verification is only applicable
-to serial results with parallel verification for this problem provided
-in Chapter~\ref{ch:parallel_methods}.
+the solution tolerance, then the MCSA solutions will be deemed correct
+for these problems. Additionally, this verification is only applicable
+to serial results with parallel MCSA verification for this problem
+provided in Chapter~\ref{ch:parallel_methods}.
 
 For the verification calculations, all solvers will be preconditioned
 with ILUT using a drop tolerance of \sn{1}{-5} and a fill level of
@@ -1952,10 +1793,10 @@ DOF. When the expected value estimator was used, \sn{5}{2} stochastic
 histories used for each energy group (\sn{1}{3} and \sn{1.5}{3}
 histories total for the 2 and 4 group calculations) giving
 approximately 1 stochastic history for every 5 DOFs. The reduced
-domain approximation was also applied in conjuction with the ILUT
+domain approximation was also applied in conjunction with the ILUT
 preconditioning using a fill level of 100 and a threshold value of
 \sn{1}{-10} to reduce the density of states in the Monte Carlo
-problem. For relaxation parameters, all MCSA compuations used a
+problem. For relaxation parameters, all MCSA computations used a
 Neumann relaxation parameter of 0.7 while a Richardson relaxation of
 1.1 was used with the collision estimator and 1.0 with the expected
 value estimator as determined by the previous analysis of the
@@ -2003,7 +1844,7 @@ group 0).
   \end{center}
   \caption{\textbf{Energy group lower bounds for the multigroup fuel
       assembly criticality problem in electron volts.} \textit{An
-      implicit upper bound of \sn{2}{6} eV is assumedfor group zero.}}
+      implicit upper bound of \sn{2}{6} eV is assumed for group zero.}}
   \label{tab:spn_group_structure}
 \end{table}
 
@@ -2056,18 +1897,19 @@ eigensolver in the same number of eigenvalue iterations.
 \end{table}
 
 For each converged eigenvalue calculation, the scalar flux in each
-energy group was compared over the entire spatial with the
+energy group was compared over the entire spatial domain with the
 BiCGStab-ILUT solution used as the reference to compute an absolute
-difference. For the 1 group calculations, these absolute differences
-are plotted spatially along the centerline of the fuel assembly in
+difference of the flux in each mesh cell. For the 1 group
+calculations, these absolute differences are plotted spatially along
+the center-line of the fuel assembly in
 Figure~\ref{fig:serial_1_group_diff}. Interestingly, except for the
 MCSA-ILUT-MR-C calculation, all other 1-group calculations including
 GMRES had a maximum global flux difference of \sn{9.313}{-10} even
-though different spatial results were observed. For the MCSA-ILUT-MR-C
-calculation, a slightly larger maximum error of \sn{2.205}{-9} was
-observed for reasons that remain unexplained. All 1-group calculations
-have a minimum observed absolute difference of 0 with respect to the
-BiCGStab calculation.
+though different spatial results were observed for all cases. For the
+MCSA-ILUT-MR-C calculation, a slightly larger maximum error of
+\sn{2.205}{-9} was observed for reasons that remain unexplained. All
+1-group calculations have a minimum observed absolute difference of 0
+with respect to the BiCGStab calculation.
 
 \begin{figure}[t!]
   \begin{center}
@@ -2075,31 +1917,34 @@ BiCGStab calculation.
   \end{center}
   \caption{\textbf{Absolute difference of the group 0 scalar flux
       between the Aztec BiCGStab calculations and Aztec GMRES and the
-      MCSA variations for the 1-group calculation.} \textit{Left to
-      right: GMRES-ILUT, MCSA-ILUT-R-C, MCSA-ILUT-MR-C,
-      MCSA-ILUT-R-EV, MCSA-ILUT-MR-EV. Table~\ref{tab:spn_solver_defs}
-      gives the description for each solver type presented.}}
+      MCSA variations for the 1-group fuel assembly criticality
+      calculation.} \textit{Left to right: GMRES-ILUT, MCSA-ILUT-R-C,
+      MCSA-ILUT-MR-C, MCSA-ILUT-R-EV, MCSA-ILUT-MR-EV. The fluxes are
+      plotted on a plane intersecting the center-line of the
+      assembly. Table~\ref{tab:spn_solver_defs} gives the description
+      for each solver type presented.}}
   \label{fig:serial_1_group_diff}
 \end{figure}
 
 Table~\ref{tab:serial_differences_g1},
 Table~\ref{tab:serial_differences_g2}, and
 Table~\ref{tab:serial_differences_g4} give the maximum and minimum
-absolute differences for all calculations and all energy groups using
-the BiCGStab calculation as the reference. All comparisons were
-performed within a group such that the MCSA-ILUT-R-C results in group
-3 for the 4-group calculation were computed with the BiCGStab-ILUT
-solution in group 3 for the 4-group calculation as a reference. For
-all group flux results given in the table, the maximum differences for
-all cases was less than the linear solver tolerance used to converge
-the flux at each eigenvalue iteration meaning that all values over the
-entire energy and spatial domain are within these limits. In addition,
-the minimum error for all calculations was observed to be zero,
-meaning in at least one mesh cell in all calculations for all energy
-groups the scalar flux values computed by all solvers were
-identical. Based on the flux results and the eigenvalue results
-presented here, the MCSA results should be deemed correct for the fuel
-assembly problem for serial calculations.
+absolute differences of the cell scalar fluxes for all calculations
+and all energy groups using the BiCGStab calculation as the
+reference. All comparisons were performed within a group such that the
+differences for the MCSA-ILUT-R-C results in group 3 for the 4-group
+calculation were computed with the BiCGStab-ILUT solution in group 3
+for the 4-group calculation as a reference. For all group flux results
+given in the table, the maximum differences for all cases was less
+than the linear solver tolerance used to converge the flux at each
+eigenvalue iteration meaning that all values over the entire energy
+and spatial domain are within these limits. In addition, the minimum
+error for all calculations was observed to be zero, meaning that at
+least one mesh cell in all calculations for all energy groups the
+scalar flux values computed by all solvers were identical. Based on
+the flux results and the eigenvalue results presented here, the MCSA
+results should be deemed correct for the fuel assembly problem for
+serial calculations with multiple energy groups.
 
 \begin{table}[h!]
   \begin{center}
@@ -2209,14 +2054,16 @@ assembly problem for serial calculations.
 \section{MCSA Performance Comparison to Conventional Methods}
 \label{sec:spn_comparison}
 In the previous section, numerical results using MCSA for the fuel
-assembly calculation were directly with production Krylov methods in
-order to verify their correctness. Deemed correct, with the same set
-of solver parameters used for verification MCSA will now be directly
-compared to the same production Krylov solvers in terms of both
-iterative performance and CPU timing for solutions to the fuel
-assembly problem.  This comparison of both iterative and CPU timing
-performance is necessary in order to gauge feasibility of the method
-and identify areas that require further research and development.
+assembly calculation were directly compared with production Krylov
+methods in order to verify their correctness. Deemed correct,
+performance of the algorithm for serial computations will now be
+addressed. With the same set of solver parameters used for
+verification, MCSA will now be directly compared to the same
+production Krylov solvers in terms of both iterative performance and
+CPU timing for solutions to the fuel assembly problem.  This
+performance comparison is necessary in order to assess the feasibility
+of the method and identify areas that require further research and
+development.
 
 To compare iterative performance, the number of linear solver
 iterations required to converge each eigenvalue iteration was recorded
@@ -2231,15 +2078,16 @@ elliptic and positive-definite, but they are also nearly symmetric and
 therefore we expect the conjugate gradient-based methods to perform
 well. It also important to note that the iterative performance of each
 solver is not a strong function of the number of energy groups in the
-problem (and therefore the problem size). For MCSA, we are linearly
-increasing the number of stochastic histories used to compute the
-correction at each iteration as the number of energy groups are
-increased and therefore the work performed for the problem is of
-$O(N)$. It is also important to note the reduced domain approximation
-parameters, particularly the fill level, were fixed as the number of
-energy groups was increased. By fixing the fill level, we are
-effectively fixing the amount of information contained in the
-composite linear operator available for the Monte Carlo
+problem (and therefore the problem size). 
+
+For MCSA, we are linearly increasing the number of stochastic
+histories used to compute the correction at each iteration as the
+number of energy groups are increased and therefore the work performed
+for the problem is of $O(N)$. It is also important to note the reduced
+domain approximation parameters, particularly the fill level, were
+fixed as the number of energy groups was increased. By fixing the fill
+level, we are effectively fixing the amount of information contained
+in the composite linear operator available for the Monte Carlo
 problem. Limiting this information to 100 entries per row in the
 preconditioned system did not appear to have a significant effect on
 the iterative performance of the solver. For larger numbers of energy
@@ -2263,7 +2111,7 @@ preconditioner for the fuel assembly problem.
 
 Although iterative performance for MCSA was comparable to that
 observed for production Krylov implementations using exactly the same
-preconditioning scheme, timing performance is not as competetive. For
+preconditioning scheme, timing performance is not as competitive. For
 this comparison, the amount of time to perform each linear solver
 iteration in every eigenvalue iteration was recorded and then averaged
 over all linear solver
@@ -2289,7 +2137,7 @@ operator has $O(10)$ elements in each row of the system, an order of
 magnitude less than that used in the reduced domain composite
 operator. Second, the implementation presented here has not been
 optimized and it is likely that several components of the algorithm
-can be implemented in a more desireable time complexity. The
+can be implemented in a more desirable time complexity. The
 production Krylov solvers presented here have enjoyed decades of
 professional development and optimization. However, it is most
 important to note here that the CPU timing data presented in
@@ -2297,7 +2145,7 @@ Figure~\ref{fig:spn_comparison_time} shows that all methods have the
 same time complexity; their differences are merely the manifestation
 of a large time constant due to the effects of the explicit
 preconditioning scheme. For transport systems where this is not a
-problem, the literature explicitly shows that MCSA can be competetive
+problem, the literature explicitly shows that MCSA can be competitive
 with these production Krylov methods using CPU time as a measure
 \citep{evans_monte_2012}.
 

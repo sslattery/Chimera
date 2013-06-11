@@ -13,7 +13,7 @@ chap_nl = chapters/nonlinear_problem
 chap_conc = chapters/conclusion
 apdx = backmatter
 
-all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf heat_eq_setup.pdf block_jacobi.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf mesh_cell.pdf
+all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf heat_eq_setup.pdf block_jacobi.pdf ddmc_example.pdf ddnu_example.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf mesh_cell.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
@@ -53,6 +53,14 @@ stencil.pdf: $(chap_spne)/stencil.fig
 	fig2dev -L pdftex_t -p $(chap_spne)/stencil.pdf -m 0.4 $(chap_spne)/stencil.fig $(chap_spne)/stencil.pdftex_t
 
 # Parallel mc figures
+ddmc_example.pdf: $(chap_pmc)/ddmc_example.fig
+	fig2dev -L pdftex -p $(chap_pmc)/ddmc_example.pdf -m 0.4 $(chap_pmc)/ddmc_example.fig $(chap_pmc)/ddmc_example.pdf
+	fig2dev -L pdftex_t -p $(chap_pmc)/ddmc_example.pdf -m 0.4 $(chap_pmc)/ddmc_example.fig $(chap_pmc)/ddmc_example.pdftex_t
+
+ddnu_example.pdf: $(chap_pmc)/ddnu_example.fig
+	fig2dev -L pdftex -p $(chap_pmc)/ddnu_example.pdf -m 0.4 $(chap_pmc)/ddnu_example.fig $(chap_pmc)/ddnu_example.pdf
+	fig2dev -L pdftex_t -p $(chap_pmc)/ddnu_example.pdf -m 0.4 $(chap_pmc)/ddnu_example.fig $(chap_pmc)/ddnu_example.pdftex_t
+
 gentile_example.pdf: $(chap_pmc)/gentile_example.fig
 	fig2dev -L pdftex -p $(chap_pmc)/gentile_example.pdf -m 0.4 $(chap_pmc)/gentile_example.fig $(chap_pmc)/gentile_example.pdf
 	fig2dev -L pdftex_t -p $(chap_pmc)/gentile_example.pdf -m 0.4 $(chap_pmc)/gentile_example.fig $(chap_pmc)/gentile_example.pdftex_t

@@ -1,191 +1,121 @@
 \chapter{Parallel Monte Carlo Synthetic Acceleration}
 \label{ch:parallel_methods}
-For Monte Carlo methods, and in particular MCSA, to be viable at the
-production scale, scalable parallel implementations are required. In a
-general linear algebra context for discrete systems, this has not yet
-been achieved. Therefore, we will develop and implement parallel
-algorithms for these methods leveraging both the knowledge gained from
-the general parallel implementations of Krylov methods and modern
-parallel strategies for Monte Carlo as developed by the reactor
-physics community. In order to formulate a parallel MCSA algorithm, we
-recognize that the algorithm occurs in two stages, an outer iteration
-performing fixed point iteration and applying the correction, and an
-inner Monte Carlo solver that is generating the correction via the
-adjoint or forward methods. The parallel aspects of both these
-components must be considered.
+For MCSA to be viable at the production scale, scalable parallel
+implementations of the algorithm are required. Reviewing the
+literature, MCSA has yet to be parallelized and the Neumann-Ulam Monte
+Carlo method on which it is built has only been parallelized through
+history-level parallelism with full domain replication. In order to
+solve large linear systems with MCSA, a domain-decomposed parallel
+strategy is required. In the formulation of a parallel MCSA algorithm,
+we recognize that the algorithm occurs in two stages, an outer
+iteration performing fixed point iteration and applying the
+correction, and an inner Monte Carlo solver that is generating the
+correction via the adjoint or forward methods. The parallel aspects of
+both these components must be considered. Therefore, we will develop
+and implement parallel algorithms for the Neumann-Ulam and MCSA
+methods leveraging both the knowledge gained from the general parallel
+implementations of Krylov methods reviewed in
+Appendix~\ref{ch:linear_problem} and modern parallel strategies for
+domain decomposed Monte Carlo as developed by the reactor physics
+community.
 
 In this chapter we briefly review particle transport methods for
-domain decomposed Monte Carlo and then provide an analytic framework
-from which to estimate its performance. We then devise an algorithm
-based on these methods for efficient parallel solutions using the
-Neumann-Ulam method and MCSA and verify its correctness by comparing
-the numerical results against production Krylov methods. We then
-perform parallel scaling studings to test its performance on both a
-small computing cluster and a leadership class machine and compare
-this performance to the production Krylov methods.
+domain decomposed Monte Carlo. Considering a domain decomposed
+Neumann-Ulam method, we derive an analytic framework based on
+algebraic quantities from which to estimate its performance when
+applied to linear systems. We then devise a parallel algorithm for the
+Neumann-Ulam method based on the multiple-set overlapping-domain
+decomposition algorithm and a parallel algorithm for the MCSA that
+leverages the parallel Monte Carlo algorithm and general parallel
+matrix-vector operations. In identical fashion to the serial
+computations presented in Chapter~\ref{ch:spn_equations}, we use
+parallel solutions for the $SP_N$ equations for the fuel assembly
+criticality problem to verify the correctness of the parallel
+algorithm and implementation by comparing the numerical results
+against production Krylov methods. Using the verified implementation
+of the algorithm, we perform parallel scaling studings to test its
+performance on both a small computing cluster and a leadership class
+machine and compare this performance to the production Krylov methods.
 
 %%---------------------------------------------------------------------------%%
-\section{Domain Decomposition for Monte Carlo}
+\section{Domain Decomposed Monte Carlo}
 \label{sec:msod}
 As observed in the discussion on parallel Krylov methods in
 Appendix~\ref{ch:linear_problem}, large-scale problems will surely
 have their data partitioned such that each parallel process owns a
 subset of the equations in the linear system. Given this convention,
-the adjoint Monte Carlo algorithm must perform random walks over a
-domain that is decomposed and must remain decomposed due to memory
+the Neumann-Ulam Monte Carlo algorithm must perform random walks over
+a domain that is decomposed and must remain decomposed due to memory
 limitations. This naturally leads us to seek parallel Monte Carlo
 algorithms that handle domain decomposition.
 
-In the context of radiation transport, Brunner and colleagues provided
-a survey of algorithms for achieving this as implemented in production
-implicit Monte Carlo codes \citep{brunner_comparison_2006}. In their
-work they identify two data sets that are required to be communicated:
-the sharing of particles that are transported from one domain to
-another and therefore from one processor to another and a global
-communication that signals if particle transport has been completed on
-all processors. The algorithms presented are a fully-locking
-synchronous scheme, an asynchronous-send/synchronous-receive pattern,
-a traditional master/slave scheme, and a modified master/slave scheme
-the implements a binary tree pattern for the global reduction type
-operations needed to communicate between the master and slave
-processes. They observed that the modified master/slave scheme
-performed best in that global communications were implemented more
-efficiently than those required by the asynchronous
-scheme. Furthermore, none of these schemes handled load-imbalanced
-cases efficiently. Such cases will be common if the source sampled in
-the Monte Carlo random walk is not isotropic and not evenly
-distributed throughout the global domain. It was noted that
-efficiencies were improved by increasing the frequency by which
-particle data was communicated between domain-adjacent
-processors. However, this ultimately increases communication costs. In
-2009, Brunner extended his work by using a more load-balanced approach
-with a fully asynchronous communication pattern
-\citep{brunner_efficient_2009}. Although the extended implementation
-was more robust and allowed for scaling to larger numbers of
-processors, performance issues were still noted with parallel
-efficiency improvements needed in both the weak and strong scaling
-cases for unbalanced problems. These results led Brunner to conclude
-that a combination of domain decomposition and domain replication
-could be used to solve some of these issues.
-
-\subsection{Multiple-Set Overlapping-Domain Decomposition}
-\label{subsec:msod}
-In 2010, Wagner and colleagues developed the \textit{multiple-set
-  overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
-applications for full-core light water reactor analysis
-\citep{wagner_hybrid_2010}. In their work, an extension of Brunner's,
-their scheme employed similar parallel algorithms for particle
-transport but a certain amount of overlap between adjacent domains was
-used to decrease the number of particles leaving the local domain. In
-addition, Wagner utilized a level of replication of the domain such
-that the domain was only decomposed on $O(100)$ processors and if
-replicated $O(1,000)$ times achieves simulation on $O(100,000)$
-processors, thus providing spatial and particle parallelism. Each
-collection of processors that constitutes a representation of the
-entire domain is referred to as a set, and within a set overlap occurs
-among its sub-domains. The original motivation was to decompose the
-domain in a way that it remained in a physical cabinet in a large
-distributed machine, thus reducing latency costs during
-communication. A multiple set scheme is also motivated by the fact
-that communication during particle transport only occurs within a set,
-limiting communications during the transport procedure to a group of
-$O(100)$ processors, a number that was shown to have excellent
-parallel efficiencies in Brunner's work and therefore will scale well
-in this algorithm. The overlapping domains within each set also
-demonstrated reduced communication costs. On each processor, the
-source is sampled in the local domain that would exist if no overlap
-was used while tallies can be made over the entire overlapping domain.
-
-To demonstrate this, consider the example adapted from Mervin's work
-with Wagner and others in the same area \citep{mervin_variance_2012}
-and presented in Figure~\ref{fig:msod_example}.
 \begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{
-      \input{chapters/parallel_mc/msod_example.pdftex_t} }
+      \input{chapters/parallel_mc/ddmc_example.pdftex_t} }
   \end{center}
-  \caption{\textbf{Overlapping domain example illustrating how domain
-      overlap can reduce communication costs.}
-    \textit{All particles start in the blue region of interest. The
-      dashed line represents 0.5 domain overlap between domains.}}
-  \label{fig:msod_example}
+  \caption{\textbf{Domain decomposed Monte Carlo transport example
+      illustrating how domain decomposition requires parallel
+      communication of particles.}}
+  \label{fig:ddmc_example}
 \end{figure}
-In this example, 3 particle histories are presented emanating from the
-blue region of interest. Starting with particle A, if no domain
-overlap is used then the only the blue domain exists on the starting
-processor. Particle A is then transported through 3 other domains
-before the history ends, therefore requiring three communications to
-occur in Brunner's algorithm. If a 0.5 domain overlap is permitted as
-shown by the dashed line, then the starting process owns enough of the
-domain such that no communications must occur in order to complete the
-particle A transport process. Using 0.5 domain overlap also easily
-eliminates cases such as the represented by the path of particle C. In
-this case, particle C is scattering between two adjacent domains,
-incurring a large latency cost for a single particle. Finally, with
-particle B we observe that 0.5 domain overlap will still not eliminate
-all communications. However, if 1 domain overlap were used, the entire
-geometry shown in Figure~\ref{fig:msod_example} would be contained on
-the source processor and therefore transport of all 3 particles
-without communication would occur.
 
-Wagner and colleagues used this methodology for a 2-dimensional
-calculation of a pressurized water reactor core and varied the domain
-overlap from 0 to 3 domain overlap (a $7 \times 7$ box in the context
-of our example) where a domain constituted a fuel assembly. For the
-fully domain decomposed case, they observed that 76.12\% of all source
-particles leave the domain. At 1.5 domain overlap, the percentage of
-source particles born in the center assembly leaving the processor
-domain dropped to 1.05\% and even further for 0.02\% for the 3 domain
-overlap. Based on these results, this overlap approach, coupled with
-the multiple sets paradigm that will scale for existing parallel
-transport algorithms, provides a scalable Monte Carlo algorithm for
-today's modern machines.
+\begin{figure}[t!]
+  \begin{center}
+    \scalebox{1.5}{
+      \input{chapters/parallel_mc/ddnu_example.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Domain decomposed Neumann-Ulam example illustrating
+      how domain decomposition requires parallel communication of
+      histories.} \textit{Each mesh point corresponds to an equation
+      in the linear system and the coupling among equations is
+      described by the discretization of the problem.}}
+  \label{fig:ddnu_example}
+\end{figure}
+
+\clearpage
 
 %%---------------------------------------------------------------------------%%
-\section{An Analytic Performance Framework for Domain-Decomposed Monte Carlo}
+\section{Analytic Performance Framework for Domain-Decomposed Monte Carlo}
 \label{sec:analytic_framework}
-With Wagner's work \citep{wagner_hybrid_2010}, we observed that domain
-overlap implemented with a domain decomposed Monte Carlo setting
-reduces the amount of nearest neighbor communication that must occur
-during transport. To date, parallel Neumann-Ulam methods have been
-limited to full domain replication with parallelism exploited through
-individual histories \citep{alexandrov_efficient_1998} and in this
-chapter we will exploit Wagner's work to alleviate this. To accomplish
-this, we recognize from the literature that stochastic histories must
-be transported from domain to domain as the simulation progresses and
-they transition to states that are not in the local domain. Because we
-have chosen a domain decomposition strategy in a parallel environment,
-this means that communication of these histories must occur between
-compute nodes owning neighboring pieces of the global domain. We wish
-to characterize this communication not only because communication is
-in general expensive, but also because these nearest-neighbor
-communication sequences, specifically, have poor algorithmic strong
-scaling \citep{gropp_high-performance_2001} in much the same way as a
-matrix-vector multiply operation. Therefore, we desire a framework to
-provide a simple, analytic theory based on the properties of the
-linear system that will allow for estimates of the domain decomposed
-behavior of the adjoint Neumann-Ulam method in terms of communication
-costs.
+To date, parallel Neumann-Ulam methods have been limited to full
+domain replication with parallelism exploited through individual
+histories \citep{alexandrov_efficient_1998} and in this chapter we
+will exploit particle transport algorithms to alleviate this. To
+accomplish this, we recognize from the literature that stochastic
+histories must be transported from domain to domain as the simulation
+progresses and they transition to states that are not in the local
+domain. Because we have chosen a domain decomposition strategy in a
+parallel environment, this means that communication of these histories
+must occur between compute nodes owning neighboring pieces of the
+global domain. We wish to characterize this communication not only
+because communication is in general expensive, but also because these
+nearest-neighbor communication sequences, specifically, have poor
+algorithmic strong scaling \citep{gropp_high-performance_2001} in much
+the same way as a matrix-vector multiply operation. Therefore, we
+desire a framework to provide a simple, analytic theory based on the
+properties of the linear system that will allow for estimates of the
+domain decomposed behavior of the Neumann-Ulam method in terms of the
+amount of information that must be communicated.
 
-\subsection{Leakage Fractions for Symmetric Systems}
-\label{sec:symmetric_leakage_fractions}
 When solving problems where the linear operator is symmetric, a host
 of analytic theories exist based on the eigenvalue spectrum of the
 operator that characterize their behavior in the context of
 deterministic linear solvers. Using past work, these theories are
-adapted to the domain decomposed adjoint Neumann-Ulam method using the
+adapted to the domain decomposed Neumann-Ulam method using the
 one-speed, two-dimensional neutron diffusion equation and spatial
-discretization presented in \S~\ref{subsec:model_problem}. Using the
-linear system generated by the discretization of the model problem, we
-use a spectral analysis to generate analytic relations for the
-eigenvalues of the operator based on system parameters. Using the
-eigenvalue spectra, we then build relationships to characterize the
-transport of stochastic histories in a decomposed domain and the
-fraction of histories that leak from a domain and will therefore have
-to be communicated. Finally, we compare these analytic results to
-numerical experiments conducted with the model problem.
+discretization presented in
+Appendix~\ref{chap:diffusion_problem}. Using the linear system
+generated by the discretization of the model problem, we use a
+spectral analysis to generate analytic relations for the eigenvalues
+of the operator based on system parameters. Using the eigenvalue
+spectra, we then build relationships to characterize the transport of
+stochastic histories in a decomposed domain and the fraction of
+histories that leak from a domain and will therefore have to be
+communicated. Finally, we compare these analytic results to numerical
+experiments conducted with the model problem.
 
-\subsubsection{Spectral Analysis}
+\subsection{Spectral Analysis}
 \label{subsec:spectral_analysis}
 The convergence of the Neumann series in
 Eq~(\ref{eq:adjoint_neumann_series}) approximated by the Monte Carlo
@@ -202,8 +132,6 @@ then the action of the linear operator on these eigenfunctions should
 give the eigenvalues of the matrix as they exist on the unit circle in
 the complex plane.
 
-\subsubsection{Iteration Matrix Spectrum}
-\label{subsec:iteration_spectrum}
 For the model problem, we first compute the eigenvalues for the
 diffusion operator $\ve{D}$ by applying the operator to the
 eigenfunctions and noting that $x=ih$ and $y=jh$:
@@ -226,11 +154,11 @@ trigonometric functions:
 \end{equation}
 
 As Eq~(\ref{eq:diffusion_eq}) is diagonally dominant, point Jacobi
-preconditioning as outlined in \S\ref{sec:stochastic_preconditioning}
-is sufficient to reduce the spectral radius of the iteration matrix
-below unity and therefore ensure convergence of the Neumann
-series. Applying this preconditioner, we are then solving the
-following diffusion system:
+preconditioning as outlined in
+\S~\ref{subsec:stochastic_preconditioning} is sufficient to reduce the
+spectral radius of the iteration matrix below unity and therefore
+ensure convergence of the Neumann series. Applying this
+preconditioner, we are then solving the following diffusion system:
 \begin{equation}
   \ve{M}^{-1} \ve{D} \boldsymbol{\phi} = \ve{M}^{-1} \ve{s}\:.
   \label{eq:precond_diffsion}
@@ -302,7 +230,7 @@ iteration matrix:
   \label{eq:iteration_radius}
 \end{equation}
 
-\subsubsection{Neumann Series Convergence}
+\subsection{Neumann Series Convergence}
 \label{subsec:neumann_convergence}
 As outlined in \S\ref{sec:mc_preliminaries}, the adjoint Monte Carlo
 method is effectively an approximation to a stationary method. In the
@@ -341,8 +269,8 @@ eigenvalues of its iteration matrix (independent of the linear
 operator splitting chosen) and based on the weight cutoff parameter
 used in the Neumann-Ulam method.
 
-\subsubsection{Domain Leakage Approximations}
-\label{subsubsec:domain_leak_approx}
+\subsection{Domain Leakage Approximations}
+\label{subsec:domain_leak_approx}
 In a domain decomposed situation, not all histories will remain within
 the domain they started in and must instead be communicated. This
 communication, expected to be expensive, was analyzed by Siegel and
@@ -441,7 +369,7 @@ the iteration matrix, the size of the domain, the content of the
 discretization stencil, and the weight cutoff selected to terminate
 low weight histories.
 
-\subsubsection{Numerical Experiments}
+\subsection{Numerical Experiments}
 \label{subsec:numerical_experiments}
 To test the relationships developed by the spectral analysis, we form
 two simple numerical experiments using the diffusion model problem:
@@ -623,24 +551,40 @@ more optically thick (with both increasing $n_i$ and decreasing
 $\rho(\ve{H})$), the approximations are more accurate.
 
 %%---------------------------------------------------------------------------%%
-\section{Fully Asynchronous MSOD Neumann-Ulam Algorithm}
+\section{Fully Asynchronous Neumann-Ulam Algorithm}
 \label{sec:asynchronous_algorithm}
-We can take much of what was learned from Brunner and Wagner's
-parallel Monte Carlo methods for radiation transport and directly
-apply it to a parallel formulation of our stochastic linear
-solvers. Direct analogs can be derived from these works by noting that
-the primary difference between solving a linear system with Monte
-Carlo methods and fixed source Monte Carlo transport problems is the
-content of the Markov chains that are generated. The transitions
-represented by these chains are bound by probabilities and weights and
-are initiated by the sampling of a source. In the context of transport
-problems, those transitions represent events such as particle
-scattering and absorption with probabilities that are determined by
-physical data in the form of cross sections. For stochastic matrix
-inversion, those transitions represent moving between the equations of
-the linear system (and therefore the physical domain which they
-represent) and their probabilities are defined by the coefficients of
-those equations. Ultimately, we tally the contributions to generate
+
+In the context of radiation transport, in 2009 Brunner and colleagues
+provided a fully asynchronous domain decomposed parallel aglorithm as
+implemented in production implicit Monte Carlo codes
+\citep{brunner_efficient_2009}. In their work they identify two data
+sets that are required to be communicated: the sharing of particles
+that are transported from one domain to another and therefore from one
+processor to another and a global communication that signals if
+particle transport has been completed on all processors. Although the
+implementation was robust and allowed for scaling to large numbers of
+processors, performance issues were still noted with parallel
+efficiency improvements needed in both the weak and strong scaling
+cases for unbalanced problems. These results led Brunner to conclude
+that a combination of domain decomposition and domain replication
+could be used to solve some of these issues.
+
+We can take much of what was learned from Brunner's parallel Monte
+Carlo method for radiation transport and directly apply it to a
+parallel formulation of the Neumann-Ulam method. Direct analogs can be
+derived from these works by noting that the primary difference between
+solving a linear system with Monte Carlo methods and fixed source
+Monte Carlo transport problems is the content of the Markov chains
+that are generated. The transitions represented by these chains are
+bound by probabilities and weights and are initiated by the sampling
+of a source. In the context of transport problems, those transitions
+represent events such as particle scattering and absorption with
+probabilities that are determined by physical data in the form of
+cross sections. For stochastic matrix inversion, those transitions
+represent moving between the equations of the linear system (and
+therefore the physical domain which they represent) and their
+probabilities are defined by the coefficients of those
+equations. Ultimately, we tally the contributions to generate
 expectation values in the desired states as we progress through the
 chains. Therefore, parallel methods for Monte Carlo radiation
 transport can be abstracted and we can use those concepts that apply
@@ -649,15 +593,7 @@ parallel Neumann-Ulam-type solver. In this section the fully
 asynchronous MSOD Neumann-Ulam algorithm developed for this work is
 presented step-by-step in detail.
 
-\subsection{Parallel Random Number Generation}
-\label{subsec:parallel_rng}
-Correct parallel Monte Carlo requires parallel random number
-generation. To ensure distinct Markov chains for each history in the
-problem, regardless of its state in phase space or parallel space, a
-unique stream of random numbers is necessary to achieve uncorrelated
-tally results for the solution. 
-
-\subsection{Generating the Transport Domain with Overlap and Preconditioning}
+\subsection{Generating the Transport Domain with Preconditioning}
 \label{subsec:domain_generation}
 
 \subsection{Generating the Transport Source with Preconditioning}
@@ -681,6 +617,7 @@ Algorithm~\ref{alg:transition_process}.
     \State history.state = j
     \State history.weight *= w[i,j]
   \end{algorithmic}
+  \label{alg:transition_process}
 \end{algorithm}
 The core component here is the sampling of the CDF for a particular
 state generated by the probablities from the Neumann-Ulam
@@ -698,8 +635,88 @@ Eq~(\ref{eq:direct_permutation_weight}).
 \subsection{Asynchronous Transport Kernel}
 \label{subsec:async_transport_kernel}
 
-\subsection{Multiple Set Algorithm}
-\label{subsec:multiple_sets_algorithm}
+%%---------------------------------------------------------------------------%%
+\subsection{Multiple-Set Overlapping-Domain Neumann-Ulam Algorithm}
+\label{subsec:msod}
+In 2010, Wagner and colleagues developed the \textit{multiple-set
+  overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
+applications for full-core light water reactor analysis
+\citep{wagner_hybrid_2010}. In their work, an extension of Brunner's,
+their scheme employed similar parallel algorithms for particle
+transport but a certain amount of overlap between adjacent domains was
+used to decrease the number of particles leaving the local domain. In
+addition, Wagner utilized a level of replication of the domain such
+that the domain was only decomposed on $O(100)$ processors and if
+replicated $O(1,000)$ times achieves simulation on $O(100,000)$
+processors, thus providing spatial and particle parallelism. Each
+collection of processors that constitutes a representation of the
+entire domain is referred to as a set, and within a set overlap occurs
+among its sub-domains. The original motivation was to decompose the
+domain in a way that it remained in a physical cabinet in a large
+distributed machine, thus reducing latency costs during
+communication. A multiple set scheme is also motivated by the fact
+that communication during particle transport only occurs within a set,
+limiting communications during the transport procedure to a group of
+$O(100)$ processors, a number that was shown to have excellent
+parallel efficiencies in Brunner's work and therefore will scale well
+in this algorithm. The overlapping domains within each set also
+demonstrated reduced communication costs. On each processor, the
+source is sampled in the local domain that would exist if no overlap
+was used while tallies can be made over the entire overlapping domain.
+
+To demonstrate this, consider the example adapted from Mervin's work
+with Wagner and others in the same area \citep{mervin_variance_2012}
+and presented in Figure~\ref{fig:msod_example}.
+\begin{figure}[t!]
+  \begin{center}
+    \scalebox{1.5}{
+      \input{chapters/parallel_mc/msod_example.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Overlapping domain example illustrating how domain
+      overlap can reduce communication costs.}
+    \textit{All particles start in the blue region of interest. The
+      dashed line represents 0.5 domain overlap between domains.}}
+  \label{fig:msod_example}
+\end{figure}
+In this example, 3 particle histories are presented emanating from the
+blue region of interest. Starting with particle A, if no domain
+overlap is used then the only the blue domain exists on the starting
+processor. Particle A is then transported through 3 other domains
+before the history ends, therefore requiring three communications to
+occur in Brunner's algorithm. If a 0.5 domain overlap is permitted as
+shown by the dashed line, then the starting process owns enough of the
+domain such that no communications must occur in order to complete the
+particle A transport process. Using 0.5 domain overlap also easily
+eliminates cases such as the represented by the path of particle C. In
+this case, particle C is scattering between two adjacent domains,
+incurring a large latency cost for a single particle. Finally, with
+particle B we observe that 0.5 domain overlap will still not eliminate
+all communications. However, if 1 domain overlap were used, the entire
+geometry shown in Figure~\ref{fig:msod_example} would be contained on
+the source processor and therefore transport of all 3 particles
+without communication would occur.
+
+Wagner and colleagues used this methodology for a 2-dimensional
+calculation of a pressurized water reactor core and varied the domain
+overlap from 0 to 3 domain overlap (a $7 \times 7$ box in the context
+of our example) where a domain constituted a fuel assembly. For the
+fully domain decomposed case, they observed that 76.12\% of all source
+particles leave the domain. At 1.5 domain overlap, the percentage of
+source particles born in the center assembly leaving the processor
+domain dropped to 1.05\% and even further for 0.02\% for the 3 domain
+overlap. Based on these results, this overlap approach, coupled with
+the multiple sets paradigm that will scale for existing parallel
+transport algorithms, provides a scalable Monte Carlo algorithm for
+today's modern machines.
+
+\subsection{Generating Overlap}
+\label{subsec:msod_overlap}
+
+\subsection{Generating Multiple Sets}
+\label{subsec:msod_sets}
+
+\subsection{MSOD Neumann Ulam Algorithm}
+\label{subsec:msod_algorithm}
 
 %%---------------------------------------------------------------------------%%
 \section{Parallel MCSA}
@@ -775,15 +792,6 @@ preconditioning.
 
 \subsubsection{Strong Scaling}
 \label{subsubsec:overlapping_strong}
-
-\subsection{Multiple Set Domain Decomposition}
-\label{subsec:multiple_set_decomposition}
-
-\subsubsection{Weak Scaling}
-\label{subsubsec:multiple_set_weak}
-
-\subsubsection{Strong Scaling}
-\label{subsubsec:multiple_set_strong}
 
 \subsection{MSOD Decomposition}
 \label{subsec:msod_decomposition}

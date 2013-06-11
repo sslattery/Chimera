@@ -1,0 +1,89 @@
+\chapter{Two-Dimensional One-Speed Neutron Diffusion Model Problem}
+\label{chap:diffusion_problem}
+For many numerical experiments in this work, we choose the one-speed,
+two-dimensional neutron diffusion equation as a model transport
+problem \citep{duderstadt_nuclear_1976}:
+\begin{equation}
+  -\boldsymbol{\nabla} \cdot D \boldsymbol{\nabla} \phi + \Sigma_a
+  \phi = S\:,
+  \label{eq:diffusion_eq}
+\end{equation}
+where $\phi$ is the neutron flux, $\Sigma_a$ is the absorption cross
+section, and $S$ is the source of neutrons. In addition, $D$ is the
+diffusion coefficient defined as:
+\begin{equation}
+  D = \frac{1}{3 ( \Sigma_t - \bar{\mu}\Sigma_s )}\:,
+  \label{eq:diffusion_coeff}
+\end{equation}
+where $\Sigma_s$ is the scattering cross section, $\Sigma_t = \Sigma_a
++ \Sigma_s$ is the total cross section, and $\bar{\mu}$ is the cosine
+of the average scattering angle. For simplicity, we will take
+$\bar{\mu} = 0$ for our analysis giving $D=(3 \Sigma_t)^{-1}$. In
+addition, to further simplify we will assume a homogeneous domain such
+that the cross sections remain constant throughout. Doing this permits
+us to rewrite Eq~(\ref{eq:diffusion_eq}) as:
+\begin{equation}
+  -D \boldsymbol{\nabla}^2 \phi + \Sigma_a \phi = S\:.
+  \label{eq:diffusion_eq_simple}
+\end{equation}
+
+We choose a finite difference scheme on a square Cartesian grid to
+discretize the problem. For the Laplacian, we choose the 9-point
+stencil shown in Figure~\ref{fig:stencil} over a grid of size $h$
+\citep{leveque_finite_2007}:
+\begin{multline}
+  \nabla^2_9\phi = \frac{1}{6h^2}[4 \phi_{i-1,j} + 4 \phi_{i+1,j}
+    + 4 \phi_{i,j-1} + 4 \phi_{i,j+1} + \phi_{i-1,j-1}\\ +
+    \phi_{i-1,j+1} + \phi_{i+1,j-1} + \phi_{i+1,j+1} - 20
+    \phi_{i,j}]\:.
+  \label{eq:nine_point_stencil}
+\end{multline}
+\begin{figure}[t!]
+  \begin{center}
+    \scalebox{1.25}{\input{chapters/spn_equations/stencil.pdftex_t}}
+  \end{center}
+  \caption{\textbf{Nine-point Laplacian stencil.}}
+  \label{fig:stencil}
+\end{figure}
+We then have the following linear system to solve:
+\begin{multline}
+  -\frac{1}{6h^2}[4 \phi_{i-1,j} + 4 \phi_{i+1,j} + 4
+    \phi_{i,j-1} + 4 \phi_{i,j+1} + \phi_{i-1,j-1}\\ + \phi_{i-1,j+1}
+    + \phi_{i+1,j-1} + \phi_{i+1,j+1} - 20 \phi_{i,j}] + \Sigma_a
+  \phi_{i,j} = s_{i,j}\:,
+  \label{eq:fd_system}
+\end{multline}
+and in operator form:
+\begin{equation}
+  \ve{D}\boldsymbol{\phi}=\ve{s}\:,
+  \label{eq:operator_system}
+\end{equation}
+where $\ve{D}$ is the diffusion operator, $\ve{s}$ is the source in
+vector form and $\boldsymbol{\phi}$ is the vector of unknown fluxes.
+
+To close the system, a set of boundary conditions is required. In the
+case of a non-reentrant current condition applied to all global
+boundaries of the domain, we choose the formulation of Duderstadt by
+assuming the flux is zero at some ghost point beyond the
+grid. Consider for example the equations on the $i=0$ boundary of the
+domain:
+\begin{multline}
+  -\frac{1}{6h^2}[4 \phi_{-1,j} + 4 \phi_{1,j} + 4 \phi_{0,j-1} +
+    4 \phi_{0,j+1} + \phi_{-1,j-1}\\ + \phi_{-1,j+1} + \phi_{1,j-1} +
+    \phi_{1,j+1} - 20 \phi_{0,j}] + \Sigma_a \phi_{0,j} = s_{0,j}\:.
+  \label{eq:x_min_bnd}
+\end{multline}
+Here we note some terms where $i=-1$ and therefore are representative
+of grid points beyond the boundary of the domain. We set the flux at
+these points to be zero, giving a valid set of equations for the $i=0$
+boundary:
+\begin{multline}
+  -\frac{1}{6h^2}[4 \phi_{1,j} + 4 \phi_{0,j-1} + 4 \phi_{0,j+1}
+    \\ + \phi_{-1,j+1} + \phi_{1,j-1} + \phi_{1,j+1} - 20 \phi_{0,j}]
+  + \Sigma_a \phi_{0,j} = s_{0,j}\:.
+  \label{eq:x_min_bnd_2}
+\end{multline}
+We repeat this procedure for the other boundaries of the domain. For
+reflecting boundary conditions, the net current across a boundary is
+zero.
+

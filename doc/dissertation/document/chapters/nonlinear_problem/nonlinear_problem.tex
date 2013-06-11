@@ -447,10 +447,9 @@ systems that require many GMRES iterations to converge.
 
 \subsection{Parallel FANM Implementation}
 \label{subsec:parallel_fanm}
-Like the parallelization of the MCSA method described in
-\S~\ref{sec:parallel_stochastic_methods}, a parallel FANM method
-relies on a basic set of parallel matrix-vector operations as well as
-the global residual and Jacobian assembly procedure described in
+A parallel FANM method relies on a basic set of parallel matrix-vector
+operations as well as the global residual and Jacobian assembly
+procedure described in
 \S~\ref{subsubsec:automatic_differentiation}. Consider the Newton
 iteration scheme in Eq~(\ref{eq:newton_iteration}). We must first
 assemble the linear system in parallel through the element-wise
