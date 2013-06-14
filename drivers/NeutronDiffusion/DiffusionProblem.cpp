@@ -53,9 +53,13 @@ DiffusionProblem::DiffusionProblem( const RCP_Comm& comm,
     double xs_a = plist->get<double>("ABSORPTION XS");
     double D = 1.0 / ( 3.0*(xs_a+xs_s) );
     double d_length = std::sqrt( 1.0 / (3*xs_a*(xs_a+xs_s)) );
-    std::cout << "Diffusion Length " << d_length << std::endl;
-    std::cout << "Mesh Size " << dx << std::endl;
-    std::cout << "L/dx " << d_length/dx << std::endl;
+
+    if ( comm->getRank() == 0 )
+    {
+        std::cout << "Diffusion Length " << d_length << std::endl;
+        std::cout << "Mesh Size " << dx << std::endl;
+        std::cout << "L/dx " << d_length/dx << std::endl;
+    }
 
     double diag = xs_a + D*10.0/(3.0*dx*dx);
     double iminus1 = -2.0*D/(3.0*dx*dx);
