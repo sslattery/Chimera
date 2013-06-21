@@ -35,6 +35,7 @@
 #include <Teuchos_RCP.hpp>
 #include <Teuchos_ArrayRCP.hpp>
 #include <Teuchos_Array.hpp>
+#include <Teuchos_as.hpp>
 #include <Teuchos_OpaqueWrapper.hpp>
 #include <Teuchos_TypeTraits.hpp>
 #include <Teuchos_Tuple.hpp>
@@ -81,13 +82,30 @@ int main( int argc, char * argv[] )
     Teuchos::updateParametersFromXmlFile(
 	xml_input_filename, Teuchos::inoutArg(*plist) );
 
-    // Build and partition the mesh.
-    Teuchos::RCP<Chimera::Partitioner> partitioner = Teuchos::rcp(
-	new Chimera::Partitioner( comm, plist ) );
+    // Setup the problem on the primary set.
+    int num_sets = plist->get<int>("Number of Sets");
+    int set_size = comm->getSize() / num_sets;
+    int set_id = std::floor( Teuchos::as<double>(comm->getRank()) /
+                             Teuchos::as<double>(set_size) );
+    Teuchos::Array<int> comm_ranks( set_size );
+    for ( int n = 0; n < set_size; ++n )
+    {
+        comm_ranks[n] = n;
+    }
+    Teuchos::RCP<const Teuchos::Comm<int> > set_comm = 
+        comm->createSubcommunicator( comm_ranks() );
+    Teuchos::RCP<Chimera::DiffusionProblem> diffusion_problem;
+    if ( 0 == set_id )
+    {
+        // Build and partition the mesh.
+        Teuchos::RCP<Chimera::Partitioner> partitioner = Teuchos::rcp(
+            new Chimera::Partitioner( set_comm, plist ) );
 
-    // Build the diffusion problem.
-    Teuchos::RCP<Chimera::DiffusionProblem> diffusion_problem = Teuchos::rcp(
-	new Chimera::DiffusionProblem( comm, partitioner, plist, true ) );
+        // Build the diffusion problem.
+        diffusion_problem = Teuchos::rcp(
+            new Chimera::DiffusionProblem( set_comm, partitioner, plist, true ) );
+    }
+    comm->barrier();
 
 //     // // CHIMERA SOLVE
 //     // Build the solver.
@@ -112,11 +130,16 @@ int main( int argc, char * argv[] )
     // MCLS SOLVE
     if ( "MCLS" == plist->get<std::string>("Solver Package") )
     {
-        Teuchos::RCP<MCLS::LinearProblem<Vector,Matrix> > linear_problem =
-            Teuchos::rcp( new MCLS::LinearProblem<Vector,Matrix>(
-                              diffusion_problem->getProblem()->getOperator(),
-                              diffusion_problem->getProblem()->getLHS(),
-                              diffusion_problem->getProblem()->getRHS() ) );
+        Teuchos::RCP<MCLS::LinearProblem<Vector,Matrix> > linear_problem;
+        if ( 0 == set_id )
+        {
+            linear_problem = Teuchos::rcp( 
+                new MCLS::LinearProblem<Vector,Matrix>(
+                    diffusion_problem->getProblem()->getOperator(),
+                    diffusion_problem->getProblem()->getLHS(),
+                    diffusion_problem->getProblem()->getRHS() ) );
+        }
+        comm->barrier();
 
         std::string solver_type = plist->get<std::string>("Solver Type");
 
