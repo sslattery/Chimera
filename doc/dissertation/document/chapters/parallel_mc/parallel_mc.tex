@@ -904,28 +904,37 @@ preconditioning.
 
 \begin{figure}[htpb!]
   \begin{center}
-    \includegraphics[width=6in]{titan_pure_strong.pdf}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_pure_strong.pdf}
   \end{center}
-  \caption{\textbf{Pure domain decomposition.} \textit{Super-linear
-      speed-up from memory thrashing in base case. MCLS is an order
-      of magnitude slower arithmetically, causing the higher
-      efficiency.}}
+  \caption{\textbf{Pure domain decomposition absolute strong scaling.}
+    \textit{Super-linear speed-up from memory thrashing in base
+      case. MCLS is an order of magnitude slower arithmetically,
+      causing the higher efficiency.}}
+  \label{fig:titan_pure_strong}
 \end{figure}
+
+\clearpage
 
 \subsubsection{Weak Scaling}
 \label{subsubsec:pure_weak}
 
 \begin{figure}[htpb!]
   \begin{center}
-    \includegraphics[width=6in]{titan_weak_absolute.pdf}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_absolute.pdf}
   \end{center}
+  \caption{\textbf{Pure domain decomposition absolute weak scaling}}
+  \label{fig:titan_weak_absolute}
 \end{figure}
 
 \begin{figure}[htpb!]
   \begin{center}
-    \includegraphics[width=6in]{titan_weak_implementation.pdf}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_implementation.pdf}
   \end{center}
+  \caption{\textbf{Pure domain decomposition implementation weak scaling}}
+  \label{fig:titan_weak_implementation}
 \end{figure}
+
+\clearpage
 
 \subsection{Overlapping Domain Decomposition}
 \label{subsec:overlapping_domain_decomp}
@@ -933,8 +942,12 @@ preconditioning.
 \subsubsection{Strong Scaling}
 \label{subsubsec:overlapping_strong}
 
+\clearpage
+
 \subsubsection{Weak Scaling}
 \label{subsubsec:overlapping_weak}
+
+\clearpage
 
 \subsection{Multiple Set Decomposition}
 \label{subsec:msod_decomposition}
@@ -944,37 +957,44 @@ preconditioning.
 
 \begin{figure}[htpb!]
   \begin{center}
-    \includegraphics[width=6in]{titan_strong_ms_eff.pdf}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_ms_eff.pdf}
   \end{center}
-  \caption{\small{Absolute parallel efficiency relative to
-      16-core 1-set base case.}}
+  \caption{\textbf{Absolute parallel efficiency relative to 16-core
+      1-set base case.}}
+  \label{fig:titan_strong_ms_eff}
 \end{figure}
 
 \begin{figure}[htpb!]
   \begin{center}
-    \includegraphics[width=6in]{titan_strong_ms_time.pdf}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_ms_time.pdf}
   \end{center}
-  \caption{\small{Wall time in seconds to solution for each
-      case.}}
+  \caption{\textbf{Wall time in seconds to solution for each case.}}
+  \label{fig:titan_strong_ms_time}
 \end{figure}
+
+\clearpage
 
 \subsubsection{Weak Scaling}
 \label{subsubsec:msod_weak}
 
 \begin{figure}[htpb!]
   \begin{center}
-    \includegraphics[width=6in]{titan_weak_ms_eff.pdf}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_ms_eff.pdf}
   \end{center}
-  \caption{Absolute parallel efficiency relative to 16-core
-    1-set base case.}
+  \caption{\textbf{Absolute parallel efficiency relative to 16-core
+      1-set base case.}}
+  \label{fig:titan_weak_ms_eff}
 \end{figure}
 
 \begin{figure}[htpb!]
   \begin{center}
-    \includegraphics[width=6in]{titan_weak_ms_time.pdf}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_ms_time.pdf}
   \end{center}
-  \caption{Wall time in seconds to solution for each case.}
+  \caption{\textbf{Wall time in seconds to solution for each case.}}
+  \label{fig:titan_weak_ms_time}
 \end{figure}
+
+\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{Multiple Fuel Assembly $SP_N$ Challenge Problem\ }
