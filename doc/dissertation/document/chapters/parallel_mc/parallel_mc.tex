@@ -712,7 +712,7 @@ at least a single transition event within the local domain.
     \State calculate parent and children processor ID numbers in
     binary tree
     \ForAll{child processes}
-    \State post nonblocking receive for \textit{historiesCompleted} history tally
+    \State post nonblocking receive for \textit{historiesCompleted} tally
     \EndFor
     \State post nonblocking receive for stop message from parent
     \While{stop flag not set}
@@ -832,6 +832,20 @@ at least a single transition event within the local domain.
         indexed by an integer.}}
   \end{center}
   \label{fig:binary_comm_tree}
+\end{figure}
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{0.75}{
+      \input{chapters/parallel_mc/master_comm_tree.pdftex_t} }
+    \caption{\textbf{Master/slave scheme for coordinating the end of a
+        parallel Neumann-Ulam solve.} \textit{Each slave process
+        reports to the master how many histories completed within its
+        domain. When the master process sums all complete histories,
+        it sends the stop signal to all slave processes. The
+        subdomains are indexed by an integer.}}
+  \end{center}
+  \label{fig:master_comm_tree}
 \end{figure}
 
 \clearpage

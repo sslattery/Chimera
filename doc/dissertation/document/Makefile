@@ -13,7 +13,7 @@ chap_nl = chapters/nonlinear_problem
 chap_conc = chapters/conclusion
 apdx = backmatter
 
-all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf heat_eq_setup.pdf block_jacobi.pdf ddmc_example.pdf ddnu_example.pdf gentile_example.pdf msod_example.pdf domain_to_domain.pdf binary_comm_tree.pdf msod_construction.pdf msod_tally.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf mesh_cell.pdf
+all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf heat_eq_setup.pdf block_jacobi.pdf ddmc_example.pdf ddnu_example.pdf gentile_example.pdf msod_example.pdf domain_to_domain.pdf binary_comm_tree.pdf master_comm_tree.pdf msod_construction.pdf msod_tally.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf mesh_cell.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
@@ -80,6 +80,10 @@ domain_to_domain.pdf: $(chap_pmc)/domain_to_domain.fig
 binary_comm_tree.pdf: $(chap_pmc)/binary_comm_tree.fig
 	fig2dev -L pdftex -p $(chap_pmc)/binary_comm_tree.pdf -m 0.4 $(chap_pmc)/binary_comm_tree.fig $(chap_pmc)/binary_comm_tree.pdf
 	fig2dev -L pdftex_t -p $(chap_pmc)/binary_comm_tree.pdf -m 0.4 $(chap_pmc)/binary_comm_tree.fig $(chap_pmc)/binary_comm_tree.pdftex_t
+
+master_comm_tree.pdf: $(chap_pmc)/master_comm_tree.fig
+	fig2dev -L pdftex -p $(chap_pmc)/master_comm_tree.pdf -m 0.4 $(chap_pmc)/master_comm_tree.fig $(chap_pmc)/master_comm_tree.pdf
+	fig2dev -L pdftex_t -p $(chap_pmc)/master_comm_tree.pdf -m 0.4 $(chap_pmc)/master_comm_tree.fig $(chap_pmc)/master_comm_tree.pdftex_t
 
 msod_construction.pdf: $(chap_pmc)/msod_construction.fig
 	fig2dev -L pdftex -p $(chap_pmc)/msod_construction.pdf -m 0.4 $(chap_pmc)/msod_construction.fig $(chap_pmc)/msod_construction.pdf
