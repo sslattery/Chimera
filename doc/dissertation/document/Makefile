@@ -13,7 +13,7 @@ chap_nl = chapters/nonlinear_problem
 chap_conc = chapters/conclusion
 apdx = backmatter
 
-all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf heat_eq_setup.pdf block_jacobi.pdf ddmc_example.pdf ddnu_example.pdf gentile_example.pdf msod_example.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf mesh_cell.pdf
+all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_1.pdf heat_eq_setup.pdf block_jacobi.pdf ddmc_example.pdf ddnu_example.pdf gentile_example.pdf msod_example.pdf domain_to_domain.pdf binary_comm_tree.pdf msod_construction.pdf msod_tally.pdf procassini_example.pdf stencil.pdf natural_convection_cavity.pdf lid_driven_cavity.pdf backward_facing_step.pdf mesh_cell.pdf
 	$(PDFTEX) dissertation
 	$(BIB) dissertation
 	$(PDFTEX) dissertation
@@ -72,6 +72,22 @@ msod_example.pdf: $(chap_pmc)/msod_example.fig
 procassini_example.pdf: $(chap_pmc)/procassini_example.fig
 	fig2dev -L pdftex -p $(chap_pmc)/procassini_example.pdf -m 0.4 $(chap_pmc)/procassini_example.fig $(chap_pmc)/procassini_example.pdf
 	fig2dev -L pdftex_t -p $(chap_pmc)/procassini_example.pdf -m 0.4 $(chap_pmc)/procassini_example.fig $(chap_pmc)/procassini_example.pdftex_t
+
+domain_to_domain.pdf: $(chap_pmc)/domain_to_domain.fig
+	fig2dev -L pdftex -p $(chap_pmc)/domain_to_domain.pdf -m 0.4 $(chap_pmc)/domain_to_domain.fig $(chap_pmc)/domain_to_domain.pdf
+	fig2dev -L pdftex_t -p $(chap_pmc)/domain_to_domain.pdf -m 0.4 $(chap_pmc)/domain_to_domain.fig $(chap_pmc)/domain_to_domain.pdftex_t
+
+binary_comm_tree.pdf: $(chap_pmc)/binary_comm_tree.fig
+	fig2dev -L pdftex -p $(chap_pmc)/binary_comm_tree.pdf -m 0.4 $(chap_pmc)/binary_comm_tree.fig $(chap_pmc)/binary_comm_tree.pdf
+	fig2dev -L pdftex_t -p $(chap_pmc)/binary_comm_tree.pdf -m 0.4 $(chap_pmc)/binary_comm_tree.fig $(chap_pmc)/binary_comm_tree.pdftex_t
+
+msod_construction.pdf: $(chap_pmc)/msod_construction.fig
+	fig2dev -L pdftex -p $(chap_pmc)/msod_construction.pdf -m 0.4 $(chap_pmc)/msod_construction.fig $(chap_pmc)/msod_construction.pdf
+	fig2dev -L pdftex_t -p $(chap_pmc)/msod_construction.pdf -m 0.4 $(chap_pmc)/msod_construction.fig $(chap_pmc)/msod_construction.pdftex_t
+
+msod_tally.pdf: $(chap_pmc)/msod_tally.fig
+	fig2dev -L pdftex -p $(chap_pmc)/msod_tally.pdf -m 0.4 $(chap_pmc)/msod_tally.fig $(chap_pmc)/msod_tally.pdf
+	fig2dev -L pdftex_t -p $(chap_pmc)/msod_tally.pdf -m 0.4 $(chap_pmc)/msod_tally.fig $(chap_pmc)/msod_tally.pdftex_t
 
 # Navier stokes figures
 natural_convection_cavity.pdf: $(chap_nl)/natural_convection_cavity.fig

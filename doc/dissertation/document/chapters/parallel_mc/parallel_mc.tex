@@ -1,11 +1,12 @@
-\chapter{Parallel Monte Carlo Synthetic Acceleration}
+\chapter{Parallel Monte Carlo Synthetic \\ Acceleration Methods}
 \label{ch:parallel_methods}
-For MCSA to be viable at the production scale, scalable parallel
-implementations of the algorithm are required. Reviewing the
-literature, MCSA has yet to be parallelized and the Neumann-Ulam Monte
-Carlo method on which it is built has only been parallelized through
-history-level parallelism with full domain replication. In order to
-solve large linear systems with MCSA, a domain-decomposed parallel
+For MCSA to be viable at the production scale for nuclear engineering
+applications, scalable parallel implementations of the algorithm are
+required. Reviewing the literature, MCSA has yet to be parallelized
+and the Neumann-Ulam Monte Carlo method on which it is built has only
+been parallelized through history-level parallelism with full domain
+replication \citep{alexandrov_efficient_1998}. In order to solve large
+linear transport systems with MCSA, a domain-decomposed parallel
 strategy is required. In the formulation of a parallel MCSA algorithm,
 we recognize that the algorithm occurs in two stages, an outer
 iteration performing fixed point iteration and applying the
@@ -23,19 +24,20 @@ In this chapter we briefly review particle transport methods for
 domain decomposed Monte Carlo. Considering a domain decomposed
 Neumann-Ulam method, we derive an analytic framework based on
 algebraic quantities from which to estimate its performance when
-applied to linear systems. We then devise a parallel algorithm for the
-Neumann-Ulam method based on the multiple-set overlapping-domain
-decomposition algorithm and a parallel algorithm for the MCSA that
-leverages the parallel Monte Carlo algorithm and general parallel
-matrix-vector operations. In identical fashion to the serial
-computations presented in Chapter~\ref{ch:spn_equations}, we use
-parallel solutions for the $SP_N$ equations for the fuel assembly
-criticality problem to verify the correctness of the parallel
-algorithm and implementation by comparing the numerical results
-against production Krylov methods. Using the verified implementation
-of the algorithm, we perform parallel scaling studings to test its
-performance on both a small computing cluster and a leadership class
-machine and compare this performance to the production Krylov methods.
+applied to neutron transport systems. We then devise a parallel
+algorithm for the Neumann-Ulam method based on the multiple-set
+overlapping-domain decomposition algorithm and a parallel algorithm
+for the MCSA iteration that leverages the parallel Monte Carlo
+algorithm and general parallel matrix-vector operations. In identical
+fashion to the serial computations presented in
+Chapter~\ref{ch:spn_equations}, we use parallel solutions for the
+$SP_N$ equations for the fuel assembly criticality problem to verify
+the correctness of the parallel algorithm and implementation by
+comparing the numerical results against production Krylov
+methods. Using the verified implementation of the algorithm, we
+perform parallel scaling studings to test its performance on a
+leadership class machine and compare this performance to the
+production Krylov methods.
 
 %%---------------------------------------------------------------------------%%
 \section{Domain Decomposed Monte Carlo}
@@ -51,21 +53,25 @@ this algorithm, we then seek parallel Monte Carlo algorithms that
 handle domain decomposition.
 
 To motivate this problem, consider the square domain presented in
-Figure~\ref{fig:ddmc_example}. Here, we imagine a Monte Carlo particle
-transport problem. If the domain were decomposed into 9 pieces as
-shown by the domain, each of those pieces could be parallel process in
-the computation. In Figure~\ref{fig:ddmc_example}, the tracks of 3
-particles that are born in the center domain are shown. For example,
-particle A is first transported from the center domain to the domain
-directly to the left. Before the scattering event in the new domain
-may be processed, particle A must be communicated between between the
-two parallel processes that own those domains. For any given particle
-in the transport simulation, this communication event may hardly occur
-during the lifetime of the particle (particle B), or may occur many
-times (particle C) depending on the problem parameters. Scalable
-parallel algorithms for domain Monte Carlo are those that handle this
-domain-to-domain communication of particles effectively and balance it
-with the physics computations.
+Figure~\ref{fig:ddmc_example} and on this domain we imagine a Monte
+Carlo particle transport problem. If the domain were decomposed into 9
+subdomains as shown, each of those subdomains and their associated
+data (i.e. cross sections) could be owned by a different parallel
+process in the computation. In Figure~\ref{fig:ddmc_example}, the
+tracks of 3 particles that are born in the center subdomain are
+shown. In this example, particle A is first transported from the
+center domain to the domain directly to the left. Before the
+scattering event in the new domain may be processed, particle A must
+vbe communicated between between the two parallel processes that own
+those domains. For any given particle in the transport simulation,
+this communication event may hardly occur during the lifetime of the
+particle (particle B), or may occur many times (particle C) depending
+on the problem parameters and the random path in phase space taken by
+the particle. Scalable parallel algorithms for domain decomposed Monte
+Carlo are those that handle this domain-to-domain communication of
+particles effectively and balance it with the on-process computations
+for particle interactions, tallies, response calculations, and other
+simulation requirements.
 \begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{
@@ -86,32 +92,24 @@ problem. Figure~\ref{fig:ddnu_example} gives the domain decomposed
 Neumann-Ulam analog of particle transport problem in
 Figure~\ref{fig:ddmc_example}. Imagine in this problem that we are
 solving for the monoenergetic scalar neutron flux as in the model
-diffusion problem presented in Appendix~\ref{chap:diffusion_problem}
-such that the solution has only a spatial dependence. In
-Figure~\ref{fig:ddnu_example}, the domain has now been discretized by
-a mesh and again decomposed into 9 pieces. As we play the Monte Carlo
-game presented in Chapter~\ref{ch:stochastic_methods}, the
+diffusion problem presented in Appendix~\ref{chap:diffusion_problem}.
+In this problem, the solution has only a spatial dependence and
+therefore each point in the mesh corresponds to an equation in the
+resulting linear system. In Figure~\ref{fig:ddnu_example}, the domain
+has now been discretized by this mesh and again decomposed into 9
+subdomains, each owning a piece of the mesh and therefore the
+corresponding equations in the linear system. As we play the Monte
+Carlo game presented in Chapter~\ref{ch:stochastic_methods}, the
 discretization and resulting Neumann-Ulam decomposition of the problem
 describes how each state in the system is coupled to the other states
-in the system through the set of equations that forms the linear
-system. As discrete states (or rows in the linear system) are reached
-by stochastic histories that do not exist in the local domain, the
-histories must be computed in an analogous fashion to the particles in
-the previous example. Again consider history A in
-Figure~\ref{fig:ddnu_example}. This history begins in the center
-domain and through the course of transitioning through states in the
-system arrives at a state that exists in the domain directly to the
-left of the center domain. History A must then be communicated from
-the center domain to the domain immediately to the left. As with the
-particle transport system, we may find that histories in a domain
-decomposed Neumann-Ulam method are only communicated a few times
-(history B) if at all, or they may be communicated many times (history
-C) depending on the discretization and the outcome of the Monte Carlo
-game. The amount of communication of histories from domain to domain
-will be the primary factor in the parallel scalability of the
-algorithm. In the next section, the number of histories communicated in a given
-problem will be quantified analytically for a simple model problem.
-
+in the system through the set of equations that form the linear
+system. This coupling is then responsible for the discrete random walk
+that each history takes as shown in this example. As discrete states
+(or rows in the linear system) that do not exist in the local domain
+are reached during the random walk by stochastic histories, the
+histories must be communicated to the subdomain that does own the
+discrete state in an analogous fashion to the particles in the
+previous example.
 \begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{
@@ -124,6 +122,26 @@ problem will be quantified analytically for a simple model problem.
       described by the discretization of the problem.}}
   \label{fig:ddnu_example}
 \end{figure}
+
+To further motivate using a parallel algorithm similar to particle
+transport methods, again consider history A in
+Figure~\ref{fig:ddnu_example}. This history begins in the center
+subdomain and through the course of transitioning through states in
+the system arrives at a state that exists in the subdomain directly to
+the left of the center subdomain. History A must then be communicated
+from the center subdomain to the subdomain immediately to the left to
+continue the random walk. As with the particle transport system, we
+may find that histories in a domain decomposed Neumann-Ulam method are
+only communicated a few times (history B) if at all, or they may be
+communicated many times (history C) depending on the discretization
+and the outcome of the Monte Carlo game. In identical fashion to the
+particle transport problem, a domain decomposed Neumann-Ulam method
+has the same communcation requirements with all histories in both
+examples requiring the same parallel operations. The amount of
+communication of histories from domain to domain will be the primary
+factor in the parallel scalability of the algorithm. In the next
+section, the number of histories communicated in a given problem will
+be quantified analytically for a simple model problem.
 
 \clearpage
 
@@ -144,11 +162,12 @@ global domain. We wish to characterize this communication not only
 because communication is in general expensive, but also because these
 nearest-neighbor communication sequences, specifically, have poor
 algorithmic strong scaling \citep{gropp_high-performance_2001} in much
-the same way as a matrix-vector multiply operation. Therefore, we
-desire a framework to provide a simple, analytic theory based on the
-properties of the linear system that will allow for estimates of the
-domain decomposed behavior of the Neumann-Ulam method in terms of the
-amount of information that must be communicated.
+the same way as a parallel matrix-vector multiply
+operation. Therefore, we desire a framework to provide a simple,
+analytic theory based on the properties of the transport system that
+will allow for estimates of the domain decomposed behavior of the
+Neumann-Ulam method in terms of the amount of information that must be
+communicated.
 
 When solving problems where the linear operator is symmetric, a host
 of analytic techniques exist based on the eigenvalue spectrum of the
@@ -156,16 +175,18 @@ operator that characterize their behavior in the context of
 deterministic linear solvers. Using past work, these techniques are
 adapted to the domain decomposed Neumann-Ulam method using the
 one-speed, two-dimensional neutron diffusion equation and spatial
-discretization presented in
-Appendix~\ref{chap:diffusion_problem}. Using the linear system
-generated by the discretization of the model problem, we use a
-spectral analysis to generate analytic relations for the eigenvalues
-of the operator based on system parameters. Using the eigenvalue
-spectra, we then build relationships to characterize the transport of
-stochastic histories in a decomposed domain and the fraction of
-histories that leak from a domain and will therefore have to be
-communicated. Finally, we compare these analytic results to numerical
-experiments conducted with the model problem.
+discretization presented in Appendix~\ref{chap:diffusion_problem} as a
+model transport problem. Using the linear system generated by the
+discretization of the model problem, we use a spectral analysis to
+generate analytic relations for the eigenvalues of the operator based
+on system parameters. Using the eigenvalue spectra, we then build
+relationships to characterize the transport of stochastic histories in
+a decomposed domain and the fraction of histories that leak from a
+domain and will therefore have to be communicated. Finally, we compare
+these analytic results to numerical experiments conducted with the
+model transport problem.
+
+\clearpage
 
 \subsection{Spectral Analysis}
 \label{subsec:spectral_analysis}
@@ -180,9 +201,9 @@ will compute these eigenvalues by assuming eigenfunctions of the form
 \end{equation}
 where different combinations of $p$ and $q$ represent the different
 eigenmodes of the solution. As these are valid forms of the solution,
-then the action of the linear operator on these eigenfunctions should
-give the eigenvalues of the matrix as they exist on the unit circle in
-the complex plane.
+then the action of the linear operator on these eigenfunctions will
+yield the eigenvalues of the matrix as they exist on the unit circle
+in the complex plane.
 
 For the model problem, we first compute the eigenvalues for the
 diffusion operator $\ve{D}$ by applying the operator to the
@@ -281,6 +302,8 @@ iteration matrix:
   \rho(\ve{H}) = \frac{10 \alpha D}{3 h^2}\:.
   \label{eq:iteration_radius}
 \end{equation}
+
+\clearpage 
 
 \subsection{Neumann Series Convergence}
 \label{subsec:neumann_convergence}
@@ -612,90 +635,106 @@ $\rho(\ve{H})$), the approximations are more accurate.
 In the context of radiation transport, in 2009 Brunner and colleagues
 provided a fully asynchronous domain decomposed parallel aglorithm as
 implemented in production implicit Monte Carlo codes
-\citep{brunner_efficient_2009}. In their work they identify two data
-sets that are required to be communicated: the sharing of particles
-that are transported from one domain to another and therefore from one
-processor to another and a global communication that signals if
-particle transport has been completed on all processors. Although the
-implementation was robust and allowed for scaling to large numbers of
-processors, performance issues were still noted with parallel
-efficiency improvements needed in both the weak and strong scaling
-cases for unbalanced problems. These results led Brunner to conclude
-that a combination of domain decomposition and domain replication
-could be used to solve some of these issues.
+\citep{brunner_efficient_2009}. We will adapt their algorithm and
+directly apply it to a parallel formulation of the Neumann-Ulam
+method. Direct analogs can be derived from their works by noting that
+the primary difference between solving a linear system with Monte
+Carlo methods and fixed source Monte Carlo transport problems is the
+content of the Markov chains that are generated. The transitions
+represented by these chains are bound by probabilities and weights and
+are initiated by the sampling of a discrete source. In the context of
+transport problems, those transitions represent events such as
+particle scattering and absorption with probabilities that are
+determined by physical data in the form of cross sections.
 
-We can take much of what was learned from Brunner's parallel Monte
-Carlo method for radiation transport and directly apply it to a
-parallel formulation of the Neumann-Ulam method. Direct analogs can be
-derived from these works by noting that the primary difference between
-solving a linear system with Monte Carlo methods and fixed source
-Monte Carlo transport problems is the content of the Markov chains
-that are generated. The transitions represented by these chains are
-bound by probabilities and weights and are initiated by the sampling
-of a source. In the context of transport problems, those transitions
-represent events such as particle scattering and absorption with
-probabilities that are determined by physical data in the form of
-cross sections. For stochastic matrix inversion, those transitions
-represent moving between the equations of the linear system (and
-therefore the physical domain which they represent) and their
+For stochastic matrix inversion, those transitions represent moving
+between the equations of the linear system (and therefore the
+components of phase space which they represent) and their
 probabilities are defined by the coefficients of those
 equations. Ultimately, we tally the contributions to generate
 expectation values in the desired states as we progress through the
 chains. Therefore, parallel methods for Monte Carlo radiation
 transport can be abstracted and we can use those concepts that apply
 to matrix inversion methods as an initial means of developing a
-parallel Neumann-Ulam-type solver. In this section the fully
-asynchronous MSOD Neumann-Ulam algorithm developed for this work is
-presented step-by-step in detail.
+parallel Neumann-Ulam-type solver. 
 
-\subsection{Generating the Transport Domain with Preconditioning}
+In this section Brunner and Brantley's fully asynchronous algorithm is
+briefly presented along with its application to the Neumann-Ulam
+method. Their algorithm is presented in detail in the reference and
+was effectively implemented verbatim for this work. In their work they
+identify two data sets that are required to be communicated: the
+sharing of particles that are transported from one domain to another
+and therefore from one processor to another and a global communication
+that signals if particle transport has been completed on all
+processors. Both of these processes will be addressed at a high level
+along with how the parallel Monte Carlo data structures are
+constructed.
+
+\subsection{Parallel Transport Domain and Source}
 \label{subsec:domain_generation}
-
-\subsection{Generating the Transport Source with Preconditioning}
-\label{subsec:source_generation}
-
-\subsection{Transition Processing Kernel}
-\label{subsec:transition_processing}
-Processing the transition of a single stochastic history from one
-state to another in the system is the fundamental kernel of the
-transport procedure. In this kernel, an incoming history has a state
-consisting of the current discrete state in the system in which it
-resides and its current weight and is processed as given by
-Algorithm~\ref{alg:transition_process}.
-\begin{algorithm}[h!]
-  \caption{Stochastic History Transition Processing Kernel}
-  \label{alg:power_iteration}
-  \begin{algorithmic}
-    \State processTransition( history ):
-    \State i = history.state
-    \State j = sampleRowCDF( C[i] )
-    \State history.state = j
-    \State history.weight *= w[i,j]
-  \end{algorithmic}
-  \label{alg:transition_process}
-\end{algorithm}
-The core component here is the sampling of the CDF for a particular
-state generated by the probablities from the Neumann-Ulam
-decomposition. Upon exiting, the kernel has modified the state of the
-history with a new state and multiplied the weight with the
-corresponding transition weight to form the product in
-Eq~(\ref{eq:direct_permutation_weight}).
-
-\subsection{Local Domain Transport Kernel}
-\label{subsec:local_domain_transport}
+To utilize the parallel transport algorithm, we must generate the
+parallel transport domain. For the Neumann-Ulam method, the domain
+consists of all states in the system that are local, and the
+probabilities and weights for all state transitions possible in the
+local domain. At the core of this representation is the Neumann-Ulam
+decomposition of the linear operator. Given an input decomposition for
+the linear operator, by definition the Neumann-Ulam decomposition will
+have the same parallel decomposition. In addition, any modification
+made to the linear operator through preconditioning or relaxation
+parameters will also modify the Neumann-Ulam decomposition. All
+possible transitions are described by the local graph of the sparse
+input matrix. In addition, any left preconditioning or relaxation
+parameters will modify the right hand side of the linear system and
+therefore the fixed source in the Monte Carlo calculation. This source
+vector will have the same parallel decomposition as the input matrix
+and therefore all of the birth states for the histories will exist for
+at least a single transition event within the local domain.
 
 \subsection{Domain-to-Domain Communication Kernel}
 \label{subsec:domain_to_domain_kernel}
 
-\subsection{Asynchronous Transport Kernel}
-\label{subsec:async_transport_kernel}
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{1.5}{ \input{chapters/parallel_mc/domain_to_domain.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Nearest neighbor history communication sequence.}
+    \textit{Each subdomain in the system has a set of nearest
+      neighbors determined by the parallel adjacency graph of the
+      input matrix. The subdomains are indexed by an integer.}}
+  \label{fig:nearest_neighbor_comm}
+\end{figure}
+
+\subsection{Ending the Transport Sequence}
+\label{subsec:ending_transport}
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{1.25}{
+      \input{chapters/parallel_mc/binary_comm_tree.pdftex_t} }
+    \caption{\textbf{Binary communication tree for coordinating the
+        end of a parallel Neumann-Ulam solve.} \textit{Each child
+        process reports to its parents how many histories completed
+        within its domain. When the root process sums all complete
+        histories, it forwards the stop signal to its children which
+        in turn forward the message up the tree. The subdomains are
+        indexed by an integer.}}
+  \end{center}
+  \label{fig:binary_comm_tree}
+\end{figure}
 
 \clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{Multiple-Set Overlapping-Domain Neumann-Ulam Algorithm}
 \label{subsec:msod}
-In 2010, Wagner and colleagues developed the \textit{multiple-set
+Although the implementation presented in the previous section was
+observed by Brunner and Brantley to be robust and allowed for scaling
+to large numbers of processors, performance issues were still noted
+with parallel efficiency improvements needed in both the weak and
+strong scaling cases for unbalanced problems. These results led them
+to conclude that a combination of domain decomposition and domain
+replication could be used to solve some of these issues. In 2010,
+Wagner and colleagues developed the \textit{multiple-set
   overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
 applications for full-core light water reactor analysis
 \citep{wagner_hybrid_2010}. In their work, an extension of Brunner's,
@@ -704,20 +743,20 @@ transport but a certain amount of overlap between adjacent domains was
 used to decrease the number of particles leaving the local domain. In
 addition, Wagner utilized a level of replication of the domain such
 that the domain was only decomposed on $O(100)$ processors and if
-replicated $O(1,000)$ times achieves simulation on $O(100,000)$
-processors, thus providing spatial and particle parallelism. Each
-collection of processors that constitutes a representation of the
-entire domain is referred to as a set, and within a set overlap occurs
-among its sub-domains. The original motivation was to decompose the
-domain in a way that it remained in a physical cabinet in a large
-distributed machine, thus reducing latency costs during
-communication. A multiple set scheme is also motivated by the fact
-that communication during particle transport only occurs within a set,
-limiting communications during the transport procedure to a group of
-$O(100)$ processors, a number that was shown to have excellent
-parallel efficiencies in Brunner's work and therefore will scale well
-in this algorithm. The overlapping domains within each set also
-demonstrated reduced communication costs. On each processor, the
+replicated $O(1,000)$ times potentially achieves simulation on
+$O(100,000)$ processors, thus providing both spatial and particle
+parallelism. Each collection of processors that constitutes a
+representation of the entire domain is referred to as a set, and
+within a set overlap occurs among its sub-domains. The original
+motivation was to decompose the domain in a way that it remained in a
+physical cabinet in a large distributed machine, thus reducing latency
+costs during communication. A multiple set scheme is also motivated by
+the fact that communication during particle transport only occurs
+within a set, limiting communications during the transport procedure
+to a group of $O(100)$ processors, a number that was shown to have
+excellent parallel efficiencies in Brunner's work and therefore will
+scale well in this algorithm. The overlapping domains within each set
+also demonstrated reduced communication costs. On each processor, the
 source is sampled in the local domain that would exist if no overlap
 was used while tallies can be made over the entire overlapping domain.
 
@@ -772,8 +811,33 @@ today's modern machines.
 \subsection{Generating Multiple Sets}
 \label{subsec:msod_sets}
 
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{0.6}{ \input{chapters/parallel_mc/msod_construction.pdftex_t} }
+  \end{center}
+  \caption{\textbf{MSOD construction.} \textit{The linear system is
+      used to construct the Monte Carlo transport domain on the
+      primary set. The Monte Carlo data structures are then broadcast
+      amongst the blocks to all sets in the system.}}
+  \label{fig:msod_construction}
+\end{figure}
+
 \subsection{MSOD Neumann Ulam Algorithm}
 \label{subsec:msod_algorithm}
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{0.6}{ \input{chapters/parallel_mc/msod_tally.pdftex_t} }
+  \end{center}
+  \caption{\textbf{MSOD tally reduction.} \textit{The tally computed
+      independently in each set is reduced across the blocks to the
+      primary set. The linear system vector is updated on the primary
+      set. In this example the tally vector in the block containing
+      upper-left subdomains is combined. Identical reduction
+      operations occur for all other blocks simultaneously.}}
+  \label{fig:msod_tally_reduction}
+\end{figure}
+
 
 %%---------------------------------------------------------------------------%%
 \section{Parallel MCSA}
@@ -809,8 +873,8 @@ study.
 \label{sec:parallel_verification}
 
 %%---------------------------------------------------------------------------%%
-\section{Small Cluster Scaling Studies}
-\label{sec:small_scaling_studies}
+\section{Parallel Performance Metrics}
+\label{sec:parallel_performance_metrics}
 
 %%---------------------------------------------------------------------------%%
 \section{Leadership-Class Parallel Scaling Studies}
