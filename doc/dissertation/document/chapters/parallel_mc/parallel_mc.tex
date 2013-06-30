@@ -745,18 +745,20 @@ addition, Wagner utilized a level of replication of the domain such
 that the domain was only decomposed on $O(100)$ processors and if
 replicated $O(1,000)$ times potentially achieves simulation on
 $O(100,000)$ processors, thus providing both spatial and particle
-parallelism. Each collection of processors that constitutes a
-representation of the entire domain is referred to as a set, and
-within a set overlap occurs among its sub-domains. The original
-motivation was to decompose the domain in a way that it remained in a
-physical cabinet in a large distributed machine, thus reducing latency
-costs during communication. A multiple set scheme is also motivated by
-the fact that communication during particle transport only occurs
-within a set, limiting communications during the transport procedure
-to a group of $O(100)$ processors, a number that was shown to have
-excellent parallel efficiencies in Brunner's work and therefore will
-scale well in this algorithm. The overlapping domains within each set
-also demonstrated reduced communication costs. On each processor, the
+parallelism. 
+
+Each collection of processors that constitutes a representation of the
+entire domain is referred to as a set, and within a set overlap occurs
+among its sub-domains. The original motivation was to decompose the
+domain in a way that it remained in a physical cabinet in a large
+distributed machine, thus reducing latency costs during
+communication. A multiple set scheme is also motivated by the fact
+that communication during particle transport only occurs within a set,
+limiting communications during the transport procedure to a group of
+$O(100)$ processors, a number that was shown to have excellent
+parallel efficiencies in Brunner's work and therefore will scale well
+in this algorithm. The overlapping domains within each set also
+demonstrated reduced communication costs. On each processor, the
 source is sampled in the local domain that would exist if no overlap
 was used while tallies can be made over the entire overlapping domain.
 
@@ -993,6 +995,19 @@ preconditioning.
   \caption{\textbf{Wall time in seconds to solution for each case.}}
   \label{fig:titan_weak_ms_time}
 \end{figure}
+
+\clearpage
+
+\subsection{Full-Clip Neumann-Ulam}
+\label{subsec:full_clip}
+
+\subsubsection{Weak Scaling}
+\label{subsubsec:full_clip_weak}
+
+\clearpage
+
+\subsubsection{Strong Scaling}
+\label{subsubsec:full_clip_strong}
 
 \clearpage
 
