@@ -638,13 +638,13 @@ implemented in production implicit Monte Carlo codes
 \citep{brunner_efficient_2009}. We will adapt their algorithm and
 directly apply it to a parallel formulation of the Neumann-Ulam
 method. Direct analogs can be derived from their works by noting that
-the primary difference between solving a linear system with Monte
-Carlo methods and fixed source Monte Carlo transport problems is the
-content of the Markov chains that are generated. The transitions
-represented by these chains are bound by probabilities and weights and
-are initiated by the sampling of a discrete source. In the context of
-transport problems, those transitions represent events such as
-particle scattering and absorption with probabilities that are
+the primary difference between solving a linear transport system with
+Monte Carlo methods and traditional fixed source Monte Carlo transport
+problems is the content of the Markov chains that are generated. The
+transitions represented by these chains are bound by probabilities and
+weights and are initiated by the sampling of a discrete source. In the
+context of transport problems, those transitions represent events such
+as particle scattering and absorption with probabilities that are
 determined by physical data in the form of cross sections.
 
 For stochastic matrix inversion, those transitions represent moving
@@ -1145,6 +1145,18 @@ preconditioning.
 \subsection{Communication Parameters}
 \label{subsec:comm_parameters}
 
+\begin{figure}[htpb!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_comm_parameters.pdf}
+  \end{center}
+  \caption{\textbf{Neumann Ulam parallel algorithm free parameter
+      sensitivity.}  \textit{All runtimes were within 6.5\% of the
+      fastest observed case.}}
+  \label{fig:titan_comm_parameters}
+\end{figure}
+
+\clearpage
+
 \subsection{Pure Domain Decomposition}
 \label{subsec:pure_domain_decomp}
 
@@ -1155,11 +1167,22 @@ preconditioning.
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_pure_strong.pdf}
   \end{center}
-  \caption{\textbf{Pure domain decomposition absolute strong scaling.}
-    \textit{Super-linear speed-up from memory thrashing in base
-      case. MCLS is an order of magnitude slower arithmetically,
-      causing the higher efficiency.}}
+  \caption{\textbf{Pure domain decomposition strong scaling absolute
+      efficiency.}  \textit{Super-linear speed-up from memory
+      thrashing in base case. MCLS is an order of magnitude slower
+      arithmetically, causing the higher efficiency.}}
   \label{fig:titan_pure_strong}
+\end{figure}
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_bvsm.pdf}
+  \end{center}
+  \caption{\textbf{Binary tree vs. master/slave communication scheme
+      absolute efficiency.} \textit{Pure domain decomposition absolute
+      strong scaling. The master/slave scheme will not scale beyond
+      $O(1,000)$ cores due to load imbalance.}}
+  \label{fig:titan_strong_bvsm}
 \end{figure}
 
 \clearpage
@@ -1171,17 +1194,38 @@ preconditioning.
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_absolute.pdf}
   \end{center}
-  \caption{\textbf{Pure domain decomposition absolute weak scaling}}
+  \caption{\textbf{Pure domain decomposition weak scaling absolute
+      efficiency.}}
   \label{fig:titan_weak_absolute}
+\end{figure}
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_alg_eff.pdf}
+  \end{center}
+  \caption{\textbf{Pure domain decomposition weak scaling algorithmic
+      efficiency.}}
+  \label{fig:titan_weak_algorithmic}
 \end{figure}
 
 \begin{figure}[htpb!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_implementation.pdf}
   \end{center}
-  \caption{\textbf{Pure domain decomposition implementation weak
-      scaling}}
+  \caption{\textbf{Pure domain decomposition weak scaling
+      implementation efficiency.}}
   \label{fig:titan_weak_implementation}
+\end{figure}
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_bvsm.pdf}
+  \end{center}
+  \caption{\textbf{Binary tree vs. master/slave communication scheme
+      absolute efficiency.}  \textit{Pure domain decomposition
+      absolute weak scaling. The master/slave scheme will not scale
+      beyond $O(1,000)$ cores due to load imbalance.}}
+  \label{fig:titan_weak_bvsm}
 \end{figure}
 
 \clearpage
@@ -1222,6 +1266,35 @@ preconditioning.
   \label{fig:titan_strong_ms_eff}
 \end{figure}
 
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lcc}\hline\hline
+      \multicolumn{1}{c}{Case}& 
+      \multicolumn{1}{c}{Iterations}&
+      \multicolumn{1}{c}{$\eta_{alg}$} \\\hline
+      1 & 22 & 1.0 \\
+      2-split & 22 & 1.0 \\
+      2-replicated & 16 & 1.375 \\
+      4-split & 22 & 1.0 \\
+      4-replicated & 13 & 1.692 \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Strong scaling algorithmic efficiency using
+      multiple sets.}}
+  \label{tab:ms_strong_alg_eff}
+\end{table}
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_ms_impeff.pdf}
+  \end{center}
+  \caption{\textbf{Strong scaling implementation efficiency relative
+      to 16-core 1-set base case.}}
+  \label{fig:titan_strong_ms_impeff}
+\end{figure}
+
 \clearpage
 
 \subsubsection{Weak Scaling}
@@ -1235,13 +1308,68 @@ preconditioning.
   \label{fig:titan_weak_ms_time}
 \end{figure}
 
+For a multiple set analysis of the weak scaling results, we have to
+consider that adding sets to the problem is actually a form of strong
+scaling. Consider a single set problem ($S=1$) for a given $P$ and
+$N$. When that problem is now solved using 2 sets we have $S=2$, $N$
+and $2P$. For any number of sets we then have a global problem size of
+$N$ while the number of processors is $SP$ where $P$ is the number of
+processors in the single set case. Therefore, $N/P$ is no longer fixed
+in the weak scaling study but rather $N/(SP)$ is fixed. Therefore, we
+modify the weak scaling absolute efficiency relationship to account
+for this fact:
+\begin{equation}
+\eta_{weak}(M|N,P|Q,S) = \frac{T(M,Q)}{S \times T(N,P)}\:,
+  \label{eq:ms_weak_efficiency}
+\end{equation}
+where now the absolute efficiency is a function of the number of sets
+in the problem. For problems where adding sets improves time to
+solution, this new weak scaling formulation accounts for how
+efficiently those extra resources are incorporated into the
+problem. Without such a modification, the largest case run for the
+split 4 set case would have a computed weak scaling efficiency of
+nearly 100\% using the standard formula for absolute
+efficiency. However, using 4 times as many cores as the single set
+case increases the runtime for a fixed global problem size and
+therefore we actually expect to compute a very low efficiency that
+shows this very poor use of resources.
+
 \begin{figure}[htpb!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_ms_eff.pdf}
   \end{center}
-  \caption{\textbf{Absolute parallel efficiency relative to 16-core
-      1-set base case.}}
+  \caption{\textbf{Weak scaling absolute efficiency relative to
+      16-core 1-set base case.}}
   \label{fig:titan_weak_ms_eff}
+\end{figure}
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lcc}\hline\hline
+      \multicolumn{1}{c}{Case}& 
+      \multicolumn{1}{c}{Iterations}&
+      \multicolumn{1}{c}{$\eta_{alg}$} \\\hline
+      1 & 22 & 1.0 \\
+      2-split & 22 & 1.0 \\
+      2-replicated & 16 & 1.375 \\
+      4-split & 22 & 1.0 \\
+      4-replicated & 13 & 1.692 \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Weak scaling algorithmic efficiency using multiple
+      sets.}}
+  \label{tab:ms_weak_alg_eff}
+\end{table}
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_ms_impeff.pdf}
+  \end{center}
+  \caption{\textbf{Implementation parallel efficiency relative to 16-core
+      1-set base case.}}
+  \label{fig:titan_weak_ms_impeff}
 \end{figure}
 
 \clearpage
@@ -1257,8 +1385,3 @@ preconditioning.
 \subsubsection{Strong Scaling}
 \label{subsubsec:full_clip_strong}
 
-\clearpage
-
-%%---------------------------------------------------------------------------%%
-\section{Multiple Fuel Assembly $SP_N$ Challenge Problem\ }
-\label{sec:spn_challenge_problem}

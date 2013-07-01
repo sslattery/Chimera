@@ -20,6 +20,9 @@ all: dnb_example.pdf orthogonal_residual.pdf partitioned_matrix.pdf matvec_proc_
 	$(PDFTEX) dissertation
 	$(PDFTEX) dissertation
 
+tex:
+	$(PDFTEX) dissertation
+
 # Introduction figures
 dnb_example.pdf: $(chap_intro)/dnb_example.fig
 	fig2dev -L pdftex -p $(chap_intro)/dnb_example.pdf -m 0.4 $(chap_intro)/dnb_example.fig $(chap_intro)/dnb_example.pdf
