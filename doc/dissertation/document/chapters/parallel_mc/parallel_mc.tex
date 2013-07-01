@@ -659,41 +659,97 @@ to matrix inversion methods as an initial means of developing a
 parallel Neumann-Ulam-type solver. 
 
 In this section Brunner and Brantley's fully asynchronous algorithm is
-presented along with its application to the Neumann-Ulam method. Their
-algorithm is presented in further detail in the reference and was
-effectively implemented verbatim for this work. In their work they
-identify two data sets that are required to be communicated: the
-sharing of particles that are transported from one domain to another
-and therefore from one processor to another and a global communication
-that signals if particle transport has been completed on all
-processors. Both of these processes will be addressed at a high level
-along with how the Monte Carlo data structures are
-constructed in parallel.
+presented along with its application to the Neumann-Ulam method. For
+considerably more detail, the algorithm presented can be found in
+\citep{brunner_efficient_2009} and was effectively implemented
+verbatim for this work. In their work they identify two data sets that
+are required to be communicated: the sharing of particles that are
+transported from one domain to another and therefore from one
+processor to another and a global communication that signals if
+particle transport has been completed on all processors. Both of these
+processes will be addressed at a high level along with how the Monte
+Carlo data structures they require are constructed in parallel.
 
 \subsection{Parallel Transport Domain and Source }
 \label{subsec:domain_generation}
-To utilize the parallel transport algorithm, we must generate the
-parallel transport domain. For the Neumann-Ulam method, the domain
-consists of all states in the system that are local, and the
-probabilities and weights for all state transitions possible in the
-local domain. At the core of this representation is the Neumann-Ulam
-decomposition of the linear operator. Given an input decomposition for
-the linear operator, by definition the Neumann-Ulam decomposition will
-have the same parallel decomposition. In addition, any modification
-made to the linear operator through preconditioning or relaxation
-parameters will also modify the Neumann-Ulam decomposition. All
-possible transitions are described by the local graph of the sparse
-input matrix. In addition, any left preconditioning or relaxation
-parameters will modify the right hand side of the linear system and
-therefore the fixed source in the Monte Carlo calculation. This source
-vector will have the same parallel decomposition as the input matrix
-and therefore all of the birth states for the histories will exist for
-at least a single transition event within the local domain.
+To utilize a parallel transport algorithm, we must generate the
+required data with the correct parallel decomposition. For the
+Neumann-Ulam method, the transport domain consists of all states in
+the system that are local, and the probabilities and weights for all
+state transitions possible in the local domain. At the core of this
+representation is the Neumann-Ulam decomposition of the linear
+operator. Given an input decomposition for the linear operator, by
+definition the Neumann-Ulam decomposition will have the same parallel
+decomposition. In addition, any modification made to the linear
+operator through preconditioning or relaxation parameters will also
+modify the Neumann-Ulam decomposition. All possible transitions are
+described by the local graph of the sparse input matrix. In addition,
+any left preconditioning or relaxation parameters will modify the
+right hand side of the linear system and therefore the fixed source in
+the Monte Carlo calculation. This source vector will have the same
+parallel decomposition as the input matrix and therefore all of the
+birth states for the histories will exist for at least a single
+transition event within the local domain.
+
+Compared to the serial construction of the Neumann-Ulam decomposition,
+data for all states that is required to be on process must be
+collected in parallel. For the pure domain decomposition case, given
+an input parallel decomposition for the Neumann-Ulam decomposition,
+for all local states $m$ we require access to $P_{mn}$ and $W_{mn}$
+(or $P^T_{mn}$ and $W^T_{mn}$) for the adjoint method for all possible
+states $n$. Given by Figure~\ref{fig:diffusion_graph}, consider the
+adjacency graph of a single state in the neutron diffusion matrix for
+the model problem presented in Appendix~\ref{chap:diffusion_problem}.
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{1.5}{ \input{chapters/parallel_mc/stencil_graph.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Neutron diffusion equation state adjacency graph.}
+    \textit{Adjacent boundary states are collected by traversing the
+      graph one step for all local boundary states and collecting the
+      equations for those states that are not local. For a given
+      transition in the random walk for the diffusion problem, a
+      history at mesh point $(i,j)$ may transition to all adjacent
+      mesh points including itself, corresponding to a global state
+      transition from $m$ to $n$ in the linear system.}}
+  \label{fig:diffusion_graph}
+\end{figure}
+
+In this example, we currently reside in state $m$ of the system,
+directly correlating to physical location $(i,j)$ in the mesh (the
+center node). The discretization stencil of the diffusion problem
+dictates the structure of this graph and the states to which a history
+may transition. If we play the Monte Carlo game to move to a new state
+$n$, then we may move to any of the nodes in this graph, including the
+node at which we started. If grid point $(i,j)$ in this example is on
+the right of the local domain boundary and we transition to the right
+to state $n$ corresponding to mesh point $(i+1,j)$, we are now in a
+state that is owned by the adjacent domain. We must then gather the
+data in the Neumann-Ulam decomposition from the neighboring process
+that owns grid point $(i+1,j)$. Doing this provides us with the data
+required by the estimators permitting $P_{mn}$ and $W_{mn}$ to be
+computed locally for this particular boundary transition. For the
+parallel source, these adjacent states are not required as histories
+may only be born in states in the local domain. Once the local
+Neumann-Ulam decomposition has been generated with the proper data
+collected from adjacent domains, Monte Carlo transport may proceed in
+parallel.
 
 \clearpage
 
 \subsection{The Algorithm}
 \label{subsec:parallel_mc_algorithm}
+
+Here we present in detail Brunner and Brantley's 2009 algorithm in
+detail and discuss how it is adapted to parallelize the Neumann Ulam
+method. Presented in Algorithm~\ref{alg:parallel_mc_algorithm}, the
+top level sequence performs the task of managing history transport
+through the local domain, communication of histories to adjacent
+domains, and the completion of transport. For each of these tasks,
+additional algorithms, shown in bold in
+Algorithm~\ref{alg:parallel_mc_algorithm}
+(e.g. \textbf{LocalHistoryTransport}), are presented for additional
+detail.
 
 \begin{algorithm}[h!]
   \caption{Parallel Neumann-Ulam Algorithm}
@@ -720,7 +776,7 @@ at least a single transition event within the local domain.
     \State \textbf{LocalHistoryTransport()}
     \State ++\textit{localProcessed}
     \EndIf
-    \If{checkPeriod == \textit{localProcessed} || no local histories}
+    \If{message check period == \textit{localProcessed} || no local histories}
     \State \textbf{ProcessMessages()}
     \State \textit{localProcessed} = 0
     \EndIf
@@ -733,7 +789,6 @@ at least a single transition event within the local domain.
   \end{algorithmic}
 \end{algorithm}
 
-\clearpage
 
 \subsubsection{Domain-to-Domain Communication Kernels}
 \label{subsubsec:domain_to_domain_kernel}
@@ -785,7 +840,6 @@ at least a single transition event within the local domain.
   \label{fig:nearest_neighbor_comm}
 \end{figure}
 
-\clearpage
 
 \subsubsection{Ending the Transport Sequence}
 \label{subsubsec:ending_transport}
@@ -1374,14 +1428,55 @@ shows this very poor use of resources.
 
 \clearpage
 
-\subsection{Full-Clip Neumann-Ulam}
+\subsection{Subdomain Neumann-Ulam}
 \label{subsec:full_clip}
+
+Full-clip actually uses the solver as a true subdomain solver, just
+like you would in a Schwarz method. In fact, this is a stochastic
+realization of a Richardson iteration - they are very similar in those
+regards.
+
+Overlap is not effective because histories apparently dump most of
+their useful information within the first few steps (which is why we
+can use such a large weight cutoff and there is an insensitivity to
+weight cutoff). So keeping them around to do extra work is not
+improving iterative performance - thus increasing compute times. This
+is true even for ill-conditioned cases where adding overlap might keep
+a number of histories within the domain for significantly longer.
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_subdomain.pdf}
+  \end{center}
+  \caption{\textbf{Strong scaling absolute efficiency for pure domain
+      decomposition.} \textit{The subdomain Monte Carlo solver
+      improves the parallel efficiency and therefore time to solution
+      by eliminating all parallel communication during the Monte Carlo
+      solve.}}
+  \label{fig:titan_strong_subdomain}
+\end{figure}
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_subdomain.pdf}
+  \end{center}
+  \caption{\textbf{Weak scaling absolute efficiency for pure domain
+      decomposition.} \textit{The subdomain Monte Carlo solver
+      improves the parallel efficiency and therefore time to solution
+      by eliminating all parallel communication during the Monte Carlo
+      solve.}}
+  \label{fig:titan_weak_subdomain}
+\end{figure}
+
+\subsubsection{Strong Scaling}
+\label{subsubsec:full_clip_strong}
+
+\clearpage
 
 \subsubsection{Weak Scaling}
 \label{subsubsec:full_clip_weak}
 
-\clearpage
 
-\subsubsection{Strong Scaling}
-\label{subsubsec:full_clip_strong}
+
+
 
