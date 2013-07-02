@@ -1457,19 +1457,125 @@ preconditioning.
 
 \subsection{Titan }
 \label{subsec:titan}
+All parallel scaling studies presented in this work were performed on
+the Titan Cray XK7 machine at the Oak Ridge Leadership Computing
+Facility located at Oak Ridge National
+Laboratory\footnote{Specifications presented for Titan in the section
+  were gathered from the Oak Ridge Leadership Computing Facility at
+  \url{http://www.olcf.ornl.gov/computing-resources/titan-cray-xk7/}}. Titan
+is a heterogeneous architecture machine combining both CPU and GPU
+components to achieve a theoretical peak performance of more than 20
+petaflops. The technical specifications for Titan are given in
+Table~\ref{tab:titan_hardware} and spefically for only the CPU portion
+of the machine.
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lc}\hline\hline
+      Processor & 16 core AMD \\
+      Nodes & 18,688 AMD Opterons \\
+      Cores/Node & 16 \\
+      Total Cores & 299,008 \\
+      Memory/Node & 32 GB \\
+      Memory/Core & 2 GB \\
+      Interconnect & Gemini \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Titan Cray XK7 hardware specifications.}}
+  \label{tab:titan_hardware}
+\end{table}
+
+For the scaling studies presented in this work, only the CPU
+components specified in of Titan were utilized. This is due to the
+fact that the implementations of the parallel MCSA algorithm utilized
+code written only with the Message Passing Interface (MPI) and
+therefore could not take advantage of the GPU accelerators. Even
+considering just the CPU portion of titan, nearly 300,000 CPUs are
+available to test the parallel performance of the algorithm at high
+levels of concurrency. 
+
+For each parallel performance metric presented in the previous
+section, a reference case is required to compute efficiencies for all
+other cases. For smaller machines, often a serial computation can be
+performed and used as the base case to get a true measure of speed-up
+for a particular problem. For our scaling studies, we will always use
+as a reference case a calculation which uses 16 cores, filling an
+entire node of the machine. We fill an entire node so that we may
+ignore the effects on scalibility measures that arise from using only
+a subset of cores in a node. Typically this results in a large drop in
+efficiency from a serial computation to a calculation that fills the
+entire node. Once a node is filled, adding subsequent nodes has less
+of an effect on the scaling, providing a more stable region of
+analysis.
 
 \subsection{Communication Parameters}
 \label{subsec:comm_parameters}
+
+In our description of Brunner and Brantley's algorithm as applied to
+the Neumann-Ulam method, we noted two free parameters that are
+user-defined at runtime. The first is the static data buffer size for
+communicating histories between neighboring domains and the second is
+the frequency by which a domain checks for incoming information from
+neighboring domain, both of which may potentially affect latency and
+load balancing. Changing the static history buffer size parameter
+affects the scalability of the algorithm in two ways. If the buffer
+size is increased, the buffer takes longer to fill and is therefore
+sent less frequently, potentially causing scalability bottlenecks
+where a neighboring domain is idle and waiting for more work to do but
+is waiting for another domain to complete work. In addition, if the
+buffer size is too large, the network may become saturated with these
+very large data packets, slowing down performance. If the buffer size
+is too small, too many history messages are sent, not providing enough
+data for a neighboring process to work on to make up for the time
+spent communicating. Considering the second parameter, when the check
+frequency period is increased, more histories are processed locally
+before looking to do work elsewhere. If this value becomes too large,
+incoming data buffers may not be cleared frequently enough and cause a
+bottle neck in the domain-to-domain communications. If this value is
+too small, too much time is spent looking for work instead of actually
+performing it.
+
+To assess how these parameters affect the performance of the parallel
+Monte Carlo algorithm on the Titan machine, a parameter study was
+performed using the neutron diffusion problem on 64 cores (4
+nodes). Each parameter was varied between 16 and 4096 and the time to
+solve the problem recorded. The results of this study are presented in
+Figure~\ref{fig:titan_comm_parameters}. Compared to the results of
+Brunner and Brantley for the same type of study, we note qualitatively
+similar results with the general observation that a larger history
+buffer check period is better than a shorter one. The larger the check
+period, the more on-process work is done before checking
+messages. Second, there was not a significant variation observed in
+the history buffer size parameter for a given check
+frequency.
 
 \begin{figure}[htpb!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_comm_parameters.pdf}
   \end{center}
   \caption{\textbf{Neumann Ulam parallel algorithm free parameter
-      sensitivity.}  \textit{All runtimes were within 6.5\% of the
-      fastest observed case.}}
+      sensitivity.} \textit{The color scale represents the ratio of
+      the runtime of a particular parameter variation with the runtime
+      from the faster parameter variation. A value of 1.02 on the
+      color scale corresponds to a runtime 2\% longer than the faster
+      time. All runtimes were within 6.5\% of the fastest observed
+      case.}}
   \label{fig:titan_comm_parameters}
 \end{figure}
+
+Compared to the reference work, there was also not a significant
+change in the runtime over the values of parameters tested with all
+runtimes reported within 6.5\% of the fastest case observed. For this
+work, a history buffer size of 4096 and a buffer check period of 128
+performed best for the intitial calculations. However, most values in
+the range tested will give good performance. Brunner and Brantley
+found that a value of 1024 was best for both parameters. For the
+results observed here, these parameters were only 0.7\% slower than
+the fastest case. It may be best practice to fix these parameters
+internally at 1024 as both this work and the reference found these to
+perform well several years apart on both different parallel machines
+and for different transport sequences.
 
 \clearpage
 
