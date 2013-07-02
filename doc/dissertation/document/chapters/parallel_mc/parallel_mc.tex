@@ -909,7 +909,7 @@ histories that have been processed locally.
 
 Continuing in the transport loop, if there are no local histories to
 transport or the \textit{localProcessed} count has reached some
-user-define check frequency, lines 18-21 in
+user-defined check frequency, lines 18-21 in
 Algorithm~\ref{alg:local_history_transport} check for more histories
 to transport in the incoming data buffers by calling
 Algorithm~\ref{alg:process_messages}. For each neighboring domain in
@@ -1147,30 +1147,109 @@ of the overap. Once the overlap has been gathered, one extra graph
 traversal on the boundary states is performed to get the new
 neighboring states and their owning process.
 
+Once overlap has been generated, the transport domain for a single set
+is complete. However, if multiple sets are to be used, an additional
+set of parallel procedures is required to generate the necessary data
+structures. Figure~\ref{fig:msod_construction} gives a schematic
+representation of the MSOD construction process using 4 sets. For a
+problem where $P$ parallel processors are available and $S$ sets are
+to be used, each set is allocated $P/S$ processors for computation. On
+the first $P/S$ processors, the linear problem is generated. From the
+linear problem, the linear operator is used to construct the transport
+domain, the solution vector used to construct the tallies, and the
+forcing term vector used to construct the fixed source. Once these
+Monte Carlo data structures have been generated, they are broadcast to
+the remaining sets in the problem as shown in
+Figure~\ref{fig:msod_construction} such that we have $S$ replications
+of the Monte Carlo problem for a single instance of the original
+linear problem.
+
 \begin{figure}[htpb!]
   \begin{center}
     \scalebox{0.6}{ \input{chapters/parallel_mc/msod_construction.pdftex_t} }
   \end{center}
-  \caption{\textbf{MSOD construction.} \textit{The linear system is
-      used to construct the Monte Carlo transport domain on the
-      primary set. The Monte Carlo data structures are then broadcast
-      amongst the blocks to all sets in the system.}}
+  \caption{\textbf{MSOD construction for 4 sets with overlap.}
+    \textit{The linear system is used to construct the Monte Carlo
+      transport domain on the primary set. The Monte Carlo data
+      structures are then broadcast amongst the blocks to all sets in
+      the system.}}
   \label{fig:msod_construction}
 \end{figure}
 
+\clearpage
+
 \subsection{MSOD Neumann Ulam Algorithm }
 \label{subsec:msod_algorithm}
+
+With the ability to generate the transport domain within an MSOD
+decomposition as well as the source and tally structures, we can now
+define how to perform a Neumann-Ulam solve using MSOD. Given by
+Algorithm~\ref{alg:msod_transport}, we begin by constructing the Monte
+Carlo data structures for each set including the transport domain, the
+source, and the tallies. Next, in line 4 we perform the asynchronous
+transport algorithm presented in \S~\ref{sec:asynchronous_algorithm}
+for each of the individual sets. Adding overlap to
+Algorithm~\ref{alg:parallel_mc_algorithm} in this case simply modifies
+the set of local states and the set of neighboring states to
+additional states gathered during overlap generation.
+
+\begin{algorithm}[h!]
+  \caption{\textbf{MSOD Transport Sequence}}
+  \label{alg:msod_transport}
+  \begin{algorithmic}[1]
+    \State build MSOD domain
+    \State build Monte Carlo source
+    \State build Monte Carlo tally
+    \State perform parallel Neumann-Ulam transport in each set
+    \State combine set tallies
+    \State combine block tallies
+  \end{algorithmic}
+\end{algorithm}
+
+Once complete, the tallies for each individual computation must be
+gathered to the original set in order to build the correction vector
+within an MCSA sequence. To do this, we perform two parallel vector
+operations. First, overlap not only creates additional states in the
+local transport domain but also additional states in the local tally
+vector such that any events that occur in the local domain may be
+tallied in a local vector. Because of this, the tally vector in a
+single set will share local states with other domains and a parallel
+sum reduction operation is required to transform the tally into the
+original Neumann-Ulam parallel decomposition. Second, the tallies in
+individual sets must be combined and applied to the primary set in the
+problem that shares the processor space with the original linear
+problem. For this operation, we employ the concept of blocks as a
+subdivision of parallel space complementary to the concept of sets.
+
+Consider the schematic representation of the final parallel reduction
+presented in Figure~\ref{fig:msod_tally_reduction}. For this
+operation, the tally vectors in each set must be summed together and
+applied to the primary set. As each set is an exact replica off the
+others, the parallel decomposition of the tally vector is the same
+within all sets. We can take advantage of this by building a processor
+space that encapsulates each identical domain in each set. We can then
+use this processor space for the reduction. For the schematic in
+Figure~\ref{fig:msod_tally_reduction}, the upper-left domain in each
+set creates a single block, giving 9 total blocks for this example
+problem. The processor space the encapsulates each of the upper-left
+domains is then used for the parallel reduction operation. This
+reduction will happen in a mutually exclusive manner for each of the
+blocks in the system. One benefit of this approach is that this
+reduction occurs only over a subset of the processors in the problem,
+providing better scalability than a reduction operation over all
+processors in the problem.
 
 \begin{figure}[htpb!]
   \begin{center}
     \scalebox{0.6}{ \input{chapters/parallel_mc/msod_tally.pdftex_t} }
   \end{center}
-  \caption{\textbf{MSOD tally reduction.} \textit{The tally computed
-      independently in each set is reduced across the blocks to the
-      primary set. The linear system vector is updated on the primary
-      set. In this example the tally vector in the block containing
-      upper-left subdomains is combined. Identical reduction
-      operations occur for all other blocks simultaneously.}}
+  \caption{\textbf{MSOD tally reduction over blocks.} \textit{The
+      tally computed independently in each set is reduced across the
+      blocks to the primary set. The linear system vector is updated
+      on the primary set. In this example the tally vector in the
+      block containing upper-left subdomains is combined. Identical
+      reduction operations occur for all other blocks
+      simultaneously.}}
   \label{fig:msod_tally_reduction}
 \end{figure}
 
@@ -1180,34 +1259,63 @@ neighboring states and their owning process.
 \section{Parallel MCSA\ }
 \label{sec:parallel_mcsa}
 With the parallel adjoint Neumann-Ulam solver implementation described
-aboive, the parallel implementation of the MCSA method is
-trivial. Recall the MCSA iteration procedure outlined in
-Eq~(\ref{eq:mcsa}). In \S\ref{sec:parallel_krylov_methods} we discuss
-parallel matrix and vector operations as utilized in conventional
-Krylov methods. We utilize these here for the parallel MCSA
-implementation. In the first step, a parallel matrix-vector multiply
-is used to apply the split operator to the previous iterate's
-solution. A parallel vector update is then performed with the source
-vector to arrive at the initial iteration guess. In the next step, the
-residual is computed by the same operations where now the operator is
-applied to the solution guess with a parallel matrix-vector multiply
-and then a parallel vector update with the source vector is
-performed. Once the correction is computed with a parallel adjoint
-Neumann-Ulam solve, this correction is applied to the guess with a
-parallel vector update to get the new iteration
-solution. Additionally, as given by
+aboive, the parallel implementation of an MCSA iteration is
+trivial. Recall the MCSA iteration procedure presented again here for
+clarity.
+\begin{subequations}
+  \begin{gather}
+    \label{eq:mcsa_r1}
+    \ve{x}^{k+1/2} = \ve{x}^k + \ve{r}^k\:,\\
+    \label{eq:mcsa_r2}
+    \ve{r}^{k+1/2} = \ve{b} - \ve{A}\ve{x}^{k+1/2}\:,\\
+    \label{eq:mcsa_r3}
+    \ve{A}\delta\ve{x}^{k+1/2} = \ve{r}^{k+1/2}\:,\\
+    \label{eq:mcsa_r4}
+    \ve{x}^{k+1} = \ve{x}^{k+1/2} + \delta \ve{x}^{k+1/2}\:,\\
+    \label{eq:mcsa_r5}
+    \ve{r}^{k+1} = \ve{b} - \ve{A}\ve{x}^{k+1}\:,
+  \end{gather}
+\end{subequations}
+In \S\ref{sec:parallel_krylov_methods} we discuss parallel matrix and
+vector operations as utilized in conventional Krylov methods. We
+utilize these here for the parallel MCSA implementation for the
+computations required in Eqs~(\ref{eq:mcsa_r1}), (\ref{eq:mcsa_r2}),
+(\ref{eq:mcsa_r4}), and (\ref{eq:mcsa_r5}). In the first step, a
+parallel matrix-vector multiply is used to apply the split operator to
+the previous iterate's solution. A parallel vector update is then
+performed with the source vector to arrive at the initial iteration
+guess. In the next step, the residual is computed by the same
+operations where now the operator is applied to the solution guess
+with a parallel matrix-vector multiply and then a parallel vector
+update with the source vector is performed. Once the correction is
+computed with a parallel adjoint Neumann-Ulam solve, this correction
+is applied to the guess with a parallel vector update to get the new
+iteration solution. Additionally, as given by
 Eq~(\ref{eq:mcsa_stopping_criteria}), 2 parallel vector reductions
 will be required to check the stopping criteria: one initially to
 compute the infinity norm of the source vector, and another at every
-iteration to compute the infinity norm of the residual vector. For
-this implementation, all of the issues that will be potentially
-generated by the parallel adjoint solver implementation will manifest
-themselves here as the quality of the correction will be of intense
-study.
+iteration to compute the infinity norm of the residual vector. 
+
+To parallelize Eq~(\ref{eq:mcsa_r3}), we apply the MSOD Neumann-Ulam
+algorithm presented in the previous section. The problem is
+potentially replicated with overlap and the Monte Carlo procedure
+returns a correction vector, $\delta \ve{x}$, with the same parallel
+decomposition as the input linear problem. As was the case for
+generating the replications required for a multiple set
+implementation, the explict matrix and vector operations required for
+the rest of an MCSA iteration occur only on the subset of processors
+containing the primary set. Only the Monte Carlo data structures exist
+on the rest of the processors in the problem as replication of the
+other operations does not generate any more information that could be
+used to accelerate the time to solution.
 
 %%---------------------------------------------------------------------------%%
 \section{Parallel MCSA Verification\ }
 \label{sec:parallel_verification}
+Before we consider the parallel performance of the MCSA algorithm, we
+must first verify that the algorithm generates the correct solution in
+parallel with respect to reference solutions provided by production
+Krylov methods.
 
 %%---------------------------------------------------------------------------%%
 \section{Parallel Performance Metrics\ }
