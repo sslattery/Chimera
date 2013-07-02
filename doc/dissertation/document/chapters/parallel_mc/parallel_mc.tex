@@ -667,8 +667,9 @@ are required to be communicated: the sharing of particles that are
 transported from one domain to another and therefore from one
 processor to another and a global communication that signals if
 particle transport has been completed on all processors. Both of these
-processes will be addressed at a high level along with how the Monte
-Carlo data structures they require are constructed in parallel.
+communication sequences will be addressed at a high level along with
+how the Monte Carlo data structures they require are constructed in
+parallel.
 
 \subsection{Parallel Transport Domain and Source }
 \label{subsec:domain_generation}
@@ -678,8 +679,9 @@ Neumann-Ulam method, the transport domain consists of all states in
 the system that are local, and the probabilities and weights for all
 state transitions possible in the local domain. At the core of this
 representation is the Neumann-Ulam decomposition of the linear
-operator. Given an input decomposition for the linear operator, by
-definition the Neumann-Ulam decomposition will have the same parallel
+operator as given by Eq~\ref{eq:neumann_ulam_decomposition}. Given an
+input decomposition for the linear operator, by definition the
+Neumann-Ulam decomposition will have the same parallel
 decomposition. In addition, any modification made to the linear
 operator through preconditioning or relaxation parameters will also
 modify the Neumann-Ulam decomposition. All possible transitions are
@@ -728,12 +730,14 @@ state that is owned by the adjacent domain. We must then gather the
 data in the Neumann-Ulam decomposition from the neighboring process
 that owns grid point $(i+1,j)$. Doing this provides us with the data
 required by the estimators permitting $P_{mn}$ and $W_{mn}$ to be
-computed locally for this particular boundary transition. For the
-parallel source, these adjacent states are not required as histories
-may only be born in states in the local domain. Once the local
-Neumann-Ulam decomposition has been generated with the proper data
-collected from adjacent domains, Monte Carlo transport may proceed in
-parallel.
+computed locally for this particular boundary transition. In addition,
+we also collect the identification number for the process that owns
+this state such that we have an address to send all histories that
+leave the local domain boundary for this state. For the parallel
+source, these adjacent states are not required as histories may only
+be born in states in the local domain. Once the local Neumann-Ulam
+decomposition has been generated with the proper data collected from
+adjacent domains, Monte Carlo transport may proceed in parallel.
 
 \clearpage
 
@@ -745,11 +749,11 @@ detail and discuss how it is adapted to parallelize the Neumann Ulam
 method. Presented in Algorithm~\ref{alg:parallel_mc_algorithm}, the
 top level sequence performs the task of managing history transport
 through the local domain, communication of histories to adjacent
-domains, and the completion of transport. For each of these tasks,
-additional algorithms, shown in bold in
+domains, and the completion of transport. For each of these specific
+tasks, additional algorithms, shown in bold in
 Algorithm~\ref{alg:parallel_mc_algorithm}
-(e.g. \textbf{LocalHistoryTransport}), are presented for additional
-detail.
+(e.g. \textbf{LocalHistoryTransport()}), are presented for additional
+detail in the same manner as Brunner and Brantley.
 
 \begin{algorithm}[h!]
   \caption{Parallel Neumann-Ulam Algorithm}
@@ -789,9 +793,100 @@ detail.
   \end{algorithmic}
 \end{algorithm}
 
+Successful execution of this algorithm requires construction of the
+parallel Neumann-Ulam decomposition as described in the preceeding
+section. This data is used to begin
+Algorithm~\ref{alg:parallel_mc_algorithm} where lines 1-5 use the
+collected list of neighboring processors generated while building the
+Neumann-Ulam decompostion to setup the set of asynchronous messages
+required for domain-to-domain communication. Again, consider this
+communication patter for the 9 subdomain example given by
+Figure~\ref{fig:nearest_neighbor_comm}. In this pattern, each domain
+has two neighbors with which they will communicate parallel histories
+and this communication goes both ways as represented by the adjacent
+arrows in the figure. For each set of neighbors, a non-blocking send
+and receive is required with data buffers allocated with a
+user-defined size prepared for incoming and outgoing histories. This
+nonblocking structure is critical to the performance of the algorithm
+in that it permits local history transport to receive while new work
+to do is being collected. When a given process is ready to do more
+work, it can check these data buffers for incoming histories requiring
+further transport. In this way there is a maximum amount of overlap
+between communication and transport of histories.
 
-\subsubsection{Domain-to-Domain Communication Kernels}
-\label{subsubsec:domain_to_domain_kernel}
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{1.5}{ \input{chapters/parallel_mc/domain_to_domain.pdftex_t} }
+  \end{center}
+  \caption{\textbf{Nearest neighbor history communication sequence.}
+    \textit{Each subdomain in the system has a set of nearest
+      neighbors determined by the parallel adjacency graph of the
+      input matrix. The subdomains are indexed by an integer.}}
+  \label{fig:nearest_neighbor_comm}
+\end{figure}
+
+Once the nearest-neighbor communication sequence has been prepared,
+the completion of transport sequence is readied in lines 6 and 8-12 in
+Algorithm~\ref{alg:parallel_mc_algorithm}. In these lines we are
+setting up an asynchronous binary communication tree as presented for
+the same 9 subdomain example in Figure~\ref{fig:binary_comm_tree}. In
+this communication pattern, each process has one parent process
+(except for the MASTER process 0) to which it will nonblocking send
+the number of histories that terminated their transport procedure by
+weight cutoff in the local domain. Equivalently, each process has up
+to two child processes from which it will receive their completed
+number of histories with a nonblocking receive operation. Setting up a
+tree in this manner lets the completed history tally
+(\textit{historiesCompleted} in the algorithm) be updated
+incrementally and funnelled to the root process. Because we are
+solving fixed source problems with the Neumann-Ulam algorithm without
+any type of variance reduction that may generate more histories that
+we started with, once the root process completion sum tallies to the
+number of histories in the source, transport is complete. Once this
+occurs, the root process nonblocking sends a process to its children
+and each process nonblocking receives a stop message from its parent
+as shown in Figure~\ref{fig:binary_comm_tree}. The stop message is
+then propagated up the tree in the same manner.
+
+\begin{figure}[htpb!]
+  \begin{center}
+    \scalebox{1.25}{
+      \input{chapters/parallel_mc/binary_comm_tree.pdftex_t} }
+    \caption{\textbf{Binary communication tree for coordinating the
+        end of a parallel Neumann-Ulam solve.} \textit{Each child
+        process reports to its parents how many histories completed
+        within its domain. When the root process sums all complete
+        histories, it forwards the stop signal to its children which
+        in turn forward the message up the tree. The subdomains are
+        indexed by an integer.}}
+  \end{center}
+  \label{fig:binary_comm_tree}
+\end{figure}
+
+With these communication structures prepared, we can now enter the
+main transport loop at line 13 of
+Algorithm~\ref{alg:parallel_mc_algorithm}. In this loop, a set of
+mutually exclusive tasks enabled by the fully asynchronous
+communication patterns are executed until the stop signal is received
+from the parent process in the binary tree. For this algorithm, being
+mutually exclusive means that all local operations occur independently
+of other processes in the system and their current state. For each
+process, there are two data structures from which histories may be
+obtained for the transport procedure. The first is the local source
+and the second is a LIFO (last in first out) stack of histories
+transported to the local domain from the adjacent domain. In lines
+14-17, if histories exist in either of these data structures, then
+they are transported through the local domain using
+Algorithm~\ref{alg:local_history_transport}. If the history is
+terminated by the weight cutoff the \textit{historiesCompleted} tally
+is updated and if it hits the boundary of the domain it is added to
+the outgoing history buffer for the neighboring dokmain. If that
+buffer is full, it is sent to the neighboring domain with a
+nonblocking operation and the memory associated with that buffer
+reallocated. In all instances that
+Algorithm~\ref{alg:local_history_transport} is executed,
+\textit{localProcessed} is incremented as a measure of the number of
+histories that have been processed locally.
 
 \begin{algorithm}[h!]
   \caption{\textbf{LocalHistoryTransport()}}
@@ -813,6 +908,17 @@ detail.
   \end{algorithmic}
 \end{algorithm}
 
+Continuing in the transport loop, if there are no local histories to
+transport or the \textit{localProcessed} count has reached some
+user-define check frequency, lines 18-21 in
+Algorithm~\ref{alg:local_history_transport} check for more histories
+to transport in the incoming data buffers by calling
+Algorithm~\ref{alg:process_messages}. For each neighboring domain in
+the problem, if there are histories in those data buffers then they
+are added to the stack from processing and the nonblocking receive
+operation reinstantiated. In addition, the terminated histories count
+is updated with those values received from the child processes.
+
 \begin{algorithm}[h!]
   \caption{\textbf{ProcessMessages()}}
   \label{alg:process_messages}
@@ -829,20 +935,19 @@ detail.
   \end{algorithmic}
 \end{algorithm}
 
-\begin{figure}[htpb!]
-  \begin{center}
-    \scalebox{1.5}{ \input{chapters/parallel_mc/domain_to_domain.pdftex_t} }
-  \end{center}
-  \caption{\textbf{Nearest neighbor history communication sequence.}
-    \textit{Each subdomain in the system has a set of nearest
-      neighbors determined by the parallel adjacency graph of the
-      input matrix. The subdomains are indexed by an integer.}}
-  \label{fig:nearest_neighbor_comm}
-\end{figure}
-
-
-\subsubsection{Ending the Transport Sequence}
-\label{subsubsec:ending_transport}
+Finally, the transport loop finishes in lines 22-24 of
+Algorithm~\ref{alg:local_history_transport} by calling
+Algorithm~\ref{alg:control_termination} if there are no local
+histories to transport in the stack or the source. In
+Algorithm~\ref{alg:control_termination}, we continue to forward the
+terminated history tally down to the parent in the binary tree and
+send all history buffers to our neighbors, even if they are not
+full. If Algorithm~\ref{alg:control_termination} is called by the
+MASTER process, it checks for completion of the problem and if it is
+complete, forwards to stop flag onto its children as in
+Figure~\ref{fig:binary_comm_tree}. If the process is not the MASTER,
+then we check for a stop signal from the parent and forward to the
+child processes if transport is complete.
 
 \begin{algorithm}[h!]
   \caption{\textbf{ControlTermination()}}
@@ -873,20 +978,25 @@ detail.
   \end{algorithmic}
 \end{algorithm}
 
-\begin{figure}[htpb!]
-  \begin{center}
-    \scalebox{1.25}{
-      \input{chapters/parallel_mc/binary_comm_tree.pdftex_t} }
-    \caption{\textbf{Binary communication tree for coordinating the
-        end of a parallel Neumann-Ulam solve.} \textit{Each child
-        process reports to its parents how many histories completed
-        within its domain. When the root process sums all complete
-        histories, it forwards the stop signal to its children which
-        in turn forward the message up the tree. The subdomains are
-        indexed by an integer.}}
-  \end{center}
-  \label{fig:binary_comm_tree}
-\end{figure}
+In this manner the transport loop continues until all process have
+received the stop signal from their parents. Older versions of this
+algorithm, particularly some of those presented in
+\citep{brunner_comparison_2006}, use a master/slave approach as given
+by Figure~\ref{fig:master_comm_tree} for the completion of a transport
+stage instead of the binary tree scheme. In this approach, the root
+process still manages the final summation of the completion tally, it
+directly receives completed tally results from all other processes in
+the problem instead of from just its children. Although this
+implementation is potentially simpler to understand than the binary
+tree approach, the authors of \citep{brunner_comparison_2006} observed
+that this type of termination pattern, even when implemented in a
+fully asynchronous manner, was a major scalability bottleneck. This
+bottleneck is due to the fact that the master process falls behind the
+others, creating a load imbalance even with the addition of a few
+integer addition operations. We will explicitly demonstrate in scaling
+studies how this bottleneck also occurs within a Neumann-Ulam
+implementation of this algorithm thus requiring the implementation of
+a binary communication tree.
 
 \begin{figure}[htpb!]
   \begin{center}
