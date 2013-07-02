@@ -702,7 +702,7 @@ for all local states $m$ we require access to $P_{mn}$ and $W_{mn}$
 states $n$. Given by Figure~\ref{fig:diffusion_graph}, consider the
 adjacency graph of a single state in the neutron diffusion matrix for
 the model problem presented in Appendix~\ref{chap:diffusion_problem}.
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{ \input{chapters/parallel_mc/stencil_graph.pdftex_t} }
   \end{center}
@@ -814,7 +814,7 @@ work, it can check these data buffers for incoming histories requiring
 further transport. In this way there is a maximum amount of overlap
 between communication and transport of histories.
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{ \input{chapters/parallel_mc/domain_to_domain.pdftex_t} }
   \end{center}
@@ -848,7 +848,7 @@ and each process nonblocking receives a stop message from its parent
 as shown in Figure~\ref{fig:binary_comm_tree}. The stop message is
 then propagated up the tree in the same manner.
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \scalebox{1.25}{
       \input{chapters/parallel_mc/binary_comm_tree.pdftex_t} }
@@ -997,7 +997,7 @@ studies how this bottleneck also occurs within a Neumann-Ulam
 implementation of this algorithm thus requiring the implementation of
 a binary communication tree.
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \scalebox{0.75}{
       \input{chapters/parallel_mc/master_comm_tree.pdftex_t} }
@@ -1164,7 +1164,7 @@ Figure~\ref{fig:msod_construction} such that we have $S$ replications
 of the Monte Carlo problem for a single instance of the original
 linear problem.
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \scalebox{0.6}{ \input{chapters/parallel_mc/msod_construction.pdftex_t} }
   \end{center}
@@ -1239,7 +1239,7 @@ reduction occurs only over a subset of the processors in the problem,
 providing better scalability than a reduction operation over all
 processors in the problem.
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \scalebox{0.6}{ \input{chapters/parallel_mc/msod_tally.pdftex_t} }
   \end{center}
@@ -1441,19 +1441,22 @@ method and the degrading algorithmic efficiencies that arise when
 increasing the fidelity. Both time and hardware constraints should be
 considered when preparing a parallel calculation.
 
+\clearpage
+
 %%---------------------------------------------------------------------------%%
 \section{Leadership-Class Parallel Scaling Studies\ }
 \label{sec:leadership_scaling_studies}
-For all cases, we explore scaling for just the Monte Carlo transport
-kernel and MCSA as a whole iterative scheme. This will be necessary to
-determine if the initial relaxation step required at each iteration is
-a limiting factor in convergence. For each case, it will be
-constructive to study the scaling performance as a function of
-spectral radius - dictated by the cross sections and grid size to
-diffusion length ratio. In addition, all of these studies should
-hopefully have data from both the cluster and Titan and should all be
-compared to Aztec GMRES and CG implementations with appropriate
-preconditioning.
+Using the parallel performance metrics presented in the previous
+section, we will next performance various scaling studies using an
+implementation of the parallel MCSA algorithm to assess the quality of
+the algorithm. For these scaling studies, large problems at high
+levels of concurrency will be solved at a leadership-class computing
+facility. In this section, we will outline the parallel machine on
+which the calculations were performed and then perform a series a
+studies that identify both strengths and weaknesses of the parallel
+algorithm. Both pure domain decomposition and MSOD parallel
+performance will be explored and compared to performance results for
+the same problems using a set of production parallel Krylov solvers.
 
 \subsection{Titan }
 \label{subsec:titan}
@@ -1550,17 +1553,17 @@ messages. Second, there was not a significant variation observed in
 the history buffer size parameter for a given check
 frequency.
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_comm_parameters.pdf}
   \end{center}
-  \caption{\textbf{Neumann Ulam parallel algorithm free parameter
-      sensitivity.} \textit{The color scale represents the ratio of
-      the runtime of a particular parameter variation with the runtime
-      from the faster parameter variation. A value of 1.02 on the
-      color scale corresponds to a runtime 2\% longer than the faster
-      time. All runtimes were within 6.5\% of the fastest observed
-      case.}}
+  \caption{\textbf{Neumann Ulam parallel algorithm history buffer
+      check period vs. history buffer size sensitivity.} \textit{The
+      color scale represents the ratio of the runtime of a particular
+      parameter variation with the runtime from the faster parameter
+      variation. A value of 1.02 on the color scale corresponds to a
+      runtime 2\% longer than the faster time. All runtimes were
+      within 6.5\% of the fastest observed case.}}
   \label{fig:titan_comm_parameters}
 \end{figure}
 
@@ -1575,7 +1578,9 @@ results observed here, these parameters were only 0.7\% slower than
 the fastest case. It may be best practice to fix these parameters
 internally at 1024 as both this work and the reference found these to
 perform well several years apart on both different parallel machines
-and for different transport sequences.
+and for different transport sequences. Therefore, for the scaling
+studies presented in the following sections, values of 1024 for both
+the history buffer size and message check frequency will be used.
 
 \clearpage
 
@@ -1585,7 +1590,7 @@ and for different transport sequences.
 \subsubsection{Strong Scaling}
 \label{subsubsec:pure_strong}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_pure_strong.pdf}
   \end{center}
@@ -1596,7 +1601,7 @@ and for different transport sequences.
   \label{fig:titan_pure_strong}
 \end{figure}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_bvsm.pdf}
   \end{center}
@@ -1612,7 +1617,7 @@ and for different transport sequences.
 \subsubsection{Weak Scaling}
 \label{subsubsec:pure_weak}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_absolute.pdf}
   \end{center}
@@ -1621,7 +1626,7 @@ and for different transport sequences.
   \label{fig:titan_weak_absolute}
 \end{figure}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_alg_eff.pdf}
   \end{center}
@@ -1630,7 +1635,7 @@ and for different transport sequences.
   \label{fig:titan_weak_algorithmic}
 \end{figure}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_implementation.pdf}
   \end{center}
@@ -1639,7 +1644,7 @@ and for different transport sequences.
   \label{fig:titan_weak_implementation}
 \end{figure}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_bvsm.pdf}
   \end{center}
@@ -1671,7 +1676,7 @@ and for different transport sequences.
 \subsubsection{Strong Scaling}
 \label{subsubsec:msod_strong}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_ms_time.pdf}
   \end{center}
@@ -1679,7 +1684,7 @@ and for different transport sequences.
   \label{fig:titan_strong_ms_time}
 \end{figure}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_ms_eff.pdf}
   \end{center}
@@ -1708,7 +1713,7 @@ and for different transport sequences.
   \label{tab:ms_strong_alg_eff}
 \end{table}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_ms_impeff.pdf}
   \end{center}
@@ -1722,7 +1727,7 @@ and for different transport sequences.
 \subsubsection{Weak Scaling}
 \label{subsubsec:msod_weak}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_ms_time.pdf}
   \end{center}
@@ -1756,7 +1761,7 @@ case increases the runtime for a fixed global problem size and
 therefore we actually expect to compute a very low efficiency that
 shows this very poor use of resources.
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_ms_eff.pdf}
   \end{center}
@@ -1785,7 +1790,7 @@ shows this very poor use of resources.
   \label{tab:ms_weak_alg_eff}
 \end{table}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_ms_impeff.pdf}
   \end{center}
@@ -1812,7 +1817,7 @@ improving iterative performance - thus increasing compute times. This
 is true even for ill-conditioned cases where adding overlap might keep
 a number of histories within the domain for significantly longer.
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_subdomain.pdf}
   \end{center}
@@ -1824,7 +1829,7 @@ a number of histories within the domain for significantly longer.
   \label{fig:titan_strong_subdomain}
 \end{figure}
 
-\begin{figure}[htpb!]
+\begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_subdomain.pdf}
   \end{center}
