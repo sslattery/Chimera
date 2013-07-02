@@ -868,9 +868,9 @@ main transport loop at line 13 of
 Algorithm~\ref{alg:parallel_mc_algorithm}. In this loop, a set of
 mutually exclusive tasks enabled by the fully asynchronous
 communication patterns are executed until the stop signal is received
-from the parent process in the binary tree. For this algorithm, being
-mutually exclusive means that all local operations occur independently
-of other processes in the system and their current state. For each
+from the parent process in the binary tree. In this case, mutually
+exclusivivity permits all local operations to occur independently of
+other processes in the system and their current state. For each
 process, there are two data structures from which histories may be
 obtained for the transport procedure. The first is the local source
 and the second is a LIFO (last in first out) stack of histories
@@ -878,14 +878,13 @@ transported to the local domain from the adjacent domain. In lines
 14-17, if histories exist in either of these data structures, then
 they are transported through the local domain using
 Algorithm~\ref{alg:local_history_transport}. If the history is
-terminated by the weight cutoff the \textit{historiesCompleted} tally
-is updated and if it hits the boundary of the domain it is added to
-the outgoing history buffer for the neighboring dokmain. If that
-buffer is full, it is sent to the neighboring domain with a
-nonblocking operation and the memory associated with that buffer
-reallocated. In all instances that
-Algorithm~\ref{alg:local_history_transport} is executed,
-\textit{localProcessed} is incremented as a measure of the number of
+terminated by weight cutoff the \textit{historiesCompleted} tally is
+updated. If it hits the boundary of the domain it is added to the
+outgoing history buffer for the neighboring domain and if the buffer
+is full, it is sent to the neighboring domain with a nonblocking
+operation and the memory associated with that buffer reallocated. In
+all instances that Algorithm~\ref{alg:local_history_transport} is
+executed, \textit{localProcessed} is incremented to account for
 histories that have been processed locally.
 
 \begin{algorithm}[h!]
@@ -1012,6 +1011,23 @@ a binary communication tree.
   \label{fig:master_comm_tree}
 \end{figure}
 
+There is an additional advantage to Brunner and Brantley's work that
+although not immediately applicable to this work has the potential to
+provide value in the future. In addition to a robust fully
+asynchronous communication pattern, this algorith may also be modified
+to account for situations where the total number of histories in a
+given stage are not known before starting transport. From a physics
+perspective, we might expect this for situations where perhaps an
+(n,2n) interaction occurs in a neutronics problem. In this case, the
+algorithm is modified to account for both histories terminated and
+created and several mechanisms are introduced to determine completion
+of the transport stage. For future variations of this work, certain
+variance reduction techniques which create histories, such as
+splitting, have the potential to be successfully employed as a means
+of accelerating the time to solution for a given problem using
+MCSA. The parallel Neumann-Ulam algorithm presented here may be
+adapted to account for these additional techniques.
+
 \clearpage
 
 %%---------------------------------------------------------------------------%%
@@ -1033,9 +1049,9 @@ transport but a certain amount of overlap between adjacent domains was
 used to decrease the number of particles leaving the local domain. In
 addition, Wagner utilized a level of replication of the domain such
 that the domain was only decomposed on $O(100)$ processors and if
-replicated $O(1,000)$ times potentially achieves simulation on
-$O(100,000)$ processors, thus providing both spatial and particle
-parallelism. 
+replicated $O(1,000)$ times potentially achieves efficient simulation
+on $O(100,000)$ processors, thus providing both spatial and particle
+parallelism.
 
 Each collection of processors that constitutes a representation of the
 entire domain is referred to as a set, and within a set overlap occurs
@@ -1075,33 +1091,61 @@ occur in Brunner's algorithm. If a 0.5 domain overlap is permitted as
 shown by the dashed line, then the starting process owns enough of the
 domain such that no communications must occur in order to complete the
 particle A transport process. Using 0.5 domain overlap also easily
-eliminates cases such as the represented by the path of particle C. In
-this case, particle C is scattering between two adjacent domains,
-incurring a large latency cost for a single particle. Finally, with
-particle B we observe that 0.5 domain overlap will still not eliminate
-all communications. However, if 1 domain overlap were used, the entire
-geometry shown in Figure~\ref{fig:msod_example} would be contained on
-the source processor and therefore transport of all 3 particles
-without communication would occur.
+eliminates cases such as that represented by the path of particle
+C. In this case, particle C is scattering between two adjacent
+domains, incurring a large latency cost for a single
+particle. Finally, with particle B we observe that 0.5 domain overlap
+will still not eliminate all communications. However, if 1 domain
+overlap were used, the entire geometry shown in
+Figure~\ref{fig:msod_example} would be contained on the source
+processor and therefore transport of all 3 particles without
+communication would occur.
 
 Wagner and colleagues used this methodology for a 2-dimensional
 calculation of a pressurized water reactor core and varied the domain
 overlap from 0 to 3 domain overlap (a $7 \times 7$ box in the context
-of our example) where a domain constituted a fuel assembly. For the
-fully domain decomposed case, they observed that 76.12\% of all source
-particles leave the domain. At 1.5 domain overlap, the percentage of
-source particles born in the center assembly leaving the processor
-domain dropped to 1.05\% and even further for 0.02\% for the 3 domain
-overlap. Based on these results, this overlap approach, coupled with
-the multiple sets paradigm that will scale for existing parallel
-transport algorithms, provides a scalable Monte Carlo algorithm for
-today's modern machines.
+of our example) where a domain contained an entire fuel assembly. For
+the fully domain decomposed case, they observed that 76.12\% of all
+source particles leave the domain. At 1.5 domain overlap, the
+percentage of source particles born in the center assembly leaving the
+processor domain dropped to 1.05\% and even further for 0.02\% for the
+3 domain overlap. Based on their results, we hypothesize that the
+overlap approach coupled with the multiple sets paradigm that will
+enhance the scalability of the pure domain-decomposition algorithm for
+Neumann-Ulam presented in the previous section.
 
-\subsection{Generating Overlap }
-\label{subsec:msod_overlap}
+\subsection{Generating the MSOD Decomposition }
+\label{subsec:msod_generation}
+In \S~\ref{subsec:domain_generation} we discussed how we generated the
+parallel transport domain from the Neumann-Ulam decomposition of a
+domain decomposed linear operator. We can readily adapt those data
+structures to account for the extra information required by an
+implementation of the MSOD algorithm. First, we consider the
+generation of overlap. Conveniently, this is identical to the
+neighboring states discovery problem discussed in conjuction with
+Figure~\ref{fig:diffusion_graph}. To generate the boundary for the
+local transport domain, we needed to gather all data from the
+immediately adjacent states in the system that did not already exist
+in the local domain. We solved this problem by travsersing the graph
+of the matrix for each of the boundary states and determining which
+processes owned those adjacent states. 
 
-\subsection{Generating Multiple Sets }
-\label{subsec:msod_sets}
+To generate overlap, we use the identical algorithm but in this case
+we perform as many graph traversals as the specified amount of
+overlap. For example, consider the analytic relations derived in
+\S~\ref{sec:analytic_framework} for the length of random walks in a
+Neumann-Ulam method and the amount of leakage from a domain
+considering a neutron diffusion problem. From these relations we might
+determine that for our particular problem, if we can grow the domain
+by 10 additional discrete state transitions, we can reduce the number
+of histories that must be comunicated by a significant fraction. We
+determine the information we must gather from neighboring domains to
+build the overlap by traversing the graph of the matrix outward from
+the boundary 10 times. At each step, we find the data in the adjacent
+domain that we require and make that data local, incrementing the size
+of the overap. Once the overlap has been gathered, one extra graph
+traversal on the boundary states is performed to get the new
+neighboring states and their owning process.
 
 \begin{figure}[htpb!]
   \begin{center}
