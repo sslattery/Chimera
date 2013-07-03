@@ -35,7 +35,7 @@ $SP_N$ equations for the fuel assembly criticality problem to verify
 the correctness of the parallel algorithm and implementation by
 comparing the numerical results against production Krylov
 methods. Using the verified implementation of the algorithm, we
-perform parallel scaling studings to test its performance on a
+perform parallel scaling studies to test its performance on a
 leadership class machine and compare this performance to the
 production Krylov methods.
 
@@ -136,7 +136,7 @@ only communicated a few times (history B) if at all, or they may be
 communicated many times (history C) depending on the discretization
 and the outcome of the Monte Carlo game. In identical fashion to the
 particle transport problem, a domain decomposed Neumann-Ulam method
-has the same communcation requirements with all histories in both
+has the same communication requirements with all histories in both
 examples requiring the same parallel operations. The amount of
 communication of histories from domain to domain will be the primary
 factor in the parallel scalability of the algorithm. In the next
@@ -284,7 +284,7 @@ which simplifies to:
   \label{eq:iteration_spectrum}
 \end{equation}
 giving the eigenvalue spectrum for the Jacobi preconditioned iteration
-matrix. To find the maxium eigenvalue,
+matrix. To find the maximum eigenvalue,
 Eq~(\ref{eq:preconditioned_eigenvalues}) is plotted as a function of
 $p$ with $p=q$ in Figure~\ref{fig:diffusion_spectrum} for various
 values of $\Sigma_a$.
@@ -633,7 +633,7 @@ $\rho(\ve{H})$), the approximations are more accurate.
 \section{Domain Decomposed Neumann-Ulam Algorithm\ }
 \label{sec:asynchronous_algorithm}
 In the context of radiation transport, in 2009 Brunner and colleagues
-provided a fully asynchronous domain decomposed parallel aglorithm as
+provided a fully asynchronous domain decomposed parallel algorithm as
 implemented in production implicit Monte Carlo codes
 \citep{brunner_efficient_2009}. We will adapt their algorithm and
 directly apply it to a parallel formulation of the Neumann-Ulam
@@ -794,11 +794,11 @@ detail in the same manner as Brunner and Brantley.
 \end{algorithm}
 
 Successful execution of this algorithm requires construction of the
-parallel Neumann-Ulam decomposition as described in the preceeding
+parallel Neumann-Ulam decomposition as described in the preceding
 section. This data is used to begin
 Algorithm~\ref{alg:parallel_mc_algorithm} where lines 1-5 use the
 collected list of neighboring processors generated while building the
-Neumann-Ulam decompostion to setup the set of asynchronous messages
+Neumann-Ulam decomposition to setup the set of asynchronous messages
 required for domain-to-domain communication. Again, consider this
 communication patter for the 9 subdomain example given by
 Figure~\ref{fig:nearest_neighbor_comm}. In this pattern, each domain
@@ -838,7 +838,7 @@ to two child processes from which it will receive their completed
 number of histories with a nonblocking receive operation. Setting up a
 tree in this manner lets the completed history tally
 (\textit{historiesCompleted} in the algorithm) be updated
-incrementally and funnelled to the root process. Because we are
+incrementally and funneled to the root process. Because we are
 solving fixed source problems with the Neumann-Ulam algorithm without
 any type of variance reduction that may generate more histories that
 we started with, once the root process completion sum tallies to the
@@ -869,7 +869,7 @@ Algorithm~\ref{alg:parallel_mc_algorithm}. In this loop, a set of
 mutually exclusive tasks enabled by the fully asynchronous
 communication patterns are executed until the stop signal is received
 from the parent process in the binary tree. In this case, mutually
-exclusivivity permits all local operations to occur independently of
+exclusivity permits all local operations to occur independently of
 other processes in the system and their current state. For each
 process, there are two data structures from which histories may be
 obtained for the transport procedure. The first is the local source
@@ -915,7 +915,7 @@ to transport in the incoming data buffers by calling
 Algorithm~\ref{alg:process_messages}. For each neighboring domain in
 the problem, if there are histories in those data buffers then they
 are added to the stack from processing and the nonblocking receive
-operation reinstantiated. In addition, the terminated histories count
+operation re-instantiated. In addition, the terminated histories count
 is updated with those values received from the child processes.
 
 \begin{algorithm}[h!]
@@ -1014,7 +1014,7 @@ a binary communication tree.
 There is an additional advantage to Brunner and Brantley's work that
 although not immediately applicable to this work has the potential to
 provide value in the future. In addition to a robust fully
-asynchronous communication pattern, this algorith may also be modified
+asynchronous communication pattern, this algorithm may also be modified
 to account for situations where the total number of histories in a
 given stage are not known before starting transport. From a physics
 perspective, we might expect this for situations where perhaps an
@@ -1122,11 +1122,11 @@ domain decomposed linear operator. We can readily adapt those data
 structures to account for the extra information required by an
 implementation of the MSOD algorithm. First, we consider the
 generation of overlap. Conveniently, this is identical to the
-neighboring states discovery problem discussed in conjuction with
+neighboring states discovery problem discussed in conjunction with
 Figure~\ref{fig:diffusion_graph}. To generate the boundary for the
 local transport domain, we needed to gather all data from the
 immediately adjacent states in the system that did not already exist
-in the local domain. We solved this problem by travsersing the graph
+in the local domain. We solved this problem by traversing the graph
 of the matrix for each of the boundary states and determining which
 processes owned those adjacent states. 
 
@@ -1138,12 +1138,12 @@ Neumann-Ulam method and the amount of leakage from a domain
 considering a neutron diffusion problem. From these relations we might
 determine that for our particular problem, if we can grow the domain
 by 10 additional discrete state transitions, we can reduce the number
-of histories that must be comunicated by a significant fraction. We
+of histories that must be communicated by a significant fraction. We
 determine the information we must gather from neighboring domains to
 build the overlap by traversing the graph of the matrix outward from
 the boundary 10 times. At each step, we find the data in the adjacent
 domain that we require and make that data local, incrementing the size
-of the overap. Once the overlap has been gathered, one extra graph
+of the overlap. Once the overlap has been gathered, one extra graph
 traversal on the boundary states is performed to get the new
 neighboring states and their owning process.
 
@@ -1171,7 +1171,7 @@ linear problem.
   \caption{\textbf{MSOD construction for 4 sets with overlap.}
     \textit{The linear system is used to construct the Monte Carlo
       transport domain on the primary set. The Monte Carlo data
-      structures are then broadcast amongst the blocks to all sets in
+      structures are then broadcast among the blocks to all sets in
       the system.}}
   \label{fig:msod_construction}
 \end{figure}
@@ -1259,7 +1259,7 @@ processors in the problem.
 \section{Parallel MCSA\ }
 \label{sec:parallel_mcsa}
 With the parallel adjoint Neumann-Ulam solver implementation described
-aboive, the parallel implementation of an MCSA iteration is
+above, the parallel implementation of an MCSA iteration is
 trivial. Recall the MCSA iteration procedure presented again here for
 clarity.
 \begin{subequations}
@@ -1302,7 +1302,7 @@ problem is potentially replicated with overlap and the Monte Carlo
 procedure returns a correction vector, $\delta \ve{x}$, with the same
 parallel decomposition as the input linear problem. As was the case
 for generating the replications required for a multiple set
-implementation, the explict matrix and vector operations required for
+implementation, the explicit matrix and vector operations required for
 the rest of an MCSA iteration occur only on the subset of processors
 containing the primary set. Only the Monte Carlo data structures exist
 on the rest of the processors in the problem as replication of the
@@ -1341,7 +1341,7 @@ is considered perfect while a value of 0 signals the worst possible
 performance. Often, as was observed in this work, it is the case that
 efficiencies above 1 are computed in certain scaling studies. For the
 data presented in the following sections, an explanation of each
-observed case of superunitary efficiencies will be provided.
+observed case of super-unitary efficiencies will be provided.
 
 Of primary interest to the nuclear engineer is the \textit{strong
   scaling} performance of an algorithm
@@ -1590,7 +1590,7 @@ Compared to the reference work, there was also not a significant
 change in the runtime over the values of parameters tested with all
 runtimes reported within 6.5\% of the fastest case observed. For this
 work, a history buffer size of 4096 and a buffer check period of 128
-performed best for the intitial calculations. However, most values in
+performed best for the initial calculations. However, most values in
 the range tested will give good performance. Brunner and Brantley
 found that a value of 1024 was best for both parameters. For the
 results observed here, these parameters were only 0.7\% slower than
@@ -1645,7 +1645,7 @@ iterations relative to the base case\footnote{When the algorithmic
   not presented here.}. Instead, what is happening here and was
 observed by Brunner and Brantley in their work is that the large
 problem used to scale to O(10,000) cores was large enough that memory
-thrashing was occuring in the 16 core base case. As the number of
+thrashing was occurring in the 16 core base case. As the number of
 cores in the strong scaling study was increased and the local problem
 size decreased, more of the local problem fit into the cache of the
 system, thus causing improved serial performance and therefore
@@ -1671,10 +1671,10 @@ resources. Furthermore, the fact that we see a very similar trends in
 efficiencies for all methods means that they are bound by the same
 parallel performance limitations in a strong scaling environment. This
 is important as we can expect the same qualitative scaling performance
-from MCSA onc arithmetic optimization has been performed to improve to
+from MCSA once arithmetic optimization has been performed to improve to
 serial performance of the implementation. In addition, these results
 are valuable in that the show MCSA, when properly parallelized, has
-the ability to be competetive on leadership-class computing platforms
+the ability to be competitive on leadership-class computing platforms
 with conventional subspace methods with good strong scaling observed
 in the pure domain decomposition case to O(10,000) cores.
 
@@ -1688,7 +1688,7 @@ when comparing MCSA to the Krylov methods are the same with MCSA and
 GMRES scaling better than the conjugate gradient method due to the
 increased amount of arithmetic work on-process. In addition, it is
 important to note that the weak scaling of MCSA when properly
-parallelized remains competetive with the Krylov methods keeping in
+parallelized remains competitive with the Krylov methods keeping in
 mind the artificial inflation of efficiencies.
 
 \begin{figure}[t!]
@@ -1719,7 +1719,7 @@ maintains the same iterative performance as a function of global
 problem size in the weak scaling study, the implementation
 efficiencies compare more favorably to the Krylov methods. In effect,
 we are measuring the parallel performance of a single iteration for
-each method by looking at these implementation efficieinces. As the
+each method by looking at these implementation efficiencies. As the
 global problem size increases, MCSA is less prone to a drop in
 parallel efficiency. When optimization has been completed and runtimes
 potentially approach those of the Krylov methods, this comparison may
@@ -1867,14 +1867,14 @@ sets with both splitting of histories across sets and full replication
 of histories across sets using both 2 and 4
 sets. Figure~\ref{fig:titan_strong_ms_time} gives the actual wall
 times for these computations. There are two important features to note
-in the wall time data. First, splitting the histories amongst sets
+in the wall time data. First, splitting the histories among sets
 instead of replicating them is faster due to the fact that cutting the
 number of histories in half reduces the time of an iteration by a
 factor that is nearly linear while increasing linearly the number of
 histories through replication does not decrease the iterations
 required to converge by a linear factor. Second, until the strong
 scaling wall is hit starting at around 10,000 cores, the single set
-case actually perfoms the fastest with only marginal improvement in
+case actually performs the fastest with only marginal improvement in
 runtimes at higher numbers of cores with more sets. At these larger
 numbers of cores, however, the improvements are so modest that one is
 better off running the same problem using a single set at lower core
@@ -1889,7 +1889,7 @@ time to solution.
       the strong scaling study with multiple sets.} \textit{Until the
       strong scaling wall is reached at O(10,000) cores, the single
       set case performs the best. For the multiple set cases, it is
-      faster to split histories amongst sets and maintain iterative
+      faster to split histories among sets and maintain iterative
       performance rather than replicate histories to improve iterative
       performance.}}
   \label{fig:titan_strong_ms_time}
@@ -1952,10 +1952,10 @@ computational resources for the this problem.
   \label{fig:titan_strong_ms_eff}
 \end{figure}
 
-Also of interest here is the effect of splitting histories amongst
+Also of interest here is the effect of splitting histories among
 sets versus replicating them on the iterative performance of the
 method. Table~\ref{tab:ms_strong_alg_eff} gives the iterations
-required to converge and computed algorithmic efficiences for each of
+required to converge and computed algorithmic efficiencies for each of
 the cases presented in the strong scaling data. As expected, splitting
 histories maintains a fixed global number of histories and therefore
 maintained the number of iterations required to converge relative to
@@ -2022,7 +2022,7 @@ the single set computation.
 
 This result is significant in that it shows a solution technique in
 which the linear problem can actually be replicated and enhance time
-to solution, something that cannot be acheived with conventional
+to solution, something that cannot be achieved with conventional
 methods. At larger core counts, however, this reduction in compute
 time is not as large as at lower core counts due to the fact that the
 tally reduction across blocks requires more resources and those
@@ -2030,8 +2030,8 @@ resources are clearly growing with core count (most obviously in the 4
 set case with split histories). In addition, at 131,072 cores for the
 largest 4 set computation, load balance is likely becoming an issue
 due to the linear system and subsequent parallel matrix and vector
-operations only occuring on a subset of the entire processor space of
-the problem while the Monte Carlo calculation is occuring on all
+operations only occurring on a subset of the entire processor space of
+the problem while the Monte Carlo calculation is occurring on all
 processors.
 
 \begin{figure}[t!]
@@ -2103,7 +2103,7 @@ across sets had effectively the same results for the weak scaling
 study with the iterations to converge and computed algorithmic
 efficiencies given by Table~\ref{tab:ms_weak_alg_eff}. Again, when the
 implementation efficiencies are computed, we see in
-Figure~\ref{fig:titan_weak_ms_impeff} that splitting histories amongst
+Figure~\ref{fig:titan_weak_ms_impeff} that splitting histories among
 sets is still a more efficient manner of introducing multiple sets
 rather than replicating histories in an attempt to reduce the number
 of iterations required to converge.  Here we also note that this is
@@ -2157,7 +2157,7 @@ enhancement of time to convergence by replicating.
 
 Based on the analysis of the pure domain decomposed MCSA algorithm and
 subsequently the MSOD implementation, one may ask then ask if there is
-any need to commincate histories from domain-to-domain at all. Overlap
+any need to communicate histories from domain-to-domain at all. Overlap
 was not successful because so few histories needed to be communicated
 in the first place that keeping them on-process resulted in more work
 than the communications savings that occurred. If that is true, then
