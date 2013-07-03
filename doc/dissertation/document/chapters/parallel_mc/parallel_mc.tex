@@ -1277,7 +1277,7 @@ clarity.
   \end{gather}
 \end{subequations}
 In \S\ref{sec:parallel_krylov_methods} we discuss parallel matrix and
-vector operations as utilized in conventional Krylov methods. We
+vector operations as utilized in conventional projection methods. We
 utilize these here for the parallel MCSA implementation for the
 computations required in Eqs~(\ref{eq:mcsa_r1}), (\ref{eq:mcsa_r2}),
 (\ref{eq:mcsa_r4}), and (\ref{eq:mcsa_r5}). In the first step, a
@@ -1294,14 +1294,14 @@ iteration solution. Additionally, as given by
 Eq~(\ref{eq:mcsa_stopping_criteria}), 2 parallel vector reductions
 will be required to check the stopping criteria: one initially to
 compute the infinity norm of the source vector, and another at every
-iteration to compute the infinity norm of the residual vector. 
+iteration to compute the infinity norm of the residual vector.
 
-To parallelize Eq~(\ref{eq:mcsa_r3}), we apply the MSOD Neumann-Ulam
-algorithm presented in the previous section. The problem is
-potentially replicated with overlap and the Monte Carlo procedure
-returns a correction vector, $\delta \ve{x}$, with the same parallel
-decomposition as the input linear problem. As was the case for
-generating the replications required for a multiple set
+To parallelize the solution of Eq~(\ref{eq:mcsa_r3}), we apply the
+MSOD Neumann-Ulam algorithm presented in the previous section. The
+problem is potentially replicated with overlap and the Monte Carlo
+procedure returns a correction vector, $\delta \ve{x}$, with the same
+parallel decomposition as the input linear problem. As was the case
+for generating the replications required for a multiple set
 implementation, the explict matrix and vector operations required for
 the rest of an MCSA iteration occur only on the subset of processors
 containing the primary set. Only the Monte Carlo data structures exist
@@ -1348,26 +1348,26 @@ Of primary interest to the nuclear engineer is the \textit{strong
 \citep{siegel_analysis_2012}. In this type of scaling study, the
 global problem size is fixed and the local problem size changes with
 the number of processes in the calculation. In this case, as $P$
-increases, $N$ decreases, thus reducing performance by having a larger
-ratio of communication to computational work. This type of scaling is
-important because typically the global problem size is fixed due to
-the problem of interest. Consider the desire for a high fidelity
-neutronics simulation of the entire core of a nuclear reactor. In this
-case, the global problem is known from the geometry definition
-including the number of fuel assemblies and the geometry of those
-assemblies all the way down to the resolution of the space, angle, and
-energy discretizations required in order to capture physical phenomena
-of interest. Because the global problem size is known a priori, strong
-scaling is an important measure of how useful a solution technique is
-when larger and larger values of $P$ are used to solve the
-problem. Ideally, the time to solution for the the problem will
-decrease linearly as a function of $P$, permitting a faster time to
-solution using the maximum available resources thus making sure all
-$P$ are positively affecting the runtime of the problem.
+increases, $N$ is fixed, thus reducing the local problem size and
+performance by having a larger ratio of communication to computational
+work. This type of scaling is important because typically the global
+problem size is fixed due to the problem of interest. Consider the
+desire for a high fidelity neutronics simulation of the entire core of
+a nuclear reactor. In this case, the global problem is known from the
+geometry definition including the number of fuel assemblies and the
+geometry of those assemblies all the way down to the resolution of the
+space, angle, and energy discretizations required in order to capture
+physical phenomena of interest. Because the global problem size is
+known a priori, strong scaling is an important measure of how useful a
+solution technique is when larger and larger values of $P$ are used to
+solve the problem. Ideally, the time to solution for the the problem
+will decrease linearly as a function of $P$, permitting a faster time
+to solution using the maximum available resources and thus making sure
+all $P$ are positively affecting the runtime of the problem.
 
 For strong scaling, the objective is to then decrease the runtime of a
-fixed size global problem as a linear function of $P$. We can then
-define the strong scaling \textit{absolute efficiency} as:
+fixed size global problem as a linear function of $P$. Based on this,
+we can define the strong scaling \textit{absolute efficiency} as:
 \begin{equation}
   \eta_{strong}(N,P) = \frac{1}{P} \frac{T(N,1)}{T(N,P)}\:,
   \label{eq:strong_scaling_absolute}
@@ -1449,28 +1449,41 @@ considered when preparing a parallel calculation.
 Using the parallel performance metrics presented in the previous
 section, we will next performance various scaling studies using an
 implementation of the parallel MCSA algorithm to assess the quality of
-the algorithm. For these scaling studies, large problems at high
-levels of concurrency will be solved at a leadership-class computing
-facility. In this section, we will outline the parallel machine on
-which the calculations were performed and then perform a series a
-studies that identify both strengths and weaknesses of the parallel
-algorithm. Both pure domain decomposition and MSOD parallel
-performance will be explored and compared to performance results for
-the same problems using a set of production parallel Krylov solvers.
+the algorithm using the neutron diffusion problem presented in
+Appendix~\ref{chap:diffusion_problem}. For these scaling studies,
+large problems at high levels of concurrency will be solved at a
+leadership-class computing facility. In this section, we will outline
+the parallel machine on which the calculations were performed and then
+present a series of numerical studies that identify both strengths and
+weaknesses of the parallel algorithm. Both pure domain decomposition
+and MSOD parallel performance will be explored and compared to
+performance results for the same problems using a set of production
+parallel Krylov solvers. For the scaling results presented here, all
+parallel Monte Carlo results were computed using the Monte Carlo
+Linear Solvers\footnote{MCLS is an open source library and can be
+  downloaded at \url{https://github.com/sslattery/MCLS}} (MCLS)
+library generated specifically for this work while the conjugate
+gradient and GMRES Krylov solvers used are part of the Belos linear
+solver package within the Trilinos framework
+\citep{heroux_overview_2005}. In general, the Belos package produces
+solutions to the neutron diffusion problem over an order of magnitude
+faster than the MCLS library for serial computations. Therefore, when
+we directly compare these two codes, the MCLS parallel efficiencies
+will appear artificially inflated relative to the Belos efficiencies
+due to the fact that the MCLS ratio of work to communication will be
+much larger than that for the Belos calculations.
 
 \subsection{Titan }
 \label{subsec:titan}
 All parallel scaling studies presented in this work were performed on
 the Titan Cray XK7 machine at the Oak Ridge Leadership Computing
-Facility located at Oak Ridge National
-Laboratory\footnote{Specifications presented for Titan in the section
-  were gathered from the Oak Ridge Leadership Computing Facility at
-  \url{http://www.olcf.ornl.gov/computing-resources/titan-cray-xk7/}}. Titan
-is a heterogeneous architecture machine combining both CPU and GPU
+Facility located at Oak Ridge National Laboratory. Titan is a
+heterogeneous architecture machine combining both CPU and GPU
 components to achieve a theoretical peak performance of more than 20
 petaflops. The technical specifications for Titan are given in
-Table~\ref{tab:titan_hardware} and spefically for only the CPU portion
-of the machine.
+Table~\ref{tab:titan_hardware} and specifically for only the CPU
+portion of the machine.
+
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{lc}\hline\hline
@@ -1485,18 +1498,21 @@ of the machine.
       \hline\hline
     \end{tabular}
   \end{center}
-  \caption{\textbf{Titan Cray XK7 hardware specifications.}}
+  \caption{\textbf{Titan Cray XK7 hardware specifications.}
+    \textit{Specifications presented for Titan in this table were
+      gathered from the Oak Ridge Leadership Computing Facility at}
+    \url{http://www.olcf.ornl.gov/computing-resources/titan-cray-xk7/}}
   \label{tab:titan_hardware}
 \end{table}
 
 For the scaling studies presented in this work, only the CPU
-components specified in of Titan were utilized. This is due to the
-fact that the implementations of the parallel MCSA algorithm utilized
-code written only with the Message Passing Interface (MPI) and
-therefore could not take advantage of the GPU accelerators. Even
-considering just the CPU portion of titan, nearly 300,000 CPUs are
-available to test the parallel performance of the algorithm at high
-levels of concurrency. 
+components of Titan specified in Table~\ref{tab:titan_hardware} were
+utilized. This is due to the fact that the implementations of the
+parallel MCSA algorithm utilized code written only with the Message
+Passing Interface (MPI) and therefore could not take advantage of the
+GPU accelerators. Even considering just the CPU portion of Titan,
+nearly 300,000 CPUs are available to test the parallel performance of
+the MCSA algorithm at high levels of concurrency.
 
 For each parallel performance metric presented in the previous
 section, a reference case is required to compute efficiencies for all
@@ -1524,34 +1540,37 @@ neighboring domain, both of which may potentially affect latency and
 load balancing. Changing the static history buffer size parameter
 affects the scalability of the algorithm in two ways. If the buffer
 size is increased, the buffer takes longer to fill and is therefore
-sent less frequently, potentially causing scalability bottlenecks
+sent less frequently, potentially causing load balancing bottlenecks
 where a neighboring domain is idle and waiting for more work to do but
 is waiting for another domain to complete work. In addition, if the
 buffer size is too large, the network may become saturated with these
 very large data packets, slowing down performance. If the buffer size
 is too small, too many history messages are sent, not providing enough
 data for a neighboring process to work on to make up for the time
-spent communicating. Considering the second parameter, when the check
-frequency period is increased, more histories are processed locally
-before looking to do work elsewhere. If this value becomes too large,
-incoming data buffers may not be cleared frequently enough and cause a
-bottle neck in the domain-to-domain communications. If this value is
-too small, too much time is spent looking for work instead of actually
-performing it.
+spent communicating. Considering the second parameter, when the
+message check frequency period is increased, more histories are
+processed locally before looking to do work elsewhere. If this value
+becomes too large, incoming data buffers may not be cleared frequently
+enough and cause decreased performance in the domain-to-domain
+communications. If this value is too small, too much time is spent
+looking for work instead of actually performing it.
 
 To assess how these parameters affect the performance of the parallel
 Monte Carlo algorithm on the Titan machine, a parameter study was
 performed using the neutron diffusion problem on 64 cores (4
-nodes). Each parameter was varied between 16 and 4096 and the time to
-solve the problem recorded. The results of this study are presented in
+nodes). This problem had a reasonably well conditioned spectral radius
+of 0.78 with a global problem size of \sn{1.6}{7} DOFs with one
+stochastic history used per DOF in the MCSA Neumann-Ulam used to
+compute the correction for the acceleration. Each parameter was varied
+between 16 and 4096 and the time to solve the problem recorded. The
+results of this study are presented in
 Figure~\ref{fig:titan_comm_parameters}. Compared to the results of
 Brunner and Brantley for the same type of study, we note qualitatively
 similar results with the general observation that a larger history
 buffer check period is better than a shorter one. The larger the check
 period, the more on-process work is done before checking
 messages. Second, there was not a significant variation observed in
-the history buffer size parameter for a given check
-frequency.
+the history buffer size parameter for a given check frequency.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1584,38 +1603,91 @@ the history buffer size and message check frequency will be used.
 
 \clearpage
 
-\subsection{Pure Domain Decomposition}
+\subsection{Pure Domain Decomposition Scaling}
 \label{subsec:pure_domain_decomp}
 
-\subsubsection{Strong Scaling}
-\label{subsubsec:pure_strong}
+For the first set of scaling studies, we consider the parallel MCSA
+algorithm where MSOD has not been used in the parallel Neumann-Ulam
+algorithm. We refer to this case as pure domain decomposition where no
+overlap or replication has been leveraged. Such a test will isolate
+specifically the performance of Brunner and Brantley's algorithm as
+applied to the Neumann-Ulam algorithm. For the strong scaling study,
+the global problem size was fixed at \sn{1.6}{7} DOFs for all solvers
+and the 16 core run used as the base case. MCSA was used again with
+one stochastic history used per DOF in the Neumann-Ulam solve to
+compute the correction for the
+acceleration. Figure~\ref{fig:titan_pure_strong} gives the results of
+the this study with the given absolute efficiencies computed using
+Eq~(\ref{eq:strong_scaling_absolute}).
 
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_pure_strong.pdf}
   \end{center}
   \caption{\textbf{Pure domain decomposition strong scaling absolute
-      efficiency.}  \textit{Super-linear speed-up from memory
-      thrashing in base case. MCLS is an order of magnitude slower
+      efficiency.}  \textit{Super-linear speed-up is from memory
+      thrashing in the base case. MCLS is an order of magnitude slower
       arithmetically, causing the higher efficiency.}}
   \label{fig:titan_pure_strong}
 \end{figure}
 
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_bvsm.pdf}
-  \end{center}
-  \caption{\textbf{Binary tree vs. master/slave communication scheme
-      absolute efficiency.} \textit{Pure domain decomposition absolute
-      strong scaling. The master/slave scheme will not scale beyond
-      $O(1,000)$ cores due to load imbalance.}}
-  \label{fig:titan_strong_bvsm}
-\end{figure}
+There are several key features of Figure~\ref{fig:titan_pure_strong}
+worth noting. First, up to around 5,000 cores, all methods experience
+a super-linear improvement in parallel efficiencies. For all methods,
+this increase is not a function of the algorithmic efficiency as those
+computed using Eq~(\ref{eq:algorithmic_efficiency}) remained at unity,
+meaning that all computations converged in the same number of
+iterations relative to the base case\footnote{When the algorithmic
+  efficiency remains at unity for all calculations, the implementation
+  efficiency is equivalent to the absolute efficiency and therefore is
+  not presented here.}. Instead, what is happening here and was
+observed by Brunner and Brantley in their work is that the large
+problem used to scale to O(10,000) cores was large enough that memory
+thrashing was occuring in the 16 core base case. As the number of
+cores in the strong scaling study was increased and the local problem
+size decreased, more of the local problem fit into the cache of the
+system, thus causing improved serial performance and therefore
+enhanced runtimes. In this region of super-linear efficiencies, we
+also observe larger efficiencies for GMRES as compared to conjugate
+gradient. This occurs due to the fact that conjugate gradient has a
+static set of operations performed at every iteration while GMRES
+operates on a continually growing subspace. In addition, the
+orthogonalization operations required to generate that subspace
+consume much more time than the basic conjugate gradient operations,
+causing a larger serial runtime and subsequently higher
+efficiencies. For the same reasons, we also observe higher
+efficiencies for the MCSA implementation due to the serial performance
+of the implementation.
 
-\clearpage
+Beyond around 5,000 cores, the global problem size selected for this
+strong scaling study causes the local problem size to shrink enough
+that parallel communication costs begin to overtake arithmetic costs
+on process. This takeover causes this effective strong scaling wall
+that is observed in all methods. Using any more cores to solve this
+particular global problem is not an efficient use of those parallel
+resources. Furthermore, the fact that we see a very similar trends in
+efficiencies for all methods means that they are bound by the same
+parallel performance limitations in a strong scaling environment. This
+is important as we can expect the same qualitative scaling performance
+from MCSA onc arithmetic optimization has been performed to improve to
+serial performance of the implementation. In addition, these results
+are valuable in that the show MCSA, when properly parallelized, has
+the ability to be competetive on leadership-class computing platforms
+with conventional subspace methods with good strong scaling observed
+in the pure domain decomposition case to O(10,000) cores.
 
-\subsubsection{Weak Scaling}
-\label{subsubsec:pure_weak}
+Next, we consider the weak scaling performance of the algorithm. In
+this case, we fix the local problem size at \sn{4}{4} DOFs and
+increase the number of processors used in the
+simulation. Figure~\ref{fig:titan_weak_absolute} gives the weak
+scaling absolute efficiencies for this problem as computed by
+Eq~(\ref{eq:weak_scaling_absolute}). In general, the relative trends
+when comparing MCSA to the Krylov methods are the same with MCSA and
+GMRES scaling better than the conjugate gradient method due to the
+increased amount of arithmetic work on-process. In addition, it is
+important to note that the weak scaling of MCSA when properly
+parallelized remains competetive with the Krylov methods keeping in
+mind the artificial inflation of efficiencies.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1625,6 +1697,31 @@ the history buffer size and message check frequency will be used.
       efficiency.}}
   \label{fig:titan_weak_absolute}
 \end{figure}
+
+As an additional means of comparison between MCSA and the Krylov
+methods, we compute the algorithmic efficiencies of the calculations
+using Eq~(\ref{eq:algorithmic_efficiency}). As shown in
+Figure~\ref{fig:titan_weak_algorithmic}, the algorithm efficiency of
+the Krylov algorithm improves as a function of the number of cores in
+the problem due to the fact that the number of iterations required to
+converge decreased from 20 in the base case to 19 and then to 18 for
+the final set of computations. When this reduction in iterations is
+used to account for the observed runtimes and computed absolute
+efficiencies for weak scaling we end up with the implementation
+efficiencies computed using Eq~(\ref{eq:implementation_efficiency})
+given in Figure~\ref{fig:titan_weak_implementation}. Because MCSA
+maintains the same iterative performance as a function of global
+problem size in the weak scaling study, the implementation
+efficiencies compare more favorably to the Krylov methods. In effect,
+we are measuring the parallel performance of a single iteration for
+each method by looking at these implementation efficieinces. As the
+global problem size increases, MCSA is less prone to a drop in
+parallel efficiency. When optimization has been completed and runtimes
+potentially approach those of the Krylov methods, this comparison may
+not be as favorable. Overall, weak scaling performance the parallel
+MCSA algorithm is excellent for the pure domain decomposition case
+with absolute parallel efficiencies of over 80\% observed at over
+32,000 cores.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1642,6 +1739,36 @@ the history buffer size and message check frequency will be used.
   \caption{\textbf{Pure domain decomposition weak scaling
       implementation efficiency.}}
   \label{fig:titan_weak_implementation}
+\end{figure}
+
+In addition to comparing MCSA scaling to conventional methods, we also
+motivate avoiding any type of master/slave algorithms at these high
+levels of concurrency by comparing the binary communication tree
+implementation used in the previous results with a parallel MCSA
+implementation that uses the master/slave scheme to determine the end
+of a history transport stage as shown in
+Figure~\ref{fig:master_comm_tree}
+instead. Figure~\ref{fig:titan_strong_bvsm} provides this comparison
+using the strong scaling study while Figure~\ref{fig:titan_weak_bvsm}
+gives the results of the comparison for the weak scaling study. In
+both cases, the deficiencies caused by using the master/slave scheme
+for transport completion are obvious. At around 1,000 cores, both the
+strong and weak scaling performance seriously degrades while the
+binary tree pattern maintains execellent performance. At this number
+of cores, any extra work given to the master process, even if it
+amounts to summing a handful of integers and checking for a few extra
+messages as in this algorithm, this extra work grows enough to create
+serious load imbalance and reduce performance.
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_bvsm.pdf}
+  \end{center}
+  \caption{\textbf{Binary tree vs. master/slave communication scheme
+      absolute efficiency.} \textit{Pure domain decomposition absolute
+      strong scaling. The master/slave scheme will not scale beyond
+      $O(1,000)$ cores due to load imbalance.}}
+  \label{fig:titan_strong_bvsm}
 \end{figure}
 
 \begin{figure}[t!]
