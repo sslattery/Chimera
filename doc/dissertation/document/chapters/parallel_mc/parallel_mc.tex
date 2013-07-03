@@ -1627,7 +1627,9 @@ Eq~(\ref{eq:strong_scaling_absolute}).
   \caption{\textbf{Pure domain decomposition strong scaling absolute
       efficiency.}  \textit{Super-linear speed-up is from memory
       thrashing in the base case. MCLS is an order of magnitude slower
-      arithmetically, causing the higher efficiency.}}
+      arithmetically, causing the higher efficiency. GMRES executes
+      more operations than conjugate gradient, also creating a higher
+      efficiency.}}
   \label{fig:titan_pure_strong}
 \end{figure}
 
@@ -1694,6 +1696,9 @@ mind the artificial inflation of efficiencies.
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_absolute.pdf}
   \end{center}
   \caption{\textbf{Pure domain decomposition weak scaling absolute
+      efficiency.} \textit{MCLS is an order of magnitude slower
+      arithmetically, causing the higher efficiency. GMRES executes
+      more operations than conjugate gradient, also creating a higher
       efficiency.}}
   \label{fig:titan_weak_absolute}
 \end{figure}
@@ -1728,6 +1733,9 @@ with absolute parallel efficiencies of over 80\% observed at over
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_alg_eff.pdf}
   \end{center}
   \caption{\textbf{Pure domain decomposition weak scaling algorithmic
+      efficiency.} \textit{As the global problem size was increased in
+      the weak scaling study, both conjugate gradient and GMRES
+      converged in fewer iterations, causing the rise in algorithmic
       efficiency.}}
   \label{fig:titan_weak_algorithmic}
 \end{figure}
@@ -1737,7 +1745,11 @@ with absolute parallel efficiencies of over 80\% observed at over
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_implementation.pdf}
   \end{center}
   \caption{\textbf{Pure domain decomposition weak scaling
-      implementation efficiency.}}
+      implementation efficiency.} \textit{Considering the scalability
+      of a single iteration of the implementation, the inflated
+      efficiencies of the MCLS MCSA implementation become more
+      obvious. Implementation optimization will likely reduce the MCSA
+      values to a level more comparable to the Belos values.}}
   \label{fig:titan_weak_implementation}
 \end{figure}
 
@@ -1799,19 +1811,19 @@ using multiple sets, several aspects of the replicated parallel
 problem must be considered in order to effectively craft the studies
 and interpret their results. First is the question of how many
 stochastic histories to use to generate the correction vector in the
-MCSA iteration. For this work we consider two choices, the split case
-and the fully replicated case. As an example, consider a single set
-problem where 20,000 histories are used in the Monte Carlo solve. If
-we choose the split case, then solving the same problem with 2 sets
-would give 10,000 histories in each set and 4 sets would give 5,000
-histories in each set. Splitting the histories in this way provides
-the same global number of histories used to compute the correction in
-the single set problem. We expect to reduce the time to solution by
-doing this as each individual set solve will occur faster in an almost
-linear fashion with the reduced number of histories. For the
-replicated history case, each additional set in the problem will use
-just as many histories as the single set case. Using 2 sets with fully
-replicated histories for our example problem then has each set
+MCSA iteration. For this work we consider two choices; the split case
+and the fully replicated case. As an example these cases, consider a
+single set problem where 20,000 histories are used in the Monte Carlo
+solve. If we choose the split case, then solving the same problem with
+2 sets would give 10,000 histories in each set and 4 sets would give
+5,000 histories in each set. Splitting the histories in this way
+provides the same global number of histories used to compute the
+correction in the single set problem. We expect to reduce the time to
+solution by doing this as each individual set solve will occur faster
+in an almost linear fashion with the reduced number of histories. For
+the replicated history case, each additional set in the problem will
+use just as many histories as the single set case. Using 2 sets with
+fully replicated histories for our example problem then has each set
 computing 20,000 histories with 40,000 global histories in the
 computation. For the 4 set case, the number of global histories is
 increased to 80,000. We also expect this type of replication to reduce
@@ -1819,20 +1831,24 @@ the time to solution as the extra global histories should reduce the
 stochastic uncertainty in the correction vector and reduce the overall
 number of MCSA iterations required to converge.
 
+\subsubsection{Strong Scaling with Multiple Sets}
+\label{subsubsec:ms_strong}
+
 For the strong scaling study, we apply the additional sets as
 follows. Using the same problems as the pure domain decomposition
 scaling study, the multiple sets are used to replicate those problems
 and boost the core count. For example, for the 4 set case, the data
-point at 64 cores has the same $N/P$ ratio as the single set problem
-with 16 cores. This is due to the fact that $N$ is fixed for the
-strong scaling study and 4 replications gives a set size of 16
+point at 64 cores has the same $N/P$ ratio in one set as the single
+set problem with 16 cores. This is due to the fact that $N$ is fixed
+for the strong scaling study and 4 replications gives a set size of 16
 cores. For the 2 set case, the 32 core data point is solving the same
-$N/P$ problem as the 16 core base case. In addition to considering the
-replicated domain, we must also consider how to modify the
-efficiencies we will compute. For the strong scaling case, recall that
-the objective is to decrease the time to solution for a given global
-problem size $N$ by increasing $P$. Therefore, we may use
-Eqs~(\ref{eq:strong_scaling_absolute_ref}),
+$N/P$ problem in a set as the 16 core base case.
+
+In addition to considering the replicated domain, we must also
+consider how to modify the efficiencies we will compute. For the
+strong scaling case, recall that the objective is to decrease the time
+to solution for a given global problem size $N$ by increasing
+$P$. Therefore, we may use Eqs~(\ref{eq:strong_scaling_absolute_ref}),
 (\ref{eq:algorithmic_efficiency}), and
 (\ref{eq:implementation_efficiency}) to compute the various strong
 scaling efficiencies, but we must modify the reference computation in
@@ -1841,69 +1857,98 @@ computations, the 16 core single set computation will be used as the
 reference case. By adding more cores to the problem, either by
 replicating with multiple sets, or decreasing the local problem size,
 any computational resources added to the problem should aim to result
-in speedup. If this speedup for one technique is less than another,
-then that technique is deemed a less efficient use of those
-computational resources.
+in speedup of this reference case. If this speedup for one technique
+of adding cores is less than another, then that technique is deemed a
+less efficient use of those computational resources.
 
 For the multiple sets problem, the single set strong scaling study
 from the pure domain decomposition base case was repeated for multiple
 sets with both splitting of histories across sets and full replication
-of histories across sets. Figure~\ref{fig:titan_strong_ms_time} gives
-the actual wall times for these computations. There are two important
-features to note in the wall time data. First, splitting the histories
-amongst sets instead of replicating them is faster due to the fact
-that cutting the number of histories in half reduces the time of an
-iteration by a factor that is nearly linear while increasing linearly
-the number of histories through replication does not decrease the
-iterations required to converge by a linear factor. Second, until the
-strong scaling wall is hit starting at around 10,000 cores, the single
-set case actually perfoms the fastest with only marginal improvement in
+of histories across sets using both 2 and 4
+sets. Figure~\ref{fig:titan_strong_ms_time} gives the actual wall
+times for these computations. There are two important features to note
+in the wall time data. First, splitting the histories amongst sets
+instead of replicating them is faster due to the fact that cutting the
+number of histories in half reduces the time of an iteration by a
+factor that is nearly linear while increasing linearly the number of
+histories through replication does not decrease the iterations
+required to converge by a linear factor. Second, until the strong
+scaling wall is hit starting at around 10,000 cores, the single set
+case actually perfoms the fastest with only marginal improvement in
 runtimes at higher numbers of cores with more sets. At these larger
 numbers of cores, however, the improvements are so modest that one is
 better off running the same problem using a single set at lower core
-counts to conserve computational resource while maintaining a good tim
-to solution.
+counts to conserve computational resources while maintaining a good
+time to solution.
 
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_ms_time.pdf}
   \end{center}
   \caption{\textbf{Wall time in seconds to solution for each case for
-      the strong scaling study with multiple sets.}}
+      the strong scaling study with multiple sets.} \textit{Until the
+      strong scaling wall is reached at O(10,000) cores, the single
+      set case performs the best. For the multiple set cases, it is
+      faster to split histories amongst sets and maintain iterative
+      performance rather than replicate histories to improve iterative
+      performance.}}
   \label{fig:titan_strong_ms_time}
 \end{figure}
 
 From this timing data we then compute the absolute efficiencies for
-strong scaling as given in Figure~\ref{fig:titan_strong_ms_eff}. As
-observed in the timing data, because the single set case had the
-fastest run times up to the strong scaling wall it also has the best
-observed efficiencies. For the 2 set case with history splitting,
-although the time to perform an iteration was nearly cut in half, the
-extra parallel overhead associated with reducing the tally across the
-blocks to combine the set results increases run times and reduces
-efficiencies.This reduction across blocks is even more obvious for the
-4 set case. For the replicated cases, we do observe a flat region of
-parallel efficiencies at larger core counts (around 32,000 for the 4
-set case with history replication), but the additional cores do not
-reduce the runtime of the global problem efficiently. Ultimately, all
-cases effectively hit the strong scaling wall at the same time. We
-expect this if we consider the fact that adding sets to the problem is
-in itself effectively a form of strong scaling. For any given problem
-of fixed size $N$, adding extra sets to the computation decreases the
-ratio of $N/P$ as $P$ will grow with the addition of sets. For the
-split history case, the splitting further exacerbates this situation
-by further decreasing the amount of histories that will be computed in
+strong scaling as given in Figure~\ref{fig:titan_strong_ms_eff} using
+the 16-core single set calculation as the reference case. As observed
+in the timing data, because the single set case had the fastest run
+times up to the strong scaling wall it also has the best observed
+efficiencies. For the 2 set case with history splitting, although the
+time to perform an iteration was nearly cut in half, the extra
+parallel overhead associated with reducing the tally across the blocks
+to combine the set results increases run times and reduces
+efficiencies. This reduction across blocks is even more obvious for
+the 4 set case. For the replicated cases, we do observe a flat region
+of parallel efficiencies at larger core counts (up to around 32,000
+for the 4 set case with history replication) showing improved scaling
+within context of not considering the single set
+calculation. Unfortunately, the additional cores do not reduce the
+runtime of the global problem as efficiently as expected. Ultimately,
+all cases effectively hit the strong scaling wall at the same time at
+around O(10,000) cores.
+
+We expect this if we consider the fact that adding sets to the problem
+is in itself effectively a form of strong scaling. For any given
+problem of fixed size $N$, adding extra sets to the computation
+decreases the global ratio of $N/P$ as $P$ will grow with the addition
+of sets (although $N/P$ is constant within a set). For the split
+history case, the splitting further exacerbates this situation by
+further decreasing the amount of histories that will be computed in
 the local domain, giving a larger ratio of communication to work in
 the Monte Carlo solve. As with with single set results, we also
 observe some efficiencies greater than unity for the multiple set
-cases also due to improved cache utilization.
+cases also due to improved cache utilization. 
+
+Although not as dramatic as one might originally expect from
+introducing replication, there are some modest gains in efficiencies
+at high core counts by using multiple sets. Of interest here is where
+the multiple set cases perform better than the single set case after
+the single set case has hit the strong scaling wall. In
+Figure~\ref{fig:titan_strong_ms_eff}, at 16,384 cores the single set
+case operates at 38\% efficiency while at the same number of cores,
+the 2 set case with history replication operates at 62\%
+efficiency. This is reasonable improvement in the use of those
+computational resources, gained by replicating the problem. Beyond
+16,384 cores, there is not a compelling reason to use more
+computational resources for the this problem.
 
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_ms_eff.pdf}
   \end{center}
-  \caption{\textbf{Absolute parallel efficiency relative to 16-core
-      1-set base case.}}
+  \caption{\textbf{Multiple set absolute parallel efficiency.}
+    \textit{Computed relative to the 16-core 1-set base case. Using a
+      single set is the best means by which to improve strong scaling
+      up to the strong scaling wall. At higher core counts past where
+      the single set case hits the strong scaling wall adding sets can
+      provide some improvements in efficiencies.}}
   \label{fig:titan_strong_ms_eff}
 \end{figure}
 
@@ -1911,7 +1956,7 @@ Also of interest here is the effect of splitting histories amongst
 sets versus replicating them on the iterative performance of the
 method. Table~\ref{tab:ms_strong_alg_eff} gives the iterations
 required to converge and computed algorithmic efficiences for each of
-the cases presented in the scaling data. As expected, splitting
+the cases presented in the strong scaling data. As expected, splitting
 histories maintains a fixed global number of histories and therefore
 maintained the number of iterations required to converge relative to
 the single set base case. When histories were replicated, adding sets
@@ -1922,11 +1967,7 @@ Figure~\ref{fig:titan_strong_ms_impeff}. From these results, we see
 that the replicated history cases are even less efficient than in the
 absolute case. Not only do we have the additional parallel overhead of
 doing the block level reduction, but we also have additional histories
-that increase the time to solution for a single iteration. Given that
-the time to solution is not efficiently improved using multiple sets
-in both the split and replicated history cases, multiple set domain
-decomposition is not an effective means to boost the strong scaling
-efficiencies of MCSA.
+that increase the time to solution for a single iteration.
 
 \begin{table}[h!]
   \begin{center}
@@ -1952,14 +1993,22 @@ efficiencies of MCSA.
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_ms_impeff.pdf}
   \end{center}
-  \caption{\textbf{Strong scaling implementation efficiency relative
-      to the 16-core 1-set base case.}}
+  \caption{\textbf{Multiple set strong scaling implementation
+      efficiency.} \textit{Computed relative to the 16-core 1-set base
+      case. Considering iterations required to converge, the
+      performance of the split history cases at much better than the
+      cases with history replication.}}
   \label{fig:titan_strong_ms_impeff}
 \end{figure}
 
+\clearpage
+
+\subsubsection{Weak Scaling with Multiple Sets}
+\label{subsubsec:ms_weak}
+
 Next, we continue to a weak scaling study of the multiple sets
-problem. As with the strong scaling study, we will modify the pure
-domain decomposition study to account for the additional
+problem. In the same way as the strong scaling study, we will modify
+the pure domain decomposition study to account for the additional
 replication. For each calculation in the single set study, that
 problem will be replicated either 2 or 4 times with both split and
 replicated histories to assess the effects on scalability and
@@ -1967,18 +2016,23 @@ runtime. Figure~\ref{fig:titan_weak_ms_time} gives the wall times from
 the multiple sets weak scaling study. Of primary importance here is
 the fact that adding sets to the problem with both split and
 replicated histories actually decreases the time to solution. This was
-not observed in the strong scaling case due to the larger decrease in
-computational work as the number of cores was increased. This result
-is significant in that it shows a solution technique in which the
-linear problem can actually be replicated and enhance time to
-solution, something that cannot be acheived with conventional
+not observed in the strong scaling case until much larger core counts
+due as the multiple set computations hit the strong scaling wall after
+the single set computation. 
+
+This result is significant in that it shows a solution technique in
+which the linear problem can actually be replicated and enhance time
+to solution, something that cannot be acheived with conventional
 methods. At larger core counts, however, this reduction in compute
-time is not as great as at lower core counts due to the fact that the
-tally reduction across blocks requires more resources. In addition, at
-over 130,000 cores for the largest 4 set computation, load balance is
-likely becoming an issue due to the linear system and subsequent
-parallel matrix and vector operations only occuring on a subset of the
-entire processor space of the problem.
+time is not as large as at lower core counts due to the fact that the
+tally reduction across blocks requires more resources and those
+resources are clearly growing with core count (most obviously in the 4
+set case with split histories). In addition, at 131,072 cores for the
+largest 4 set computation, load balance is likely becoming an issue
+due to the linear system and subsequent parallel matrix and vector
+operations only occuring on a subset of the entire processor space of
+the problem while the Monte Carlo calculation is occuring on all
+processors.
 
 \begin{figure}[t!]
   \begin{center}
@@ -2004,19 +2058,21 @@ relationship to account for this fact:
   \label{eq:ms_weak_efficiency}
 \end{equation}
 where now the absolute efficiency is a function of the number of sets
-in the problem. Interestingly, Eq~(\ref{eq:ms_weak_efficiency}) has a
-very similar form to the strong scaling efficiency given by
-Eq~(\ref{eq:strong_scaling_absolute}), representative of the strong
-scaling nature of adding additional sets. For problems where adding
-sets improves time to solution, this new weak scaling formulation
-accounts for how efficiently those extra resources are incorporated
-into the problem. Without such a modification, the largest case run
-for the split 4 set case would have a computed weak scaling efficiency
-of nearly 100\% using the standard formula for absolute
-efficiency. However, using 4 times as many cores as the single set
-case increases the runtime for a fixed global problem size and
-therefore we actually expect to compute a very low efficiency that
-shows this very poor use of resources.
+in the problem and again $M/Q = N/P$. As with the strong scaling
+study, we will use the 16-core single set case as the reference
+computation for efficiencies. Interestingly,
+Eq~(\ref{eq:ms_weak_efficiency}) has a very similar form to the strong
+scaling efficiency given by Eq~(\ref{eq:strong_scaling_absolute}),
+representative of the strong scaling nature of adding additional
+sets. For problems where adding sets improves time to solution, this
+new weak scaling formulation accounts for how efficiently those extra
+resources are incorporated into the problem. Without such a
+modification, the largest case run for the split 4 set case would have
+a computed weak scaling efficiency of nearly 100\% using the standard
+formula for absolute efficiency. However, using 4 times as many cores
+as the single set case increased the runtime for a fixed global
+problem size and therefore we would actually expect to compute a very
+low efficiency that shows this very poor use of resources.
 
 Figure~\ref{fig:titan_weak_ms_eff} gives the results of the weak
 scaling efficiencies using the multiple set metric given by
@@ -2044,8 +2100,8 @@ scaling study.
 
 As in the strong scaling case, splitting and replicating histories
 across sets had effectively the same results for the weak scaling
-study with the iterations to converge and compute algorithmic
-efficienies given by Table~\ref{tab:ms_weak_alg_eff}. Again, when the
+study with the iterations to converge and computed algorithmic
+efficiencies given by Table~\ref{tab:ms_weak_alg_eff}. Again, when the
 implementation efficiencies are computed, we see in
 Figure~\ref{fig:titan_weak_ms_impeff} that splitting histories amongst
 sets is still a more efficient manner of introducing multiple sets
@@ -2059,12 +2115,11 @@ enhance the time to solution through replication and do so
 significantly at core counts of O(1,000) and lower. In both the weak
 and strong scaling cases, due to the additional computational and
 communication overhead of adding sets to the system, one should never
-expect to boost parallel efficiencies for MCSA using this
-technique. Further, in a purely strong scaling environment, no
-performance gains should be expected as adding sets creates an even
-more parasitic ratio of $N/P$. In a weak scaling environment, although
-no efficiency increase will be noted, one can expect an enhancement of
-time to convergence by replicating.
+expect to seriously boost parallel efficiencies for MCSA using this
+technique accept for certain instances past the strong scaling wall in
+a purely strong scaling environment. In a weak scaling environment,
+although no efficiency increase will be noted, one can expect an
+enhancement of time to convergence by replicating.
 
 \begin{table}[h!]
   \begin{center}
@@ -2099,6 +2154,15 @@ time to convergence by replicating.
 
 \subsection{Subdomain Neumann-Ulam}
 \label{subsec:full_clip}
+
+Based on the analysis of the pure domain decomposed MCSA algorithm and
+subsequently the MSOD implementation, one may ask then ask if there is
+any need to commincate histories from domain-to-domain at all. Overlap
+was not successful because so few histories needed to be communicated
+in the first place that keeping them on-process resulted in more work
+than the communications savings that occurred. If that is true, then
+perhaps without any overlap or communication, just doing local Monte
+Carlo may be satisfactory for accelerating the MCSA iteration.
 
 Full-clip actually uses the solver as a true subdomain solver, just
 like you would in a Schwarz method. In fact, this is a stochastic
