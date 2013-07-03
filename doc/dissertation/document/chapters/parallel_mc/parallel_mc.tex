@@ -1766,11 +1766,11 @@ gives the results of the comparison for the weak scaling study. In
 both cases, the deficiencies caused by using the master/slave scheme
 for transport completion are obvious. At around 1,000 cores, both the
 strong and weak scaling performance seriously degrades while the
-binary tree pattern maintains execellent performance. At this number
-of cores, any extra work given to the master process, even if it
-amounts to summing a handful of integers and checking for a few extra
-messages as in this algorithm, this extra work grows enough to create
-serious load imbalance and reduce performance.
+binary tree pattern maintains excellent performance. At this number of
+cores, any extra work given to the master process, even if it amounts
+to summing a handful of integers and checking for a few extra messages
+as in this algorithm, grows enough to create serious load imbalance
+and reduce performance.
 
 \begin{figure}[t!]
   \begin{center}
@@ -2162,20 +2162,72 @@ was not successful because so few histories needed to be communicated
 in the first place that keeping them on-process resulted in more work
 than the communications savings that occurred. If that is true, then
 perhaps without any overlap or communication, just doing local Monte
-Carlo may be satisfactory for accelerating the MCSA iteration.
+Carlo may be satisfactory for accelerating the MCSA iteration. In this
+case, histories near the boundaries of the domain may be truncated
+before reaching the weight cutoff if the reach the domain boundary
+first. This truncation has the potential to increase the stochastic
+uncertainty of the Neumann-Ulam result and therefore increase the
+number of MCSA iterations required to converge. In addition, the
+scalability of the method will then be purely limited by the parallel
+matrix and vector operations required to implement the remainder of
+the algorithm.
 
-Full-clip actually uses the solver as a true subdomain solver, just
-like you would in a Schwarz method. In fact, this is a stochastic
-realization of a Richardson iteration - they are very similar in those
-regards.
+Considering using MCSA in this way such that the Monte Carlo solve
+occurs only in the subdomains casts the method as more of a true
+domain decomposition as outlined by Chapter 14 of Saad's text on
+iterative methods \citep{saad_iterative_2003}. Compared to traditional
+domain decomposition methods we see many similarities including the
+potential to overlap the subdomains to improve the results and the
+approximate subdomain solves effectively through a relaxation
+scheme. By building the boundary data as outlined in
+\S~\ref{subsec:domain_generation}, we are effectively gathering one
+level of the adjacent domains, albeit in this case to satisfy the data
+requirements of the Monte Carlo estimators. Furthermore, the fact that
+we are using residual Monte Carlo to compute the correction vector
+casts MCSA as a stochastic realization of a additive Schwarz method
+with a fixed point iterations used as a relaxation step\footnote{See
+  section 14.3.3 in \citep{saad_iterative_2003} for a full definition
+  of the additive Schwarz method.}. Both the fixed point iteration and
+the computation of the residual propagate the solution from individual
+subdomains to the others through the matrix-vector multiply operation
+after all subdomain Monte Carlo solves have been completed. Perhaps an
+even more important consequence of viewing MCSA as a stochastic
+additive Schwarz procedure is that it has the potential to more
+readily fit as an accelerator into other linear solver techniques
+including GMRES or potentially as a preconditioner.
 
-Overlap is not effective because histories apparently dump most of
-their useful information within the first few steps (which is why we
-can use such a large weight cutoff and there is an insensitivity to
-weight cutoff). So keeping them around to do extra work is not
-improving iterative performance - thus increasing compute times. This
-is true even for ill-conditioned cases where adding overlap might keep
-a number of histories within the domain for significantly longer.
+Using the Neumann-Ulam solver to compute the MCSA correction only in
+the subdomains, the strong and weak scaling studies were repeated to
+assess the performance gains made by eliminating communication in the
+Monte Carlo solver. For each scaling study, the 16-core base case with
+Monte Carlo communication was used as the reference point for
+efficiency computations in order to measure how eliminating
+communication boosts
+efficiencies. Figure~\ref{fig:titan_strong_subdomain} gives the
+results of the strong scaling study and
+Figure~\ref{fig:titan_weak_subdomain} gives the results of the the
+weak scaling study in terms of absolute efficiencies. In both cases,
+the benefits to parallel performance of using MCSA as a subdomain
+solver are obvious. In the strong scaling case we make the important
+observation that we hit the strong scaling wall at the same time with
+and without the additional Monte Carlo communication. Although the
+Monte Carlo communication did contribute to the efficiency decrease,
+it is clear that the remaining matrix and vector operations are the
+primary impediment to scalability. Furthermore, we see an even greater
+rise above unity in efficiencies because there is less communication
+overhead hiding the better cache utilization as the local problem
+shrinks. At 16,384 cores, performing the subdomain solves boost the
+absolute efficiency from 38\% to 67\% relative to the reference case.
+
+In the weak scaling study, we do not have the scaling wall to contend
+with and eliminating Monte Carlo communication through subdomain
+solves provides an effectively linear boost in the weak scaling
+absolute efficiency. We still see a small reduction in weak scaling
+efficiency as a function of core count due to the communication
+overhead for the parallel matrix and vector operations. Here we
+observe super unitary efficiencies for the subdomain case as there was
+a substantial improvement in runtimes relative to the 16-core base
+case with Monte Carlo communication.
 
 \begin{figure}[t!]
   \begin{center}
@@ -2200,3 +2252,34 @@ a number of histories within the domain for significantly longer.
       solve.}}
   \label{fig:titan_weak_subdomain}
 \end{figure}
+
+Of additional concern for the subdomain method is the potential
+decrease in iterative performance due to the fact that histories near
+the boundary will potentially have their random walk truncated, thus
+decreasing the information available to compute the correction
+vector. For both the weak and strong scaling study, all calculations
+converged in 22 or in only a few cases 21 iterations for both the
+subdomain solve and the solve with communication giving an algorithmic
+efficiency of 1.048 for all cases. This small improvement in iteration
+count was not observed to be a function of problem size, number of
+processors, or whether the subdomain method was used. Therefore, there
+is no reason to expect overlap to improve the iterative or scaling
+performance of the method as iterative performance is maintained
+without it. Overlap is not effective because histories relinquish most
+of their useful information within the first few steps (which is why
+we can use such a large weight cutoff and there is an insensitivity to
+weight cutoff as shown in
+Figure~\ref{fig:estimator_wc_iters}). Keeping them around longer with
+overlap to do extra work in the local domain will not improve
+iterative performance and thus increasing compute times.
+
+\clearpage
+
+\subsubsection{Strong Scaling with Multiple Sets}
+\label{subsubsec:subdomain_ms_strong}
+
+\clearpage
+
+\subsubsection{Weak Scaling with Multiple Sets}
+\label{subsubsec:subdomain_ms_weak}
+
