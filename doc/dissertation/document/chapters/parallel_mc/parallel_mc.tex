@@ -1799,9 +1799,58 @@ and reduce performance.
 \subsection{Overlapping Domain Decomposition}
 \label{subsec:overlapping_domain_decomp}
 
+In the next set of scaling studies, we will explore how adding overlap
+to the subdomains in the problem affects runtimes and parallel
+performance as compared to the case with pure domain decomposition. To
+do this, we utilize the set of analytic relations developed in
+\S~\ref{sec:analytic_framework} to design these numerical
+experiments. For the neutron diffusion problem used in these scaling
+studies, the linear operator had a spectral radius of 0.787 and a
+weight cutoff of \sn{1}{-2}. Using Eq~(\ref{eq:analytic_k}) gives an
+expected random walk length of 19.22 transitions for any given history
+in the problem. Using the mean-chord approximation given by
+Eq~(\ref{eq:mean_chord_domain_leakage}), we then expect approximately
+5.3\% of the histories born in a particular domain to leak out after
+the first transport stage. By adding overlap, we aim to reduce this
+fraction of communicated histories and therefore boost the parallel
+performance of the algorithm. To determine the amount of overlap to
+test for the scaling studies, we use a variation of
+Eq~(\ref{eq:step_k_length}) to determine how many discrete states a
+history will move on average from its birth site. We modify
+Eq~(\ref{eq:step_k_length}) to only account for discrete movements:
+\begin{equation}
+  \sqrt{\bar{n^2_k}} = n_s \sqrt{k}\:,
+  \label{eq:discrete_distance}
+\end{equation}
+where $\sqrt{\bar{n^2_k}}$ is now the root-mean-squared number of
+discrete states a history will move from its birth site. For our
+diffusion problem used in these scaling studies, we compute a value of
+2.63 states per history for any of the dimensions of the system. For
+this diffusion problem, this means that we can expect to end up on
+average 2.63 states in both the $i$ and $j$ dimensions away from the
+starting state. Therefore, we will use the overlap generation
+algorithm outlined in \S~\ref{subsec:msod_generation} such that we
+parameterically grow the local domain using 1, 2, 3, and 5 levels to
+measure how scalability is affected when this root-mean-squared number
+of states is considered. For example, using 3 levels of overlap should
+keep over 50\% of the histories that would be communicated in the pure
+domain decomposition case on-process as this is greater than the
+root-mean-squared number of states we would expect a history to
+travel.
+
+For the performance metrics, we may use the same weak and strong
+scaling efficiency metrics that we used for the pure domain
+decomposition case. As we are comparing to the case without overlap
+and are looking to boost performance relative to the case without
+overlap, for both weak and strong scaling calculations we will use the
+16-core case without overlap as the reference computation for all
+efficiency measures reported. Doing this, permits an analysis of well
+the computational resources are utilized with the overlap relative to
+the case without.
+
 \clearpage
 
-\subsection{Multiple Set Decomposition}
+\subsection{Multiple Set Domain Decomposition}
 \label{subsec:msod_decomposition}
 
 Given that overlap was not successful in boosting parallel
@@ -2184,7 +2233,7 @@ scheme. By building the boundary data as outlined in
 level of the adjacent domains, albeit in this case to satisfy the data
 requirements of the Monte Carlo estimators. Furthermore, the fact that
 we are using residual Monte Carlo to compute the correction vector
-casts MCSA as a stochastic realization of a additive Schwarz method
+casts MCSA as a stochastic realization of an additive Schwarz method
 with a fixed point iterations used as a relaxation step\footnote{See
   section 14.3.3 in \citep{saad_iterative_2003} for a full definition
   of the additive Schwarz method.}. Both the fixed point iteration and
