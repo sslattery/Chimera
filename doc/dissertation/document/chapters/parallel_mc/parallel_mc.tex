@@ -1825,16 +1825,16 @@ Eq~(\ref{eq:step_k_length}) to only account for discrete movements:
 where $\sqrt{\bar{n^2_k}}$ is now the root-mean-squared number of
 discrete states a history will move from its birth site. For our
 diffusion problem used in these scaling studies, we compute a value of
-2.63 states per history for any of the dimensions of the system. For
-this diffusion problem, this means that we can expect to end up on
-average 2.63 states in both the $i$ and $j$ dimensions away from the
-starting state. Therefore, we will use the overlap generation
-algorithm outlined in \S~\ref{subsec:msod_generation} such that we
-parameterically grow the local domain using 1, 2, 3, and 5 levels to
-measure how scalability is affected when this root-mean-squared number
-of states is considered. For example, using 3 levels of overlap should
-keep over 50\% of the histories that would be communicated in the pure
-domain decomposition case on-process as this is greater than the
+2.63 states per history for any of the dimensions of the system. This
+means that we can expect to end up on average 2.63 states in both the
+$i$ and $j$ dimensions away from the starting state. Therefore, we
+will use the overlap generation algorithm outlined in
+\S~\ref{subsec:msod_generation} such that we parameterically grow the
+local domain using 1, 2, 3, and 5 levels to measure how scalability is
+affected when this root-mean-squared number of states is
+considered. For example, using 3 levels of overlap should keep over
+50\% of the histories that would be communicated in the pure domain
+decomposition case on-process as this is greater than the
 root-mean-squared number of states we would expect a history to
 travel.
 
@@ -1844,9 +1844,7 @@ decomposition case. As we are comparing to the case without overlap
 and are looking to boost performance relative to the case without
 overlap, for both weak and strong scaling calculations we will use the
 16-core case without overlap as the reference computation for all
-efficiency measures reported. Doing this, permits an analysis of well
-the computational resources are utilized with the overlap relative to
-the case without.
+efficiency measures reported. 
 
 \clearpage
 
