@@ -1990,28 +1990,27 @@ efficiency measures reported.
 \clearpage
 
 \subsection{Multiple Set Domain Decomposition}
-\label{subsec:msod_decomposition}
+\label{subsec:ms_decomposition}
 
-Given that overlap was not successful in boosting parallel
-efficiencies, we next look to apply replication to the problem in the
-form of multiple sets. Before performing parallel scaling studies
-using multiple sets, several aspects of the replicated parallel
-problem must be considered in order to effectively craft the studies
-and interpret their results. First is the question of how many
-stochastic histories to use to generate the correction vector in the
-MCSA iteration. For this work we consider two choices; the split case
-and the fully replicated case. As an example these cases, consider a
-single set problem where 20,000 histories are used in the Monte Carlo
-solve. If we choose the split case, then solving the same problem with
-2 sets would give 10,000 histories in each set and 4 sets would give
-5,000 histories in each set. Splitting the histories in this way
-provides the same global number of histories used to compute the
-correction in the single set problem. We expect to reduce the time to
-solution by doing this as each individual set solve will occur faster
-in an almost linear fashion with the reduced number of histories. For
-the replicated history case, each additional set in the problem will
-use just as many histories as the single set case. Using 2 sets with
-fully replicated histories for our example problem then has each set
+We next look to apply replication to the problem in the form of
+multiple sets. Before performing parallel scaling studies using
+multiple sets, several aspects of the replicated parallel problem must
+be considered in order to effectively craft the studies and interpret
+their results. First is the question of how many stochastic histories
+to use to generate the correction vector in the MCSA iteration. For
+this work we consider two choices; the split case and the fully
+replicated case. As an example these cases, consider a single set
+problem where 20,000 histories are used in the Monte Carlo solve. If
+we choose the split case, then solving the same problem with 2 sets
+would give 10,000 histories in each set and 4 sets would give 5,000
+histories in each set. Splitting the histories in this way provides
+the same global number of histories used to compute the correction in
+the single set problem. We expect to reduce the time to solution by
+doing this as each individual set solve will occur faster in an almost
+linear fashion with the reduced number of histories. For the
+replicated history case, each additional set in the problem will use
+just as many histories as the single set case. Using 2 sets with fully
+replicated histories for our example problem then has each set
 computing 20,000 histories with 40,000 global histories in the
 computation. For the 4 set case, the number of global histories is
 increased to 80,000. We also expect this type of replication to reduce
@@ -2340,25 +2339,30 @@ enhancement of time to convergence by replicating.
 
 \clearpage
 
+\subsection{Multiple-Set Overlapping-Domain Decomposition}
+\label{subsec:msod_decomposition}
+
+\clearpage
+
 \subsection{Subdomain Neumann-Ulam}
 \label{subsec:full_clip}
 
 Based on the analysis of the pure domain decomposed MCSA algorithm and
 subsequently the MSOD implementation, one may ask then ask if there is
-any need to communicate histories from domain-to-domain at all. Overlap
-was not successful because so few histories needed to be communicated
-in the first place that keeping them on-process resulted in more work
-than the communications savings that occurred. If that is true, then
-perhaps without any overlap or communication, just doing local Monte
-Carlo may be satisfactory for accelerating the MCSA iteration. In this
-case, histories near the boundaries of the domain may be truncated
-before reaching the weight cutoff if the reach the domain boundary
-first. This truncation has the potential to increase the stochastic
-uncertainty of the Neumann-Ulam result and therefore increase the
-number of MCSA iterations required to converge. In addition, the
-scalability of the method will then be purely limited by the parallel
-matrix and vector operations required to implement the remainder of
-the algorithm.
+any need to communicate histories from domain-to-domain at
+all. Overlap was not as successful because so few histories needed to
+be communicated in the first place that keeping them on-process
+resulted in more work than the communications savings that
+occurred. If that is true, then perhaps without any overlap or
+communication, just doing local Monte Carlo may be satisfactory for
+accelerating the MCSA iteration. In this case, histories near the
+boundaries of the domain may be truncated before reaching the weight
+cutoff if the reach the domain boundary first. This truncation has the
+potential to increase the stochastic uncertainty of the Neumann-Ulam
+result and therefore increase the number of MCSA iterations required
+to converge. In addition, the scalability of the method will then be
+purely limited by the parallel matrix and vector operations required
+to implement the remainder of the algorithm.
 
 Considering using MCSA in this way such that the Monte Carlo solve
 occurs only in the subdomains casts the method as more of a true
@@ -2453,10 +2457,10 @@ count was not observed to be a function of problem size, number of
 processors, or whether the subdomain method was used. Therefore, there
 is no reason to expect overlap to improve the iterative or scaling
 performance of the method as iterative performance is maintained
-without it. Overlap is not effective because histories relinquish most
-of their useful information within the first few steps (which is why
-we can use such a large weight cutoff and there is an insensitivity to
-weight cutoff as shown in
+without it. Overlap is not as effective because histories relinquish
+most of their useful information within the first few steps (which is
+why we can use such a large weight cutoff and there is an
+insensitivity to weight cutoff as shown in
 Figure~\ref{fig:estimator_wc_iters}). Keeping them around longer with
 overlap to do extra work in the local domain will not improve
 iterative performance and thus increasing compute times.
