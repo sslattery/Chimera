@@ -1315,7 +1315,148 @@ used to accelerate the time to solution.
 Before we consider the parallel performance of the MCSA algorithm, we
 must first verify that the algorithm generates the correct solution in
 parallel with respect to reference solutions provided by production
-Krylov methods.
+Krylov methods. To verify correctness, we use solutions the neutron
+diffusion system presented in
+Appendix~\ref{chap:diffusion_problem}. As the reference computation,
+serial results will be used from the conjugate gradient solver in
+Belos, a linear solvers package in the Trilinos scientific computing
+libraries \citep{heroux_overview_2005}. In identical fashion to the
+verification for the $SP_N$ equations performed in
+\S~\ref{sec:spn_mcsa_verification}, we will solve the neutron
+diffusion problem in parallel using multiple cores on a desktop
+machine. For each parallel solution, the solution at each grid point
+in the system will be compared to the solution at the same grid point
+in the serial reference case with the minimum and maxiumum absolute
+differences of these values reported. 
+
+GMRES and conjugate gradient solvers from the Belos package were used
+on 4 cores as a means of both assuring the Krylov solvers produce the
+same results on multiple cores and as a means of providing an
+acceptable range of minimum and maximum values in the comparison. For
+MCSA, a range of MSOD parameters will be used such that problems with
+multiple sets and multiple blocks may be tested along with
+overlap. When multiple sets were leveraged, a single history was used
+to compute the MCSA correction for every DOF in the problem. For all
+solvers, the flux was converged to a tolerance of \sn{1}{-8} and
+therefore if the comparisons agree within this tolerance the solutions
+will be deemed
+correct. Table~\ref{tab:parallel_verification_parameters} gives the
+parameters for the verification problem and
+Table~\ref{tab:parallel_mcsa_verification} gives the results of the
+calculations. Solver parameters used for MCSA are given in
+Table~\ref{tab:parallel_mcsa_parameters}.
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lc}\hline\hline
+      \multicolumn{1}{l}{Parameter}& 
+      \multicolumn{1}{c}{Value}\\\hline
+      $dx$ & 0.1 \\
+      $dy$ & 0.1 \\
+      $N_x$ & 400 \\
+      $N_y$ & 400 \\
+      $N$ & 160,000 \\
+      $\Sigma_a$ & 5.0 \\
+      $\Sigma_s$ & 1.0 \\
+      Boundary Type & Vacuum \\
+      Linear Solver Tolerance & \sn{1}{-8} \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Parallel MCSA verification model problem parameters.}
+    \textit{The neutron diffusion equation in 2 dimensions is used for
+      the model problem.}}
+  \label{tab:parallel_verification_parameters}
+\end{table}
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lc}\hline\hline
+      \multicolumn{1}{l}{Parameter}& 
+      \multicolumn{1}{c}{Value}\\\hline
+      Histories & 1 per DOF \\
+      Weight Cutoff & \sn{1}{-2} \\
+      Fixed Point & Richardson \\
+      Estimator & Collision \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Parallel MCSA verification solver parameters.}}
+  \label{tab:parallel_mcsa_parameters}
+\end{table}
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lccccll}\hline\hline
+      \multicolumn{1}{l}{Solver}& 
+      \multicolumn{1}{c}{Blocks}& 
+      \multicolumn{1}{c}{Sets}& 
+      \multicolumn{1}{c}{Cores}& 
+      \multicolumn{1}{c}{Overlap}& 
+      \multicolumn{1}{l}{Min Difference}& 
+      \multicolumn{1}{l}{Max Difference}\\\hline
+      Conjugate Gradient & - & - & 4 & - & 0.0 & \sn{1.11022}{-16} \\
+      GMRES & - & - & 4 & - & \sn{5.64215}{-13} & \sn{3.83348}{-9} \\
+      MCSA & 2 & 1 & 2 & 0 & \sn{8.60423}{-16} & \sn{7.6806}{-9} \\
+      MCSA & 3 & 1 & 3 & 0 & \sn{6.41154}{-15} & \sn{7.65397}{-9} \\
+      MCSA & 4 & 1 & 4 & 0 & \sn{2.66454}{-15} & \sn{7.62623}{-9} \\
+      MCSA & 2 & 2 & 4 & 0 & \sn{1.52656}{-15} & \sn{7.57108}{-9} \\
+      MCSA & 1 & 4 & 4 & 0 & \sn{5.55112}{-16} & \sn{7.61631}{-9} \\
+      MCSA & 8 & 1 & 8 & 0 & \sn{6.13398}{-15} & \sn{7.51744}{-9} \\
+      MCSA & 4 & 2 & 8 & 0 & \sn{1.03251}{-14} & \sn{7.62601}{-9} \\
+      MCSA & 2 & 4 & 8 & 0 & \sn{5.13478}{-15} & \sn{7.60777}{-9} \\
+      MCSA & 1 & 8 & 8 & 0 & \sn{1.80411}{-15} & \sn{7.60651}{-9} \\
+      MCSA & 2 & 1 & 2 & 5 & \sn{2.47025}{-15} & \sn{7.58882}{-9} \\
+      MCSA & 3 & 1 & 3 & 5 & \sn{2.44249}{-15} & \sn{7.6326}{-9} \\
+      MCSA & 4 & 1 & 4 & 5 & \sn{7.49401}{-16} & \sn{7.49014}{-9} \\
+      MCSA & 2 & 2 & 4 & 5 & \sn{1.19349}{-15} & \sn{7.61814}{-9} \\
+      MCSA & 1 & 4 & 4 & 5 & \sn{5.55112}{-16} & \sn{7.61631}{-9} \\
+      MCSA & 8 & 1 & 8 & 5 & \sn{2.05391}{-15} & \sn{7.63955}{-9} \\
+      MCSA & 4 & 2 & 8 & 5 & \sn{9.57567}{-15} & \sn{7.61313}{-9} \\
+      MCSA & 2 & 4 & 8 & 5 & \sn{5.7454}{-15} & \sn{7.60767}{-9} \\
+      MCSA & 1 & 8 & 8 & 5 & \sn{1.80411}{-15} & \sn{7.60651}{-9} \\
+      MCSA & 2 & 1 & 2 & 10 & \sn{1.08247}{-15} & \sn{7.63231}{-9} \\
+      MCSA & 3 & 1 & 3 & 10 & \sn{3.27516}{-15} & \sn{7.60211}{-9} \\
+      MCSA & 4 & 1 & 4 & 10 & \sn{4.996}{-16} & \sn{7.64756}{-9} \\
+      MCSA & 2 & 2 & 4 & 10 & \sn{4.13558}{-15} & \sn{7.60259}{-9} \\
+      MCSA & 1 & 4 & 4 & 10 & \sn{5.55112}{-16} & \sn{7.61631}{-9} \\
+      MCSA & 8 & 1 & 8 & 10 & \sn{9.71445}{-16} & \sn{7.58535}{-9} \\
+      MCSA & 4 & 2 & 8 & 10 & \sn{7.77156}{-16} & \sn{7.65978}{-9} \\
+      MCSA & 2 & 4 & 8 & 10 & \sn{4.16334}{-16} & \sn{7.63191}{-9} \\
+      MCSA & 1 & 8 & 8 & 10 & \sn{1.80411}{-15} & \sn{7.60651}{-9} \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Parallel MCSA verification results.}
+    \textit{Difference values given are absolute values. The neutron
+      diffusion equation in 2 dimensions is used for the model problem
+      with the parameters given in
+      Table~\ref{tab:parallel_verification_parameters}. A serial
+      conjugate gradient calculation is used as the reference
+      computation and neutron fluxes are compared
+      element-wise. Parameters used for the MCSA solver are given in
+      Table~\ref{tab:parallel_mcsa_parameters}. All solvers including
+      the reference computation were converged to tolerance of
+      \sn{1}{-8}.}}
+  \label{tab:parallel_mcsa_verification}
+\end{table}
+
+From the data we see that for all solvers, the parallel results agree
+within the solution tolerance of the reference serial results for all
+DOF in the system. In addition, we do not notice any systematic
+differences in the results as a function of number of blocks, number
+of sets, or amount of overlap. In addition, the parallel GMRES results
+have maximum absolute differences of the same magnitude as all MCSA
+results and a larger minimum absolute difference than all MCSA results
+by three orders of magnitude. Based on these results, MCSA parallized
+with an MSOD, and in particular the implementation used here,
+generates the correct results with respect to the serial conjugate
+gradient reference computation.
+
+\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{Parallel Performance Metrics\ }
