@@ -10,8 +10,8 @@
 
 int main( int argc, char * argv[] )
 {
-    std::string file_1 = "neutron.dat";
-    std::string file_2 = "neutron.dat";
+    std::string file_1 = "cg_reference.dat";
+    std::string file_2 = "cg.dat";
 
     int global_length;
 
@@ -42,8 +42,10 @@ int main( int argc, char * argv[] )
     }
 
     std::cout << "Max Difference: " 
-              << *std::max_element( difference.begin(), difference.end() );
+              << *std::max_element( difference.begin(), difference.end() )
+              << std::endl;
 
     std::cout << "Min Difference: " 
-              << *std::min_element( difference.begin(), difference.end() );
+              << *std::min_element( difference.begin(), difference.end() )
+              << std::endl;
 }
