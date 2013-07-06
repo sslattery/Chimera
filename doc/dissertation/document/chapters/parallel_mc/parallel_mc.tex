@@ -1315,7 +1315,7 @@ used to accelerate the time to solution.
 Before we consider the parallel performance of the MCSA algorithm, we
 must first verify that the algorithm generates the correct solution in
 parallel with respect to reference solutions provided by production
-Krylov methods. To verify correctness, we use solutions the neutron
+Krylov methods. To verify correctness, we use solutions to the neutron
 diffusion system presented in
 Appendix~\ref{chap:diffusion_problem}. As the reference computation,
 serial results will be used from the conjugate gradient solver in
@@ -1327,7 +1327,7 @@ diffusion problem in parallel using multiple cores on a desktop
 machine. For each parallel solution, the solution at each grid point
 in the system will be compared to the solution at the same grid point
 in the serial reference case with the minimum and maxiumum absolute
-differences of these values reported. 
+differences of these values reported.
 
 GMRES and conjugate gradient solvers from the Belos package were used
 on 4 cores as a means of both assuring the Krylov solvers produce the
@@ -1607,12 +1607,16 @@ library generated specifically for this work while the conjugate
 gradient and GMRES Krylov solvers used are part of the Belos linear
 solver package within the Trilinos framework
 \citep{heroux_overview_2005}. In general, the Belos package produces
-solutions to the neutron diffusion problem over an order of magnitude
-faster than the MCLS library for serial computations. Therefore, when
-we directly compare these two codes, the MCLS parallel efficiencies
-will appear artificially inflated relative to the Belos efficiencies
-due to the fact that the MCLS ratio of work to communication will be
-much larger than that for the Belos calculations.
+solutions to the neutron diffusion problem nearly two orders of
+magnitude faster than the MCLS library for serial computations using
+the conjugate gradient solver. Therefore, when we directly compare
+these two codes, the MCLS parallel efficiencies will appear
+artificially inflated relative to the Belos efficiencies due to the
+fact that the MCLS ratio of work to communication will be much larger
+than that for the Belos calculations. For every scaling study
+presented, the calculations were performed 3 times with the average
+values reported for wall time and used for the efficiency
+computations.
 
 \subsection{Titan }
 \label{subsec:titan}
@@ -1756,10 +1760,33 @@ applied to the Neumann-Ulam algorithm. For the strong scaling study,
 the global problem size was fixed at \sn{1.6}{7} DOFs for all solvers
 and the 16 core run used as the base case. MCSA was used again with
 one stochastic history used per DOF in the Neumann-Ulam solve to
-compute the correction for the
-acceleration. Figure~\ref{fig:titan_pure_strong} gives the results of
-the this study with the given absolute efficiencies computed using
-Eq~(\ref{eq:strong_scaling_absolute}).
+compute the correction for the acceleration with the remainder of the
+problems and solver parameters the same as those for the verification
+calculation given in Table~\ref{tab:parallel_verification_parameters}
+and Table~\ref{tab:parallel_mcsa_parameters}. As with all of the
+scaling studies, 3 calculations for all data points were performed
+with the average wall time reported and used for the efficiency
+calculations. Figure~\ref{fig:titan_pure_strong_time} gives the wall
+time per iteration for these calculations while
+Figure~\ref{fig:titan_pure_strong} gives the results of the this study
+with the given absolute efficiencies computed using
+Eq~(\ref{eq:strong_scaling_absolute}). We report wall time per
+iteration due to the fact that MCSA converged on the solution in 22
+iterations while the Krylov solvers converged in 19 iterations.
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_pure_strong_time.pdf}
+  \end{center}
+  \caption{\textbf{Pure domain decomposition strong scaling wall time
+      per iteration.} \textit{Wall time is reported per iteration
+      because the methods converged in different numbers of
+      iterations. MCLS is over an order of magnitude slower
+      arithmetically than the Krylov solvers. GMRES executes more
+      operations than conjugate gradient and is therefore slower as
+      well.}}
+  \label{fig:titan_pure_strong_time}
+\end{figure}
 
 \begin{figure}[t!]
   \begin{center}
@@ -1767,38 +1794,39 @@ Eq~(\ref{eq:strong_scaling_absolute}).
   \end{center}
   \caption{\textbf{Pure domain decomposition strong scaling absolute
       efficiency.}  \textit{Super-linear speed-up is from memory
-      thrashing in the base case. MCLS is an order of magnitude slower
-      arithmetically, causing the higher efficiency. GMRES executes
-      more operations than conjugate gradient, also creating a higher
-      efficiency.}}
+      thrashing in the base case. MCLS is over an order of magnitude
+      slower arithmetically, causing the higher efficiency. GMRES
+      executes more operations than conjugate gradient, also creating
+      a higher efficiency.}}
   \label{fig:titan_pure_strong}
 \end{figure}
 
-There are several key features of Figure~\ref{fig:titan_pure_strong}
-worth noting. First, up to around 5,000 cores, all methods experience
-a super-linear improvement in parallel efficiencies. For all methods,
-this increase is not a function of the algorithmic efficiency as those
-computed using Eq~(\ref{eq:algorithmic_efficiency}) remained at unity,
-meaning that all computations converged in the same number of
-iterations relative to the base case\footnote{When the algorithmic
-  efficiency remains at unity for all calculations, the implementation
-  efficiency is equivalent to the absolute efficiency and therefore is
-  not presented here.}. Instead, what is happening here and was
-observed by Brunner and Brantley in their work is that the large
-problem used to scale to O(10,000) cores was large enough that memory
-thrashing was occurring in the 16 core base case. As the number of
-cores in the strong scaling study was increased and the local problem
-size decreased, more of the local problem fit into the cache of the
-system, thus causing improved serial performance and therefore
-enhanced runtimes. In this region of super-linear efficiencies, we
-also observe larger efficiencies for GMRES as compared to conjugate
-gradient. This occurs due to the fact that conjugate gradient has a
-static set of operations performed at every iteration while GMRES
-operates on a continually growing subspace. In addition, the
-orthogonalization operations required to generate that subspace
-consume much more time than the basic conjugate gradient operations,
-causing a larger serial runtime and subsequently higher
-efficiencies. For the same reasons, we also observe higher
+There are several key features of
+Figure~\ref{fig:titan_pure_strong_time} and
+Figure~\ref{fig:titan_pure_strong} worth noting. First, up to around
+5,000 cores, all methods experience a super-linear improvement in
+parallel efficiencies. For all methods, this increase is not a
+function of the algorithmic efficiency as those computed using
+Eq~(\ref{eq:algorithmic_efficiency}) remained at unity, meaning that
+all computations converged in the same number of iterations relative
+to the base case\footnote{When the algorithmic efficiency remains at
+  unity for all calculations, the implementation efficiency is
+  equivalent to the absolute efficiency and therefore is not presented
+  here.}. Instead, what is happening here and was observed by Brunner
+and Brantley in their work is that the large problem used to scale to
+O(10,000) cores was large enough that memory thrashing was occurring
+in the 16 core base case. As the number of cores in the strong scaling
+study was increased and the local problem size decreased, more of the
+local problem fit into the cache of the system, thus causing improved
+serial performance and therefore enhanced runtimes. In this region of
+super-linear efficiencies, we also observe larger efficiencies for
+GMRES as compared to conjugate gradient. This occurs due to the fact
+that conjugate gradient has a static set of operations performed at
+every iteration while GMRES operates on a continually growing
+subspace. In addition, the orthogonalization operations required to
+generate that subspace consume much more time than the basic conjugate
+gradient operations, causing a larger serial runtime and subsequently
+higher efficiencies. For the same reasons, we also observe higher
 efficiencies for the MCSA implementation due to the serial performance
 of the implementation.
 
@@ -1822,8 +1850,9 @@ in the pure domain decomposition case to O(10,000) cores.
 Next, we consider the weak scaling performance of the algorithm. In
 this case, we fix the local problem size at \sn{4}{4} DOFs and
 increase the number of processors used in the
-simulation. Figure~\ref{fig:titan_weak_absolute} gives the weak
-scaling absolute efficiencies for this problem as computed by
+simulation. Figure~\ref{fig:titan_pure_weak_time} gives the wall
+time per iteration and Figure~\ref{fig:titan_weak_absolute} gives the
+weak scaling absolute efficiencies for this problem as computed by
 Eq~(\ref{eq:weak_scaling_absolute}). In general, the relative trends
 when comparing MCSA to the Krylov methods are the same with MCSA and
 GMRES scaling better than the conjugate gradient method due to the
@@ -1834,10 +1863,24 @@ mind the artificial inflation of efficiencies.
 
 \begin{figure}[t!]
   \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_pure_weak_time.pdf}
+  \end{center}
+  \caption{\textbf{Pure domain decomposition weak scaling wall time
+      per iteration.} \textit{Wall time is reported per iteration
+      because the methods converged in different numbers of
+      iterations. MCLS is over an order of magnitude slower
+      arithmetically than the Krylov solvers. GMRES executes more
+      operations than conjugate gradient and is therefore slower as
+      well.}}
+  \label{fig:titan_pure_weak_time}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_absolute.pdf}
   \end{center}
   \caption{\textbf{Pure domain decomposition weak scaling absolute
-      efficiency.} \textit{MCLS is an order of magnitude slower
+      efficiency.} \textit{MCLS is an over order of magnitude slower
       arithmetically, causing the higher efficiency. GMRES executes
       more operations than conjugate gradient, also creating a higher
       efficiency.}}
@@ -1851,23 +1894,24 @@ Figure~\ref{fig:titan_weak_algorithmic}, the algorithm efficiency of
 the Krylov algorithm improves as a function of the number of cores in
 the problem due to the fact that the number of iterations required to
 converge decreased from 20 in the base case to 19 and then to 18 for
-the final set of computations. When this reduction in iterations is
-used to account for the observed runtimes and computed absolute
-efficiencies for weak scaling we end up with the implementation
-efficiencies computed using Eq~(\ref{eq:implementation_efficiency})
-given in Figure~\ref{fig:titan_weak_implementation}. Because MCSA
-maintains the same iterative performance as a function of global
-problem size in the weak scaling study, the implementation
-efficiencies compare more favorably to the Krylov methods. In effect,
-we are measuring the parallel performance of a single iteration for
-each method by looking at these implementation efficiencies. As the
-global problem size increases, MCSA is less prone to a drop in
-parallel efficiency. When optimization has been completed and runtimes
-potentially approach those of the Krylov methods, this comparison may
-not be as favorable. Overall, weak scaling performance the parallel
-MCSA algorithm is excellent for the pure domain decomposition case
-with absolute parallel efficiencies of over 80\% observed at over
-32,000 cores.
+the final set of weak scaling computations. When this reduction in
+iterations is used to account for the observed runtimes and computed
+absolute efficiencies for weak scaling we end up with the
+implementation efficiencies computed using
+Eq~(\ref{eq:implementation_efficiency}) given in
+Figure~\ref{fig:titan_weak_implementation}. Because MCSA maintains the
+same iterative performance as a function of global problem size in the
+weak scaling study, the implementation efficiencies compare more
+favorably to the Krylov methods. Using the implementation efficiency,
+we are effectively measuring the parallel performance of a single
+iteration for each method by looking at these implementation
+efficiencies. As the global problem size increases, MCSA is less prone
+to a drop in parallel efficiency. When optimization has been completed
+and runtimes potentially approach those of the Krylov methods, this
+comparison may not be as favorable. Overall, weak scaling performance
+the parallel MCSA algorithm is excellent for the pure domain
+decomposition case with absolute parallel efficiencies of over 80\%
+observed at over 32,000 cores.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1918,9 +1962,9 @@ and reduce performance.
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_bvsm.pdf}
   \end{center}
   \caption{\textbf{Binary tree vs. master/slave communication scheme
-      absolute efficiency.} \textit{Pure domain decomposition absolute
-      strong scaling. The master/slave scheme will not scale beyond
-      $O(1,000)$ cores due to load imbalance.}}
+      strong scaling absolute efficiency.} \textit{The master/slave
+      scheme will not scale beyond $O(1,000)$ cores due to load
+      imbalance.}}
   \label{fig:titan_strong_bvsm}
 \end{figure}
 
@@ -1929,9 +1973,9 @@ and reduce performance.
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_bvsm.pdf}
   \end{center}
   \caption{\textbf{Binary tree vs. master/slave communication scheme
-      absolute efficiency.}  \textit{Pure domain decomposition
-      absolute weak scaling. The master/slave scheme will not scale
-      beyond $O(1,000)$ cores due to load imbalance.}}
+      weak scaling absolute efficiency.}  \textit{The master/slave
+      scheme will not scale beyond $O(1,000)$ cores due to load
+      imbalance.}}
   \label{fig:titan_weak_bvsm}
 \end{figure}
 
@@ -1986,6 +2030,50 @@ and are looking to boost performance relative to the case without
 overlap, for both weak and strong scaling calculations we will use the
 16-core case without overlap as the reference computation for all
 efficiency measures reported. 
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_overlap.pdf}
+  \end{center}
+  \caption{\textbf{Strong scaling absolute efficiency with varying
+      levels of overlap.} \textit{Values of 0, 1, 2, 3, and 5 levels
+      of overlap were used as the problem had a root-mean-squared
+      number of states of 2.63 for each history.}}
+  \label{fig:titan_strong_overlap}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_overlap_diff.pdf}
+  \end{center}
+  \caption{\textbf{Strong scaling absolute efficiency difference with
+      respect to the 0 overlap base case.} \textit{Values of 1, 2, 3,
+      and 5 levels of overlap are compared here with the absolute
+      difference of the absolute efficiencies presented.}}
+  \label{fig:titan_strong_overlap_diff}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_overlap.pdf}
+  \end{center}
+  \caption{\textbf{Weak scaling absolute efficiency with varying
+      levels of overlap.} \textit{Values of 0, 1, 2, 3, and 5 levels
+      of overlap were used as the problem had a root-mean-squared
+      number of states of 2.63 for each history.}}
+  \label{fig:titan_weak_overlap}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_overlap_diff.pdf}
+  \end{center}
+  \caption{\textbf{Weak scaling absolute efficiency difference with
+      respect to the 0 overlap base case.} \textit{Values of 1, 2, 3,
+      and 5 levels of overlap are compared here with the absolute
+      difference of the absolute efficiencies presented.}}
+  \label{fig:titan_weak_overlap_diff}
+\end{figure}
 
 \clearpage
 
@@ -2336,11 +2424,6 @@ enhancement of time to convergence by replicating.
       1-set base case.}}
   \label{fig:titan_weak_ms_impeff}
 \end{figure}
-
-\clearpage
-
-\subsection{Multiple-Set Overlapping-Domain Decomposition}
-\label{subsec:msod_decomposition}
 
 \clearpage
 
