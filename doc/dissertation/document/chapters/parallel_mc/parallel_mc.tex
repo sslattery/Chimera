@@ -1588,9 +1588,9 @@ considered when preparing a parallel calculation.
 \section{Leadership-Class Parallel Scaling Studies\ }
 \label{sec:leadership_scaling_studies}
 Using the parallel performance metrics presented in the previous
-section, we will next performance various scaling studies using an
-implementation of the parallel MCSA algorithm to assess the quality of
-the algorithm using the neutron diffusion problem presented in
+section, we will next measure performance in various scaling studies
+using an implementation of the parallel MCSA algorithm to assess its 
+quality using the neutron diffusion problem presented in
 Appendix~\ref{chap:diffusion_problem}. For these scaling studies,
 large problems at high levels of concurrency will be solved at a
 leadership-class computing facility. In this section, we will outline
@@ -1599,24 +1599,30 @@ present a series of numerical studies that identify both strengths and
 weaknesses of the parallel algorithm. Both pure domain decomposition
 and MSOD parallel performance will be explored and compared to
 performance results for the same problems using a set of production
-parallel Krylov solvers. For the scaling results presented here, all
-parallel Monte Carlo results were computed using the Monte Carlo
-Linear Solvers\footnote{MCLS is an open source library and can be
-  downloaded at \url{https://github.com/sslattery/MCLS}} (MCLS)
-library generated specifically for this work while the conjugate
-gradient and GMRES Krylov solvers used are part of the Belos linear
-solver package within the Trilinos framework
-\citep{heroux_overview_2005}. In general, the Belos package produces
-solutions to the neutron diffusion problem nearly two orders of
-magnitude faster than the MCLS library for serial computations using
-the conjugate gradient solver. Therefore, when we directly compare
-these two codes, the MCLS parallel efficiencies will appear
-artificially inflated relative to the Belos efficiencies due to the
-fact that the MCLS ratio of work to communication will be much larger
-than that for the Belos calculations. For every scaling study
+parallel Krylov solvers.
+
+For the scaling results presented here, all parallel Monte Carlo
+results were computed using the Monte Carlo Linear
+Solvers\footnote{MCLS is an open source library and can be downloaded
+  at \url{https://github.com/sslattery/MCLS}} (MCLS) library generated
+specifically for this work while the conjugate gradient and GMRES
+Krylov solvers used are part of the Belos linear solver package within
+the Trilinos framework \citep{heroux_overview_2005}. In general, the
+Belos package produces solutions to the neutron diffusion problem
+nearly two orders of magnitude faster than the MCLS library for serial
+computations using the conjugate gradient solver. Therefore, when we
+directly compare these two codes, the MCLS parallel efficiencies will
+appear artificially inflated relative to the Belos efficiencies due to
+the fact that the MCLS ratio of work to communication will be much
+larger than that for the Belos calculations. For every scaling study
 presented, the calculations were performed 3 times with the average
 values reported for wall time and used for the efficiency
-computations.
+computations. In addition, it should be noted that in practice,
+symmetric positive-definite problems like the neutron diffusion
+problem solved here would never be solved using GMRES. Instead, a
+method such as conjugate gradient would typically be used due to the
+enhanced performance. We use GMRES here to simply as a means of
+comparison to MCSA performance.
 
 \subsection{Titan }
 \label{subsec:titan}
@@ -1625,9 +1631,8 @@ the Titan Cray XK7 machine at the Oak Ridge Leadership Computing
 Facility located at Oak Ridge National Laboratory. Titan is a
 heterogeneous architecture machine combining both CPU and GPU
 components to achieve a theoretical peak performance of more than 20
-petaflops. The technical specifications for Titan are given in
-Table~\ref{tab:titan_hardware} and specifically for only the CPU
-portion of the machine.
+petaflops. The technical specifications for Titan for only the CPU
+portion of the machine are given in Table~\ref{tab:titan_hardware}.
 
 \begin{table}[h!]
   \begin{center}
@@ -1757,15 +1762,16 @@ algorithm. We refer to this case as pure domain decomposition where no
 overlap or replication has been leveraged. Such a test will isolate
 specifically the performance of Brunner and Brantley's algorithm as
 applied to the Neumann-Ulam algorithm. For the strong scaling study,
-the global problem size was fixed at \sn{1.6}{7} DOFs for all solvers
-and the 16 core run used as the base case. MCSA was used again with
-one stochastic history used per DOF in the Neumann-Ulam solve to
-compute the correction for the acceleration with the remainder of the
-problems and solver parameters the same as those for the verification
-calculation given in Table~\ref{tab:parallel_verification_parameters}
-and Table~\ref{tab:parallel_mcsa_parameters}. As with all of the
-scaling studies, 3 calculations for all data points were performed
-with the average wall time reported and used for the efficiency
+the global diffusion problem size was fixed at \sn{1.6}{7} DOFs for
+all solvers and the 16 core run used as the base case. MCSA was used
+again with one stochastic history used per DOF in the Neumann-Ulam
+solve to compute the correction for the acceleration with the
+remainder of the problems and solver parameters the same as those for
+the verification calculation given in
+Table~\ref{tab:parallel_verification_parameters} and
+Table~\ref{tab:parallel_mcsa_parameters}. As with all of the scaling
+studies, 3 calculations for all data points were performed with the
+average wall time reported and used for the efficiency
 calculations. Figure~\ref{fig:titan_pure_strong_time} gives the wall
 time per iteration for these calculations while
 Figure~\ref{fig:titan_pure_strong} gives the results of the this study
@@ -1840,9 +1846,9 @@ resources. Furthermore, the fact that we see a very similar trends in
 efficiencies for all methods means that they are bound by the same
 parallel performance limitations in a strong scaling environment. This
 is important as we can expect the same qualitative scaling performance
-from MCSA once arithmetic optimization has been performed to improve to
+from MCSA if arithmetic optimization has been performed to improve the
 serial performance of the implementation. In addition, these results
-are valuable in that the show MCSA, when properly parallelized, has
+are valuable in that they show MCSA, when properly parallelized, has
 the ability to be competitive on leadership-class computing platforms
 with conventional subspace methods with good strong scaling observed
 in the pure domain decomposition case to O(10,000) cores.
@@ -1906,10 +1912,10 @@ favorably to the Krylov methods. Using the implementation efficiency,
 we are effectively measuring the parallel performance of a single
 iteration for each method by looking at these implementation
 efficiencies. As the global problem size increases, MCSA is less prone
-to a drop in parallel efficiency. When optimization has been completed
+to a drop in parallel efficiency. If optimization has been performed
 and runtimes potentially approach those of the Krylov methods, this
 comparison may not be as favorable. Overall, weak scaling performance
-the parallel MCSA algorithm is excellent for the pure domain
+of the parallel MCSA algorithm is excellent for the pure domain
 decomposition case with absolute parallel efficiencies of over 80\%
 observed at over 32,000 cores.
 
@@ -1991,18 +1997,21 @@ do this, we utilize the set of analytic relations developed in
 \S~\ref{sec:analytic_framework} to design these numerical
 experiments. For the neutron diffusion problem used in these scaling
 studies, the linear operator had a spectral radius of 0.787 and a
-weight cutoff of \sn{1}{-2}. Using Eq~(\ref{eq:analytic_k}) gives an
-expected random walk length of 19.22 transitions for any given history
-in the problem. Using the mean-chord approximation given by
+weight cutoff of \sn{1}{-2} was used with the Neumann-Ulam
+solver. Using Eq~(\ref{eq:analytic_k}) gives an expected random walk
+length of 19.22 transitions for any given history in the
+problem. Using the mean-chord approximation given by
 Eq~(\ref{eq:mean_chord_domain_leakage}), we then expect approximately
 5.3\% of the histories born in a particular domain to leak out after
 the first transport stage. By adding overlap, we aim to reduce this
 fraction of communicated histories and therefore boost the parallel
-performance of the algorithm. To determine the amount of overlap to
-test for the scaling studies, we use a variation of
-Eq~(\ref{eq:step_k_length}) to determine how many discrete states a
-history will move on average from its birth site. We modify
-Eq~(\ref{eq:step_k_length}) to only account for discrete movements:
+performance of the algorithm. 
+
+To determine the amount of overlap to test for the scaling studies, we
+use a variation of Eq~(\ref{eq:step_k_length}) to determine how many
+discrete states a history will move on average from its birth site. We
+modify Eq~(\ref{eq:step_k_length}) to only account for discrete
+movements:
 \begin{equation}
   \sqrt{\bar{n^2_k}} = n_s \sqrt{k}\:,
   \label{eq:discrete_distance}
@@ -2031,6 +2040,30 @@ overlap, for both weak and strong scaling calculations we will use the
 16-core case without overlap as the reference computation for all
 efficiency measures reported. 
 
+The absolute efficiency results from the strong scaling exercise are
+given in Figure~\ref{fig:titan_strong_overlap}. Aside from the
+boosting of efficiencies at 2,048 cores, little evidence of strong
+scaling improvement is evident for all levels of overlap tested. To
+further explore any potential benefits of adding overlap into the
+system, Figure~\ref{fig:titan_strong_overlap_diff} gives the
+difference in the efficiencies between all overlap cases and the
+reference case without overlap at each core count. At smaller numbers
+of cores, there is no observed benefit to using overlap to improve
+strong scaling. The improvements noted at 2,048 cores are also present
+here and account for the best efficiency improvements for all core
+counts tested. at 16,384 cores, using 2 levels of overlap did give a
+6.4\% boost in efficiency while at 1,024 cores this same amount of
+overlap actually reduced the efficiency. Beyond 2 levels of overlap,
+efficiency levels begin to fall with 5 levels of overlap performing
+the worst for all cases. From this, we don't expect adding any more
+overlap will improve the scalability of the algorithm and the best
+strong scaling performance was observed when the number of overlap
+levels is approximately equal to the root-mean-squared number of
+states we expect a history to move from its starting point as computed
+by Eq~(\ref{eq:discrete_distance}). We will defer an explanation of
+the drop in efficiencies for levels of overlap beyond this value until
+we have analyzed the weak scaling data.
+
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_overlap.pdf}
@@ -2052,6 +2085,18 @@ efficiency measures reported.
       difference of the absolute efficiencies presented.}}
   \label{fig:titan_strong_overlap_diff}
 \end{figure}
+
+For weak scaling, the same study as in the pure domain decomposition
+case was performed again with 1, 2, 3, and 5 levels of overlap. The
+absolute parallel efficiencies from these calculations are given in
+Figure~\ref{fig:titan_weak_overlap} and the differences in
+efficiencies from the calculations without overlap. The results here
+are much the same in that there is not a dramatic improvement in
+scalability relative to the case without overlap. Opposite the strong
+scaling calculation, overlap enhances weak scaling efficiencies at
+lower core counts and degrades the efficiencies at higher core
+counts. In addition, 1 level of overlap provided the best enhancement
+of scalability when overlap was beneficial. 
 
 \begin{figure}[t!]
   \begin{center}
@@ -2075,19 +2120,79 @@ efficiency measures reported.
   \label{fig:titan_weak_overlap_diff}
 \end{figure}
 
+For both the strong and weak scaling studies, the parallel performance
+of the algorithm was either marginally improved or not improved at
+all. We would always expect an improvement in performance for using
+overlap to prevent the transport of histories from domain to domain
+during execution of the Neumann-Ulam algorithm. The reduction in
+tranport means a reduction in parallel communication and therefore
+should never degrade the performance of the algorithm. It is true that
+doing so in fact enhances Monte Carlo performance. However, the
+Neumann-Ulam algorithm is not representative of the entire MCSA
+algorithm. When overlap is used, an overlapping tally vector is
+constructed in parallel such that multiple cores may own multiple
+states in the system. When this occurs, the tally data associated with
+these shared states must be communicated after the Neumann-Ulam solve
+as outlined in \S~\ref{subsec:msod_algorithm}. This reduction
+operation then builds the full MCSA correction vector in the
+decomposition of the solution vector. 
+
+Therefore, by building overlap we are in fact reducing parallel
+communication during the Neumann-Ulam solve but we are simply
+deferring that communication until after Monte Carlo transport when
+the overlapping tally vector must be reduced. When overlap becomes
+large enough (i.e. larger than the root-mean-squared number of
+discrete states a history will travel), then the savings in
+communication during the Neumann-Ulam solve start to become smaller
+than the communication created in the overlapping tally vector
+reduction. We see this in both the strong and weak scaling cases at
+larger levels of overlap. For the strong scaling case, we see better
+performance improvement at higher core counts because the total number
+of overlapping states on each core is smaller from the local problem
+size shrinking. For weak scaling, we see better performance
+improvement at lower numbers of cores because although the local
+overlap size is fixed, the global amount of overlap is growing with
+core count and therefore reducing the performance of the tally
+reduction operation. 
+
+Based on this data, a few levels of overlap within the expected
+distance of travel for a history may offer some marginal improvement
+in scalability, however, it is not as effective as one might think
+given its improvement to reactor physics calculations as observed in
+the literature. This is largely due to the density of states in the
+system that creates the described performance bottlenecks in the
+overlapping tally vector reduction operation. In a Monte Carlo
+particle simulation, these overlapping tally reduction operations are
+not expected to be peformed at the speed they are required in
+MCSA. For example, in a criticality calculation with overlapping
+domains, we would expect to perform as many parallel tally vector
+reduction in a particle transport simulation as there are particle
+stages required for convergence of the eigenvalue. However, these
+particle stages will likely be much more costly in terms of wall time
+relative to a Neumann-Ulam solve in an MCSA iteration due to the more
+extensive particle physics and logic structure that must be
+evaluated. Therefore, we can expect this overlapping tally reduction
+to be less signficant to scalability in those operations. We do not
+have as complicated a logic structure in a history random walk for the
+Neumann-Ulam method and therefore overlap can inhibit scalability if
+too large.
+
 \clearpage
 
 \subsection{Multiple Set Domain Decomposition}
 \label{subsec:ms_decomposition}
 
 We next look to apply replication to the problem in the form of
-multiple sets. Before performing parallel scaling studies using
+multiple sets. As the previous analysis showed overlap to be of little
+assistance in improving scalability, we only apply multiple sets to
+the problem with pure domain decomposition within the sets for these
+scaling studies. Before performing parallel scaling studies using
 multiple sets, several aspects of the replicated parallel problem must
 be considered in order to effectively craft the studies and interpret
 their results. First is the question of how many stochastic histories
 to use to generate the correction vector in the MCSA iteration. For
 this work we consider two choices; the split case and the fully
-replicated case. As an example these cases, consider a single set
+replicated case. As an example of these cases, consider a single set
 problem where 20,000 histories are used in the Monte Carlo solve. If
 we choose the split case, then solving the same problem with 2 sets
 would give 10,000 histories in each set and 4 sets would give 5,000
@@ -2227,8 +2332,8 @@ computational resources for the this problem.
   \label{fig:titan_strong_ms_eff}
 \end{figure}
 
-Also of interest here is the effect of splitting histories among
-sets versus replicating them on the iterative performance of the
+Also of interest here is the effect of splitting histories among sets
+versus replicating them on the iterative performance of the
 method. Table~\ref{tab:ms_strong_alg_eff} gives the iterations
 required to converge and computed algorithmic efficiencies for each of
 the cases presented in the strong scaling data. As expected, splitting
@@ -2236,11 +2341,14 @@ histories maintains a fixed global number of histories and therefore
 maintained the number of iterations required to converge relative to
 the single set base case. When histories were replicated, adding sets
 decreased the number of iterations required to converge in a nonlinear
-fashion. Using these algorithmic efficiencies, the implementation
-efficiencies for the multiple set cases were computed and are given in
+fashion. Therefore, increasing the number of histories per MCSA
+iteration improves algorithmic efficiency. Using these algorithmic
+efficiencies, the implementation efficiencies for the multiple set
+cases were computed and are given in
 Figure~\ref{fig:titan_strong_ms_impeff}. From these results, we see
 that the replicated history cases are even less efficient than in the
-absolute case. Not only do we have the additional parallel overhead of
+absolute case with respect to the performance of a single
+iteration. Not only do we have the additional parallel overhead of
 doing the block level reduction, but we also have additional histories
 that increase the time to solution for a single iteration.
 
@@ -2292,8 +2400,8 @@ the multiple sets weak scaling study. Of primary importance here is
 the fact that adding sets to the problem with both split and
 replicated histories actually decreases the time to solution. This was
 not observed in the strong scaling case until much larger core counts
-due as the multiple set computations hit the strong scaling wall after
-the single set computation. 
+as the multiple set computations hit the strong scaling wall after the
+single set computation.
 
 This result is significant in that it shows a solution technique in
 which the linear problem can actually be replicated and enhance time
@@ -2350,7 +2458,7 @@ problem size and therefore we would actually expect to compute a very
 low efficiency that shows this very poor use of resources.
 
 Figure~\ref{fig:titan_weak_ms_eff} gives the results of the weak
-scaling efficiencies using the multiple set metric given by
+scaling efficiency computations using the multiple set metric given by
 Eq~(\ref{eq:ms_weak_efficiency}). Although we do reduce the time to
 solution over the base cases for nearly all data points, the
 observation here is that the reduction in time to solution is still
@@ -2391,7 +2499,7 @@ significantly at core counts of O(1,000) and lower. In both the weak
 and strong scaling cases, due to the additional computational and
 communication overhead of adding sets to the system, one should never
 expect to seriously boost parallel efficiencies for MCSA using this
-technique accept for certain instances past the strong scaling wall in
+technique except for certain instances past the strong scaling wall in
 a purely strong scaling environment. In a weak scaling environment,
 although no efficiency increase will be noted, one can expect an
 enhancement of time to convergence by replicating.
@@ -2431,36 +2539,44 @@ enhancement of time to convergence by replicating.
 \label{subsec:full_clip}
 
 Based on the analysis of the pure domain decomposed MCSA algorithm and
-subsequently the MSOD implementation, one may ask then ask if there is
-any need to communicate histories from domain-to-domain at
-all. Overlap was not as successful because so few histories needed to
-be communicated in the first place that keeping them on-process
-resulted in more work than the communications savings that
-occurred. If that is true, then perhaps without any overlap or
-communication, just doing local Monte Carlo may be satisfactory for
-accelerating the MCSA iteration. In this case, histories near the
-boundaries of the domain may be truncated before reaching the weight
-cutoff if the reach the domain boundary first. This truncation has the
-potential to increase the stochastic uncertainty of the Neumann-Ulam
-result and therefore increase the number of MCSA iterations required
-to converge. In addition, the scalability of the method will then be
-purely limited by the parallel matrix and vector operations required
-to implement the remainder of the algorithm.
+subsequently the multiple sets and overlapping domain implementation,
+one may ask then ask if there is any need to communicate histories
+from domain-to-domain at all. Overlap was not as successful because
+because the additional communication required to reduce the
+overlapping tally vector eventually becomes larger than the
+communication savings during Monte Carlo transport. In addition, for
+local domains that are large enough to get good performance
+(e.g. those used in the weak scaling studies), then our analytic
+relationships for domain leakage, and in particular
+Eq~(\ref{eq:mean_chord_domain_leakage}), tell us that only about 5\%
+of the histories in this diffusion problem will leave the domain in
+the first place.  If that is true, then perhaps without any overlap or
+communication, just doing local Monte Carlo transport such that
+histories are terminated upon reaching the domain boundary may be
+satisfactory for accelerating the MCSA iteration. In this case,
+histories near the boundaries of the domain may be truncated before
+reaching the weight cutoff if they reach the domain boundary
+first. This truncation has the potential to increase the stochastic
+uncertainty of the Neumann-Ulam result and therefore increase the
+number of MCSA iterations required to converge. In addition, the
+scalability of the method will then be purely limited by the parallel
+matrix and vector operations required to implement the remainder of
+the algorithm on the subset of processors containing the linear
+problem.
 
 Considering using MCSA in this way such that the Monte Carlo solve
 occurs only in the subdomains casts the method as more of a true
 domain decomposition as outlined by Chapter 14 of Saad's text on
 iterative methods \citep{saad_iterative_2003}. Compared to traditional
 domain decomposition methods we see many similarities including the
-potential to overlap the subdomains to improve the results and the
-approximate subdomain solves effectively through a relaxation
-scheme. By building the boundary data as outlined in
+potential to overlap the subdomains to improve the results. By
+building the boundary data as outlined in
 \S~\ref{subsec:domain_generation}, we are effectively gathering one
 level of the adjacent domains, albeit in this case to satisfy the data
 requirements of the Monte Carlo estimators. Furthermore, the fact that
 we are using residual Monte Carlo to compute the correction vector
 casts MCSA as a stochastic realization of an additive Schwarz method
-with a fixed point iterations used as a relaxation step\footnote{See
+with a fixed point iteration used as a relaxation step\footnote{See
   section 14.3.3 in \citep{saad_iterative_2003} for a full definition
   of the additive Schwarz method.}. Both the fixed point iteration and
 the computation of the residual propagate the solution from individual
@@ -2490,7 +2606,7 @@ Monte Carlo communication did contribute to the efficiency decrease,
 it is clear that the remaining matrix and vector operations are the
 primary impediment to scalability. Furthermore, we see an even greater
 rise above unity in efficiencies because there is less communication
-overhead hiding the better cache utilization as the local problem
+overhead hiding the better cache utilization as the local problem size
 shrinks. At 16,384 cores, performing the subdomain solves boost the
 absolute efficiency from 38\% to 67\% relative to the reference case.
 
@@ -2533,28 +2649,102 @@ decrease in iterative performance due to the fact that histories near
 the boundary will potentially have their random walk truncated, thus
 decreasing the information available to compute the correction
 vector. For both the weak and strong scaling study, all calculations
-converged in 22 or in only a few cases 21 iterations for both the
-subdomain solve and the solve with communication giving an algorithmic
-efficiency of 1.048 for all cases. This small improvement in iteration
-count was not observed to be a function of problem size, number of
-processors, or whether the subdomain method was used. Therefore, there
-is no reason to expect overlap to improve the iterative or scaling
-performance of the method as iterative performance is maintained
-without it. Overlap is not as effective because histories relinquish
-most of their useful information within the first few steps (which is
-why we can use such a large weight cutoff and there is an
-insensitivity to weight cutoff as shown in
+with split histories converged in 22 or in only a few cases 21
+iterations for both the subdomain solve and the solve with
+communication giving an algorithmic efficiency of 1.048 for all
+cases. This small improvement in iteration count was not observed to
+be a function of problem size, number of processors, or whether the
+subdomain method was used. For the replicated history cases, the
+algorithmic efficiency improvement was not as good as when
+communication was allowed for the Monte Carlo algorithm. For these
+calculations, the number of iterations to converge was reduced to 18
+or 19 in both the strong and weak scaling studies with lower core
+counts converging in fewer iterations.
+
+Therefore, there is no reason to expect overlap to improve the
+iterative or scaling performance of the method as iterative
+performance is maintained without it for this particular
+problem. Overlap is not as effective because histories relinquish most
+of their useful information within the first few steps (which is why
+we can use such a large weight cutoff and there is an insensitivity to
+weight cutoff as shown in
 Figure~\ref{fig:estimator_wc_iters}). Keeping them around longer with
 overlap to do extra work in the local domain will not improve
-iterative performance and thus increasing compute times.
+iterative performance and thus increase compute times.
 
-\clearpage
+As a final analysis of MCSA using subdomain Monte Carlo, the multiple
+sets scaling studies are repeated to determine if any performance
+benefits are made from replication by eliminating Monte Carlo
+communication. Figure~\ref{fig:titan_strong_subdomain_ms_time} gives
+the runtimes for the strong scaling calculation and
+Figure~\ref{fig:titan_strong_subdomain_ms} the computed absolute
+efficiencies. For the weak scaling studies,
+Figure~\ref{fig:titan_weak_subdomain_ms_time} gives the wall times and
+Figure~\ref{fig:titan_weak_subdomain_ms} the efficiencies. For both
+scaling studies, the results are effectively the same as for the case
+with Monte Carlo communication. This is again due to the fact that
+adding sets to the problem is not only an exercise in strong scaling
+but it also adds additional parallel overhead in the form of the tally
+vector reduction across blocks.
 
-\subsubsection{Strong Scaling with Multiple Sets}
-\label{subsubsec:subdomain_ms_strong}
+From a parallel performance perspective, MCSA may then be best used in
+a mode where the Monte Carlo is performed over only the subdomains
+with no replication or overlap added to the system. In this mode,
+iterative perforamance is maintained relative to the solutions with
+communication even for more ill-conditioned problems with larger
+spectral radii. Furthermore, no overlap was required to maintain
+iterative performance be letting histories near the boundary take a
+few more steps in their random walks. If in the future there are
+ill-conditioned problems where using subdomain Monte Carlo reduces the
+algorithmic efficiency of MCSA due to the information lost in the
+correction vector, overlap would be a viable mechanism to potentially
+maintain that iterative performance, keeping in mind the potential
+impacts on scalability that were observed in this work.
 
-\clearpage
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_subdomain_ms_time.pdf}
+  \end{center}
+  \caption{\textbf{Strong scaling total wall time with multiple sets
+      and subdomain Monte Carlo.} \textit{The subdomain Monte Carlo
+      solver improves the parallel efficiency and therefore time to
+      solution by eliminating all parallel communication during the
+      Monte Carlo solve.}}
+  \label{fig:titan_strong_subdomain_ms_time}
+\end{figure}
 
-\subsubsection{Weak Scaling with Multiple Sets}
-\label{subsubsec:subdomain_ms_weak}
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_subdomain_ms.pdf}
+  \end{center}
+  \caption{\textbf{Strong scaling absolute efficiency for with
+      multiple sets and subdomain Monte Carlo.} \textit{The subdomain
+      Monte Carlo solver improves the parallel efficiency and
+      therefore time to solution by eliminating all parallel
+      communication during the Monte Carlo solve.}}
+  \label{fig:titan_strong_subdomain_ms}
+\end{figure}
 
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_subdomain_ms_time.pdf}
+  \end{center}
+  \caption{\textbf{Weak scaling total wall time with multiple sets
+      and subdomain Monte Carlo.} \textit{The subdomain Monte Carlo
+      solver improves the parallel efficiency and therefore time to
+      solution by eliminating all parallel communication during the
+      Monte Carlo solve.}}
+  \label{fig:titan_weak_subdomain_ms_time}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_subdomain_ms.pdf}
+  \end{center}
+  \caption{\textbf{Weak scaling absolute efficiency for with
+      multiple sets and subdomain Monte Carlo.} \textit{The subdomain
+      Monte Carlo solver improves the parallel efficiency and
+      therefore time to solution by eliminating all parallel
+      communication during the Monte Carlo solve.}}
+  \label{fig:titan_weak_subdomain_ms}
+\end{figure}
