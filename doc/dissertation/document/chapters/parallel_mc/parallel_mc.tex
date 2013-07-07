@@ -23,21 +23,18 @@ community.
 In this chapter we briefly review particle transport methods for
 domain decomposed Monte Carlo. Considering a domain decomposed
 Neumann-Ulam method, we derive an analytic framework based on
-algebraic quantities from which to estimate its performance when
-applied to neutron transport systems. We then devise a parallel
+algebraic quantities from which to estimate aspects of its performance
+when applied to neutron transport systems. We then devise a parallel
 algorithm for the Neumann-Ulam method based on the multiple-set
 overlapping-domain decomposition algorithm and a parallel algorithm
 for the MCSA iteration that leverages the parallel Monte Carlo
-algorithm and general parallel matrix-vector operations. In identical
-fashion to the serial computations presented in
-Chapter~\ref{ch:spn_equations}, we use parallel solutions for the
-$SP_N$ equations for the fuel assembly criticality problem to verify
-the correctness of the parallel algorithm and implementation by
-comparing the numerical results against production Krylov
-methods. Using the verified implementation of the algorithm, we
-perform parallel scaling studies to test its performance on a
-leadership class machine and compare this performance to the
-production Krylov methods.
+algorithm and general parallel matrix-vector operations. Using
+parallel solutions for the neutron diffusion problem, we verify the
+correctness of the parallel algorithm and implementation by comparing
+the numerical results against production Krylov methods. With the
+verified implementation of the algorithm, we perform parallel scaling
+studies to test its performance on a leadership class machine and
+compare this performance to the production Krylov methods.
 
 %%---------------------------------------------------------------------------%%
 \section{Domain Decomposed Monte Carlo\ }
@@ -1326,7 +1323,7 @@ verification for the $SP_N$ equations performed in
 diffusion problem in parallel using multiple cores on a desktop
 machine. For each parallel solution, the solution at each grid point
 in the system will be compared to the solution at the same grid point
-in the serial reference case with the minimum and maxiumum absolute
+in the serial reference case with the minimum and maximum absolute
 differences of these values reported.
 
 GMRES and conjugate gradient solvers from the Belos package were used
@@ -1451,7 +1448,7 @@ differences in the results as a function of number of blocks, number
 of sets, or amount of overlap. In addition, the parallel GMRES results
 have maximum absolute differences of the same magnitude as all MCSA
 results and a larger minimum absolute difference than all MCSA results
-by three orders of magnitude. Based on these results, MCSA parallized
+by three orders of magnitude. Based on these results, MCSA parallelized
 with an MSOD, and in particular the implementation used here,
 generates the correct results with respect to the serial conjugate
 gradient reference computation.
@@ -2023,7 +2020,7 @@ diffusion problem used in these scaling studies, we compute a value of
 means that we can expect to end up on average 2.63 states in both the
 $i$ and $j$ dimensions away from the starting state. Therefore, we
 will use the overlap generation algorithm outlined in
-\S~\ref{subsec:msod_generation} such that we parameterically grow the
+\S~\ref{subsec:msod_generation} such that we parametrically grow the
 local domain using 1, 2, 3, and 5 levels to measure how scalability is
 affected when this root-mean-squared number of states is
 considered. For example, using 3 levels of overlap should keep over
@@ -2125,7 +2122,7 @@ of the algorithm was either marginally improved or not improved at
 all. We would always expect an improvement in performance for using
 overlap to prevent the transport of histories from domain to domain
 during execution of the Neumann-Ulam algorithm. The reduction in
-tranport means a reduction in parallel communication and therefore
+transport means a reduction in parallel communication and therefore
 should never degrade the performance of the algorithm. It is true that
 doing so in fact enhances Monte Carlo performance. However, the
 Neumann-Ulam algorithm is not representative of the entire MCSA
@@ -2163,7 +2160,7 @@ the literature. This is largely due to the density of states in the
 system that creates the described performance bottlenecks in the
 overlapping tally vector reduction operation. In a Monte Carlo
 particle simulation, these overlapping tally reduction operations are
-not expected to be peformed at the speed they are required in
+not expected to be performed at the speed they are required in
 MCSA. For example, in a criticality calculation with overlapping
 domains, we would expect to perform as many parallel tally vector
 reduction in a particle transport simulation as there are particle
@@ -2172,7 +2169,7 @@ particle stages will likely be much more costly in terms of wall time
 relative to a Neumann-Ulam solve in an MCSA iteration due to the more
 extensive particle physics and logic structure that must be
 evaluated. Therefore, we can expect this overlapping tally reduction
-to be less signficant to scalability in those operations. We do not
+to be less significant to scalability in those operations. We do not
 have as complicated a logic structure in a history random walk for the
 Neumann-Ulam method and therefore overlap can inhibit scalability if
 too large.
@@ -2690,7 +2687,7 @@ vector reduction across blocks.
 From a parallel performance perspective, MCSA may then be best used in
 a mode where the Monte Carlo is performed over only the subdomains
 with no replication or overlap added to the system. In this mode,
-iterative perforamance is maintained relative to the solutions with
+iterative performance is maintained relative to the solutions with
 communication even for more ill-conditioned problems with larger
 spectral radii. Furthermore, no overlap was required to maintain
 iterative performance be letting histories near the boundary take a
