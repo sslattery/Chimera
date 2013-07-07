@@ -76,7 +76,9 @@ simulation requirements.
   \end{center}
   \caption{\textbf{Domain decomposed Monte Carlo transport example
       illustrating how domain decomposition requires parallel
-      communication of particles.}}
+      communication of particles.} \textit{If a particle crosses a
+      domain boundary it must be communicated to the next domain in
+      its path.}}
   \label{fig:ddmc_example}
 \end{figure}
 
@@ -637,14 +639,14 @@ directly apply it to a parallel formulation of the Neumann-Ulam
 method. Direct analogs can be derived from their works by noting that
 the primary difference between solving a linear transport system with
 Monte Carlo methods and traditional fixed source Monte Carlo transport
-problems is the content of the Markov chains that are generated. The
-transitions represented by these chains are bound by probabilities and
-weights and are initiated by the sampling of a discrete source. In the
-context of transport problems, those transitions represent events such
-as particle scattering and absorption with probabilities that are
-determined by physical data in the form of cross sections.
+problems is the content of the Markov chains that are generated. 
 
-For stochastic matrix inversion, those transitions represent moving
+The transitions represented by these chains are bound by probabilities
+and weights and are initiated by the sampling of a discrete source. In
+the context of transport problems, those transitions represent events
+such as particle scattering and absorption with probabilities that are
+determined by physical data in the form of cross sections. For
+stochastic matrix inversion, those transitions represent moving
 between the equations of the linear system (and therefore the
 components of phase space which they represent) and their
 probabilities are defined by the coefficients of those
@@ -653,15 +655,15 @@ expectation values in the desired states as we progress through the
 chains. Therefore, parallel methods for Monte Carlo radiation
 transport can be abstracted and we can use those concepts that apply
 to matrix inversion methods as an initial means of developing a
-parallel Neumann-Ulam-type solver. 
+parallel Neumann-Ulam-type solver.
 
-In this section Brunner and Brantley's fully asynchronous algorithm is
-presented along with its application to the Neumann-Ulam method. For
+In this section Brunner and Brantley's fully asynchronous algorithm,
+which was effectively implemented verbatim for this work, is presented
+along with its application to the Neumann-Ulam method. For
 considerably more detail, the algorithm presented can be found in
-\citep{brunner_efficient_2009} and was effectively implemented
-verbatim for this work. In their work they identify two data sets that
-are required to be communicated: the sharing of particles that are
-transported from one domain to another and therefore from one
+\citep{brunner_efficient_2009}. In their work they identify two data
+sets that are required to be communicated: the sharing of particles
+that are transported from one domain to another and therefore from one
 processor to another and a global communication that signals if
 particle transport has been completed on all processors. Both of these
 communication sequences will be addressed at a high level along with
@@ -704,9 +706,11 @@ the model problem presented in Appendix~\ref{chap:diffusion_problem}.
     \scalebox{1.5}{ \input{chapters/parallel_mc/stencil_graph.pdftex_t} }
   \end{center}
   \caption{\textbf{Neutron diffusion equation state adjacency graph.}
-    \textit{Adjacent boundary states are collected by traversing the
-      graph one step for all local boundary states and collecting the
-      equations for those states that are not local. For a given
+    \textit{The structure of the graph comes from the discretization
+      of the Laplacian operator describing the diffusion
+      physics. Adjacent boundary states are collected by traversing
+      the graph one step for all local boundary states and collecting
+      the equations for those states that are not local. For a given
       transition in the random walk for the diffusion problem, a
       history at mesh point $(i,j)$ may transition to all adjacent
       mesh points including itself, corresponding to a global state
@@ -738,7 +742,7 @@ adjacent domains, Monte Carlo transport may proceed in parallel.
 
 \clearpage
 
-\subsection{The Algorithm}
+\subsection{Domain Decomposed Algorithm}
 \label{subsec:parallel_mc_algorithm}
 
 Here we present in detail Brunner and Brantley's 2009 algorithm in
@@ -797,19 +801,20 @@ Algorithm~\ref{alg:parallel_mc_algorithm} where lines 1-5 use the
 collected list of neighboring processors generated while building the
 Neumann-Ulam decomposition to setup the set of asynchronous messages
 required for domain-to-domain communication. Again, consider this
-communication patter for the 9 subdomain example given by
-Figure~\ref{fig:nearest_neighbor_comm}. In this pattern, each domain
-has two neighbors with which they will communicate parallel histories
-and this communication goes both ways as represented by the adjacent
-arrows in the figure. For each set of neighbors, a non-blocking send
-and receive is required with data buffers allocated with a
-user-defined size prepared for incoming and outgoing histories. This
-nonblocking structure is critical to the performance of the algorithm
-in that it permits local history transport to receive while new work
-to do is being collected. When a given process is ready to do more
-work, it can check these data buffers for incoming histories requiring
-further transport. In this way there is a maximum amount of overlap
-between communication and transport of histories.
+communication pattern for the 9 subdomain example given by
+Figure~\ref{fig:nearest_neighbor_comm}. In this pattern, each boundary
+domain has two neighbors and the center domain four neighbors with
+which they will communicate parallel histories and this communication
+goes both ways as represented by the adjacent arrows in the
+figure. For each set of neighbors, a non-blocking send and receive is
+required with data buffers allocated with a user-defined size prepared
+for incoming and outgoing histories. This nonblocking structure is
+critical to the performance of the algorithm in that it permits local
+history transport to continue while new histories to transport are
+being collected in the buffers. When a given process is ready to do
+more work, it can check these data buffers for incoming histories
+requiring further transport. In this way there is a maximum amount of
+overlap between communication and transport of histories.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1128,21 +1133,21 @@ of the matrix for each of the boundary states and determining which
 processes owned those adjacent states. 
 
 To generate overlap, we use the identical algorithm but in this case
-we perform as many graph traversals as the specified amount of
+we perform as many graph level traversals as the specified amount of
 overlap. For example, consider the analytic relations derived in
 \S~\ref{sec:analytic_framework} for the length of random walks in a
 Neumann-Ulam method and the amount of leakage from a domain
 considering a neutron diffusion problem. From these relations we might
-determine that for our particular problem, if we can grow the domain
+determine that, for our particular problem, if we can grow the domain
 by 10 additional discrete state transitions, we can reduce the number
 of histories that must be communicated by a significant fraction. We
 determine the information we must gather from neighboring domains to
 build the overlap by traversing the graph of the matrix outward from
-the boundary 10 times. At each step, we find the data in the adjacent
+the boundary 10 levels. At each step, we find the data in the adjacent
 domain that we require and make that data local, incrementing the size
 of the overlap. Once the overlap has been gathered, one extra graph
 traversal on the boundary states is performed to get the new
-neighboring states and their owning process.
+neighboring states and their owning processes.
 
 Once overlap has been generated, the transport domain for a single set
 is complete. However, if multiple sets are to be used, an additional
@@ -1203,32 +1208,33 @@ additional states gathered during overlap generation.
   \end{algorithmic}
 \end{algorithm}
 
-Once complete, the tallies for each individual computation must be
-gathered to the original set in order to build the correction vector
-within an MCSA sequence. To do this, we perform two parallel vector
-operations. First, overlap not only creates additional states in the
-local transport domain but also additional states in the local tally
-vector such that any events that occur in the local domain may be
-tallied in a local vector. Because of this, the tally vector in a
-single set will share local states with other domains and a parallel
-sum reduction operation is required to transform the tally into the
-original Neumann-Ulam parallel decomposition. Second, the tallies in
-individual sets must be combined and applied to the primary set in the
-problem that shares the processor space with the original linear
-problem. For this operation, we employ the concept of blocks as a
-subdivision of parallel space complementary to the concept of sets.
+Once Monte Carlo transport is complete complete, the tallies for each
+individual computation must be gathered to the original set in order
+to build the correction vector within an MCSA sequence. To do this, we
+perform two parallel vector operations. First, overlap not only
+creates additional states in the local transport domain but also
+additional states in the local tally vector such that any events that
+occur in the local domain may be tallied in a local vector. Because of
+this, the tally vector in a single set will share local states with
+other domains and a parallel sum reduction operation is required to
+transform the tally into the original Neumann-Ulam parallel
+decomposition. Second, the tallies in individual sets must be combined
+and applied to the primary set in the problem that shares the
+processor space with the original linear problem. For this operation,
+we employ the concept of blocks as a subdivision of parallel space
+complementary to the concept of sets.
 
 Consider the schematic representation of the final parallel reduction
 presented in Figure~\ref{fig:msod_tally_reduction}. For this
 operation, the tally vectors in each set must be summed together and
-applied to the primary set. As each set is an exact replica off the
+applied to the primary set. As each set is an exact replica of the
 others, the parallel decomposition of the tally vector is the same
 within all sets. We can take advantage of this by building a processor
 space that encapsulates each identical domain in each set. We can then
 use this processor space for the reduction. For the schematic in
 Figure~\ref{fig:msod_tally_reduction}, the upper-left domain in each
 set creates a single block, giving 9 total blocks for this example
-problem. The processor space the encapsulates each of the upper-left
+problem. The processor space that encapsulates each of the upper-left
 domains is then used for the parallel reduction operation. This
 reduction will happen in a mutually exclusive manner for each of the
 blocks in the system. One benefit of this approach is that this
@@ -1321,10 +1327,10 @@ libraries \citep{heroux_overview_2005}. In identical fashion to the
 verification for the $SP_N$ equations performed in
 \S~\ref{sec:spn_mcsa_verification}, we will solve the neutron
 diffusion problem in parallel using multiple cores on a desktop
-machine. For each parallel solution, the solution at each grid point
-in the system will be compared to the solution at the same grid point
-in the serial reference case with the minimum and maximum absolute
-differences of these values reported.
+machine. For each parallel solution, then the solution at each grid
+point in the system will be compared to the solution at the same grid
+point in the serial reference case with the minimum and maximum
+absolute differences of these values reported.
 
 GMRES and conjugate gradient solvers from the Belos package were used
 on 4 cores as a means of both assuring the Krylov solvers produce the
@@ -1332,8 +1338,8 @@ same results on multiple cores and as a means of providing an
 acceptable range of minimum and maximum values in the comparison. For
 MCSA, a range of MSOD parameters will be used such that problems with
 multiple sets and multiple blocks may be tested along with
-overlap. When multiple sets were leveraged, a single history was used
-to compute the MCSA correction for every DOF in the problem. For all
+overlap. For all MCSA calculations, a single history was used for
+every DOF in the problem to compute the correction vector. For all
 solvers, the flux was converged to a tolerance of \sn{1}{-8} and
 therefore if the comparisons agree within this tolerance the solutions
 will be deemed
@@ -1442,16 +1448,16 @@ Table~\ref{tab:parallel_mcsa_parameters}.
 \end{table}
 
 From the data we see that for all solvers, the parallel results agree
-within the solution tolerance of the reference serial results for all
-DOF in the system. In addition, we do not notice any systematic
+with the reference serial results within the solution tolerance for
+all DOF in the system. In addition, we do not notice any systematic
 differences in the results as a function of number of blocks, number
 of sets, or amount of overlap. In addition, the parallel GMRES results
 have maximum absolute differences of the same magnitude as all MCSA
 results and a larger minimum absolute difference than all MCSA results
-by three orders of magnitude. Based on these results, MCSA parallelized
-with an MSOD, and in particular the implementation used here,
-generates the correct results with respect to the serial conjugate
-gradient reference computation.
+by three orders of magnitude. Based on these results, MCSA
+parallelized with the MSOD algorithm, and in particular the
+implementation used here, generates the correct results with respect
+to the serial conjugate gradient reference computation.
 
 \clearpage
 
@@ -1461,10 +1467,10 @@ gradient reference computation.
 
 How effectively the presented algorithms parallelize MCSA will be
 determined by several performance measures. For this work, these
-measures come directly from Keyes' primer on the scalability of domain
-decomposed methods and specifically his discussion on how to measure
-their parallel performance \citep{keyes_how_1999}. All of these
-metrics are derived from two measured quantities: the number of
+measures will come directly from Keyes' primer on the scalability of
+domain decomposed methods and specifically his discussion on how to
+measure their parallel performance \citep{keyes_how_1999}. All of
+these metrics are derived from two measured quantities: the number of
 iterations required for convergence and the total wall time required
 for convergence. Each of these quantities are then measured in varying
 parameter studies by changing the number of processes in a simulation
@@ -1474,12 +1480,13 @@ where the efficiency is a function of the global problem size, $N$,
 and the number of processes in the calculation, $P$. There are several
 types of efficiencies that will be useful in our analysis of
 scalability with different definitions depending on the type of
-parametric scaling study performed. For all efficiencies, a value of 1
-is considered perfect while a value of 0 signals the worst possible
-performance. Often, as was observed in this work, it is the case that
-efficiencies above 1 are computed in certain scaling studies. For the
-data presented in the following sections, an explanation of each
-observed case of super-unitary efficiencies will be provided.
+parametric scaling study performed. For all efficiencies, a value of
+100\% is considered perfect while a value of 0\% signals the worst
+possible performance. Often, as was observed in this work, it is the
+case that efficiencies above 100\% are computed in certain scaling
+studies. For the data presented in the following sections, an
+explanation of each observed case of super-unitary efficiencies will
+be provided.
 
 Of primary interest to the nuclear engineer is the \textit{strong
   scaling} performance of an algorithm
@@ -1560,14 +1567,15 @@ fixed ratio. In this case, we define the absolute efficiency as:
   \label{eq:weak_scaling_absolute}
 \end{equation}
 subject to the constraint $M/Q = N/P$. The scaling is perfect if the
-runtime is static for all $P$ when $N/P$ is fixed. Often, weak scaling
-is of interest to the nuclear engineer due to the fact that the
-computational resources available are fixed and may not be able to
-contain the entire global problem of interest. In this case, an
-algorithm with good weak scaling performance permits all of the
-computational resources available to be used effectively to allow for
-the highest fidelity problem possible to be solved. In addition, for
-the resources available, the memory to processor ratio on a
+runtime is static for all $P$ when $N/P$ is fixed. 
+
+Often, weak scaling is of interest to the nuclear engineer due to the
+fact that the computational resources available are fixed and may not
+be able to contain the entire global problem of interest. In this
+case, an algorithm with good weak scaling performance permits all of
+the computational resources available to be used effectively to allow
+for the highest fidelity problem possible to be solved. In addition,
+for the resources available, the memory to processor ratio on a
 distributed machine is often fixed, giving an exercise in fixed $N/P$
 to solve the highest fidelity problem possible. Therefore, good weak
 scaling should not be viewed as an enhancement of time to solution for
@@ -1598,28 +1606,29 @@ and MSOD parallel performance will be explored and compared to
 performance results for the same problems using a set of production
 parallel Krylov solvers.
 
-For the scaling results presented here, all parallel Monte Carlo
-results were computed using the Monte Carlo Linear
-Solvers\footnote{MCLS is an open source library and can be downloaded
-  at \url{https://github.com/sslattery/MCLS}} (MCLS) library generated
-specifically for this work while the conjugate gradient and GMRES
-Krylov solvers used are part of the Belos linear solver package within
-the Trilinos framework \citep{heroux_overview_2005}. In general, the
-Belos package produces solutions to the neutron diffusion problem
-nearly two orders of magnitude faster than the MCLS library for serial
-computations using the conjugate gradient solver. Therefore, when we
-directly compare these two codes, the MCLS parallel efficiencies will
-appear artificially inflated relative to the Belos efficiencies due to
-the fact that the MCLS ratio of work to communication will be much
-larger than that for the Belos calculations. For every scaling study
+For the scaling results presented here, all parallel MCSA results were
+computed using the Monte Carlo Linear Solvers\footnote{MCLS is an open
+  source C++ library built on the Trilinos framework and can be
+  downloaded at \url{https://github.com/sslattery/MCLS}} (MCLS)
+library generated specifically for this work while the conjugate
+gradient and GMRES Krylov solvers used are part of the Belos linear
+solver package within the Trilinos framework
+\citep{heroux_overview_2005}. In general, the Belos package produces
+solutions to the neutron diffusion problem nearly two orders of
+magnitude faster than the MCLS library for serial computations using
+the conjugate gradient solver. Therefore, when we directly compare
+these two codes, the MCLS parallel efficiencies will appear
+artificially inflated relative to the Belos efficiencies due to the
+fact that the MCLS ratio of work to communication will be much larger
+than that for the Belos calculations. For every scaling study
 presented, the calculations were performed 3 times with the average
-values reported for wall time and used for the efficiency
-computations. In addition, it should be noted that in practice,
-symmetric positive-definite problems like the neutron diffusion
-problem solved here would never be solved using GMRES. Instead, a
-method such as conjugate gradient would typically be used due to the
-enhanced performance. We use GMRES here to simply as a means of
-comparison to MCSA performance.
+values reported for wall time and those average values used for the
+efficiency computations. In addition, it should be noted that in
+practice, symmetric positive-definite problems like the neutron
+diffusion problem solved here would never be solved using
+GMRES. Instead, a method such as conjugate gradient would typically be
+used due to the enhanced performance. We use GMRES here simply as a
+means of providing an additional comparison for MCSA performance.
 
 \subsection{Titan }
 \label{subsec:titan}
@@ -1655,11 +1664,12 @@ portion of the machine are given in Table~\ref{tab:titan_hardware}.
 For the scaling studies presented in this work, only the CPU
 components of Titan specified in Table~\ref{tab:titan_hardware} were
 utilized. This is due to the fact that the implementations of the
-parallel MCSA algorithm utilized code written only with the Message
-Passing Interface (MPI) and therefore could not take advantage of the
-GPU accelerators. Even considering just the CPU portion of Titan,
-nearly 300,000 CPUs are available to test the parallel performance of
-the MCSA algorithm at high levels of concurrency.
+parallel MCSA algorithm in the MCLS library utilized code written only
+with the Message Passing Interface (MPI) and therefore could not take
+advantage of the GPU accelerators. Even considering just the CPU
+portion of Titan, nearly 300,000 CPUs are available to test the
+parallel performance of the MCSA algorithm at high levels of
+concurrency.
 
 For each parallel performance metric presented in the previous
 section, a reference case is required to compute efficiencies for all
@@ -2365,7 +2375,8 @@ that increase the time to solution for a single iteration.
     \end{tabular}
   \end{center}
   \caption{\textbf{Strong scaling algorithmic efficiency using
-      multiple sets.}}
+      multiple sets.} \textit{Replicating histories improves
+      algorithmic efficiency by converging in fewer iterations.}}
   \label{tab:ms_strong_alg_eff}
 \end{table}
 
@@ -2517,7 +2528,8 @@ enhancement of time to convergence by replicating.
     \end{tabular}
   \end{center}
   \caption{\textbf{Weak scaling algorithmic efficiency using multiple
-      sets.}}
+      sets.} \textit{Replicating histories improves algorithmic
+      efficiency by converging in fewer iterations.}}
   \label{tab:ms_weak_alg_eff}
 \end{table}
 
