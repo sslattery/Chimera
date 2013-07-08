@@ -239,7 +239,7 @@
             <Parameter name="Equation Set Name" type="string" value="TEMPERATURE"/> 
             <Parameter name="Strategy" type="string" value="Constant"/>
             <ParameterList name="Data">
-                <Parameter name="Value" type="double" value="72.0"/>
+                <Parameter name="Value" type="double" value="0.072"/>
             </ParameterList>
         </ParameterList>
 
