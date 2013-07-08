@@ -7,6 +7,7 @@
 //---------------------------------------------------------------------------//
 
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <cmath>
 #include <cstdlib>
@@ -212,6 +213,44 @@ int main( int argc, char * argv[] )
 //                          "NEUTRON_FLUX" );
 //     vtk_output.write();
 
+    int global_length = 0;
+    Teuchos::ArrayRCP<double> global_vector;
+    if ( 0 == set_id )
+    {
+        // Collapse the flux to a single vector.
+        Teuchos::RCP<Vector> lhs = diffusion_problem->getProblem()->getLHS();
+        Teuchos::ArrayRCP<const double> data = lhs->getData();
+        global_length = lhs->getGlobalLength();
+        Teuchos::ArrayRCP<double> local_vector( global_length, 0.0 );
+        global_vector = Teuchos::ArrayRCP<double>( global_length, 0.0 );
+        for ( int i = 0; i < global_length; ++i )
+        {
+            if ( lhs->getMap()->isNodeGlobalElement(i) )
+            {
+                local_vector[i] = data[ lhs->getMap()->getLocalElement(i) ];
+            }
+        }
+
+        Teuchos::reduceAll<int,double>( *set_comm,
+                                        Teuchos::REDUCE_SUM,
+                                        global_length,
+                                        local_vector.getRawPtr(),
+                                        global_vector.getRawPtr() );
+    }
+    comm->barrier();
+    // Write the flux to a file.
+    if ( comm->getRank() == 0 )
+    {
+        std::ofstream ofile;
+        ofile.open( "neutron.dat" );
+        ofile << global_length << std::endl;
+        for ( int i = 0; i < global_length; ++i )
+        {
+            ofile << std::setprecision(18) << global_vector[i] << std::endl;
+        }
+        ofile.close();
+    }
+    comm->barrier();
     return 0;
 }
 
