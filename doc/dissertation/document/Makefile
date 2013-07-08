@@ -7,7 +7,6 @@ chap_intro = chapters/introduction
 chap_lp = chapters/linear_problem
 chap_mcb = chapters/mc_background
 chap_pmc = chapters/parallel_mc
-chap_mct = chapters/mc_theory
 chap_spne = chapters/spn_equations
 chap_nl = chapters/nonlinear_problem
 chap_conc = chapters/conclusion
@@ -133,7 +132,6 @@ clean:
 	-rm -f $(chap_intro)/*.pdftex_t $(chap_intro)/*.bak
 	-rm -f $(chap_lp)/*.pdftex_t $(chap_lp)/*.bak
 	-rm -f $(chap_mcb)/*.pdftex_t $(chap_mcb)/*.bak
-	-rm -f $(chap_mct)/*.pdftex_t $(chap_mct)/*.bak
 	-rm -f $(chap_pmc)/*.pdftex_t $(chap_pmc)/*.bak
 	-rm -f $(chap_spne)/*.pdftex_t $(chap_spne)/*.bak
 	-rm -f $(chap_nl)/*.pdftex_t $(chap_nl)/*.bak

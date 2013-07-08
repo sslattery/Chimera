@@ -159,6 +159,23 @@ developer to solve problems of finer discretization and higher-order
 functional representations while maintaining a robust and efficient
 parallel implementation.
 
+\begin{algorithm}[h!]
+  \caption{FANM Algorithm}
+  \label{alg:fanm}
+  \begin{algorithmic}[1]
+    \State $k := 0$ 
+    \While{$||\ve{F}(\ve{u}^{k})|| > \epsilon
+      ||\ve{F}(\ve{u}^{0})||$} 
+    \State $\ve{J}(\ve{u}^{k}) \leftarrow AD(\ve{F}(\ve{u}^k))$ 
+    \Comment{Automatic differentiation} 
+    \State $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
+    \Comment{Solve for the Newton correction with MCSA} 
+    \State $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$ 
+    \State $k \leftarrow k+1$ 
+    \EndWhile
+  \end{algorithmic}
+\end{algorithm}
+
 \subsection{Parallel FANM Implementation}
 \label{subsec:parallel_fanm}
 A parallel FANM method relies on a basic set of parallel matrix-vector
@@ -255,7 +272,7 @@ of the energy, mass, and momentum equations.
 \begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{
-      \input{chapters/navier_stokes_solutions/natural_convection_cavity.pdftex_t} }
+      \input{chapters/nonlinear_problem/natural_convection_cavity.pdftex_t} }
   \end{center}
   \caption{\textbf{Problem setup for the natural convection cavity
       benchmark.} \textit{Dirichlet conditions are set for the
@@ -290,7 +307,7 @@ square.
 \begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{
-      \input{chapters/navier_stokes_solutions/lid_driven_cavity.pdftex_t} }
+      \input{chapters/nonlinear_problem/lid_driven_cavity.pdftex_t} }
   \end{center}
   \caption{\textbf{Problem setup for the lid driven cavity benchmark.}
     \textit{Dirichlet conditions of zero are set for the velocity on
@@ -317,7 +334,7 @@ in Figure~\ref{fig:backward_facing_step}.
 \begin{figure}[t!]
   \begin{center}
     \scalebox{1.3}{
-      \input{chapters/navier_stokes_solutions/backward_facing_step.pdftex_t} }
+      \input{chapters/nonlinear_problem/backward_facing_step.pdftex_t} }
   \end{center}
   \caption{\textbf{Problem setup for the backward facing step
       benchmark.} \textit{Zero velocity boundary conditions are
