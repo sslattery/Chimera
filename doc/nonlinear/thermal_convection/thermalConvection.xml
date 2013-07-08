@@ -16,8 +16,8 @@
                 <Parameter name="Y Blocks" type="int" value="1" />
               <!--  <Parameter name="X Procs" type="int" value="2" />
                 <Parameter name="Y Procs" type="int" value="4" /> -->
-                <Parameter name="X Elements" type="int" value="100" />
-                <Parameter name="Y Elements" type="int" value="100" />
+                <Parameter name="X Elements" type="int" value="50" />
+                <Parameter name="Y Elements" type="int" value="50" />
                 <Parameter name="X0" type="double" value="0.0" />
                 <Parameter name="Y0" type="double" value="0.0" />
                 <Parameter name="Xf" type="double" value="1.0" />
@@ -327,9 +327,9 @@
           </ParameterList>
           <ParameterList name="Stratimikos">
 
-            <Parameter name="Linear Solver Type" type="string" value="AztecOO"/> 
+            <Parameter name="Linear Solver Type" type="string" value="MCLS"/> 
             <!-- AztecOO Belos Amesos MCLS -->
-            <Parameter name="Preconditioner Type" type="string" value="ML"/> 
+            <Parameter name="Preconditioner Type" type="string" value="MCLS"/> 
             <!-- Ifpack ML Teko Muelu MCLS None -->
 
             <ParameterList name="Linear Solver Types">
