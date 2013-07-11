@@ -113,7 +113,7 @@
                 <Parameter name="Value" type="string" value="NEWTONIAN"/>
             </ParameterList>
             <ParameterList name="VISCOSITY">
-                <Parameter name="Value" type="double" value="0.71"/> <!-- mu-->
+                <Parameter name="Value" type="double" value="1.0"/> <!-- mu-->
             </ParameterList>
 
             <ParameterList name="SOURCE_MOMENTUM">
@@ -167,7 +167,7 @@
             <Parameter name="Equation Set Name" type="string" value="UX"/> 
             <Parameter name="Strategy" type="string" value="Constant"/>
             <ParameterList name="Data">
-                <Parameter name="Value" type="double" value="0.0"/>
+                <Parameter name="Value" type="double" value="600.0"/>
             </ParameterList>
         </ParameterList>
 
@@ -229,18 +229,7 @@
             <Parameter name="Strategy" type="string" value="Constant"/>
             <ParameterList name="Data">
                 <Parameter name="Value" type="double" value="0.0"/>
-            </ParameterList>
-        </ParameterList>
-
-       <ParameterList>
-            <Parameter name="Type" type="string" value="Dirichlet"/> 
-            <Parameter name="Sideset ID" type="string" value="left"/> 
-            <Parameter name="Element Block ID" type="string" value="eblock-0_0"/> 
-            <Parameter name="Equation Set Name" type="string" value="TEMPERATURE"/> 
-            <Parameter name="Strategy" type="string" value="Constant"/>
-            <ParameterList name="Data">
-                <Parameter name="Value" type="double" value="7.0"/>
-            </ParameterList>
+fo            </ParameterList>
         </ParameterList>
 
 <!-- Right Side -->
@@ -261,17 +250,6 @@
             <Parameter name="Sideset ID" type="string" value="right"/> 
             <Parameter name="Element Block ID" type="string" value="eblock-0_0"/> 
             <Parameter name="Equation Set Name" type="string" value="UY"/> 
-            <Parameter name="Strategy" type="string" value="Constant"/>
-            <ParameterList name="Data">
-                <Parameter name="Value" type="double" value="0.0"/>
-            </ParameterList>
-        </ParameterList>
-
-        <ParameterList>
-            <Parameter name="Type" type="string" value="Dirichlet"/> 
-            <Parameter name="Sideset ID" type="string" value="right"/> 
-            <Parameter name="Element Block ID" type="string" value="eblock-0_0"/> 
-            <Parameter name="Equation Set Name" type="string" value="TEMPERATURE"/> 
             <Parameter name="Strategy" type="string" value="Constant"/>
             <ParameterList name="Data">
                 <Parameter name="Value" type="double" value="0.0"/>
@@ -300,12 +278,12 @@
     <!-- End: Initial Conditions -->
 
     <ParameterList name="Output">
-        <Parameter name="File Name" type="string" value="ThermalConv.exo"/>
+        <Parameter name="File Name" type="string" value="LidDriven.exo"/>
     </ParameterList>
 
     <ParameterList name="Options">
         <Parameter name="Write Volume Assembly Graphs" type="bool" value="false"/> 
-        <Parameter name="Volume Assembly Graph Prefix" type="string" value="Thermalconvection_"/> 
+        <Parameter name="Volume Assembly Graph Prefix" type="string" value="LidDriven_"/> 
     </ParameterList>
     <!-- End: Options -->
 
@@ -318,9 +296,12 @@
       <Parameter name="Method" type="string" value="Newton"/>
       <ParameterList name="Newton">
         <Parameter name="Forcing Term Method" type="string" value="Type 2"/>
+        <Parameter name="Forcing Term Initial Tolerance" type="double" value="0.01"/>
+        <Parameter name="Forcing Term Alpha" type="double" value="2.0"/>
+        <Parameter name="Forcing Term Gamma" type="double" value="0.9"/>
         <Parameter name="Rescue Bad Newton Solve" type="bool" value="1"/>
         <ParameterList name="Linear Solver">
-           <Parameter name="Tolerance" type="double" value="1.0e-3"/>
+           <Parameter name="Tolerance" type="double" value="1.0e-1"/>
         </ParameterList>
         <ParameterList name="Stratimikos Linear Solver">
           <ParameterList name="NOX Stratimikos Options">
@@ -343,7 +324,7 @@
                     <Parameter name="Output Frequency" type="int" value="10"/>
                   </ParameterList>
                   <Parameter name="Max Iterations" type="int" value="600"/>
-                  <Parameter name="Tolerance" type="double" value="1e-5"/>
+                  <Parameter name="Tolerance" type="double" value="1e-4"/>
                 </ParameterList>
               </ParameterList>
               <!-- End: AztecOO -->
@@ -370,12 +351,12 @@
               <!-- End: Belos -->
 
               <ParameterList name="MCLS">
-                <Parameter name="Solver Type" type="string" value="Fixed Point"/>
+                <Parameter name="Solver Type" type="string" value="MCSA"/>
                 <ParameterList name = "Solver Types">
                   <ParameterList name = "MCSA">
                     <Parameter name="Fixed Point Type" type="string" value="Richardson"/>
                     <Parameter name="MC Type" type="string" value="Adjoint"/>
-                    <Parameter name="Estimator Type" type="string" value="Collision"/>
+                    <Parameter name="Estimator Type" type="string" value="Expected Value"/>
                     <Parameter name="Transport Type" type="string" value="Global"/>
                     <Parameter name="Number of Sets" type="int" value="1"/>
                     <Parameter name="Reproducible MC Mode" type="bool" value="false"/>
@@ -392,12 +373,10 @@
                     <Parameter name="Domain Weight Recovery" type="double" value="0.0"/>
                   </ParameterList>
                   <ParameterList name = "Fixed Point">
-                    <Parameter name="Fixed Point Type" type="string" value="Chebyshev"/>
-                    <Parameter name="Maximum Iterations" type="int" value="5000"/>
+                    <Parameter name="Fixed Point Type" type="string" value="Richardson"/>
+                    <Parameter name="Maximum Iterations" type="int" value="10000"/>
                     <Parameter name="Iteration Print Frequency" type="int" value="1"/>
                     <Parameter name="Richardson Relaxation" type="double" value="1.0"/>
-                    <Parameter name="Chebyshev Delta" type="double" value="1.0"/>
-                    <Parameter name="Chebyshev Span" type="double" value="1.0"/>
                   </ParameterList>
                 </ParameterList>
               </ParameterList>
@@ -410,11 +389,11 @@
 
               <ParameterList name="Ifpack">
                 <Parameter name="Overlap" type="int" value="1"/>
-                <Parameter name="Prec Type" type="string" value="ILUT"/>
+                <Parameter name="Prec Type" type="string" value="ILU"/>
                 <ParameterList name="Ifpack Settings">
-                  <Parameter name="fact: drop tolerance" type="double" value="1.0e-4"/>
-                  <Parameter name="fact: ilut level-of-fill" type="double" value="5"/>
-                  <Parameter name="fact: level-of-fill" type="int" value="1"/>
+                  <Parameter name="fact: drop tolerance" type="double" value="1.0e-5"/>
+                  <Parameter name="fact: ilut level-of-fill" type="double" value="15"/>
+                  <Parameter name="fact: level-of-fill" type="int" value="5"/>
                   <!-- <Parameter name="schwarz: reordering type" type="string" value="rcm"/> -->
                   <!-- <Parameter name="fact: drop tolerance" type="double" value="0.0"/> -->
                   <!-- <Parameter name="fact: maximum fill factor" type="double" value="300"/>  -->
@@ -433,14 +412,14 @@
                   <Parameter name="cycle applications" type="int" value="1"/>
                   <Parameter name="aggregation: threshold" type="double" value="0.0"/>
                   <Parameter name="aggregation: type" type="string" value="Uncoupled"/>
-                  <Parameter name="aggregation: damping factor" type="double" value="0.0"/>
-                  <Parameter name="aggregation: block scaling" type="bool" value="false"/>
-                  <Parameter name="energy minimization: enable" type="bool" value="false"/>
+                  <Parameter name="aggregation: damping factor" type="double" value="0.1"/>
+                  <Parameter name="aggregation: block scaling" type="bool" value="true"/>
+                  <Parameter name="energy minimization: enable" type="bool" value="true"/>
                   <Parameter name="energy minimization: type" type="int" value="3"/>
                   <Parameter name="smoother: type" type="string" value="IFPACK"/> 
                <!--   <Parameter name="smoother: ifpack type" type="string" value="SILU"/> --> 
                   <Parameter name="smoother: ifpack type" type="string" value="ILU"/>
-                  <Parameter name="smoother: ifpack overlap" type="int" value="1"/>
+                  <Parameter name="smoother: ifpack overlap" type="int" value="5"/>
                   <ParameterList name="smoother: ifpack list">
                     <Parameter name="fact: level-of-fill" type="int" value="5"/>
                     <Parameter name="schwarz: reordering type" type="string" value="rcm"/> 
@@ -457,7 +436,7 @@
               <!-- End: ML -->
 
               <ParameterList name="MCLS">
-                <Parameter name="Preconditioner Type" type="string" value="Block Jacobi"/>
+                <Parameter name="Preconditioner Type" type="string" value="ML"/>
                 <ParameterList name="Preconditioner Types">
                   <ParameterList name="Block Jacobi">
                     <Parameter name="Jacobi Block Size" type="int" value="4"/>
@@ -530,14 +509,14 @@
         <Parameter name="Full Step" type="double" value="1"/>
       </ParameterList>
       <!-- <Parameter name="Method" type="string" value="Full Step"/> --> 
-      <Parameter name="Method" type="string" value="Backtrack"/>
-      <!-- <Parameter name="Method" type="string" value="Polynomial"/> -->
-      <ParameterList name="Polynomial"> 
-        <Parameter name="Max Iters" type="int" value="4"/>
-        <Parameter name="Recovery Step Type" type="string" value="Constant"/>
-        <Parameter name="Recovery Step" type="double" value="1.0e-3"/>
-        <Parameter name="Allowed Relative Increase" type="double" value="500.0"/>
-        <Parameter name="Maximum Iteration for Increase" type="int" value="2"/>
+      <!-- <Parameter name="Method" type="string" value="Backtrack"/> -->
+      <Parameter name="Method" type="string" value="Polynomial"/>
+      <ParameterList name="Backtrack"> 
+        <Parameter name="Max Iters" type="int" value="1000"/>
+        <Parameter name="Default Step" type="double" value="1"/>
+        <Parameter name="Recovery Step" type="double" value="0.01"/>
+        <Parameter name="Minimum Step" type="double" value="1.0e-4"/>
+        <Parameter name="Reduction Factor" type="double" value="0.1"/>
       </ParameterList>
     </ParameterList>
     <!-- End: Line Search -->
@@ -589,18 +568,17 @@
           </ParameterList>
           <ParameterList name="Test 1">
             <Parameter name="Test Type" type="string" value="NormWRMS"/>
-            <Parameter name="Tolerance" type="double" value="1.0"/>
-            <Parameter name="Relative Tolerance" type="double" value="1.0e-5"/>
+            <Parameter name="Tolerance" type="double" value="1.0e-2"/>
+            <Parameter name="Relative Tolerance" type="double" value="1.0e-3"/>
             <Parameter name="Absolute Tolerance" type="double" value="1.0e-8"/>
             <Parameter name="BDF Multiplier" type="double" value="1.0"/>
             <Parameter name="Alpha" type="double" value="0.1"/>
             <Parameter name="Beta" type="double" value="0.5"/>
-
           </ParameterList>
       </ParameterList>
       <ParameterList name="Test 1">
         <Parameter name="Test Type" type="string" value="MaxIters"/>
-        <Parameter name="Maximum Iterations" type="int" value="200"/>
+        <Parameter name="Maximum Iterations" type="int" value="400"/>
       </ParameterList>
       <ParameterList name="Test 2">
         <Parameter name="Test Type" type="string" value="FiniteValue"/>
