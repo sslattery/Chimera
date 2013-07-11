@@ -429,6 +429,7 @@ diag(\ve{A})$. Table~\ref{tab:group1pj} gives the results for the
 1-group case, Table~\ref{tab:group10dspj} for the 10-group case with
 full downscatter only and Table~\ref{tab:group10uspj} for the 10-group
 case with full downscatter and full upscatter.
+
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{cccccc}\hline\hline
@@ -500,6 +501,7 @@ case with full downscatter and full upscatter.
       downscatter and full upscatter.}}
   \label{tab:group10uspj}
 \end{table}
+
 It is readily apparent from the tabulated data that point Jacobi
 preconditioning is insufficient. For problems of order $SP_5$ and
 $SP_7$, the method will not converge at all and for the upscatter case
@@ -555,16 +557,18 @@ The inversion of this preconditioner is trivial as shown on the right
 side of Figure~\ref{fig:block_jacobi_ex}. Each block can be inverted
 individually and combined to form the inverse. In addition, in the
 limit of a block size of one, the block Jacobi method reduces to the
-point Jacobi method. For high performance implementations this has
-several attractive properties. First, the blocks in the matrix come
-from the energy/angle discretization of the transport equation as
-given by Eq~(\ref{eq:A_block_matrix}). Each block on the diagonal is
-bound to a mesh element in the system (note there are 8 blocks on the
-diagonal in each of the sparsity patterns with a mesh of $2 \times 2
-\times 2$) and therefore we expect the matrix elements forming the
-block to be entirely local. Second, these blocks are typically dense
-and nearly lower triangular for many transport problems meaning that
-established dense matrix methods can be used for fast inversion.
+point Jacobi method. 
+
+For high performance implementations this has several attractive
+properties. First, the blocks in the matrix come from the energy/angle
+discretization of the transport equation as given by
+Eq~(\ref{eq:A_block_matrix}). Each block on the diagonal is bound to a
+mesh element in the system (note there are 8 blocks on the diagonal in
+each of the sparsity patterns with a mesh of $2 \times 2 \times 2$)
+and therefore we expect the matrix elements forming the block to be
+entirely local. Second, these blocks are typically dense and nearly
+lower triangular for many transport problems meaning that established
+dense matrix methods can be used for fast inversion.
 
 \subsection{Block Jacobi Spectral Analysis Results}
 \label{subsec:spn_analysis_results}
