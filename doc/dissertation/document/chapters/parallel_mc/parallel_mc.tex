@@ -2708,7 +2708,13 @@ ill-conditioned problems where using subdomain Monte Carlo reduces the
 algorithmic efficiency of MCSA due to the information lost in the
 correction vector, overlap would be a viable mechanism to potentially
 maintain that iterative performance, keeping in mind the potential
-impacts on scalability that were observed in this work.
+impacts on scalability that were observed in this work. However,
+although eliminating all Monte Carlo communication was observed to be
+the best mode of use for MCSA, the parallel Monte Carlo methods
+developed for this work still provide value for cases where only a
+Monte Carlo solution is desired. In those cases, full transport of the
+Monte Carlo histories are required in order to generate the correct
+solution.
 
 \begin{figure}[t!]
   \begin{center}

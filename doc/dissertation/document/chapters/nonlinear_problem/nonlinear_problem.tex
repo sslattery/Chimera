@@ -43,9 +43,10 @@ Jacobian generation. Following this, the new algorithm will be
 presented and implementation details will be discussed. Using the new
 algorithm and a production fluid physics code, a group of nonlinear
 benchmark problems will be used to verify the correctness of the
-method relative to solutions obtained using conventional
-methods. Finally, will compare the performance of the new method
-against contemporary Newton-Krylov methods for the benchmark problems.
+method relative to solutions obtained using conventional methods in
+various flow regimes. Finally, we will compare the performance of the
+new method against contemporary Newton-Krylov methods for the same
+benchmark problems.
 
 %%---------------------------------------------------------------------------%%
 \section{Preliminaries\ }
@@ -159,7 +160,7 @@ where $\eta^k \in [0,1)$ is defined as the \textit{forcing term} at
   of the method or even prohibit convergence
   \citep{eisenstat_choosing_1996}. In addition, \textit{globalization
     methods} may be used to modify the Newton correction in a more
-  desireable direction such that convergence properties can be
+  desirable direction such that convergence properties can be
   improved when the initial guess for $\ve{u}$ is poor
   \citep{pawlowski_globalization_2006}.
 
@@ -405,7 +406,7 @@ used with the FANM method including backtracking methods.
 \subsection{Parallel FANM Implementation}
 \label{subsec:parallel_fanm}
 Here we briefly comment on how a FANM method may be implemented in
-parallel, defering the bulk of the discussion on parallel methods
+parallel, deferring the bulk of the discussion on parallel methods
 Monte Carlo to Chapter~\ref{ch:parallel_methods}. A parallel FANM
 method relies on a basic set of parallel matrix-vector operations
 outlined in \S~\ref{sec:parallel_krylov_methods} as well as the global
@@ -556,7 +557,7 @@ in Figure~\ref{fig:backward_facing_step}.
 \end{figure}
 In this problem, the inflow condition is specified by a fully-formed
 parabolic flow profile over a zero velocity boundary representing a
-step. The flow over this step will generate a recirculating backflow
+step. The flow over this step will generate a recirculating back-flow
 under the inlet flow towards the step. As in the lid driven cavity
 problem, the nonlinear behavior of this benchmark and the difficulty
 in obtaining a solution is dictated by the Reynolds number of the
