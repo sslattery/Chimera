@@ -1380,13 +1380,15 @@ Table~\ref{tab:parallel_mcsa_parameters}.
       \multicolumn{1}{c}{Value}\\\hline
       Histories & 1 per DOF \\
       Weight Cutoff & \sn{1}{-2} \\
-      Fixed Point & Richardson \\
-      Estimator & Collision \\
+      Fixed Point Iteration & Richardson \\
+      Estimator & Adjoint Collision \\
       %%
       \hline\hline
     \end{tabular}
   \end{center}
-  \caption{\textbf{Parallel MCSA verification solver parameters.}}
+  \caption{\textbf{Parallel MCSA verification solver parameters.}
+    \textit{No relaxation parameters or variance reduction techniques
+      were used with MCSA.}}
   \label{tab:parallel_mcsa_parameters}
 \end{table}
 
