@@ -3,14 +3,14 @@
 \label{ch:nonlinear_problem}
 Nonlinear transport problems are a common occurrence in single and
 multiple physics problems in nuclear engineering. Systems of partial
-differential equations such as those that describe fluid flow or more
-general transport processes when discretized by conventional methods
-yield discrete sets of stiff equations with nonlinearities present in
-the variables. These sets of equations characterize momentum and
-energy transport through diffusion, viscous forces, and inertial
-forces. Traditionally, such systems have been solved by
-linearizing them in a form where the nonlinearities in the variables
-are eliminated and more traditional linear methods can be used for
+differential equations, such as the Navier-Stokes equations that
+describe fluid flow, yield discrete sets of stiff equations with
+nonlinearities present in the variables when discretized by
+conventional methods. These sets of equations characterize momentum
+and energy transport through diffusion, viscous forces, and inertial
+forces. Traditionally, such systems have been solved by linearizing
+them in a form where the nonlinearities in the variables are
+eliminated and more traditional linear methods can be used for
 solutions. Often characterized as segregated methods where physics
 operators are split and their action on the system approximated in
 steps, such methods lack consistency and accuracy in resolving the
@@ -41,14 +41,15 @@ and Newton's method. In this chapter the fundamentals of Newton's
 method will be presented along with a brief discussion of inexact
 Newton methods. Newton-Krylov methods, a variant of inexact Newton
 methods, will be outlined along with two common techniques for
-Jacobian generation. Following this, the new algorithm will be
-presented and implementation details will be discussed. Using the new
-algorithm and a production fluid physics code, a group of nonlinear
-benchmark problems will be used to verify the correctness of the
-method relative to solutions obtained using conventional methods in
-various flow regimes. Finally, we will compare the performance of the
-new method against contemporary Newton-Krylov methods for the same
-benchmark problems.
+Jacobian generation as a means of defining current
+practices. Following this, the new algorithm will be presented and
+implementation details will be discussed. Using the new algorithm and
+a production fluid physics code, a group of challenging nonlinear
+benchmark problems for the Navier-Stokes equations will be used to
+verify the correctness of the method relative to solutions obtained
+using conventional methods in various flow regimes. Finally, we will
+compare the performance of the new method against contemporary
+Newton-Krylov methods for the same benchmark problems.
 
 %%---------------------------------------------------------------------------%%
 \section{Preliminaries\ }
@@ -233,10 +234,10 @@ set. Furthermore, in their 1995 work, Knoll and McHugh also noted that
 a dominating part of their computation time was the evaluation of the
 difference equations for building the Jacobian
 \citep{knoll_newton-krylov_1995}. By recognizing that Krylov methods
-only need the action of the operator on the vector instead of the
+only need the action of the operator on a vector instead of the
 operator itself, the Jacobian can instead be approximated through
 various numerical methods including a difference-based Jacobian-free
-formulation. 
+formulation.
 
 Jacobian-Free methods, and in particular \textit{Jacobian-Free
   Newton-Krylov} (JFNK) methods \citep{knoll_jacobian-free_2004}, rely
@@ -253,17 +254,18 @@ precision. Kelley \citep{kelley_iterative_1995} points out a potential
 downfall of this formulation in that if the discretization error in
 $\ve{F}(\ve{u})$ is on the order of the perturbation parameter
 $\epsilon$, then the finite difference error from
-Eq~(\ref{eq:jacobian_free_product}) pollutes the solution. In
-addition, Knoll and McHugh noted that for preconditioning purposes,
+Eq~(\ref{eq:jacobian_free_product}) pollutes the solution. 
+
+In addition, Knoll and McHugh noted that for preconditioning purposes,
 part of the Jacobian must still explicitly be formed periodically and
 that linear solver robustness issues were magnified by the matrix-free
 approach due to the first-order approximation. This formation
 frequency coupled with the numerous evaluations of the Jacobian
 approximation create a situation where after so many nonlinear
-iterations, it becomes cheaper to instead fully form the
-Jacobian. For simple equation sets, this may only take 5-10 Newton
-iterations to reach this point while over 30 may be required for
-larger equations sets and therefore larger Jacobians.
+iterations, it becomes cheaper to instead fully form the Jacobian. For
+simple equation sets, this may only take 5-10 Newton iterations to
+reach this point while over 30 may be required for larger equations
+sets and therefore larger Jacobians.
 
 \subsection{Automatic Differentiation for Jacobian Generation}
 \label{subsec:automatic_differentiation}
@@ -305,7 +307,7 @@ each element will therefore have entirely local data in a dense
 structure, eliminating the need for parallel communication and sparse
 techniques during differentiation. Only when all local differentials
 are computed does communication of the Jacobian occur through
-gather/scatter operations in order to properly assembly it. 
+gather/scatter operations in order to properly assemble it. 
 
 Also of benefit is the fact that element-level computations generally
 consist of a smaller number of degrees of freedom, thus reducing
@@ -406,6 +408,26 @@ used with FANM including backtracking methods.
   \end{algorithmic}
 \end{algorithm}
 
+At first glance, FANM is simply a variant of an inexact Newton method
+with a specific requirement of a fully formed Jacobian. However, FANM
+has the potential to provide value in several areas. First, if
+iterative or parallel performance of MCSA can be demonstrated to
+better than that of GMRES or similar subspace methods for asymmetric
+systems, FANM may outperform a Newton-Krylov method. Second, for
+situations where memory is a constraint, especially in situations
+where the Jacobian is generated often if not at every Newton
+iteration, not building a subspace for ill-conditioned problems will
+alleviate the associated cost. However, until the preconditioning
+issues associated with MCSA as presented in the previous chapter using
+the $SP_N$ equations can be resolved, this hypothesis can
+unfortunately not be researched. Explicit algebraic preconditioning
+used in conventional solution methods will almost certainly be
+required to reduce the spectral radius of most Jacobian operators for
+MCSA to apply and therefore the current preconditioning strategy will
+destroy all potential memory benefits of FANM.
+
+\clearpage
+
 %%---------------------------------------------------------------------------%%
 \section{Navier-Stokes Benchmark Problems\ }
 \label{sec:ns_benchmarks}
@@ -455,8 +477,8 @@ equations to the following two standard benchmark problems.
 
 \subsection{Thermal Convection Cavity Problem}
 \label{subsec:natural_convection_cavity}
-In 1983 a benchmark solution for the natural convection of air in a
-square cavity was published \citep{de_vahl_davis_natural_1983} as
+In 1983 a set of benchmark solutions for the natural convection of air
+in a square cavity was published \citep{de_vahl_davis_natural_1983} as
 shown in Figure~\ref{fig:natural_convection_cavity} for the solution
 of the energy, mass, and momentum equations.
 
