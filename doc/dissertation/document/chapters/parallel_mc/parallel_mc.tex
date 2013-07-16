@@ -1,24 +1,24 @@
 \chapter{Parallel Monte Carlo Synthetic \\ Acceleration Methods\ }
 \label{ch:parallel_methods}
-For MCSA to be viable at the production scale for nuclear engineering
-applications, scalable parallel implementations of the algorithm are
-required. Reviewing the literature, MCSA has yet to be parallelized
-and the Neumann-Ulam Monte Carlo method on which it is built has only
-been parallelized through history-level parallelism with full domain
-replication \citep{alexandrov_efficient_1998}. In order to solve large
-linear transport systems with MCSA, a domain-decomposed parallel
-strategy is required. In the formulation of a parallel MCSA algorithm,
-we recognize that the algorithm occurs in two stages, an outer
-iteration performing fixed point iteration and applying the
-correction, and an inner Monte Carlo solver that is generating the
-correction via the adjoint or forward methods. The parallel aspects of
-both these components must be considered. Therefore, we will develop
-and implement parallel algorithms for the Neumann-Ulam and MCSA
-methods leveraging both the knowledge gained from the general parallel
-implementations of Krylov methods reviewed in
-Appendix~\ref{ch:linear_problem} and modern parallel strategies for
-domain decomposed Monte Carlo as developed by the reactor physics
-community.
+For MCSA and FANM to be viable at the production scale for nuclear
+engineering applications, scalable parallel implementations of the
+algorithm are required. Reviewing the literature, MCSA has yet to be
+parallelized and the Neumann-Ulam Monte Carlo method on which it is
+built has only been parallelized through history-level parallelism
+with full domain replication \citep{alexandrov_efficient_1998}. In
+order to solve large linear transport systems with MCSA, a
+domain-decomposed parallel strategy is required. In the formulation of
+a parallel MCSA algorithm, we recognize that the algorithm occurs in
+two stages, an outer iteration performing fixed point iteration and
+applying the correction, and an inner Monte Carlo solver that is
+generating the correction via the adjoint or forward methods. The
+parallel aspects of both these components must be
+considered. Therefore, we will develop and implement parallel
+algorithms for the Neumann-Ulam and MCSA methods leveraging both the
+knowledge gained from the general parallel implementations of Krylov
+methods reviewed in Appendix~\ref{ch:linear_problem} and modern
+parallel strategies for domain decomposed Monte Carlo as developed by
+the reactor physics community.
 
 In this chapter we briefly review particle transport methods for
 domain decomposed Monte Carlo. Considering a domain decomposed
@@ -1311,6 +1311,27 @@ containing the primary set. Only the Monte Carlo data structures exist
 on the rest of the processors in the problem as replication of the
 other operations does not generate any more information that could be
 used to accelerate the time to solution.
+
+\subsection{Parallel FANM Implementation}
+\label{subsec:parallel_fanm}
+Here we briefly comment on how a FANM method may be implemented in
+parallel. A parallel FANM method relies on a basic set of parallel
+matrix-vector operations outlined in
+\S~\ref{sec:parallel_krylov_methods} as well as the global residual
+and Jacobian assembly procedure described in
+\S~\ref{subsec:automatic_differentiation}. Consider the FANM iteration
+scheme in Algorithm~\ref{alg:fanm}. We must first assemble the linear
+system in parallel through the element-wise function evaluations to
+generate both the global Jacobian operator and the global residual
+vector on the right hand side. Per Bartlett's work on automatic
+differentiation, efficient and automated parallel mechanisms are
+available to do this through a sequence of scatter/gather
+operations. With these tools available for residual and Jacobian
+generation, the remainder of the parallel procedure is simple. The
+linear Newton correction system is solved using the parallel MCSA
+method as described in the previous section and the Newton correction
+applied to the previous iterate's solution through a parallel vector
+update.
 
 %%---------------------------------------------------------------------------%%
 \section{Parallel MCSA Verification\ }

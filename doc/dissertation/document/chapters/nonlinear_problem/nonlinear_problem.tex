@@ -122,10 +122,11 @@ nonlinear residual. Commonly, the following criteria is used:
   ||\ve{F}(\ve{u}^{k})|| < \epsilon ||\ve{F}(\ve{u}^{0})||\:,
   \label{eq:newton_stopping_criteria}
 \end{equation}
-where $\epsilon$ is a user defined tolerance parameter. Newton's
-method is \textit{consistent} in that all components of the nonlinear
-functions that describe the physics we are modeling are updated
-simultaneously in the iteration sequence with respect to one
+where $\epsilon$ is a user defined tolerance parameter. 
+
+Newton's method is \textit{consistent} in that all components of the
+nonlinear functions that describe the physics we are modeling are
+updated simultaneously in the iteration sequence with respect to one
 another. This is in comparison to \textit{inconsistent} strategies,
 such as a pressure correction strategy for solving the Navier-Stokes
 equations \citep{pletcher_computational_1997}, where the components of
@@ -384,9 +385,9 @@ solve the linear problem for the Newton correction. As with other
 inexact methods, any given forcing term can be used to control the
 convergence of the MCSA iteration at every Newton step. Finally, in
 line 5 the Newton correction is applied and the iteration proceeds
-until convergence. In addition to forcing term adjustments, any other
+until convergence. In addition to forcing term adjustments, other
 techniques for improving performance of the nonlinear iteration may be
-used with the FANM method including backtracking methods.
+used with FANM including backtracking methods.
 
 \begin{algorithm}[h!]
   \caption{FANM Algorithm}
@@ -404,29 +405,6 @@ used with the FANM method including backtracking methods.
     \EndWhile
   \end{algorithmic}
 \end{algorithm}
-
-\subsection{Parallel FANM Implementation}
-\label{subsec:parallel_fanm}
-Here we briefly comment on how a FANM method may be implemented in
-parallel, deferring the bulk of the discussion on parallel methods
-Monte Carlo to Chapter~\ref{ch:parallel_methods}. A parallel FANM
-method relies on a basic set of parallel matrix-vector operations
-outlined in \S~\ref{sec:parallel_krylov_methods} as well as the global
-residual and Jacobian assembly procedure described in
-\S~\ref{subsec:automatic_differentiation}. Consider the FANM iteration
-scheme in Algorithm~\ref{alg:fanm}. We must first assemble the linear
-system in parallel through the element-wise function evaluations to
-generate both the global Jacobian operator and the global residual
-vector on the right hand side. Per Bartlett's work, efficient and
-automated parallel mechanisms are available to do this through a
-sequence of scatter/gather operations. With these tools available for
-residual and Jacobian generation, the remainder of the parallel
-procedure is simple. The linear Newton correction system is solved
-using the parallel MCSA method that will be described in
-Chapter~\ref{ch:parallel_methods} and the Newton correction applied to
-the previous iterate's solution through a parallel vector update.
-
-\clearpage 
 
 %%---------------------------------------------------------------------------%%
 \section{Navier-Stokes Benchmark Problems\ }
@@ -507,7 +485,7 @@ to conductive heat transfer), we can adjust the influence of the
 nonlinear convection term in Eq~(\ref{eq:ns_momentum}). In Shadid's
 work, Rayleigh numbers of up to \sn{1}{6} were used for this benchmark.
 
-Temperature solutions for these equations are given in
+Isotherms of the temperature solution for these equations are given in
 Figure~\ref{fig:convection_isotherms} for Rayleigh numbers of
 \sn{1}{3}, \sn{1}{4}, \sn{1}{5} and \sn{1}{6}. Note that as the
 Rayleigh number is increased, the fluid begins to rotate in the
@@ -562,15 +540,14 @@ which will overcome the viscous forces and again increase the
 influence of the nonlinear terms in Eq~(\ref{eq:ns_momentum}). Shadid
 used Reynolds numbers up to \sn{1}{4} for this benchmark problem.
 
-Velocity magnitudes are given in
-Figure~\ref{fig:driven_velocity_isocurves} for Reynolds numbers of
-100, 300, 500 and 700. Increasing the velocity on the top boundary of
-the problem drives up the Reynolds number of the system making it more
-difficult to solve.  As the Reynolds number grows, momentum and energy
-transport in the system is dominated by inertial forces rather than
-viscous forces. More rotation of the fluid is induced by intertial
-forces and we begin to see some additional vortices form besides the
-primary vortex in the center of the box.
+Isocurves of the velocity magnitudes are given in
+Figure~\ref{fig:driven_velocity_isocurves} for solutions to the lid
+driven cavity problem at Reynolds numbers of 100, 300, 500 and
+700. Increasing the velocity on the top boundary of the problem drives
+up the Reynolds number of the system making it more difficult to
+solve. More rotation of the fluid is induced by intertial forces and
+we begin to see some additional vortices form besides the primary
+vortex in the center of the box.
 
 \begin{figure}[t!]
   \begin{center}
@@ -600,25 +577,65 @@ report the tolerance to which the nonlinear residual was converged.
 
 Given the difficulty of these benchmark problems, the linear solve at
 each Newton step was preconditioned with an algebraic multigrid
-method. For FANM, this preconditioning was required to reduce the
-spectral radius of the Jacobian operators generated at each Newton
-step and for the Newton-Krylov solutions this preconditioning was
-required to obtain good convergence properties although not necessary
-for convergence. For every benchmark calculation, both FANM and
+method, a common technique for preconditioning these equations
+\citep{ghia_high-re_1982,evans_enhanced_2007}. For FANM, this
+preconditioning was required to reduce the spectral radius of the
+Jacobian operators generated at each Newton step and for the
+Newton-Krylov solutions this preconditioning was required to obtain
+good convergence properties although not necessary for
+convergence. For every benchmark calculation, both FANM and
 Newton-Krylov were preconditioned with the same multigrid parameters
 such that the conditioning of the system would not be a factor in the
 verification of the method or the perfomance comparison in the
-following section. 
+following section.
 
 As with the radiation transport calculations in the previous chapter,
 algrebraic preconditioning with the multigrid method results in dense
 linear systems. To mitigate this, the reduced domain approximation was
 again applied to the Monte Carlo solution within the MCSA solve
 occuring at each nonlinear iteration. The values used for the
-approximation will be given for each benchmark problem.
+approximation will be given for each benchmark problem. Without
+multigrid preconditioning or too small of a reduced domain fill level,
+the residual in MCSA was observed to stagnate. Typically this happens
+because the Richardson iteration will damp the higher order error
+modes on the scale of the computational grid used to solve the problem
+but will miss lower order error modes. In terms of Monte Carlo, this
+stagnation manifests itself in histories that simply do no terminate
+and therefore no solution is acquired.
+
+Results in this and the following section were produced by the Drekar
+multiphysics code base being developed at Sandia National Laboratories
+for fluid flow and other multiple physics simulations
+\citep{pawlowski_drekar_2012}. Drekar is a massively parallel physics
+framework that utilizes Newton-Krylov methods to generate a fully
+consistent solution scheme for the Navier-Stokes equations among other
+systems with Jacobian generation through automatic differentiation. To
+achieve these results, a Monte Carlo solver generated for this work
+was injected into the nonlinear toolchain within Drekar to form an
+implementation of the FANM method. For the Newton-Krylov solutions,
+the same production implementation of GMRES from the Trilinos
+scientific computing library Aztec \citep{heroux_overview_2005} used
+for the verification of MCSA for the $SP_N$ solutions in the previous
+chapter was also used here as a means of comparison.
 
 \subsection{Thermal Convection Cavity Results}
 \label{subsec:thermal_convection_verification}
+
+A Drekar model of thermal convection cavity problem was solved using
+both the Newton-Krylov solver and a FANM solver for Rayleigh numbers
+of \sn{1}{3}, \sn{1}{4}, \sn{1}{5} and
+\sn{1}{6}. Table~\ref{tab:thermal_convection_parameters} gives the
+physical parameters of the problem and
+Table~\ref{tab:convection_mcsa_parameters} gives the MCSA solver
+parameters used within the FANM method. Variation in the Rayleigh
+number of the system was achieved by keeping the parameters given in
+Table~\ref{tab:thermal_convection_parameters} and varying temperature
+of the hot side of the cavity. In addition to multigrid
+preconditioning for the linear solution at each Newton step,
+backtracking as outlined in Shadid's work \citep{shadid_inexact_1997}
+was used as a means of globalization assisting the Newton correction
+computation while the forcing term was computed using method 2 from
+Shadid's work.
 
 \begin{table}[h!]
   \begin{center}
@@ -676,6 +693,18 @@ approximation will be given for each benchmark problem.
       domain approximation.}}
   \label{tab:convection_mcsa_parameters}
 \end{table}
+
+For the verification, at each Rayleigh number variation the global
+minimum, maximum, and average values were required for fluid velocity
+in the x and y directions, fluid pressure, and fluid
+temperature. Tables~\ref{tab:convection_ra1e3_results},
+\ref{tab:convection_ra1e4_results},
+\ref{tab:convection_ra1e5_results}, and
+\ref{tab:convection_ra1e6_results} give the results of these
+computations. It should be noted that the negative pressures computed
+are due to a relative pressure being reported. For each of the data
+points presented, both Newton-Krylov solutions and FANM solutions
+computed identical results for all of these global values.
 
 \begin{table}[h!]
   \begin{center}
@@ -813,10 +842,48 @@ approximation will be given for each benchmark problem.
   \label{tab:convection_ra1e6_results}
 \end{table}
 
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lcc}\hline\hline
+      \multicolumn{1}{l}{Rayleigh Number}& 
+      \multicolumn{1}{c}{Newton Krylov $||\ve{F(\ve{u})}||$}&
+      \multicolumn{1}{c}{FANM $||\ve{F(\ve{u})}||$}\\
+      \hline
+      \sn{1}{3} & \sn{4.542}{-14} & \sn{1.208}{-14} \\
+      \sn{1}{4} & \sn{1.045}{-12} & \sn{7.012}{-13} \\
+      \sn{1}{5} & \sn{1.784}{-12} & \sn{1.059}{-12} \\
+      \sn{1}{6} & \sn{3.404}{-12} & \sn{3.479}{-12} \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Thermal convection cavity nonlinear residual norm
+      achieved convergence.} \textit{The results presented here were
+      obtained from the benchmark verification calculations.}}
+  \label{tab:convection_residual_norm_comparison}
+\end{table}
+
 \clearpage
 
 \subsection{Lid Driven Cavity Results}
 \label{subsec:lid_driven_verification}
+
+A Drekar model of thermal convection cavity problem was solved using
+both the Newton-Krylov solver and a FANM solver for Reynolds numbers
+of 100, 300, 500, and
+700. Table~\ref{tab:thermal_convection_parameters} gives the physical
+parameters of the problem and
+Table~\ref{tab:convection_mcsa_parameters} gives the MCSA solver
+parameters used within the FANM method. Variation in the Reynolds
+number of the system was achieved by keeping the parameters given in
+Table~\ref{tab:thermal_convection_parameters} and varying the fluid
+velocity in the $x$ direction on the top boundary. In addition to
+multigrid preconditioning for the linear solution at each Newton step,
+a polynomial line search method was used as a means of globalization
+assisting the Newton correction computation as outlined by Pawlowski
+in \citep{pawlowski_globalization_2006} while the forcing term was
+computed using method 2 from Shadid's work
+\citep{shadid_inexact_1997}.
 
 \begin{table}[h!]
   \begin{center}
@@ -877,6 +944,30 @@ approximation will be given for each benchmark problem.
       requirements.}}
   \label{tab:driven_mcsa_parameters}
 \end{table}
+
+In the literature on this benchmark, solutions at Reynolds numbers of
+up to \sn{1}{4} were achieved using a variety of nonlinear solution
+techniques. With the FANM method, at Reynolds numbers above 700,
+convergence of the linear iterations could not be achieved regardless
+of how agressive the multigrid preconditioner was set. In these cases,
+the Jacobian operators are ill-conditioned enough that even GMRES
+converges slowly relative to the thermal convection cavity
+benchmark. Therefore, the spectral radius limitation on MCSA is
+extremely prohibitive in this case and others were transport driven by
+intertial forces is dominant. Because of this, only solutions to the
+lid driven cavity benchmark at Reynolds numbers of up to 700 are
+presented.
+
+For the verification, at each Reynolds number variation the global
+minimum, maximum, and average values were required for fluid velocity
+in the x and y directions, fluid pressure, and fluid
+temperature. Tables~\ref{tab:driven_re100_results},
+\ref{tab:driven_re300_results}, \ref{tab:driven_re500_results}, and
+\ref{tab:driven_re700_results} give the results of these
+computations. It should be noted that the negative pressures computed
+are due to a relative pressure being reported. For each of the data
+points presented, both Newton-Krylov solutions and FANM solutions
+computed identical results for all of these global values.
 
 \begin{table}[h!]
   \begin{center}
@@ -995,6 +1086,27 @@ approximation will be given for each benchmark problem.
   \label{tab:driven_re700_results}
 \end{table}
 
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lcc}\hline\hline
+      \multicolumn{1}{l}{Reynolds Number}& 
+      \multicolumn{1}{c}{Newton Krylov $||\ve{F(\ve{u})}||$}&
+      \multicolumn{1}{c}{FANM $||\ve{F(\ve{u})}||$}\\
+      \hline
+      100 & \sn{5.453}{-14} & \sn{6.577}{-14} \\
+      300 & \sn{2.537}{-13} & \sn{2.779}{-13} \\
+      500 & \sn{6.367}{-13} & \sn{6.252}{-13} \\
+      700 & \sn{9.159}{-13} & \sn{1.282}{-12} \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Lid driven cavity nonlinear residual norm
+      achieved convergence.} \textit{The results presented here were
+      obtained from the benchmark verification calculations.}}
+  \label{tab:driven_residual_norm_comparison}
+\end{table}
+
 \clearpage
 
 %%---------------------------------------------------------------------------%%
@@ -1053,27 +1165,6 @@ correction vector at each step. In addition, timing results will be discussed
       presented here were obtained from the benchmark verification
       calculations.}}
   \label{tab:convection_linear_iter_comparison}
-\end{table}
-
-\begin{table}[h!]
-  \begin{center}
-    \begin{tabular}{lcc}\hline\hline
-      \multicolumn{1}{l}{Rayleigh Number}& 
-      \multicolumn{1}{c}{Newton Krylov $||\ve{F(\ve{u})}||$}&
-      \multicolumn{1}{c}{FANM $||\ve{F(\ve{u})}||$}\\
-      \hline
-      \sn{1}{3} & \sn{4.542}{-14} & \sn{1.208}{-14} \\
-      \sn{1}{4} & \sn{1.045}{-12} & \sn{7.012}{-13} \\
-      \sn{1}{5} & \sn{1.784}{-12} & \sn{1.059}{-12} \\
-      \sn{1}{6} & \sn{3.404}{-12} & \sn{3.479}{-12} \\
-      %%
-      \hline\hline
-    \end{tabular}
-  \end{center}
-  \caption{\textbf{Thermal convection cavity nonlinear residual norm
-      achieved convergence.} \textit{The results presented here were
-      obtained from the benchmark verification calculations.}}
-  \label{tab:convection_residual_norm_comparison}
 \end{table}
 
 \begin{table}[h!]
@@ -1144,27 +1235,6 @@ correction vector at each step. In addition, timing results will be discussed
       presented here were obtained from the benchmark verification
       calculations.}}
   \label{tab:driven_linear_iter_comparison}
-\end{table}
-
-\begin{table}[h!]
-  \begin{center}
-    \begin{tabular}{lcc}\hline\hline
-      \multicolumn{1}{l}{Reynolds Number}& 
-      \multicolumn{1}{c}{Newton Krylov $||\ve{F(\ve{u})}||$}&
-      \multicolumn{1}{c}{FANM $||\ve{F(\ve{u})}||$}\\
-      \hline
-      100 & \sn{5.453}{-14} & \sn{6.577}{-14} \\
-      300 & \sn{2.537}{-13} & \sn{2.779}{-13} \\
-      500 & \sn{6.367}{-13} & \sn{6.252}{-13} \\
-      700 & \sn{9.159}{-13} & \sn{1.282}{-12} \\
-      %%
-      \hline\hline
-    \end{tabular}
-  \end{center}
-  \caption{\textbf{Lid driven cavity nonlinear residual norm
-      achieved convergence.} \textit{The results presented here were
-      obtained from the benchmark verification calculations.}}
-  \label{tab:driven_residual_norm_comparison}
 \end{table}
 
 \begin{table}[h!]
