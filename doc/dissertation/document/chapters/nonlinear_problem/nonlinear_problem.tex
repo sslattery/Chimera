@@ -567,7 +567,7 @@ Figure~\ref{fig:driven_velocity_isocurves} for solutions to the lid
 driven cavity problem at Reynolds numbers of 100, 300, 500 and
 700. Increasing the velocity on the top boundary of the problem drives
 up the Reynolds number of the system making it more difficult to
-solve. More rotation of the fluid is induced by intertial forces and
+solve. More rotation of the fluid is induced by inertial forces and
 we begin to see some additional vortices form besides the primary
 vortex in the center of the box.
 
@@ -604,30 +604,29 @@ of comparison for correctness.
 Given the difficulty of these benchmark problems, the linear solve at
 each Newton step was preconditioned with an algebraic multigrid
 method, a common technique for preconditioning these equations
-\citep{ghia_high-re_1982,evans_enhanced_2007}. For FANM, this
-preconditioning was required to reduce the spectral radius of the
-Jacobian operators generated at each Newton step and for the
-Newton-Krylov solutions this preconditioning was required to obtain
-good convergence properties although not necessary for
+\citep{ghia_high-re_1982,evans_enhanced_2007}. Without multigrid
+preconditioning, the residual in MCSA was observed to
+stagnate. Typically this happens because the Richardson iteration will
+damp the higher order error modes on the scale of the computational
+grid used to solve the problem but will miss lower order error
+modes. In terms of Monte Carlo, this stagnation manifests itself in
+histories that simply do no terminate and therefore no solution is
+acquired.
+
+For FANM, this preconditioning was required to reduce the spectral
+radius of the Jacobian operators generated at each Newton step and for
+the Newton-Krylov solutions this preconditioning was required to
+obtain good convergence properties although it was not necessary for
 convergence. For every benchmark calculation, both FANM and
 Newton-Krylov were preconditioned with the same multigrid parameters
 such that the conditioning of the system would not be a factor in the
-verification of the method or the perfomance comparison in the
-following section.
-
-As with the radiation transport calculations in the previous chapter,
-algrebraic preconditioning with the multigrid method results in dense
-linear systems. To mitigate this, the reduced domain approximation was
-again applied to the Monte Carlo solution within the MCSA solve
-occuring at each nonlinear iteration. The values used for the
-approximation will be given for each benchmark problem. Without
-multigrid preconditioning or too small of a reduced domain fill level,
-the residual in MCSA was observed to stagnate. Typically this happens
-because the Richardson iteration will damp the higher order error
-modes on the scale of the computational grid used to solve the problem
-but will miss lower order error modes. In terms of Monte Carlo, this
-stagnation manifests itself in histories that simply do no terminate
-and therefore no solution is acquired.
+verification of the method or the performance comparison in the
+following section. As with the radiation transport calculations in the
+previous chapter, algrebraic preconditioning with the multigrid method
+results in dense linear systems. To mitigate this, the reduced domain
+approximation was again applied to the Monte Carlo solution within the
+MCSA solve occuring at each nonlinear iteration. The values used for
+the approximation will be given for each benchmark problem.
 
 Results in this and the following section were produced by the Drekar
 multiphysics code base being developed at Sandia National Laboratories
@@ -642,15 +641,16 @@ implementation of the FANM method. For the Newton-Krylov solutions,
 the same production implementation of GMRES from the Trilinos
 scientific computing library Aztec \citep{heroux_overview_2005} used
 for the verification of MCSA for the $SP_N$ solutions in the previous
-chapter was also used here as a means of comparison.
+chapter was also used here as a means of comparison and FANM
+benchmarking.
 
 \subsection{Thermal Convection Cavity Results}
 \label{subsec:thermal_convection_verification}
 
 A Drekar model of thermal convection cavity problem was solved using
 both the Newton-Krylov solver and a FANM solver for Rayleigh numbers
-of \sn{1}{3}, \sn{1}{4}, \sn{1}{5} and
-\sn{1}{6}. Table~\ref{tab:thermal_convection_parameters} gives the
+of \sn{1}{3}, \sn{1}{4}, \sn{1}{5} and \sn{1}{6} on a $50 \times 50$
+square grid. Table~\ref{tab:thermal_convection_parameters} gives the
 physical parameters of the problem and
 Table~\ref{tab:convection_mcsa_parameters} gives the MCSA solver
 parameters used within the FANM method. Variation in the Rayleigh
@@ -734,8 +734,8 @@ are due to a relative pressure being reported. For each of the data
 points presented, both Newton-Krylov solutions and FANM solutions
 computed identical numerical results for all of these global
 values. No variation in solution was noted for each of the
-computations within the tolerance of the converged nonlinear residual
-norms given in
+computations larger than the tolerance of the converged nonlinear
+residual norms given in
 Table~\ref{tab:convection_residual_norm_comparison}. Variations in the
 convergence behavior and differences in performance for these
 solutions will be analyzed in the following section.
@@ -904,8 +904,8 @@ solutions will be analyzed in the following section.
 
 A Drekar model of thermal convection cavity problem was solved using
 both the Newton-Krylov solver and a FANM solver for Reynolds numbers
-of 100, 300, 500, and
-700. Table~\ref{tab:thermal_convection_parameters} gives the physical
+of 100, 300, 500, and 700 on a $50 \times 50$ square
+grid. Table~\ref{tab:thermal_convection_parameters} gives the physical
 parameters of the problem and
 Table~\ref{tab:convection_mcsa_parameters} gives the MCSA solver
 parameters used within the FANM method. Variation in the Reynolds
@@ -988,7 +988,7 @@ the Jacobian operators are ill-conditioned enough that even GMRES
 converges slowly relative to the thermal convection cavity
 benchmark. Therefore, the spectral radius limitation on MCSA is
 extremely prohibitive in this case and others where transport driven
-by intertial forces is dominant. Because of this, only solutions to
+by inertial forces is dominant. Because of this, only solutions to
 the lid driven cavity benchmark at Reynolds numbers of up to 700 are
 presented.
 
@@ -1152,7 +1152,7 @@ values were within these tolerances.
 \label{sec:fanm_comparison}
 
 Using the benchmarks from the verification, we now compare the
-performance of the FANM method against a conventional Krylov
+performance of the FANM method against a conventional Newton-Krylov
 method. For each benchmark, we will analyze the iterative performance
 of both the Newton solver and the linear solver used to compute the
 correction vector at each step. In addition, timing results will be
@@ -1169,39 +1169,54 @@ solution is critical for efficiency as nonlinear function evaluations,
 Jacobian generation, and preconditioner construction are typically
 required at every Newton iteration. For all Rayleigh numbers except
 \sn{1}{5} the number of Newton iterations required to converge is the
-same while the \sn{1}{5} result required an extra iteration. This is
-due to the fact that the convergence of the linear residual has a
+same while the \sn{1}{5} result required an extra FANM iteration. This
+is due to the fact that the convergence of the linear residual has a
 strong effect on the convergence of the nonlinear residual, much
-stronger that the effect on the convergence of the eigenvalue in the
-$SP_N$ computations.
+stronger than the effect on the convergence of the eigenvalue in the
+$SP_N$ computations where we observed that identical numbers of
+eigenvalue iterations were required to converge each variation of the
+probem.
 
 As outlined in our discussion on inexact Newton methods, depending on
 how converged the linear residual is at each step, it is possible to
-throw of the nonlinear iteration and converge on the wrong nonlinear
-solution. Although the same preconditioner was used with both the
+throw off the nonlinear iteration and decrease iterative
+performance. Although the same preconditioner was used with both the
 Newton-Krylov and FANM calculations, the convergence properties of
 MCSA and GMRES are different and we therefore expect them to produce
 different results at each nonlinear iteration which will in turn
-effect the forcing term calculation. If they are different enough, it
+affect the forcing term calculation. If they are different enough, it
 is possible that another Newton iteration may be required. Even
 considering the extra Newton iteration, the solutions are converged to
-effectivly the same residual norm tolerance and produce the same
-results as provided by the
-verification. 
+effectively the same residual norm tolerance and produce the same
+results as provided by the verification.
 
 Figure~\ref{fig:ra1e5_convergence} gives the nonlinear residual
-behavior for the \sn{1}{5} Rayleigh number case. We see that the extra
-iteration comes from slightly slower quadratic convergence with FANM
-for this particular case. The difference in convergence of the linear
-problem comes from the fact that the same multigrid preconditioner
-parameters are used for this case as for the \sn{1}{3} and \sn{1}{4}
-Rayleigh number cases. As the Rayleigh number increases, the problem
-becomes more difficult to solve and therefore a more agressive
-preconditioner should maintain iterative performance of the nonlinear
-method. This was observed to be the case as for the \sn{1}{6}
-Rayleigh number case the number of multigrid cycle applications was
-bumped up to 3 from 1 used for the other cases and FANM converged in
-the same number of nonlinear iterations as the Newton-Krylov method.
+behavior for the \sn{1}{5} Rayleigh number case that required the
+extra FANM iteration. We see that the extra iteration comes from
+slightly slower quadratic convergence with FANM for this particular
+case. The difference in convergence of the nonlinear problem comes
+from the fact that the same multigrid preconditioner parameters are
+used for this case as for the \sn{1}{3} and \sn{1}{4} Rayleigh number
+cases for the linear solutions. Using the same preconditioner for the
+harder \sn{1}{5} case means that the problem is still growing in
+difficulty even though it is preconditioned. The more ill-conditioned
+the linear model is, the closer the linear residual is converged to
+the requested tolerance whereas a better conditioned problem may
+produce a linear solution that overshoots the specified tolerance
+provided by the forcing term. When oversolving is not an issue, this
+results in faster convergence of the nonlinear problem.
+
+For the \sn{1}{5} Rayleigh number case, this means that the GMRES
+solver at each Newton step is converging the linear residual to a
+smaller tolerance than the MCSA solver, even though they have
+approximately the same forcing terms to begin with. As the Rayleigh
+number increases, the problem becomes more difficult to solve and
+therefore a more agressive preconditioner should maintain iterative
+performance of the nonlinear method. This was observed to be true for
+the \sn{1}{6} Rayleigh number case. For this calculation, the number
+of multigrid cycle applications was bumped up to 3 from 1 and FANM
+converged in the same number of nonlinear iterations as the
+Newton-Krylov method.
 
 \begin{table}[h!]
   \begin{center}
@@ -1245,7 +1260,7 @@ the total number of GMRES iterations required to converge the problem
 for the Newton-Krylov method and the total number of MCSA iterations
 for the FANM method at each Rayleigh number used. For all cases, fewer
 MCSA iterations were required than GMRES iterations to converge the
-problem even with both solver preconditioned with the same multigrid
+problem even with both solvers preconditioned with the same multigrid
 package and the same parameters. For the \sn{1}{6} Rayleigh number
 case this difference is most drastic with FANM requiring only 64\% of
 the linear iterations required by the Newton-Krylov scheme. Even the
@@ -1292,9 +1307,9 @@ Figure~\ref{fig:spn_comparison_prec_time}, a similar speedup of
 approximately two orders of magnitude was noted between the Krylov
 methods and MCSA showing consistency between those results and the
 fluid benchmark results. In addition, the fairly constant speedup
-values show that FANM has effectively the same time complexity as a
-Newton-Krylov method and the implementation timings simply differ by a
-constant value.
+values as a function of the primary problem parameter show that FANM
+has effectively the same time complexity as a Newton-Krylov method and
+the implementation timings simply differ by a constant value.
 
 \begin{table}[h!]
   \begin{center}
@@ -1325,12 +1340,12 @@ constant value.
 For the lid driven cavity benchmark, performance results were again
 compared between the FANM and Newton-Krylov calculations. In this
 case, the nonlinear iterative performance results as given by
-Table~\ref{tab:driven_nonlinear_iter_comparison} show the same number
-of Newton iterations were required to converge the 100, 300, and 500
-Reynolds number cases while the FANM calculation with a Reynolds
-number of 700 actually converged in 4 fewer iterations. The nonlinear
-residual norm as a function of Newton iteration for this case is given
-in Figure~\ref{fig:re700_convergence}. 
+Table~\ref{tab:driven_nonlinear_iter_comparison} show that the same
+number of Newton iterations were required to converge the 100, 300,
+and 500 Reynolds number cases while the FANM calculation with a
+Reynolds number of 700 actually converged in 4 fewer iterations. The
+nonlinear residual norm as a function of Newton iteration for this
+case is given in Figure~\ref{fig:re700_convergence}.
 
 This result can be explained by the fact that as given by
 Table~\ref{tab:driven_mcsa_parameters}, although the preconditioner
@@ -1376,24 +1391,24 @@ of the nonlinear model as well.
 
 The difficulty of this benchmark problem as compared to the thermal
 convection cavity problem is readily apparent in the linear iteration
-counts as given by Table~\ref{driven_linear_iter_comparison}. As the
-opposite of what was observed for that benchmark, lid driven cavity
-results show that the linear models were significantly more
+counts as given by Table~\ref{tab:driven_linear_iter_comparison}. As
+the opposite of what was observed for that benchmark, lid driven
+cavity results show that the linear models were significantly more
 ill-conditioned, requiring many more MCSA and GMRES iterations. For
-all cases except the 700 Reynolds number case many more MCSA
-iterations were required to converge with 64\% as many GMRES
-iterations required as MCSA iterations for the 100 Reynolds number
-case. For the 700 Reynolds number case, fewer MCSA iterations were
-observed due to the fact that 4 fewer nonlinear iterations were
+all cases except the 700 Reynolds number case, many more MCSA
+iterations were required to converge with the observed GMRES iteration
+count 64\% of that observed for MCSA when looking at the 100 Reynolds
+number case. For the 700 Reynolds number case, fewer MCSA iterations
+were observed due to the fact that 4 fewer nonlinear iterations were
 performed. The average number of linear iterations per nonlinear
-iterations was still much larger for the FANM calculations. 
+iteration was still much larger for the FANM calculations.
 
 These iterative results again point out the fundamental flaw of
 requiring a spectral radius of less than unity for the MCSA iteration
 to converge at each Newton step. As the problem becomes more dominated
 by inertial forces, the resulting linear models become increasingly
 stiff and difficult to precondition. As a result, convergence requires
-many more iterations that need for the flow problem driven by
+many more iterations than needed for the flow problem driven by
 convection in the previous benchmark if convergence is achieved at
 all.
 
