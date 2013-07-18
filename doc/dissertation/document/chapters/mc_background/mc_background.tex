@@ -1564,3 +1564,34 @@ preconditioning strategy will be presented in
 Chapter~\ref{ch:spn_equations}.
 
 \clearpage
+
+%%---------------------------------------------------------------------------%%
+\section{Summary}
+\label{sec:mc_summary}
+
+In this chapter, the fundamentals of Monte Carlo synthetic
+acceleration methods were presented and explored in the context of a
+simple model transport system. The following are the signficant
+observations and findings.
+
+\begin{itemize}
+\item MCSA has been generalized for all discrete linear transport
+  problems
+\item MCSA can be preconditioned using a general left/right scheme but
+  requires the explicit inversion of the preconditioners and
+  construction of the composite linear operator
+\item The adjoint Neumann-Ulam method performs better when used with
+  MCSA compared to the forward method
+\item MCSA has superior performance to Halton's residual Monte Carlo
+  method
+\item The Richardson iteration in MCSA behaves as a smoother for the
+  stochastic Monte Carlo error
+\item MCSA iterative performance when used with the expected value
+  estimator is insensitive to histories per iteration
+\item MCSA iterative performance is insensitive to the stochastic
+  history weight cutoff
+\item Variance reduction with artificial absorption can enhance time
+  to solution
+\item The reduced domain approximation was introduced to mitigate the
+  consequences of composite linear operator generation
+\end{itemize}

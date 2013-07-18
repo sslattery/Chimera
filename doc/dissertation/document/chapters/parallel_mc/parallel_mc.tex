@@ -2783,3 +2783,40 @@ solution.
       sets are added.}}
   \label{fig:titan_weak_subdomain_ms}
 \end{figure}
+
+\clearpage
+
+%%---------------------------------------------------------------------------%%
+\section{Summary}
+\label{sec:parallel_summary}
+
+In this chapter we have developed a domain-decomposed parallel
+algorithm for Monte Carlo synthetic acceleration and explored the
+qualities of the algorithm through parallel scaling studies. The
+following are the signficant observations and findings.
+
+\begin{itemize}
+\item MCSA can be effectively parallelized using domain decomposition
+\item The leakage fraction of stochastic histories from a parallel
+  subdomain can be quantified analytically using algebraic quantities
+\item The multiple-set overlapping-domain (MSOD) parallel algorithm
+  for particle transport has been adapted to parallelize MCSA
+\item MCSA parallelized with MSOD was verified to produce the same
+  results for solutions to the neutron diffusion equation as
+  production Krylov methods
+\item Strong scaling studies were performed with up to 65,536 cores
+  and weak scaling studies were performed with up to 131,072 cores
+\item MCSA scales comparably to production Krylov methods on the Titan
+  Cray XK7 leadership class machine
+\item Overlap in small quantities determined analytically by random
+  walk length can provide parallel efficiency boosts of a few percent
+  in strong scaling cases but is ineffective in weak scaling cases
+\item Multiple sets will never boost parallel efficienicies in both
+  weak and strong scaling cases due to additional communication
+  overhead
+\item Multiple sets offers a means to reduce time to solution by
+  solving a multiple copies of the original problem and combining the
+  solutions using superposition
+\item MCSA is most efficient used in parallel as a stochastic
+  realization of an additive Schwarz method
+\end{itemize}

@@ -7,10 +7,10 @@ differential equations, such as the Navier-Stokes equations that
 describe fluid flow, yield discrete sets of stiff equations with
 nonlinearities present in the variables when discretized by
 conventional methods. These sets of equations characterize momentum
-and energy transport through diffusion, viscous forces, and inertial
-forces. Traditionally, such systems have been solved by linearizing
-them in a form where the nonlinearities in the variables are
-eliminated and more traditional linear methods can be used for
+and energy transport through diffusion, viscous forces and convection,
+and inertial forces. Traditionally, such systems have been solved by
+linearizing them in a form where the nonlinearities in the variables
+are eliminated and more traditional linear methods can be used for
 solutions. Often characterized as segregated methods where physics
 operators are split and their action on the system approximated in
 steps, such methods lack consistency and accuracy in resolving the
@@ -1462,3 +1462,38 @@ strategy must be signficantly improved to avoid these large overheads.
       the benchmark verification calculations.}}
   \label{tab:driven_speedup_comparison}
 \end{table}
+
+%%---------------------------------------------------------------------------%%
+\section{Summary}
+\label{sec:nonlinear_summary}
+
+In this chapter we have developed and explored Monte Carlo synthetic
+acceleration methods in the context of solutions to the nonlinear
+Navier-Stokes equations. The following are the signficant observations
+and findings.
+
+\begin{itemize}
+\item Forward-Automated Newton-MCSA (FANM), a new inexact Newton
+  method based on Monte Carlo synthetic acceleration, has been
+  developed
+\item The FANM method has been incorporated into the Drekar production
+  multiphysics code
+\item The FANM method has been verified to produce the same solutions
+  as a production Newton-Krylov method for two benchmark problems for
+  the Navier-Stokes equations in different flow regimes
+\item The FANM method has better iterative performance than the
+  Newton-Krylov method for convection dominated problems, converging
+  in fewer linear solver iterations with the same preconditioning for
+  high and lower Rayleigh numbers
+\item The Newton-Krylov method has better iterative performance than
+  the FANM method for flow dominated by interial forces, converging in
+  fewer linear solver iterations with the same preconditioning
+\item The spectral radius convergence restriction on MCSA was observed
+  to be a signficant hinderance by preventing solutions to forced flow
+  problems at high Reynolds numbers
+\item Explict algebraic preconditioning of MCSA creates FANM run times
+  $O(100)$ slower than the Newton-Krylov solver
+\item More Monte Carlo histories at every FANM iteration can reduce
+  the number of linear and nonlinear iterations required to converge
+  the problem
+\end{itemize}
