@@ -34,21 +34,20 @@ strategy. Furthermore, modern techniques exist that permit the
 automatic construction of the Jacobian operator generated within a
 Newton method based on the nonlinear residual evaluations, providing
 all of the components necessary for a Monte Carlo solver to provide
-value.
+value. We therefore devise a new nonlinear method based on the MCSA algorithm
+and Newton's method. 
 
-We therefore devise a new nonlinear method based on the MCSA algorithm
-and Newton's method. In this chapter the fundamentals of Newton's
-method will be presented along with a brief discussion of inexact
-Newton methods. Newton-Krylov methods, a variant of inexact Newton
-methods, will be outlined along with two common techniques for
-Jacobian generation as a means of defining current
-practices. Following this, the new algorithm will be presented and
-implementation details will be discussed. Using the new algorithm and
-a production fluid physics code, a group of challenging nonlinear
-benchmark problems for the Navier-Stokes equations will be used to
-verify the correctness of the method relative to solutions obtained
-using conventional methods in various flow regimes. Finally, we will
-compare the performance of the new method against contemporary
+In this chapter the fundamentals of Newton's method will be presented
+along with a brief discussion of inexact Newton methods. Newton-Krylov
+methods, a variant of inexact Newton methods, will be outlined along
+with two common techniques for Jacobian generation as a means of
+defining current practices. Following this, the new algorithm will be
+presented and implementation details will be discussed. Using the new
+algorithm and a production fluid physics code, a group of challenging
+nonlinear benchmark problems for the Navier-Stokes equations will be
+used to verify the correctness of the method relative to solutions
+obtained using conventional methods in various flow regimes. Finally,
+we will compare the performance of the new method against contemporary
 Newton-Krylov methods for the same benchmark problems.
 
 %%---------------------------------------------------------------------------%%
@@ -69,8 +68,8 @@ and therefore we can use it to solve Eq~(\ref{eq:nonlinear_problem})
 if we interpret the exact solution $\ve{u}$ to be the roots of
 $\ve{F}(\ve{u})$. Newton's method is also an iterative scheme, and we
 can generate this procedure by building the Taylor expansion of the
-$k+1$ iterate of the nonlinear residuals about the previous $k$
-iterate:
+$k+1$ iterate, $\ve{F}(\ve{u}^k)$, of the nonlinear residuals about
+the previous $k$ iterate, $\ve{F}(\ve{u}^{k+1})$:
 \begin{equation}
   \ve{F}(\ve{u}^{k+1}) = \ve{F}(\ve{u}^{k}) +
   \ve{F}'(\ve{u}^{k})(\ve{u}^{k+1}-\ve{u}^{k}) +
@@ -109,6 +108,7 @@ scheme for nonlinear problems:
   \end{gather}
   \label{eq:newton_iteration}
 \end{subequations}
+
 There are then three distinct steps to perform: evaluation of the
 nonlinear residuals using the solution at the $k$ iterate, the
 solution of a linear system to compute the Newton correction where the
@@ -389,7 +389,7 @@ convergence of the MCSA iteration at every Newton step. Finally, in
 line 5 the Newton correction is applied and the iteration proceeds
 until convergence. In addition to forcing term adjustments, other
 techniques for improving performance of the nonlinear iteration may be
-used with FANM including backtracking methods.
+used with FANM including globalization methods.
 
 \begin{algorithm}[h!]
   \caption{FANM Algorithm}
@@ -473,7 +473,8 @@ set of strongly coupled equations possesses both the nonlinearities
 and asymmetries that we are seeking for qualification of the FANM
 method. Further, physical parameters within these equations can be
 tuned to enhance the nonlinearities. We will then apply these
-equations to the following two standard benchmark problems.
+equations to the following two standard benchmark problems that cover
+convection dominated flow and flow dominated by intertial forces.
 
 \subsection{Thermal Convection Cavity Problem}
 \label{subsec:natural_convection_cavity}
@@ -534,14 +535,14 @@ advective derivatives to grow.
 
 \subsection{Lid Driven Cavity Problem}
 \label{subsec:lid_driven_cavity}
-As an extension of the convection problem, the second benchmark
-problem given by Ghia \citep{ghia_high-re_1982} adds a driver for the
-flow to introduce higher Reynolds numbers into the system, providing
-more inertial force to overcome the viscous forces in the fluid. The
-setup for this problem is equally simple, containing only the
-Dirichlet conditions as given in Figure~\ref{fig:lid_driven_cavity}
-and is only applied to the mass and momentum equations on the unit
-square.
+To study performance for flow driven by intertial forces, the second
+benchmark problem given by Ghia \citep{ghia_high-re_1982} incorporates
+a driver for the flow to introduce higher Reynolds numbers into the
+system, providing more inertial force to overcome the viscous forces
+in the fluid. The setup for this problem is equally simple, containing
+only the Dirichlet conditions as given in
+Figure~\ref{fig:lid_driven_cavity} and is only applied to the mass and
+momentum equations on the unit square.
 
 \begin{figure}[t!]
   \begin{center}
@@ -567,9 +568,9 @@ Figure~\ref{fig:driven_velocity_isocurves} for solutions to the lid
 driven cavity problem at Reynolds numbers of 100, 300, 500 and
 700. Increasing the velocity on the top boundary of the problem drives
 up the Reynolds number of the system making it more difficult to
-solve. More rotation of the fluid is induced by inertial forces and
-we begin to see some additional vortices form besides the primary
-vortex in the center of the box.
+solve. More rotation of the fluid is induced by inertial forces and we
+begin to see some additional vortices form besides the primary vortex
+near the center of the box.
 
 \begin{figure}[t!]
   \begin{center}
@@ -621,7 +622,9 @@ convergence. For every benchmark calculation, both FANM and
 Newton-Krylov were preconditioned with the same multigrid parameters
 such that the conditioning of the system would not be a factor in the
 verification of the method or the performance comparison in the
-following section. As with the radiation transport calculations in the
+following section. In addition, the same nonlinear solver parameters
+including globalization and forcing term strategies were used with
+both methods. As with the radiation transport calculations in the
 previous chapter, algrebraic preconditioning with the multigrid method
 results in dense linear systems. To mitigate this, the reduced domain
 approximation was again applied to the Monte Carlo solution within the
@@ -681,7 +684,7 @@ inform the choice of the forcing term for the next step.
       Initial Temperature & 0.0 & $K$ \\
       Density & 1.0 & $kg / m^3$ \\
       Specific Heat & 1.0 & J / $(kg \times K)$ \\
-      Dynamic Viscosity & 0.71 & $N \times s / m^2$ \\
+      Dynamic Viscosity & 0.71 & $(N \times s) / m^2$ \\
       Thermal Conductivity & 1.0 & $W / (m \times K)$ \\
       Thermal Expansion Coefficient & 1000 & $1 / K$ \\
       Thermal Diffusivity & 1.0 & $m^2 / s$ \\
@@ -933,7 +936,7 @@ term was again computed using method 2 from Shadid's work
       $N_y$ & 50 & - \\
       $DOFs$ & 7803 & - \\
       Density & 1.0 & $kg / m^3$ \\
-      Dynamic Viscosity & 0.71 & $N \times s / m^2$ \\
+      Dynamic Viscosity & 0.71 & $(N \times s) / m^2$ \\
       Kinematic Viscosity & 0.71 & $m^2 / s$ \\
       Gravitational Acceleration & 10 & $m / s^2$ \\
       Cavity Characteristic Length & 1.0 & $m$ \\
@@ -1171,11 +1174,11 @@ required at every Newton iteration. For all Rayleigh numbers except
 \sn{1}{5} the number of Newton iterations required to converge is the
 same while the \sn{1}{5} result required an extra FANM iteration. This
 is due to the fact that the convergence of the linear residual has a
-strong effect on the convergence of the nonlinear residual, much
-stronger than the effect on the convergence of the eigenvalue in the
-$SP_N$ computations where we observed that identical numbers of
-eigenvalue iterations were required to converge each variation of the
-probem.
+strong effect on the convergence of the nonlinear residual. For
+nonlinear calculations, this is much stronger than the effect on the
+convergence of the eigenvalue in the $SP_N$ computations where we
+always observed that identical numbers of k-eigenvalue iterations were
+required to converge each variation of the probem.
 
 As outlined in our discussion on inexact Newton methods, depending on
 how converged the linear residual is at each step, it is possible to
@@ -1199,12 +1202,13 @@ from the fact that the same multigrid preconditioner parameters are
 used for this case as for the \sn{1}{3} and \sn{1}{4} Rayleigh number
 cases for the linear solutions. Using the same preconditioner for the
 harder \sn{1}{5} case means that the problem is still growing in
-difficulty even though it is preconditioned. The more ill-conditioned
-the linear model is, the closer the linear residual is converged to
-the requested tolerance whereas a better conditioned problem may
-produce a linear solution that overshoots the specified tolerance
-provided by the forcing term. When oversolving is not an issue, this
-results in faster convergence of the nonlinear problem.
+difficulty even though it is preconditioned in an identical
+manner. The more ill-conditioned the linear model is, the closer the
+linear residual is converged to the requested tolerance whereas a
+better conditioned problem may produce a linear solution that
+overshoots the specified tolerance provided by the forcing term. When
+oversolving the linear model is not an issue, this results in faster
+convergence of the nonlinear problem.
 
 For the \sn{1}{5} Rayleigh number case, this means that the GMRES
 solver at each Newton step is converging the linear residual to a
@@ -1252,10 +1256,11 @@ Newton-Krylov method.
 \end{figure}
 
 In addition to nonlinear iterative performance, performance of the
-inner linear solves is also interest. Here, we seek to maintain a
+inner linear solves is also of interest. Here, we seek to maintain a
 minimum number of total linear solver iterations over the course of
-all nonlinear
-iterations. Table~\ref{tab:convection_linear_iter_comparison} gives
+all nonlinear iterations in order to limit matrix-vector multiplies
+and other costly
+operations. Table~\ref{tab:convection_linear_iter_comparison} gives
 the total number of GMRES iterations required to converge the problem
 for the Newton-Krylov method and the total number of MCSA iterations
 for the FANM method at each Rayleigh number used. For all cases, fewer
@@ -1265,7 +1270,10 @@ package and the same parameters. For the \sn{1}{6} Rayleigh number
 case this difference is most drastic with FANM requiring only 64\% of
 the linear iterations required by the Newton-Krylov scheme. Even the
 \sn{1}{5} Rayleigh number case that required more Newton iterations
-required 5 fewer MCSA iterations to converge than GMRES iterations.
+required 5 fewer MCSA iterations to converge than GMRES
+iterations. If the performance of the MCSA implementation used here
+were to be potentially optimized in the future, this improved
+iterative performance could also mean improved time to solution.
 
 \begin{table}[h!]
   \begin{center}
@@ -1300,16 +1308,17 @@ Newton-Krylov over FANM meaning that the implementation of the FANM
 method used here is significantly slower. As the inexact Newton scheme
 in Drekar was modified by simply swapping out the linear solver used
 at each Newton step, this increased compute time is coming directly
-from using MCSA as the solver and the overhead due to
+from using MCSA as the linear solver and the overhead due to
 preconditioning. When preconditioning overhead for the $SP_N$
 equations was considered as shown by the data in
 Figure~\ref{fig:spn_comparison_prec_time}, a similar speedup of
 approximately two orders of magnitude was noted between the Krylov
 methods and MCSA showing consistency between those results and the
-fluid benchmark results. In addition, the fairly constant speedup
-values as a function of the primary problem parameter show that FANM
-has effectively the same time complexity as a Newton-Krylov method and
-the implementation timings simply differ by a constant value.
+convection cavity benchmark results presented. In addition, the fairly
+constant speedup values as a function of the primary problem parameter
+show that FANM has effectively the same time complexity as a
+Newton-Krylov method and the implementation timings simply differ by a
+constant value, also consistent with the $SP_N$ observations.
 
 \begin{table}[h!]
   \begin{center}
@@ -1354,7 +1363,9 @@ pushed harder by doubling the number of histories used for the
 computation at each nonlinear iteration. These extra histories
 provided better convergence of the linear model at each iteration and
 did not result in oversolving, thereby increasing the convergence rate
-of the nonlinear model as well.
+of the nonlinear model as well. This result is significant in that it
+shows increasing the number of histories used for each MCSA iteration
+can improve the performance of both linear and nonlinear convergence.
 
 \begin{table}[h!]
   \begin{center}
@@ -1410,7 +1421,14 @@ by inertial forces, the resulting linear models become increasingly
 stiff and difficult to precondition. As a result, convergence requires
 many more iterations than needed for the flow problem driven by
 convection in the previous benchmark if convergence is achieved at
-all.
+all. Much of this can be attributed to the physics at play in each of
+these benchmarks. For the thermal convection cavity benchmark, the
+forces at work in that problem were more effectively resolved by the
+Monte Carlo method as they are more diffusive in character than the
+flow driven by intertial forces in the lid driven cavity problem. This
+physics-based observation was also true for the $SP_N$ equations where
+the diffusion dominated physics in that case gave better convergence
+results for MCSA than GMRES. 
 
 \begin{table}[h!]
   \begin{center}
@@ -1438,9 +1456,13 @@ As a final comparison, the timing of both methods was again compared
 with the speedup of using the Newton-Krylov solver over FANM reported
 in Table~\ref{tab:driven_speedup_comparison}. The speedup values
 reported here are of the same magnitude as those reported for the
-thermal convection cavity problem and in agreement with those observed
-for the $SP_N$ calculations. In all cases, the preconditioning
-strategy must be signficantly improved to avoid these large overheads.
+thermal convection cavity problem and again in agreement with those
+observed for the $SP_N$ calculations. Lack of signficant variation in
+these timing results also point to a qualititively similar time
+complexity for the FANM method as a function of primary problem
+parameter relative to the Newton-Krylov method. In all cases, the
+preconditioning strategy must be signficantly improved along with
+implementation optimization to avoid these large overheads.
 
 \begin{table}[h!]
   \begin{center}
@@ -1490,7 +1512,8 @@ and findings.
   high and low Rayleigh numbers
 \item The Newton-Krylov method has better iterative performance than
   the FANM method for flow dominated by interial forces, converging in
-  fewer linear solver iterations with the same preconditioning
+  fewer linear solver iterations with the same preconditioning for
+  high and low Reynolds numbers
 \item The spectral radius convergence restriction on MCSA was observed
   to be a signficant hinderance by preventing solutions to forced flow
   problems at high Reynolds numbers

@@ -2233,20 +2233,24 @@ observations and findings.
 \item As the spectral radius approaches unity, MCSA was demonstrated
   to break down with more stochastic histories required for
   convergence and more CPU time required per history
+\item Light water reactor problems are difficult to solve with MCSA as
+  they have large spectral radii due to the neutron scattering in the
+  moderator
 \item Advanced algebraic preconditioning strategies were applied to
   the $SP_N$ equations to obtain convergence with ILUT chosen for
   subsequent investigations
 \item The reduced domain approximation was required to mitigate the
   memory and performance constraints of the explicit preconditioning
   strategy although both remain significant obstacles
-\item MCSA relaxation parameters were developed an observed to enhance
-  the time to solution for the fuel assembly problem
+\item MCSA relaxation parameters were developed and observed to
+  enhance the time to solution for the fuel assembly criticality
+  problem
 \item MCSA was verified to produce the same flux distribution and
   k-eigenvalue for the fuel assembly as production Krylov methods
 \item MCSA was observed to converge in fewer iterations per eigenvalue
-  iteration than GMRES for the fuel assembly problem and more then
-  Bi-CGStab
+  iteration than GMRES for the fuel assembly criticality problem and
+  more then Bi-CGStab
 \item The explicit preconditioning strategy creates MCSA runtimes
   $O(100)$ larger than the production Krylov methods for the fuel
-  assembly problem
+  assembly criticality problem
 \end{itemize}
