@@ -2744,10 +2744,9 @@ solution.
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_subdomain_ms_time.pdf}
   \end{center}
   \caption{\textbf{Strong scaling total wall time with multiple sets
-      and subdomain Monte Carlo.} \textit{The subdomain Monte Carlo
-      solver improves the parallel efficiency and therefore time to
-      solution by eliminating all parallel communication during the
-      Monte Carlo solve.}}
+      and subdomain Monte Carlo.} \textit{Adding multiple sets has in
+      general a negative effect on the wall time as was observed for
+      the case with full Monte Carlo transport.}}
   \label{fig:titan_strong_subdomain_ms_time}
 \end{figure}
 
@@ -2756,10 +2755,10 @@ solution.
     \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_subdomain_ms.pdf}
   \end{center}
   \caption{\textbf{Strong scaling absolute efficiency for with
-      multiple sets and subdomain Monte Carlo.} \textit{The subdomain
-      Monte Carlo solver improves the parallel efficiency and
-      therefore time to solution by eliminating all parallel
-      communication during the Monte Carlo solve.}}
+      multiple sets and subdomain Monte Carlo.} \textit{Increased wall
+      times from adding parallel reduction operations for multiple
+      sets reduces parallel scalability at lower core counts but gives
+      a higher efficiency at the strong scaling wall.}}
   \label{fig:titan_strong_subdomain_ms}
 \end{figure}
 
@@ -2767,11 +2766,10 @@ solution.
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_subdomain_ms_time.pdf}
   \end{center}
-  \caption{\textbf{Weak scaling total wall time with multiple sets
-      and subdomain Monte Carlo.} \textit{The subdomain Monte Carlo
-      solver improves the parallel efficiency and therefore time to
-      solution by eliminating all parallel communication during the
-      Monte Carlo solve.}}
+  \caption{\textbf{Weak scaling total wall time with multiple sets and
+      subdomain Monte Carlo.} \textit{The addition of the set tally
+      reduction is significant with cost of the reduction observed as
+      core count grows.}}
   \label{fig:titan_weak_subdomain_ms_time}
 \end{figure}
 
@@ -2779,10 +2777,9 @@ solution.
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_subdomain_ms.pdf}
   \end{center}
-  \caption{\textbf{Weak scaling absolute efficiency for with
-      multiple sets and subdomain Monte Carlo.} \textit{The subdomain
-      Monte Carlo solver improves the parallel efficiency and
-      therefore time to solution by eliminating all parallel
-      communication during the Monte Carlo solve.}}
+  \caption{\textbf{Weak scaling absolute efficiency for with multiple
+      sets and subdomain Monte Carlo.} \textit{Weak scaling
+      efficiencies are not improved at large core counts when multiple
+      sets are added.}}
   \label{fig:titan_weak_subdomain_ms}
 \end{figure}
