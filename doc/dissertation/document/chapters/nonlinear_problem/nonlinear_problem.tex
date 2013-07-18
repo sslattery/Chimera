@@ -1463,6 +1463,8 @@ strategy must be signficantly improved to avoid these large overheads.
   \label{tab:driven_speedup_comparison}
 \end{table}
 
+\clearpage
+
 %%---------------------------------------------------------------------------%%
 \section{Summary}
 \label{sec:nonlinear_summary}
@@ -1476,15 +1478,16 @@ and findings.
 \item Forward-Automated Newton-MCSA (FANM), a new inexact Newton
   method based on Monte Carlo synthetic acceleration, has been
   developed
-\item The FANM method has been incorporated into the Drekar production
-  multiphysics code
+\item The FANM method has been incorporated into the Drekar
+  multiphysics production code base developed at Sandia National
+  Laboratories
 \item The FANM method has been verified to produce the same solutions
   as a production Newton-Krylov method for two benchmark problems for
   the Navier-Stokes equations in different flow regimes
 \item The FANM method has better iterative performance than the
   Newton-Krylov method for convection dominated problems, converging
   in fewer linear solver iterations with the same preconditioning for
-  high and lower Rayleigh numbers
+  high and low Rayleigh numbers
 \item The Newton-Krylov method has better iterative performance than
   the FANM method for flow dominated by interial forces, converging in
   fewer linear solver iterations with the same preconditioning
@@ -1496,4 +1499,8 @@ and findings.
 \item More Monte Carlo histories at every FANM iteration can reduce
   the number of linear and nonlinear iterations required to converge
   the problem
+\item With future optimization, reactor accident scenario analyses
+  that rely on convection dominated transport could experience
+  improved time to solution with FANM given the improved iterative
+  performance for problems of this type
 \end{itemize}

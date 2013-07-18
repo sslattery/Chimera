@@ -2805,18 +2805,24 @@ following are the signficant observations and findings.
   results for solutions to the neutron diffusion equation as
   production Krylov methods
 \item Strong scaling studies were performed with up to 65,536 cores
-  and weak scaling studies were performed with up to 131,072 cores
-\item MCSA scales comparably to production Krylov methods on the Titan
-  Cray XK7 leadership class machine
+  and weak scaling studies were performed with up to 131,072 cores on
+  the Titan Cray XK7 leadership class machine at Oak Ridge National
+  Laboratory
+\item MCSA scales favorably compared to production Krylov methods for
+  both strong and weak scaling cases
 \item Overlap in small quantities determined analytically by random
   walk length can provide parallel efficiency boosts of a few percent
   in strong scaling cases but is ineffective in weak scaling cases
 \item Multiple sets will never boost parallel efficienicies in both
   weak and strong scaling cases due to additional communication
-  overhead
+  overhead from added reduction operations
 \item Multiple sets offers a means to reduce time to solution by
   solving a multiple copies of the original problem and combining the
   solutions using superposition
 \item MCSA is most efficient used in parallel as a stochastic
   realization of an additive Schwarz method
+\item With future optimization, large scale reactor analyses in which
+  the transport operator is fully formed (e.g. the $SP_N$ equations)
+  could experience improved time to solution on leadership-class
+  machines with MCSA given the improved scaling performance
 \end{itemize}
