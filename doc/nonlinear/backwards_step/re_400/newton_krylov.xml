@@ -105,7 +105,7 @@
 
     <ParameterList name="User Data">
       <ParameterList name="ParabolicInflow">
-            <Parameter name="Ustar" type="double" value="100.0"/>
+            <Parameter name="Ustar" type="double" value="400.0"/>
             <Parameter name="L" type="double" value="0.5"/>
             <Parameter name="ramp_in_time" type="bool" value="false"/>
             <Parameter name="timeConstant" type="double" value="0.025"/>
