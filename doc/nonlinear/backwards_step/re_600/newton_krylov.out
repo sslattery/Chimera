@@ -1,0 +1,3372 @@
+Mesh -> 
+ Source = Inline Mesh   [unused]
+ Exodus File -> 
+  File Name = BackwardStep.exo   [unused]
+ Inline Mesh -> 
+  Mesh Dimension = 2   [unused]
+  Mesh Factory Parameter List -> 
+   X Blocks = 1   [unused]
+   Y Blocks = 1   [unused]
+   X Elements = 250   [unused]
+   Y Elements = 20   [unused]
+   X0 = 0   [unused]
+   Y0 = 0   [unused]
+   Xf = 25   [unused]
+   Yf = 1   [unused]
+Block ID to Physics ID Mapping -> 
+ eblock-0_0 = fluid   [unused]
+Assembly -> 
+ Workset Size = 2   [unused]
+Physics Blocks -> 
+ fluid -> 
+  child0 -> 
+   Type = Continuity   [unused]
+   Basis Type = HGrad   [unused]
+   Basis Order = 1   [unused]
+   Integration Order = 2   [unused]
+   Model ID = fluid model   [unused]
+   Prefix =    [unused]
+   Options -> 
+    TAU_C = SHAKIB   [unused]
+    PSPG STABILIZATION = ON   [unused]
+  child1 -> 
+   Type = Momentum   [unused]
+   Basis Type = HGrad   [unused]
+   Basis Order = 1   [unused]
+   Integration Order = 2   [unused]
+   Model ID = fluid model   [unused]
+   Prefix =    [unused]
+   Options -> 
+    TAU_M = SHAKIB   [unused]
+    SUPG STABILIZATION = ON   [unused]
+Closure Models -> 
+ fluid model -> 
+  DENSITY -> 
+   Value = 1   [unused]
+  STRESS_TENSOR -> 
+   Value = NEWTONIAN   [unused]
+  VISCOSITY -> 
+   Value = 1   [unused]
+  SOURCE_UX -> 
+   Value = 0   [unused]
+  SOURCE_UY -> 
+   Value = 0   [unused]
+  Global Statistics -> 
+   Value = UX,UY,PRESSURE,L2Error_UX,L2Error_UY   [unused]
+  Analytic Solution -> 
+   Value = NS PARABOLIC INFLOW   [unused]
+  Analytic Comparison: L2 Error -> 
+   Value = UX,UY   [unused]
+User Data -> 
+ ParabolicInflow -> 
+  Ustar = 800   [unused]
+  L = 0.5   [unused]
+  ramp_in_time = 0   [unused]
+  timeConstant = 0.025   [unused]
+Boundary Conditions -> 
+ child0 -> 
+  Type = Dirichlet   [unused]
+  Sideset ID = top   [unused]
+  Element Block ID = eblock-0_0   [unused]
+  Equation Set Name = UX   [unused]
+  Strategy = Constant   [unused]
+  Data -> 
+   Value = 0   [unused]
+ child1 -> 
+  Type = Dirichlet   [unused]
+  Sideset ID = top   [unused]
+  Element Block ID = eblock-0_0   [unused]
+  Equation Set Name = UY   [unused]
+  Strategy = Constant   [unused]
+  Data -> 
+   Value = 0   [unused]
+ child2 -> 
+  Type = Dirichlet   [unused]
+  Sideset ID = bottom   [unused]
+  Element Block ID = eblock-0_0   [unused]
+  Equation Set Name = UX   [unused]
+  Strategy = Constant   [unused]
+  Data -> 
+   Value = 0   [unused]
+ child3 -> 
+  Type = Dirichlet   [unused]
+  Sideset ID = bottom   [unused]
+  Element Block ID = eblock-0_0   [unused]
+  Equation Set Name = UY   [unused]
+  Strategy = Constant   [unused]
+  Data -> 
+   Value = 0   [unused]
+ child4 -> 
+  Type = Dirichlet   [unused]
+  Sideset ID = left   [unused]
+  Element Block ID = eblock-0_0   [unused]
+  Equation Set Name = Whatever   [unused]
+  Strategy = Parabolic Inflow   [unused]
+  Data -> 
+   [empty list]
+ child5 -> 
+  Type = Dirichlet   [unused]
+  Sideset ID = right   [unused]
+  Element Block ID = eblock-0_0   [unused]
+  Equation Set Name = UY   [unused]
+  Strategy = Constant   [unused]
+  Data -> 
+   Value = 0   [unused]
+Initial Conditions -> 
+ eblock-0_0 -> 
+  UX -> 
+   Value = 0   [unused]
+  UY -> 
+   Value = 0   [unused]
+  PRESSURE -> 
+   Value = 0   [unused]
+Output -> 
+ File Name = BackwardStep.exo   [unused]
+Options -> 
+ Write Volume Assembly Graphs = 0   [unused]
+ Volume Assembly Graph Prefix = BackwardStep_   [unused]
+Solution Control -> 
+ Piro Solver = NOX   [unused]
+ Compute Sensitivities = 0   [unused]
+ Jacobian Operator = Have Jacobian   [unused]
+ LOCA -> 
+  Bifurcation -> 
+   [empty list]
+  Constraints -> 
+   [empty list]
+  Predictor -> 
+   Method = Constant   [unused]
+  Stepper -> 
+   Continuation Method = Natural   [unused]
+   Initial Value = 1   [unused]
+   Continuation Parameter = Parameter 0   [unused]
+   Max Steps = 6   [unused]
+   Max Value = 12.25   [unused]
+   Min Value = 0.5   [unused]
+   Compute Eigenvalues = 1   [unused]
+   Eigensolver -> 
+    Method = Anasazi   [unused]
+    Operator = Shift-Invert   [unused]
+    Num Blocks = 3   [unused]
+    Num Eigenvalues = 1   [unused]
+    Block Size = 1   [unused]
+    Maximum Restarts = 0   [unused]
+    Shift = 1   [unused]
+  Step Size -> 
+   Initial Step Size = 0.5   [unused]
+   Aggressiveness = 2   [unused]
+ NOX -> 
+  Nonlinear Solver = Line Search Based   [unused]
+  Direction -> 
+   Method = Newton   [unused]
+   Newton -> 
+    Forcing Term Method = Type 2   [unused]
+    Forcing Term Initial Tolerance = 0.01   [unused]
+    Forcing Term Alpha = 2   [unused]
+    Forcing Term Gamma = 0.9   [unused]
+    Rescue Bad Newton Solve = 1   [unused]
+    Linear Solver -> 
+     Tolerance = 0.1   [unused]
+    Stratimikos Linear Solver -> 
+     NOX Stratimikos Options -> 
+      [empty list]
+     Stratimikos -> 
+      Linear Solver Type = AztecOO   [unused]
+      Preconditioner Type = ML   [unused]
+      Linear Solver Types -> 
+       AztecOO -> 
+        Forward Solve -> 
+         Max Iterations = 600   [unused]
+         Tolerance = 0.0001   [unused]
+         AztecOO Settings -> 
+          Aztec Solver = GMRES   [unused]
+          Convergence Test = r0   [unused]
+          Size of Krylov Subspace = 200   [unused]
+          Output Frequency = 10   [unused]
+       Belos -> 
+        Solver Type = Block GMRES   [unused]
+        Solver Types -> 
+         Block GMRES -> 
+          Convergence Tolerance = 1e-05   [unused]
+          Output Frequency = 10   [unused]
+          Output Style = 1   [unused]
+          Verbosity = 33   [unused]
+          Maximum Iterations = 100   [unused]
+          Block Size = 1   [unused]
+          Num Blocks = 20   [unused]
+          Flexible Gmres = 0   [unused]
+       MCLS -> 
+        Solver Type = MCSA   [unused]
+        Solver Types -> 
+         MCSA -> 
+          Fixed Point Type = Richardson   [unused]
+          MC Type = Adjoint   [unused]
+          Estimator Type = Collision   [unused]
+          Transport Type = Global   [unused]
+          Number of Sets = 1   [unused]
+          Reproducible MC Mode = 0   [unused]
+          Overlap Size = 0   [unused]
+          Maximum Iterations = 100   [unused]
+          Weight Cutoff = 0.01   [unused]
+          Set Number of Histories = 500000   [unused]
+          Iteration Print Frequency = 1   [unused]
+          Richardson Relaxation = 1   [unused]
+          Neumann Relaxation = 1   [unused]
+          Absorption Probability = 0   [unused]
+          Domain Filter Tolerance = 0   [unused]
+          Domain Fill Value = 200   [unused]
+          Domain Weight Recovery = 0   [unused]
+         Fixed Point -> 
+          Fixed Point Type = Richardson   [unused]
+          Maximum Iterations = 10000   [unused]
+          Iteration Print Frequency = 1   [unused]
+          Richardson Relaxation = 1   [unused]
+      Preconditioner Types -> 
+       Ifpack -> 
+        Overlap = 1   [unused]
+        Prec Type = ILU   [unused]
+        Ifpack Settings -> 
+         fact: drop tolerance = 0.0001   [unused]
+         fact: maximum fill factor = 25   [unused]
+       ML -> 
+        Base Method Defaults = SA   [unused]
+        ML Settings -> 
+         ML output = 10   [unused]
+         prec type = MGW   [unused]
+         print unused = 0   [unused]
+         PDE equations = 3   [unused]
+         max levels = 10   [unused]
+         cycle applications = 1   [unused]
+         aggregation: threshold = 0   [unused]
+         aggregation: type = Uncoupled   [unused]
+         aggregation: damping factor = 0   [unused]
+         aggregation: block scaling = 1   [unused]
+         energy minimization: enable = 1   [unused]
+         energy minimization: type = 2   [unused]
+         smoother: type = IFPACK   [unused]
+         smoother: ifpack type = ILU   [unused]
+         smoother: ifpack overlap = 5   [unused]
+         smoother: damping factor = 1   [unused]
+         smoother: pre or post = both   [unused]
+         smoother: sweeps = 1   [unused]
+         coarse: max size = 500   [unused]
+         coarse: type = Amesos-KLU   [unused]
+         smoother: ifpack list -> 
+          fact: level-of-fill = 5   [unused]
+          schwarz: reordering type = rcm   [unused]
+       MCLS -> 
+        Preconditioner Type = ML   [unused]
+        Preconditioner Types -> 
+         Block Jacobi -> 
+          Jacobi Block Size = 4   [unused]
+         ILUT -> 
+          fact: ilut level-of-fill = 3   [unused]
+          fact: drop tolerance = 0.0005   [unused]
+         ParaSails -> 
+          ParaSails: Threshold = 0.001   [unused]
+          ParaSails: Number of Levels = 7   [unused]
+          ParaSails: Filter = 0.001   [unused]
+         PSILUT -> 
+          fact: ilut level-of-fill = 3   [unused]
+          fact: drop tolerance = 0.0001   [unused]
+          ParaSails: Threshold = 0.1   [unused]
+          ParaSails: Number of Levels = 1   [unused]
+          ParaSails: Filter = 0   [unused]
+         ML -> 
+          Base Method Defaults = SA   [unused]
+          ML Settings -> 
+           ML output = 10   [unused]
+           prec type = MGW   [unused]
+           print unused = 0   [unused]
+           PDE equations = 3   [unused]
+           max levels = 10   [unused]
+           cycle applications = 1   [unused]
+           aggregation: threshold = 0   [unused]
+           aggregation: type = Uncoupled   [unused]
+           aggregation: damping factor = 0   [unused]
+           aggregation: block scaling = 1   [unused]
+           energy minimization: enable = 1   [unused]
+           energy minimization: type = 2   [unused]
+           smoother: type = IFPACK   [unused]
+           smoother: ifpack type = ILU   [unused]
+           smoother: ifpack overlap = 5   [unused]
+           smoother: damping factor = 1   [unused]
+           smoother: pre or post = both   [unused]
+           smoother: sweeps = 1   [unused]
+           coarse: max size = 500   [unused]
+           coarse: type = Amesos-KLU   [unused]
+           smoother: ifpack list -> 
+            fact: level-of-fill = 5   [unused]
+            schwarz: reordering type = rcm   [unused]
+  Line Search -> 
+   Method = Polynomial   [unused]
+   Full Step -> 
+    Full Step = 1   [unused]
+  Printing -> 
+   Output Precision = 3   [unused]
+   Output Processor = 0   [unused]
+   Output Information -> 
+    Error = 1   [unused]
+    Warning = 1   [unused]
+    Inner Iteration = 1   [unused]
+    Outer Iteration = 1   [unused]
+    Outer Iteration StatusTest = 1   [unused]
+    Test Details = 1   [unused]
+    Parameters = 1   [unused]
+    Details = 1   [unused]
+    Linear Solver Details = 1   [unused]
+    Stepper Iteration = 1   [unused]
+    Stepper Details = 1   [unused]
+    Stepper Parameters = 1   [unused]
+  Solver Options -> 
+   Status Test Check Type = Complete   [unused]
+  Status Tests -> 
+   Test Type = Combo   [unused]
+   Combo Type = OR   [unused]
+   Number of Tests = 3   [unused]
+   Test 0 -> 
+    Test Type = Combo   [unused]
+    Combo Type = AND   [unused]
+    Number of Tests = 2   [unused]
+    Test 0 -> 
+     Test Type = NormF   [unused]
+     Tolerance = 0.0001   [unused]
+    Test 1 -> 
+     Test Type = NormWRMS   [unused]
+     Tolerance = 0.01   [unused]
+     Relative Tolerance = 0.001   [unused]
+     Absolute Tolerance = 1e-08   [unused]
+     BDF Multiplier = 1   [unused]
+     alpha = 0.1   [unused]
+     beta = 0.5   [unused]
+   Test 1 -> 
+    Test Type = MaxIters   [unused]
+    Maximum Iterations = 400   [unused]
+   Test 2 -> 
+    Test Type = FiniteValue   [unused]
+ Rythmos -> 
+  Nonlinear Solver Type = NOX   [unused]
+  Final Time = 6   [unused]
+  Stepper Type = BDF   [unused]
+  Rythmos Integration Control Strategy = Ramping   [unused]
+  Rythmos Stepper -> 
+   Step Control Settings -> 
+    stopTime = 6   [unused]
+    absErrTol = 1e+20   [unused]
+    relErrTol = 1e+20   [unused]
+    maxOrder = 2   [unused]
+    minOrder = 2   [unused]
+    failStepIfNonlinearSolveFails = 1   [unused]
+    VerboseObject -> 
+     Verbosity Level = medium   [unused]
+    magicNumbers -> 
+     maxTimeStep = 0.01   [unused]
+     minTimeStep = 1e-07   [unused]
+   VerboseObject -> 
+    Verbosity Level = medium   [unused]
+  Stratimikos -> 
+   [empty list]
+  Rythmos Integration Control -> 
+   Number of Ramping Steps = 10   [unused]
+   Initial dt = 0.0008   [unused]
+   Max dt = 0.002   [unused]
+   Ramping Factor = 1.1   [unused]
+   VerboseObject -> 
+    Verbosity Level = high   [unused]
+  Rythmos Integrator -> 
+   VerboseObject -> 
+    Verbosity Level = high   [unused]
+
+STK Mesh data:
+   Spatial dim = 2
+   Entity counts (Nodes, Edges, Cells) = ( 5271, 10270, 5000 )
+   Element blocks = "eblock-0_0" 
+   Sidesets = "bottom" "left" "right" "top" 
+   Nodesets = "lower_left" "origin" 
+L2 Error UX 2.06557390e+03 
+L2 Error UY 0.00000000e+00 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         0.00000000e+00  2.22507386e-308 0.00000000e+00 
+UY         0.00000000e+00  2.22507386e-308 0.00000000e+00 
+PRESSURE   0.00000000e+00  2.22507386e-308 0.00000000e+00 
+L2Error_UX 1.70663822e+05  6.37715542e+05  0.00000000e+00 
+L2Error_UY 0.00000000e+00  2.22507386e-308 0.00000000e+00 
+
+************************************************************************
+
+-- Parameters Passed to Nonlinear Solver --
+
+     Nonlinear Solver = Line Search Based
+     Direction -> 
+      Method = Newton
+      Newton -> 
+       Forcing Term Method = Type 2
+       Forcing Term Initial Tolerance = 0.01
+       Forcing Term Alpha = 2
+       Forcing Term Gamma = 0.9
+       Rescue Bad Newton Solve = 1
+       Forcing Term Minimum Tolerance = 0.0001   [default]
+       Forcing Term Maximum Tolerance = 0.9   [default]
+       Linear Solver -> 
+        Tolerance = 0.1   [unused]
+       Stratimikos Linear Solver -> 
+        NOX Stratimikos Options -> 
+         [empty list]
+        Stratimikos -> 
+         Linear Solver Type = AztecOO   [unused]
+         Preconditioner Type = ML   [unused]
+         Linear Solver Types -> 
+          AztecOO -> 
+           Forward Solve -> 
+            Max Iterations = 600   [unused]
+            Tolerance = 0.0001   [unused]
+            AztecOO Settings -> 
+             Aztec Solver = GMRES   [unused]
+             Convergence Test = r0   [unused]
+             Size of Krylov Subspace = 200   [unused]
+             Output Frequency = 10   [unused]
+          Belos -> 
+           Solver Type = Block GMRES   [unused]
+           Solver Types -> 
+            Block GMRES -> 
+             Convergence Tolerance = 1e-05   [unused]
+             Output Frequency = 10   [unused]
+             Output Style = 1   [unused]
+             Verbosity = 33   [unused]
+             Maximum Iterations = 100   [unused]
+             Block Size = 1   [unused]
+             Num Blocks = 20   [unused]
+             Flexible Gmres = 0   [unused]
+          MCLS -> 
+           Solver Type = MCSA   [unused]
+           Solver Types -> 
+            MCSA -> 
+             Fixed Point Type = Richardson   [unused]
+             MC Type = Adjoint   [unused]
+             Estimator Type = Collision   [unused]
+             Transport Type = Global   [unused]
+             Number of Sets = 1   [unused]
+             Reproducible MC Mode = 0   [unused]
+             Overlap Size = 0   [unused]
+             Maximum Iterations = 100   [unused]
+             Weight Cutoff = 0.01   [unused]
+             Set Number of Histories = 500000   [unused]
+             Iteration Print Frequency = 1   [unused]
+             Richardson Relaxation = 1   [unused]
+             Neumann Relaxation = 1   [unused]
+             Absorption Probability = 0   [unused]
+             Domain Filter Tolerance = 0   [unused]
+             Domain Fill Value = 200   [unused]
+             Domain Weight Recovery = 0   [unused]
+            Fixed Point -> 
+             Fixed Point Type = Richardson   [unused]
+             Maximum Iterations = 10000   [unused]
+             Iteration Print Frequency = 1   [unused]
+             Richardson Relaxation = 1   [unused]
+         Preconditioner Types -> 
+          Ifpack -> 
+           Overlap = 1   [unused]
+           Prec Type = ILU   [unused]
+           Ifpack Settings -> 
+            fact: drop tolerance = 0.0001   [unused]
+            fact: maximum fill factor = 25   [unused]
+          ML -> 
+           Base Method Defaults = SA   [unused]
+           ML Settings -> 
+            ML output = 10   [unused]
+            prec type = MGW   [unused]
+            print unused = 0   [unused]
+            PDE equations = 3   [unused]
+            max levels = 10   [unused]
+            cycle applications = 1   [unused]
+            aggregation: threshold = 0   [unused]
+            aggregation: type = Uncoupled   [unused]
+            aggregation: damping factor = 0   [unused]
+            aggregation: block scaling = 1   [unused]
+            energy minimization: enable = 1   [unused]
+            energy minimization: type = 2   [unused]
+            smoother: type = IFPACK   [unused]
+            smoother: ifpack type = ILU   [unused]
+            smoother: ifpack overlap = 5   [unused]
+            smoother: damping factor = 1   [unused]
+            smoother: pre or post = both   [unused]
+            smoother: sweeps = 1   [unused]
+            coarse: max size = 500   [unused]
+            coarse: type = Amesos-KLU   [unused]
+            smoother: ifpack list -> 
+             fact: level-of-fill = 5   [unused]
+             schwarz: reordering type = rcm   [unused]
+          MCLS -> 
+           Preconditioner Type = ML   [unused]
+           Preconditioner Types -> 
+            Block Jacobi -> 
+             Jacobi Block Size = 4   [unused]
+            ILUT -> 
+             fact: ilut level-of-fill = 3   [unused]
+             fact: drop tolerance = 0.0005   [unused]
+            ParaSails -> 
+             ParaSails: Threshold = 0.001   [unused]
+             ParaSails: Number of Levels = 7   [unused]
+             ParaSails: Filter = 0.001   [unused]
+            PSILUT -> 
+             fact: ilut level-of-fill = 3   [unused]
+             fact: drop tolerance = 0.0001   [unused]
+             ParaSails: Threshold = 0.1   [unused]
+             ParaSails: Number of Levels = 1   [unused]
+             ParaSails: Filter = 0   [unused]
+            ML -> 
+             Base Method Defaults = SA   [unused]
+             ML Settings -> 
+              ML output = 10   [unused]
+              prec type = MGW   [unused]
+              print unused = 0   [unused]
+              PDE equations = 3   [unused]
+              max levels = 10   [unused]
+              cycle applications = 1   [unused]
+              aggregation: threshold = 0   [unused]
+              aggregation: type = Uncoupled   [unused]
+              aggregation: damping factor = 0   [unused]
+              aggregation: block scaling = 1   [unused]
+              energy minimization: enable = 1   [unused]
+              energy minimization: type = 2   [unused]
+              smoother: type = IFPACK   [unused]
+              smoother: ifpack type = ILU   [unused]
+              smoother: ifpack overlap = 5   [unused]
+              smoother: damping factor = 1   [unused]
+              smoother: pre or post = both   [unused]
+              smoother: sweeps = 1   [unused]
+              coarse: max size = 500   [unused]
+              coarse: type = Amesos-KLU   [unused]
+              smoother: ifpack list -> 
+               fact: level-of-fill = 5   [unused]
+               schwarz: reordering type = rcm   [unused]
+     Line Search -> 
+      Method = Polynomial
+      Full Step -> 
+       Full Step = 1   [unused]
+      Polynomial -> 
+       Sufficient Decrease Condition = Armijo-Goldstein   [default]
+       Interpolation Type = Cubic   [default]
+       Recovery Step Type = Constant   [default]
+       Minimum Step = 1e-12   [default]
+       Default Step = 1   [default]
+       Recovery Step = 1   [default]
+       Max Iters = 100   [default]
+       Alpha Factor = 0.0001   [default]
+       Min Bounds Factor = 0.1   [default]
+       Max Bounds Factor = 0.5   [default]
+       Force Interpolation = 0   [default]
+       Use Counters = 1   [default]
+       Maximum Iteration for Increase = 0   [default]
+       Allowed Relative Increase = 100   [default]
+     Printing -> 
+      Output Precision = 3
+      Output Processor = 0
+      Output Stream = Teuchos::RCP<std::ostream>{ptr=0x6830b40,node=0x67f95e0,strong_count=24,weak_count=0}
+      Error Stream = Teuchos::RCP<std::ostream>{ptr=0x6830b40,node=0x67f95e0,strong_count=24,weak_count=0}
+      MyPID = 0   [default]
+      Output Information -> 
+       Error = 1
+       Warning = 1
+       Inner Iteration = 1
+       Outer Iteration = 1
+       Outer Iteration StatusTest = 1
+       Test Details = 1
+       Parameters = 1
+       Details = 1
+       Linear Solver Details = 1
+       Stepper Iteration = 1
+       Stepper Details = 1
+       Stepper Parameters = 1
+       Debug = 0   [default]
+     Solver Options -> 
+      Status Test Check Type = Complete
+      User Defined Pre/Post Operator = Teuchos::RCP<NOX::Abstract::PrePostOperator>{ptr=0x8ac2d50,node=0x8c8f450,strong_count=2,weak_count=0}
+     Status Tests -> 
+      Test Type = Combo
+      Combo Type = OR
+      Number of Tests = 3
+      Test 0 -> 
+       Test Type = Combo
+       Combo Type = AND
+       Number of Tests = 2
+       Test 0 -> 
+        Test Type = NormF
+        Tolerance = 0.0001
+        Norm Type = Two Norm   [default]
+        Scale Type = Unscaled   [default]
+       Test 1 -> 
+        Test Type = NormWRMS
+        Tolerance = 0.01
+        Relative Tolerance = 0.001
+        Absolute Tolerance = 1e-08
+        BDF Multiplier = 1
+        alpha = 0.1   [unused]
+        beta = 0.5   [unused]
+        Alpha = 1   [default]
+        Beta = 0.5   [default]
+        Disable Implicit Weighting = 1   [default]
+      Test 1 -> 
+       Test Type = MaxIters
+       Maximum Iterations = 400
+      Test 2 -> 
+       Test Type = FiniteValue
+       Vector Type = F Vector   [default]
+       Norm Type = Two Norm   [default]
+     Thyra Group Options -> 
+      Function Scaling = None   [default]
+      Update Row Sum Scaling = Before Each Nonlinear Solve   [default]
+      User Defined Scaling = Teuchos::RCP<Thyra::VectorBase<double> >{ptr=0,node=0,strong_count=0,weak_count=0}   [default]
+L2 Error UX 2.06557390e+03 
+L2 Error UY 0.00000000e+00 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         0.00000000e+00  2.22507386e-308 0.00000000e+00 
+UY         0.00000000e+00  2.22507386e-308 0.00000000e+00 
+PRESSURE   0.00000000e+00  2.22507386e-308 0.00000000e+00 
+L2Error_UX 1.70663822e+05  6.37715542e+05  0.00000000e+00 
+L2Error_UY 0.00000000e+00  2.22507386e-308 0.00000000e+00 
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 1.847e+03 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 1.000e+12 < 0.01
+  **...........Number of Iterations = 0 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 0 -- 
+||F|| = 1.847e+03  step = 0.000e+00  dx = 0.000e+00
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term: 0.01
+------------------------------------------------------------------------------
+Using `cg' for eigen-computations
+*** 
+*** ML_Epetra::MultiLevelPreconditioner
+***
+Matrix has 15813 rows and 412299 nonzeros, distributed over 1 process(es)
+The linear system matrix is an Epetra_CrsMatrix
+** Leaving column map of Main linear system matrix unchanged
+Default values for `SA'
+Maximum number of levels = 10
+Using increasing levels. Finest level  = 0, coarsest level = 9
+Number of applications of the ML cycle = 1
+Number of PDE equations = 3
+Aggregation threshold = 0
+Max coarse size = 500
+
+Warning: `energy minimization' safer with
+Warning: Uncoupled aggregation. Other 
+Warning: schemes may crash the code.
+
+Null space type      = default (constants)
+Null space dimension = 3
+-----------------------------------------------------------------------
+ML_Gen_MultiLevelHierarchy (level 0) : Gen Restriction and Prolongator
+-----------------------------------------------------------------------
+ML_Aggregate_Coarsen (level 0) begins
+ML_Aggregate_CoarsenUncoupled : current level = 0
+ML_Aggregate_CoarsenUncoupled : current eps = 0.000000e+00
+Aggregation(UVB) : Total nonzeros = 412299 (Nrows=15813)
+Aggregation(UVB) : Amalgamated matrix done 
+Aggregation(UC) : Phase 0 - no. of bdry pts  = 0 
+Aggregation(UC) : Phase 1 - nodes aggregated = 5020 (5271)
+Aggregation(UC) : Phase 1 - total aggregates = 588 
+Aggregation(UC_Phase2_3) : Phase 1 - nodes aggregated = 5020 
+Aggregation(UC_Phase2_3) : Phase 1 - total aggregates = 588
+Aggregation(UC_Phase2_3) : Phase 2a- additional aggregates = 0
+Aggregation(UC_Phase2_3) : Phase 2 - total aggregates = 588
+Aggregation(UC_Phase2_3) : Phase 2 - boundary nodes   = 0
+Aggregation(UC_Phase2_3) : Phase 3 - leftovers = 0 and singletons = 0
+Aggregation(UC) : QR factorization - too small aggregates = 0
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.292061, max = 1.09519 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+-----------------------------------------------------------------------
+ML_Gen_MultiLevelHierarchy (level 1) : Gen Restriction and Prolongator
+-----------------------------------------------------------------------
+ML_Aggregate_Coarsen (level 1) begins
+ML_Aggregate_CoarsenUncoupled : current level = 1
+ML_Aggregate_CoarsenUncoupled : current eps = 0.000000e+00
+Aggregation(UVB) : Total nonzeros = 44225 (Nrows=1764)
+Aggregation(UVB) : Amalgamated matrix done 
+Aggregation(UC) : Phase 0 - no. of bdry pts  = 0 
+Aggregation(UC) : Phase 1 - nodes aggregated = 559 (588)
+Aggregation(UC) : Phase 1 - total aggregates = 77 
+Aggregation(UC_Phase2_3) : Phase 1 - nodes aggregated = 559 
+Aggregation(UC_Phase2_3) : Phase 1 - total aggregates = 77
+Aggregation(UC_Phase2_3) : Phase 2a- additional aggregates = 0
+Aggregation(UC_Phase2_3) : Phase 2 - total aggregates = 77
+Aggregation(UC_Phase2_3) : Phase 2 - boundary nodes   = 0
+Aggregation(UC_Phase2_3) : Phase 3 - leftovers = 0 and singletons = 0
+Aggregation(UC) : QR factorization - too small aggregates = 0
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.321502, max = 0.818125 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Smoothed Aggregation : operator complexity = 1.120823e+00.
+Time to build the hierarchy = 0.152947 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349915 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.040077 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000653982 (s)
+
+WARNING: Parameter "aggregation: damping factor" 0   [unused] is unused
+WARNING: Parameter "coarse: list"    [unused] is unused
+WARNING: Parameter "aggregation: list (level 0)"    [unused] is unused
+WARNING: Parameter "aggregation: list (level 1)"    [unused] is unused
+WARNING: Parameter "aggregation: list (level 2)"    [unused] is unused
+WARNING: Parameter "aggregation: list (level 3)"    [unused] is unused
+WARNING: Parameter "aggregation: list (level 4)"    [unused] is unused
+WARNING: Parameter "aggregation: list (level 5)"    [unused] is unused
+WARNING: Parameter "aggregation: list (level 6)"    [unused] is unused
+WARNING: Parameter "aggregation: list (level 7)"    [unused] is unused
+WARNING: Parameter "aggregation: list (level 8)"    [unused] is unused
+WARNING: Parameter "smoother: list (level 0)"    [unused] is unused
+WARNING: Parameter "smoother: list (level 1)"    [unused] is unused
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.152975 (s)
+- for smoothers setup = 0.389992 (s)
+- for coarse setup    = 0.000808954 (s)
+- for final setup     = 0.000155926 (s)
+------------------------------------------------------------------------------
+ 
+ 		*******************************************************
+ 		***** Problem: Epetra::CrsMatrix
+ 		***** Preconditioned GMRES solution
+ 		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+ 		***** No scaling
+ 		*******************************************************
+ 
+                 iter:    0           residual = 1.000000e+00
+                 iter:    2           residual = 2.662470e-03
+ 
+ 
+ 		Solution time: 0.040958 (sec.)
+ 		total iterations: 2
+ 
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 2.06557390e+03 
+L2 Error UY 9.49770490e-11 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.62201121e-10  7.77639646e-10  -3.64629437e-13
+UY         -2.60230051e-12 1.06831707e-12  -2.78812899e-10
+PRESSURE   3.94437194e-08  8.55405485e-08  1.31935323e-10 
+L2Error_UX 1.70663822e+05  6.37715542e+05  6.85351338e-28 
+L2Error_UY 3.60825593e-22  7.77366328e-20  4.98959516e-40 
+L2 Error UX 1.61575076e+03 
+L2 Error UY 9.49770490e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.62201121e+02  7.77639646e+02  -3.64629437e-01
+UY         -2.60230051e+00 1.06831707e+00  -2.78812899e+02
+PRESSURE   3.94437194e+04  8.55405485e+04  1.31935323e+02 
+L2Error_UX 1.04426020e+05  2.70159055e+05  2.83198193e-05 
+L2Error_UY 3.60825593e+02  7.77366328e+04  4.98959516e-16 
+  1: step = 1.000e+00 old f = 1.847e+03 new f = 2.053e+04
+L2 Error UX 1.97830229e+03 
+L2 Error UY 9.49770490e+00 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.62201121e+01  7.77639646e+01  -3.64629437e-02
+UY         -2.60230051e-01 1.06831707e-01  -2.78812899e+01
+PRESSURE   3.94437194e+03  8.55405485e+03  1.31935323e+01 
+L2Error_UX 1.56547198e+05  5.92942811e+05  6.85351338e-06 
+L2Error_UY 3.60825593e+00  7.77366328e+02  4.98959516e-18 
+  2: step = 1.000e-01 old f = 1.847e+03 new f = 1.674e+03 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 1.674e+03 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 2.633e+11 < 0.01
+                 (Min Step Size:  1.000e-01 >= 1)
+  **...........Number of Iterations = 1 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 1 -- 
+||F|| = 1.674e+03  step = 1.000e-01  dx = 3.311e+06
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             1.85e+03
+       Residual Norm k =               1.67e+03
+       Calculated eta_k (pre-bounds) = 0.739
+       Forcing Term: 0.739
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.288437, max = 0.936639 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.345578, max = 0.765809 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135107 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.351265 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0384562 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000600815 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.152981 (s)
+- for smoothers setup = 0.779713 (s)
+- for coarse setup    = 0.00154495 (s)
+- for final setup     = 0.000160933 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    1           residual = 1.597609e-01
+  
+  
+  		Solution time: 0.025663 (sec.)
+  		total iterations: 1
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.97830222e+03 
+L2 Error UY 9.49770358e+00 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.62201331e+01  7.77640185e+01  -3.64633972e-02
+UY         -2.60230252e-01 1.06827270e-01  -2.78812780e+01
+PRESSURE   3.94437592e+03  8.55406157e+03  1.31935440e+01 
+L2Error_UX 1.56547187e+05  5.92942771e+05  6.85368386e-06 
+L2Error_UY 3.60825493e+00  7.77365665e+02  4.16564081e-18 
+L2 Error UX 1.64700332e+03 
+L2 Error UY 1.21701259e+02 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         3.00215566e+02  9.00184541e+02  -2.78619316e+02
+UY         -2.88947392e+00 2.33675158e+02  -2.02484819e+02
+PRESSURE   5.58454190e+04  1.05348297e+05  1.48244258e+02 
+L2Error_UX 1.08504798e+05  2.74531309e+05  1.00737919e-01 
+L2Error_UY 5.92447859e+02  5.46040793e+04  3.06989884e-11 
+  1: step = 1.000e+00 old f = 1.674e+03 new f = 2.637e+04
+L2 Error UX 1.89222771e+03 
+L2 Error UY 1.44183621e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         5.36196575e+01  1.48074837e+02  -1.66998024e+01
+UY         -5.23154438e-01 1.25398638e+01  -2.68432820e+01
+PRESSURE   9.13447665e+03  1.74988253e+04  2.67356197e+01 
+L2Error_UX 1.43221028e+05  5.54191279e+05  6.27695445e-04 
+L2Error_UY 8.31556665e+00  7.20561790e+02  2.19773544e-12 
+  2: step = 1.000e-01 old f = 1.674e+03 new f = 1.517e+03 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 1.517e+03 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 2.820e+05 < 0.01
+                 (Min Step Size:  1.000e-01 >= 1)
+  **...........Number of Iterations = 2 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 2 -- 
+||F|| = 1.517e+03  step = 1.000e-01  dx = 4.318e+06
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             1.67e+03
+       Residual Norm k =               1.52e+03
+       Calculated eta_k (pre-bounds) = 0.739
+       Forcing Term: 0.854
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.282578, max = 0.769978 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.357749, max = 0.80306 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135085 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349564 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.038466 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000623226 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.152987 (s)
+- for smoothers setup = 1.16774 (s)
+- for coarse setup    = 0.00230193 (s)
+- for final setup     = 0.000164986 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    1           residual = 3.122920e-01
+  
+  
+  		Solution time: 0.025672 (sec.)
+  		total iterations: 1
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.89222758e+03 
+L2 Error UY 1.44183635e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         5.36197017e+01  1.48074946e+02  -1.66998102e+01
+UY         -5.23154577e-01 1.25398681e+01  -2.68432727e+01
+PRESSURE   9.13448586e+03  1.74988388e+04  2.67356368e+01 
+L2Error_UX 1.43221008e+05  5.54191216e+05  6.27686187e-04 
+L2Error_UY 8.31556827e+00  7.20561290e+02  2.20050007e-12 
+L2 Error UX 1.64298679e+03 
+L2 Error UY 8.86980845e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.89665470e+02  8.23121302e+02  -2.51229831e+02
+UY         -1.26491864e+00 1.01568060e+02  -1.39736654e+02
+PRESSURE   5.82974204e+04  1.06968157e+05  1.18124984e+02 
+L2Error_UX 1.07976224e+05  3.24160061e+05  2.46907598e-05 
+L2Error_UY 3.14694008e+02  1.95263324e+04  1.32837091e-12 
+  1: step = 1.000e+00 old f = 1.517e+03 new f = 1.290e+04
+L2 Error UX 1.82465673e+03 
+L2 Error UY 1.74336513e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         7.72242387e+01  2.06612304e+02  -2.37525835e+01
+UY         -5.97330857e-01 1.48249533e+01  -2.73796153e+01
+PRESSURE   1.40507710e+04  2.58147853e+04  3.58745562e+01 
+L2Error_UX 1.33174888e+05  5.23087133e+05  3.23246280e-04 
+L2Error_UY 1.21572880e+01  7.49643332e+02  2.38114111e-12 
+  2: step = 1.000e-01 old f = 1.517e+03 new f = 1.383e+03 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 1.383e+03 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 5.507e+04 < 0.01
+                 (Min Step Size:  1.000e-01 >= 1)
+  **...........Number of Iterations = 3 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 3 -- 
+||F|| = 1.383e+03  step = 1.000e-01  dx = 4.071e+06
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             1.52e+03
+       Residual Norm k =               1.38e+03
+       Calculated eta_k (pre-bounds) = 0.749
+       Forcing Term: 0.874
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.281685, max = 0.729836 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.371865, max = 0.804007 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135432 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349814 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0387709 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000607014 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.152992 (s)
+- for smoothers setup = 1.55633 (s)
+- for coarse setup    = 0.00304794 (s)
+- for final setup     = 0.000169039 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    1           residual = 5.492044e-01
+  
+  
+  		Solution time: 0.025567 (sec.)
+  		total iterations: 1
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.82465656e+03 
+L2 Error UY 1.74336541e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         7.72243029e+01  2.06612462e+02  -2.37525913e+01
+UY         -5.97330647e-01 1.48249563e+01  -2.73796077e+01
+PRESSURE   1.40507852e+04  2.58148075e+04  3.58745753e+01 
+L2Error_UX 1.33174862e+05  5.23087056e+05  3.24869928e-04 
+L2Error_UY 1.21572919e+01  7.49642920e+02  2.37864129e-12 
+L2 Error UX 1.60941161e+03 
+L2 Error UY 6.02395647e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.48272027e+02  6.64618559e+02  -1.70581387e+02
+UY         -3.72036935e-02 4.73695068e+01  -9.57485534e+01
+PRESSURE   5.16999250e+04  9.32716362e+04  8.67566683e+01 
+L2Error_UX 1.03608230e+05  3.74984071e+05  2.77642637e-04 
+L2Error_UY 1.45152206e+02  9.16778548e+03  7.48592303e-10 
+  1: step = 1.000e+00 old f = 1.383e+03 new f = 5.425e+03
+L2 Error UX 1.77995507e+03 
+L2 Error UY 1.89894177e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         9.43290175e+01  2.48584378e+02  -2.68243444e+01
+UY         -5.41318141e-01 1.56324498e+01  -2.72128876e+01
+PRESSURE   1.78156864e+04  3.21861066e+04  4.09627674e+01 
+L2Error_UX 1.26729601e+05  5.04214423e+05  2.19277394e-04 
+L2Error_UY 1.44239194e+01  7.40541252e+02  6.54608877e-11 
+  2: step = 1.000e-01 old f = 1.383e+03 new f = 1.288e+03 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 1.288e+03 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 2.392e+04 < 0.01
+                 (Min Step Size:  1.000e-01 >= 1)
+  **...........Number of Iterations = 4 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 4 -- 
+||F|| = 1.288e+03  step = 1.000e-01  dx = 3.113e+06
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             1.38e+03
+       Residual Norm k =               1.29e+03
+       Calculated eta_k (pre-bounds) = 0.781
+       Forcing Term: 0.877
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.280669, max = 0.729384 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.367892, max = 0.804385 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135254 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349245 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.038846 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000613928 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.152998 (s)
+- for smoothers setup = 1.94442 (s)
+- for coarse setup    = 0.00380516 (s)
+- for final setup     = 0.000173092 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    1           residual = 7.268854e-01
+  
+  
+  		Solution time: 0.025966 (sec.)
+  		total iterations: 1
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.77995486e+03 
+L2 Error UY 1.89894214e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         9.43290969e+01  2.48584572e+02  -2.68243574e+01
+UY         -5.41317542e-01 1.56324535e+01  -2.72128804e+01
+PRESSURE   1.78157043e+04  3.21861356e+04  4.09627860e+01 
+L2Error_UX 1.26729573e+05  5.04214334e+05  2.19330654e-04 
+L2Error_UY 1.44239251e+01  7.40540861e+02  6.60622307e-11 
+L2 Error UX 1.60514428e+03 
+L2 Error UY 4.05203949e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.07948890e+02  5.26536233e+02  -1.07163116e+02
+UY         3.15931571e-01  2.22718800e+01  -6.20744999e+01
+PRESSURE   4.34127003e+04  7.76481147e+04  6.75731106e+01 
+L2Error_UX 1.03059527e+05  4.07977262e+05  1.89754702e-03 
+L2Error_UY 6.56760961e+01  3.85324354e+03  7.98231621e-11 
+  1: step = 1.000e+00 old f = 1.288e+03 new f = 2.302e+03
+L2 Error UX 1.73896045e+03 
+L2 Error UY 2.03798448e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.11418039e+02  2.90389786e+02  -3.03868345e+01
+UY         -4.12383314e-01 1.65923397e+01  -2.72757806e+01
+PRESSURE   2.16656108e+04  3.88098006e+04  4.49651018e+01 
+L2Error_UX 1.20959338e+05  4.86116498e+05  1.57734213e-03 
+L2Error_UY 1.66135230e+01  7.43968207e+02  1.73736679e-12 
+  2: step = 1.504e-01 old f = 1.288e+03 new f = 1.202e+03 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 1.202e+03 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 7.041e+03 < 0.01
+                 (Min Step Size:  1.504e-01 >= 1)
+  **...........Number of Iterations = 5 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 5 -- 
+||F|| = 1.202e+03  step = 1.504e-01  dx = 2.116e+06
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             1.29e+03
+       Residual Norm k =               1.2e+03
+       Calculated eta_k (pre-bounds) = 0.783
+       Forcing Term: 0.867
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.278892, max = 0.728764 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.368939, max = 0.803596 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.134748 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349247 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0387619 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000609159 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153004 (s)
+- for smoothers setup = 2.33243 (s)
+- for coarse setup    = 0.00456715 (s)
+- for final setup     = 0.000176907 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    1           residual = 8.607482e-01
+  
+  
+  		Solution time: 0.025876 (sec.)
+  		total iterations: 1
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.73896023e+03 
+L2 Error UY 2.03798489e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.11418135e+02  2.90390022e+02  -3.03868563e+01
+UY         -4.12382268e-01 1.65923448e+01  -2.72757738e+01
+PRESSURE   2.16656325e+04  3.88098362e+04  4.49651187e+01 
+L2Error_UX 1.20959307e+05  4.86116387e+05  1.57734300e-03 
+L2Error_UY 1.66135296e+01  7.43967836e+02  1.74148268e-12 
+L2 Error UX 1.62394272e+03 
+L2 Error UY 2.87869295e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.77105723e+02  4.52309106e+02  -6.56967953e+01
+UY         3.03769290e-01  2.01343566e+01  -4.02542420e+01
+PRESSURE   3.65162404e+04  6.49711959e+04  5.65846200e+01 
+L2Error_UX 1.05487598e+05  4.25496141e+05  1.89009437e-06 
+L2Error_UY 3.31474923e+01  1.62040400e+03  2.83139497e-10 
+  1: step = 1.000e+00 old f = 1.202e+03 new f = 1.276e+03
+L2 Error UX 1.68333889e+03 
+L2 Error UY 2.25653423e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.37767068e+02  3.55339813e+02  -3.92253500e+01
+UY         -1.25115985e-01 1.80131342e+01  -2.89946236e+01
+PRESSURE   2.76225824e+04  4.91235085e+04  4.96259910e+01 
+L2Error_UX 1.13345193e+05  4.57944623e+05  6.85783256e-05 
+L2Error_UY 2.03677869e+01  8.40688197e+02  4.25570740e-11 
+  2: step = 4.011e-01 old f = 1.202e+03 new f = 1.109e+03 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 1.109e+03 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 5.701e+03 < 0.01
+                 (Min Step Size:  4.011e-01 >= 1)
+  **...........Number of Iterations = 6 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 6 -- 
+||F|| = 1.109e+03  step = 4.011e-01  dx = 1.229e+06
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             1.2e+03
+       Residual Norm k =               1.11e+03
+       Calculated eta_k (pre-bounds) = 0.765
+       Forcing Term: 0.807
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.276108, max = 0.727751 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.371933, max = 0.802255 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.136138 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349983 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0385442 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000616074 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.15301 (s)
+- for smoothers setup = 2.72096 (s)
+- for coarse setup    = 0.00532126 (s)
+- for final setup     = 0.00018096 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    2           residual = 3.521947e-01
+  
+  
+  		Solution time: 0.038073 (sec.)
+  		total iterations: 2
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.68333774e+03 
+L2 Error UY 2.25653163e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.37767431e+02  3.55341257e+02  -3.92254931e+01
+UY         -1.25127580e-01 1.80131612e+01  -2.89945620e+01
+PRESSURE   2.76225791e+04  4.91234676e+04  4.96260917e+01 
+L2Error_UX 1.13345038e+05  4.57943201e+05  4.82215950e-05 
+L2Error_UY 2.03677400e+01  8.40684623e+02  4.26127094e-11 
+L2 Error UX 1.49785172e+03 
+L2 Error UY 4.88183839e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.34256485e+02  7.55948097e+02  -1.56373855e+02
+UY         -3.20715076e+00 2.53256352e+01  -6.71563649e+01
+PRESSURE   2.67591230e+04  5.01001045e+04  4.60404311e+01 
+L2Error_UX 8.97423911e+04  2.96157701e+05  4.09250455e-04 
+L2Error_UY 9.53293841e+01  4.50997735e+03  4.06647544e-10 
+  1: step = 1.000e+00 old f = 1.109e+03 new f = 5.085e+03
+L2 Error UX 1.65372756e+03 
+L2 Error UY 2.23586360e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.47416009e+02  3.93740696e+02  -4.37825865e+01
+UY         -4.33319463e-01 1.87295974e+01  -2.79463510e+01
+PRESSURE   2.75362364e+04  4.86621331e+04  5.23025342e+01 
+L2Error_UX 1.09392594e+05  4.24776653e+05  1.82467930e-03 
+L2Error_UY 1.99963441e+01  7.80998533e+02  8.50975015e-12 
+  2: step = 1.000e-01 old f = 1.109e+03 new f = 1.018e+03 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 1.018e+03 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 3.629e+03 < 0.01
+                 (Min Step Size:  1.000e-01 >= 1)
+  **...........Number of Iterations = 7 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 7 -- 
+||F|| = 1.018e+03  step = 1.000e-01  dx = 6.075e+05
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             1.11e+03
+       Residual Norm k =               1.02e+03
+       Calculated eta_k (pre-bounds) = 0.759
+       Forcing Term: 0.866
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.276353, max = 0.727606 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.366886, max = 0.799175 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.134683 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.350263 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0384579 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.00061512 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153016 (s)
+- for smoothers setup = 3.10968 (s)
+- for coarse setup    = 0.00607514 (s)
+- for final setup     = 0.000185013 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    2           residual = 4.217930e-01
+  
+  
+  		Solution time: 0.038154 (sec.)
+  		total iterations: 2
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.65372681e+03 
+L2 Error UY 2.23586362e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.47416270e+02  3.93741733e+02  -4.37827069e+01
+UY         -4.33328107e-01 1.87296152e+01  -2.79463302e+01
+PRESSURE   2.75362281e+04  4.86620986e+04  5.23026125e+01 
+L2Error_UX 1.09392494e+05  4.24775870e+05  1.82468028e-03 
+L2Error_UY 1.99963445e+01  7.80997374e+02  8.38842657e-12 
+L2 Error UX 1.50515218e+03 
+L2 Error UY 4.36054293e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.31490831e+02  7.27744599e+02  -1.28303107e+02
+UY         -3.21816646e+00 2.45802007e+01  -5.78936891e+01
+PRESSURE   2.48479522e+04  4.57449018e+04  5.13749818e+01 
+L2Error_UX 9.06193232e+04  3.00479113e+05  1.58840450e-05 
+L2Error_UY 7.60573386e+01  3.35167923e+03  1.11026462e-11 
+  1: step = 1.000e+00 old f = 1.018e+03 new f = 3.117e+03
+L2 Error UX 1.63019083e+03 
+L2 Error UY 2.26761331e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.55823491e+02  4.27141086e+02  -4.79134434e+01
+UY         -7.11804162e-01 1.93015647e+01  -2.75412334e+01
+PRESSURE   2.72674080e+04  4.77260291e+04  5.48250319e+01 
+L2Error_UX 1.06300885e+05  4.03207126e+05  1.71188681e-05 
+L2Error_UY 2.05682805e+01  7.58519535e+02  1.91095719e-11 
+  2: step = 1.000e-01 old f = 1.018e+03 new f = 9.393e+02 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 9.393e+02 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 5.975e+03 < 0.01
+                 (Min Step Size:  1.000e-01 >= 1)
+  **...........Number of Iterations = 8 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 8 -- 
+||F|| = 9.393e+02  step = 1.000e-01  dx = 7.317e+05
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             1.02e+03
+       Residual Norm k =               939
+       Calculated eta_k (pre-bounds) = 0.767
+       Forcing Term: 0.876
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.276338, max = 0.727466 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.366246, max = 0.800617 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135131 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349246 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0385661 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000612974 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153022 (s)
+- for smoothers setup = 3.49749 (s)
+- for coarse setup    = 0.00682616 (s)
+- for final setup     = 0.00019002 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    2           residual = 4.908467e-01
+  
+  
+  		Solution time: 0.038242 (sec.)
+  		total iterations: 2
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.63019030e+03 
+L2 Error UY 2.26761468e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.55823697e+02  4.27141898e+02  -4.79135467e+01
+UY         -7.11811057e-01 1.93015776e+01  -2.75412281e+01
+PRESSURE   2.72673979e+04  4.77259939e+04  5.48250965e+01 
+L2Error_UX 1.06300817e+05  4.03206690e+05  1.96857871e-05 
+L2Error_UY 2.05683054e+01  7.58519247e+02  1.90449779e-11 
+L2 Error UX 1.51649245e+03 
+L2 Error UY 4.10674111e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.28726181e+02  7.14764672e+02  -1.12110880e+02
+UY         -3.15383216e+00 2.39925261e+01  -5.22402025e+01
+PRESSURE   2.36915989e+04  4.36600668e+04  5.54750160e+01 
+L2Error_UX 9.19899741e+04  3.14995866e+05  2.37619812e-03 
+L2Error_UY 6.74612901e+01  2.72903876e+03  1.00845868e-10 
+  1: step = 1.000e+00 old f = 9.393e+02 new f = 1.997e+03
+L2 Error UX 1.60352696e+03 
+L2 Error UY 2.38545578e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.66809938e+02  4.70486006e+02  -5.37058521e+01
+UY         -1.07981817e+00 1.99910387e+01  -2.79726295e+01
+PRESSURE   2.67285330e+04  4.61760252e+04  5.62227900e+01 
+L2Error_UX 1.02851949e+05  3.86200857e+05  9.44141662e-04 
+L2Error_UY 2.27615971e+01  7.82467999e+02  5.77392585e-13 
+  2: step = 1.507e-01 old f = 9.393e+02 new f = 8.419e+02 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 8.419e+02 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 3.013e+04 < 0.01
+                 (Min Step Size:  1.507e-01 >= 1)
+  **...........Number of Iterations = 9 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 9 -- 
+||F|| = 8.419e+02  step = 1.507e-01  dx = 7.936e+05
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             939
+       Residual Norm k =               842
+       Calculated eta_k (pre-bounds) = 0.723
+       Forcing Term: 0.867
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.275518, max = 0.72726 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.36936, max = 0.80236 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135966 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349678 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.038389 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000620127 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153028 (s)
+- for smoothers setup = 3.88556 (s)
+- for coarse setup    = 0.00758719 (s)
+- for final setup     = 0.000195026 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    2           residual = 5.956482e-01
+  
+  
+  		Solution time: 0.038039 (sec.)
+  		total iterations: 2
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.60352663e+03 
+L2 Error UY 2.38545797e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.66810098e+02  4.70486629e+02  -5.37059363e+01
+UY         -1.07982345e+00 1.99910477e+01  -2.79726389e+01
+PRESSURE   2.67285220e+04  4.61759942e+04  5.62228074e+01 
+L2Error_UX 1.02851906e+05  3.86200683e+05  9.58365541e-04 
+L2Error_UY 2.27616390e+01  7.82468527e+02  7.00677807e-13 
+L2 Error UX 1.53222857e+03 
+L2 Error UY 3.88877684e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.24332437e+02  6.94224450e+02  -9.85809618e+01
+UY         -2.97905990e+00 2.33131666e+01  -4.68661891e+01
+PRESSURE   2.27704564e+04  4.20569870e+04  -7.76130651e+02
+L2Error_UX 9.39089754e+04  3.44294419e+05  1.95181611e-04 
+L2Error_UY 6.04903414e+01  2.19643968e+03  1.11606321e-11 
+  1: step = 1.000e+00 old f = 8.419e+02 new f = 1.157e+03
+L2 Error UX 1.57237587e+03 
+L2 Error UY 2.70235057e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.83850873e+02  5.36768108e+02  -6.34794342e+01
+UY         -1.64246503e+00 2.09481858e+01  -3.05620571e+01
+PRESSURE   2.55559601e+04  4.39033040e+04  5.80733628e+01 
+L2Error_UX 9.88946349e+04  3.72887227e+05  1.09252338e-05 
+L2Error_UY 2.92107945e+01  9.34039336e+02  1.69865228e-10 
+  2: step = 2.962e-01 old f = 8.419e+02 new f = 7.131e+02 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 7.131e+02 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 8.909e+03 < 0.01
+                 (Min Step Size:  2.962e-01 >= 1)
+  **...........Number of Iterations = 10 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 10 -- 
+||F|| = 7.131e+02  step = 2.962e-01  dx = 7.849e+05
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             842
+       Residual Norm k =               713
+       Calculated eta_k (pre-bounds) = 0.646
+       Forcing Term: 0.83
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.273094, max = 0.726924 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.365172, max = 0.831041 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135071 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.353571 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.039382 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000620127 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153034 (s)
+- for smoothers setup = 4.27851 (s)
+- for coarse setup    = 0.00834513 (s)
+- for final setup     = 0.000200033 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    2           residual = 7.925111e-01
+  
+  
+  		Solution time: 0.038184 (sec.)
+  		total iterations: 2
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.57237573e+03 
+L2 Error UY 2.70235319e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         1.83850994e+02  5.36768561e+02  -6.34794974e+01
+UY         -1.64246856e+00 2.09481914e+01  -3.05620774e+01
+PRESSURE   2.55559494e+04  4.39032866e+04  5.80733793e+01 
+L2Error_UX 9.88946176e+04  3.72887256e+05  1.07669057e-05 
+L2Error_UY 2.92108511e+01  9.34040576e+02  1.67836067e-10 
+L2 Error UX 1.55128146e+03 
+L2 Error UY 3.63154249e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.16959872e+02  6.60574633e+02  -8.58432180e+01
+UY         -2.60741494e+00 2.25265194e+01  -4.06685452e+01
+PRESSURE   2.26235840e+04  4.13233824e+04  -2.92235737e+02
+L2Error_UX 9.62589662e+04  3.81068752e+05  7.32374803e-04 
+L2Error_UY 5.27524033e+01  1.65393057e+03  9.51057183e-12 
+  1: step = 1.000e+00 old f = 7.131e+02 new f = 6.651e+02 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 6.651e+02 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 1.744e+04 < 0.01
+                 (Min Step Size:  1.000e+00 >= 1)
+  **...........Number of Iterations = 11 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 11 -- 
+||F|| = 6.651e+02  step = 1.000e+00  dx = 5.686e+05
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             713
+       Residual Norm k =               665
+       Calculated eta_k (pre-bounds) = 0.783
+       Forcing Term: 0.783
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.267592, max = 0.726249 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.3658, max = 0.83431 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.13549 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.348989 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.038883 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000611782 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153041 (s)
+- for smoothers setup = 4.66638 (s)
+- for coarse setup    = 0.00909925 (s)
+- for final setup     = 0.00020504 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    4           residual = 6.802240e-01
+  
+  
+  		Solution time: 0.063806 (sec.)
+  		total iterations: 4
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.55128144e+03 
+L2 Error UY 3.63153970e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.16960040e+02  6.60575035e+02  -8.58431989e+01
+UY         -2.60741221e+00 2.25265250e+01  -4.06684565e+01
+PRESSURE   2.26235860e+04  4.13233865e+04  -2.92272304e+02
+L2Error_UX 9.62589638e+04  3.81068563e+05  7.17608345e-04 
+L2Error_UY 5.27523224e+01  1.65392335e+03  9.46681005e-12 
+L2 Error UX 1.55786229e+03 
+L2 Error UY 3.58179218e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.39191224e+02  7.14010198e+02  -8.34466849e+01
+UY         -2.24453117e+00 2.32724080e+01  -3.50953693e+01
+PRESSURE   2.28817267e+04  4.29866823e+04  -5.15029142e+03
+L2Error_UX 9.70773969e+04  3.72012259e+05  1.70763996e-03 
+L2Error_UY 5.13169408e+01  1.23168495e+03  5.71144585e-11 
+  1: step = 1.000e+00 old f = 6.651e+02 new f = 5.519e+02 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 5.519e+02 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 8.829e+03 < 0.01
+                 (Min Step Size:  1.000e+00 >= 1)
+  **...........Number of Iterations = 12 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 12 -- 
+||F|| = 5.519e+02  step = 1.000e+00  dx = 2.527e+05
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             665
+       Residual Norm k =               552
+       Calculated eta_k (pre-bounds) = 0.62
+       Forcing Term: 0.62
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.264637, max = 0.727815 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.36672, max = 0.833333 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.13497 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349896 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0387011 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.00061202 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153047 (s)
+- for smoothers setup = 5.05498 (s)
+- for coarse setup    = 0.00985122 (s)
+- for final setup     = 0.000209093 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    5           residual = 5.408249e-01
+  
+  
+  		Solution time: 0.076308 (sec.)
+  		total iterations: 5
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.55786239e+03 
+L2 Error UY 3.58179516e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.39191272e+02  7.14010363e+02  -8.34466884e+01
+UY         -2.24453272e+00 2.32724098e+01  -3.50953997e+01
+PRESSURE   2.28817103e+04  4.29866631e+04  -5.15034684e+03
+L2Error_UX 9.70774087e+04  3.72012380e+05  1.70763922e-03 
+L2Error_UY 5.13170263e+01  1.23168708e+03  5.70527924e-11 
+L2 Error UX 1.59352390e+03 
+L2 Error UY 4.63467236e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.54904882e+02  7.68497826e+02  -8.56624661e+01
+UY         -2.75558099e+00 2.38524358e+01  -4.73184715e+01
+PRESSURE   1.74627061e+04  3.78042966e+04  -2.34593439e+04
+L2Error_UX 1.01572737e+05  4.13028192e+05  5.35314877e-04 
+L2Error_UY 8.59207517e+01  2.23903774e+03  3.43516657e-11 
+  1: step = 1.000e+00 old f = 5.519e+02 new f = 3.007e+02 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 3.007e+02 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 7.300e+04 < 0.01
+                 (Min Step Size:  1.000e+00 >= 1)
+  **...........Number of Iterations = 13 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 13 -- 
+||F|| = 3.007e+02  step = 1.000e+00  dx = 6.524e+05
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             552
+       Residual Norm k =               301
+       Calculated eta_k (pre-bounds) = 0.267
+       Forcing Term: 0.346
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.253769, max = 0.72826 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.361367, max = 0.830383 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135019 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349607 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.038861 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000620127 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153053 (s)
+- for smoothers setup = 5.44345 (s)
+- for coarse setup    = 0.0106132 (s)
+- for final setup     = 0.0002141 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    8           residual = 2.164209e-01
+  
+  
+  		Solution time: 0.113711 (sec.)
+  		total iterations: 8
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.59352434e+03 
+L2 Error UY 4.63468703e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.54904980e+02  7.68498067e+02  -8.56624980e+01
+UY         -2.75557905e+00 2.38524382e+01  -4.73187524e+01
+PRESSURE   1.74627122e+04  3.78043136e+04  -2.34593900e+04
+L2Error_UX 1.01572793e+05  4.13028860e+05  5.14536910e-04 
+L2Error_UY 8.59212955e+01  2.23906433e+03  3.34245570e-11 
+L2 Error UX 1.63281786e+03 
+L2 Error UY 6.09645433e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.62712037e+02  7.87502802e+02  -8.98626879e+01
+UY         -2.60299553e+00 2.40400454e+01  -7.01447289e+01
+PRESSURE   1.79398277e+04  3.91463550e+04  -2.70959344e+04
+L2Error_UX 1.06643766e+05  5.02642890e+05  1.30599456e-05 
+L2Error_UY 1.48667021e+02  4.92028300e+03  3.98189589e-10 
+  1: step = 1.000e+00 old f = 3.007e+02 new f = 6.884e+02
+L2 Error UX 1.59902406e+03 
+L2 Error UY 4.82325880e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.56115518e+02  7.71444882e+02  -8.60531815e+01
+UY         -2.73191992e+00 2.38815280e+01  -5.07857892e+01
+PRESSURE   1.75366922e+04  3.80124064e+04  -2.40232613e+04
+L2Error_UX 1.02275117e+05  4.22218306e+05  1.45760874e-03 
+L2Error_UY 9.30553019e+01  2.57919639e+03  1.22449372e-09 
+  2: step = 1.551e-01 old f = 3.007e+02 new f = 2.551e+02 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 2.551e+02 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 2.073e+03 < 0.01
+                 (Min Step Size:  1.551e-01 >= 1)
+  **...........Number of Iterations = 14 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 14 -- 
+||F|| = 2.551e+02  step = 1.551e-01  dx = 1.419e+05
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             301
+       Residual Norm k =               255
+       Calculated eta_k (pre-bounds) = 0.648
+       Forcing Term: 0.727
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.249834, max = 0.728307 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.361706, max = 0.826809 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135161 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349745 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.038744 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000608206 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153059 (s)
+- for smoothers setup = 5.83193 (s)
+- for coarse setup    = 0.0113614 (s)
+- for final setup     = 0.000219107 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    6           residual = 7.181442e-01
+  
+  
+  		Solution time: 0.088105 (sec.)
+  		total iterations: 6
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.59902454e+03 
+L2 Error UY 4.82327264e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.56115665e+02  7.71445178e+02  -8.60531815e+01
+UY         -2.73191539e+00 2.38815311e+01  -5.07860442e+01
+PRESSURE   1.75367064e+04  3.80124370e+04  -2.40232842e+04
+L2Error_UX 1.02275179e+05  4.22218926e+05  1.45760694e-03 
+L2Error_UY 9.30558357e+01  2.57922229e+03  1.23553035e-09 
+L2 Error UX 1.61565594e+03 
+L2 Error UY 5.32862613e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.60958395e+02  7.81224417e+02  -8.66276710e+01
+UY         -2.58182363e+00 2.39858736e+01  -5.93070475e+01
+PRESSURE   1.80064696e+04  3.90270067e+04  -2.47839314e+04
+L2Error_UX 1.04413765e+05  4.47992814e+05  1.39839172e-03 
+L2Error_UY 1.13577026e+02  3.51732589e+03  3.57818319e-12 
+  1: step = 1.000e+00 old f = 2.551e+02 new f = 1.970e+02 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 1.970e+02 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 2.736e+04 < 0.01
+                 (Min Step Size:  1.000e+00 >= 1)
+  **...........Number of Iterations = 15 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 15 -- 
+||F|| = 1.970e+02  step = 1.000e+00  dx = 6.000e+04
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             255
+       Residual Norm k =               197
+       Calculated eta_k (pre-bounds) = 0.537
+       Forcing Term: 0.537
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.245058, max = 0.72842 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.364033, max = 0.81672 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135378 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.348488 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0386739 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000614882 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153065 (s)
+- for smoothers setup = 6.2191 (s)
+- for coarse setup    = 0.0121195 (s)
+- for final setup     = 0.00022316 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    6           residual = 5.121845e-01
+  
+  
+  		Solution time: 0.088656 (sec.)
+  		total iterations: 6
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.61565639e+03 
+L2 Error UY 5.32864042e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.60958466e+02  7.81224629e+02  -8.66277298e+01
+UY         -2.58182377e+00 2.39858755e+01  -5.93072934e+01
+PRESSURE   1.80064604e+04  3.90270041e+04  -2.47839928e+04
+L2Error_UX 1.04413823e+05  4.47993549e+05  1.39839144e-03 
+L2Error_UY 1.13577635e+02  3.51735505e+03  1.49833959e-12 
+L2 Error UX 1.64348130e+03 
+L2 Error UY 6.26549679e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.65120580e+02  7.93545672e+02  -9.08633757e+01
+UY         -2.58982539e+00 2.40997047e+01  -7.45832482e+01
+PRESSURE   1.74726925e+04  3.89033484e+04  -2.83681190e+04
+L2Error_UX 1.08041232e+05  4.98610730e+05  2.64440771e-04 
+L2Error_UY 1.57025800e+02  5.56266091e+03  5.78173532e-11 
+  1: step = 1.000e+00 old f = 1.970e+02 new f = 3.018e+02
+L2 Error UX 1.62258783e+03 
+L2 Error UY 5.55441150e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.62046351e+02  7.84445077e+02  -8.75784787e+01
+UY         -2.58391522e+00 2.40156279e+01  -6.31617168e+01
+PRESSURE   1.78669453e+04  3.89887964e+04  -2.57208041e+04
+L2Error_UX 1.05311650e+05  4.59566124e+05  3.24474331e-04 
+L2Error_UY 1.23405948e+02  3.98940247e+03  5.94699480e-11 
+  2: step = 2.614e-01 old f = 1.970e+02 new f = 1.663e+02 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 1.663e+02 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 2.158e+03 < 0.01
+                 (Min Step Size:  2.614e-01 >= 1)
+  **...........Number of Iterations = 16 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 16 -- 
+||F|| = 1.663e+02  step = 2.614e-01  dx = 1.088e+05
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             197
+       Residual Norm k =               166
+       Calculated eta_k (pre-bounds) = 0.641
+       Forcing Term: 0.695
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.240973, max = 0.728451 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.361193, max = 0.81115 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.134609 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.350186 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.038656 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000611067 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153072 (s)
+- for smoothers setup = 6.60794 (s)
+- for coarse setup    = 0.0128727 (s)
+- for final setup     = 0.000227213 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    5           residual = 4.989257e-01
+  
+  
+  		Solution time: 0.076113 (sec.)
+  		total iterations: 5
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.62258822e+03 
+L2 Error UY 5.55442389e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.62046400e+02  7.84445248e+02  -8.75785335e+01
+UY         -2.58391609e+00 2.40156294e+01  -6.31619268e+01
+PRESSURE   1.78669327e+04  3.89887869e+04  -2.57208630e+04
+L2Error_UX 1.05311701e+05  4.59566759e+05  3.21393251e-04 
+L2Error_UY 1.23406499e+02  3.98942899e+03  3.27634145e-11 
+L2 Error UX 1.64359860e+03 
+L2 Error UY 6.24560144e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.64610005e+02  7.93233782e+02  -9.09572798e+01
+UY         -2.62869066e+00 2.40915673e+01  -7.45534439e+01
+PRESSURE   1.72186213e+04  3.85284653e+04  -2.87489440e+04
+L2Error_UX 1.08056654e+05  4.95470828e+05  5.62162804e-06 
+L2Error_UY 1.56030149e+02  5.55821600e+03  2.63437106e-10 
+  1: step = 1.000e+00 old f = 1.663e+02 new f = 1.792e+02
+L2 Error UX 1.63183283e+03 
+L2 Error UY 5.85379781e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.63203808e+02  7.88413067e+02  -8.88921227e+01
+UY         -2.60413077e+00 2.40499136e+01  -6.81709340e+01
+PRESSURE   1.75742352e+04  3.87733385e+04  -2.70879713e+04
+L2Error_UX 1.06515136e+05  4.74820633e+05  1.00256511e-05 
+L2Error_UY 1.37067795e+02  4.64727625e+03  4.90608216e-11 
+  2: step = 4.515e-01 old f = 1.663e+02 new f = 1.260e+02 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 1.260e+02 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 9.659e+03 < 0.01
+                 (Min Step Size:  4.515e-01 >= 1)
+  **...........Number of Iterations = 17 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 17 -- 
+||F|| = 1.260e+02  step = 4.515e-01  dx = 9.614e+04
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             166
+       Residual Norm k =               126
+       Calculated eta_k (pre-bounds) = 0.516
+       Forcing Term: 0.669
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.236909, max = 0.728496 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.358046, max = 0.803451 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.134946 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.350248 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.039335 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000607014 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153078 (s)
+- for smoothers setup = 6.99752 (s)
+- for coarse setup    = 0.0136306 (s)
+- for final setup     = 0.000231266 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    4           residual = 5.960284e-01
+  
+  
+  		Solution time: 0.063122 (sec.)
+  		total iterations: 4
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.63183307e+03 
+L2 Error UY 5.85380781e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.63203823e+02  7.88413174e+02  -8.88921647e+01
+UY         -2.60413331e+00 2.40499145e+01  -6.81711028e+01
+PRESSURE   1.75742190e+04  3.87733215e+04  -2.70880261e+04
+L2Error_UX 1.06515167e+05  4.74821102e+05  9.56588778e-06 
+L2Error_UY 1.37068264e+02  4.64729926e+03  4.91294405e-11 
+L2 Error UX 1.64005341e+03 
+L2 Error UY 6.21044956e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.63714214e+02  7.91989810e+02  -9.06655330e+01
+UY         -2.68957511e+00 2.40811190e+01  -7.42867009e+01
+PRESSURE   1.70310423e+04  3.82088182e+04  -2.89298241e+04
+L2Error_UX 1.07591007e+05  4.91473090e+05  1.07477021e-03 
+L2Error_UY 1.54278735e+02  5.51851393e+03  3.75478602e-11 
+  1: step = 1.000e+00 old f = 1.260e+02 new f = 9.488e+01 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 9.488e+01 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 1.950e+04 < 0.01
+                 (Min Step Size:  1.000e+00 >= 1)
+  **...........Number of Iterations = 18 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 18 -- 
+||F|| = 9.488e+01  step = 1.000e+00  dx = 6.288e+04
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             126
+       Residual Norm k =               94.9
+       Calculated eta_k (pre-bounds) = 0.511
+       Forcing Term: 0.511
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.235656, max = 0.739899 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.355314, max = 0.7897 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135335 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349742 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0385489 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.00061512 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153084 (s)
+- for smoothers setup = 7.38581 (s)
+- for coarse setup    = 0.0143845 (s)
+- for final setup     = 0.000236273 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    3           residual = 3.724949e-01
+  
+  
+  		Solution time: 0.050778 (sec.)
+  		total iterations: 3
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.64005362e+03 
+L2 Error UY 6.21045378e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.63714244e+02  7.91989842e+02  -9.06656391e+01
+UY         -2.68957194e+00 2.40811193e+01  -7.42867953e+01
+PRESSURE   1.70310610e+04  3.82088453e+04  -2.89298038e+04
+L2Error_UX 1.07591035e+05  4.91473162e+05  1.07487848e-03 
+L2Error_UY 1.54278945e+02  5.51852795e+03  2.05045742e-11 
+L2 Error UX 1.64344364e+03 
+L2 Error UY 6.28355983e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.64188934e+02  7.92499238e+02  -9.23491830e+01
+UY         -2.63920937e+00 2.40864298e+01  -7.59122772e+01
+PRESSURE   1.73288781e+04  3.86409174e+04  -2.86085020e+04
+L2Error_UX 1.08036280e+05  4.92813155e+05  4.38486480e-04 
+L2Error_UY 1.57932496e+02  5.76267383e+03  1.26213128e-11 
+  1: step = 1.000e+00 old f = 9.488e+01 new f = 3.659e+01 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 3.659e+01 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 3.965e+04 < 0.01
+                 (Min Step Size:  1.000e+00 >= 1)
+  **...........Number of Iterations = 19 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 19 -- 
+||F|| = 3.659e+01  step = 1.000e+00  dx = 2.951e+04
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             94.9
+       Residual Norm k =               36.6
+       Calculated eta_k (pre-bounds) = 0.134
+       Forcing Term: 0.235
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.234626, max = 0.743055 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.354093, max = 0.78448 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135741 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349607 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0385611 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000608921 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.15309 (s)
+- for smoothers setup = 7.77398 (s)
+- for coarse setup    = 0.0151424 (s)
+- for final setup     = 0.00024128 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    4           residual = 1.029717e-01
+  
+  
+  		Solution time: 0.063216 (sec.)
+  		total iterations: 4
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.64344429e+03 
+L2 Error UY 6.28357298e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.64188911e+02  7.92499230e+02  -9.23493086e+01
+UY         -2.63921332e+00 2.40864298e+01  -7.59125071e+01
+PRESSURE   1.73288603e+04  3.86408990e+04  -2.86085520e+04
+L2Error_UX 1.08036366e+05  4.92813865e+05  4.38190403e-04 
+L2Error_UY 1.57933158e+02  5.76270874e+03  1.75841802e-11 
+L2 Error UX 1.64748791e+03 
+L2 Error UY 6.36566285e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.64046616e+02  7.92451874e+02  -9.31233973e+01
+UY         -2.66355678e+00 2.40865169e+01  -7.73293164e+01
+PRESSURE   1.72187481e+04  3.85278034e+04  -2.89167614e+04
+L2Error_UX 1.08568657e+05  4.97348824e+05  8.17265397e-05 
+L2Error_UY 1.62086654e+02  5.97982317e+03  6.28633187e-10 
+  1: step = 1.000e+00 old f = 3.659e+01 new f = 4.536e+00 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 4.536e+00 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 1.595e+04 < 0.01
+                 (Min Step Size:  1.000e+00 >= 1)
+  **...........Number of Iterations = 20 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 20 -- 
+||F|| = 4.536e+00  step = 1.000e+00  dx = 1.155e+04
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             36.6
+       Residual Norm k =               4.54
+       Calculated eta_k (pre-bounds) = 0.0138
+       Forcing Term: 0.0138
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.232465, max = 0.75279 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.353793, max = 0.785067 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135266 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.353463 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0385599 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000624895 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153095 (s)
+- for smoothers setup = 8.166 (s)
+- for coarse setup    = 0.0159082 (s)
+- for final setup     = 0.000245333 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:    8           residual = 5.638842e-03
+  
+  
+  		Solution time: 0.113769 (sec.)
+  		total iterations: 8
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.64748788e+03 
+L2 Error UY 6.36566140e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.64046589e+02  7.92451887e+02  -9.31233329e+01
+UY         -2.66355805e+00 2.40865167e+01  -7.73292822e+01
+PRESSURE   1.72187350e+04  3.85277770e+04  -2.89167848e+04
+L2Error_UX 1.08568652e+05  4.97348727e+05  8.10508039e-05 
+L2Error_UY 1.62086580e+02  5.97981788e+03  4.51523343e-10 
+L2 Error UX 1.64746701e+03 
+L2 Error UY 6.36482292e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.64030991e+02  7.92459708e+02  -9.30861293e+01
+UY         -2.66429056e+00 2.40863956e+01  -7.73094908e+01
+PRESSURE   1.72112148e+04  3.85125231e+04  -2.89302789e+04
+L2Error_UX 1.08565901e+05  4.97292905e+05  1.59970967e-04 
+L2Error_UY 1.62043883e+02  5.97675736e+03  1.27627777e-09 
+  1: step = 1.000e+00 old f = 4.536e+00 new f = 2.594e-02 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    **...........F-Norm = 2.594e-02 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 1.266e+02 < 0.01
+                 (Min Step Size:  1.000e+00 >= 1)
+  **...........Number of Iterations = 21 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 21 -- 
+||F|| = 2.594e-02  step = 1.000e+00  dx = 1.083e+03
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             4.54
+       Residual Norm k =               0.0259
+       Calculated eta_k (pre-bounds) = 2.94e-05
+       Forcing Term: 0.0001
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.232504, max = 0.752686 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.353794, max = 0.787756 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.134902 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.349217 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0384459 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.00061512 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153101 (s)
+- for smoothers setup = 8.55367 (s)
+- for coarse setup    = 0.0166652 (s)
+- for final setup     = 0.00025034 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:   10           residual = 1.044785e-03
+                  iter:   13           residual = 2.130580e-05
+  
+  
+  		Solution time: 0.179343 (sec.)
+  		total iterations: 13
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.64746626e+03 
+L2 Error UY 6.36482456e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.64031015e+02  7.92459713e+02  -9.30861762e+01
+UY         -2.66427899e+00 2.40863964e+01  -7.73095309e+01
+PRESSURE   1.72111928e+04  3.85124987e+04  -2.89303209e+04
+L2Error_UX 1.08565803e+05  4.97292966e+05  1.58279727e-04 
+L2Error_UY 1.62043966e+02  5.97676356e+03  1.27646697e-09 
+L2 Error UX 1.64746529e+03 
+L2 Error UY 6.36482667e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.64031046e+02  7.92459720e+02  -9.30862370e+01
+UY         -2.66426400e+00 2.40863973e+01  -7.73095829e+01
+PRESSURE   1.72111643e+04  3.85124672e+04  -2.89303752e+04
+L2Error_UX 1.08565675e+05  4.97293046e+05  1.56101877e-04 
+L2Error_UY 1.62044074e+02  5.97677160e+03  1.27671211e-09 
+  1: step = 1.000e+00 old f = 2.594e-02 new f = 5.662e-07 (STEP ACCEPTED!)
+************************************************************************
+************************************************************************
+-- Status Test Results --
+**...........OR Combination -> 
+  **...........AND Combination -> 
+    Converged....F-Norm = 5.662e-07 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    **...........WRMS-Norm = 1.736e+00 < 0.01
+                 (Min Step Size:  1.000e+00 >= 1)
+  **...........Number of Iterations = 22 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 22 -- 
+||F|| = 5.662e-07  step = 1.000e+00  dx = 4.291e+00
+************************************************************************
+
+       CALCULATING FORCING TERM
+       Method: Type 2
+       Forcing Term Norm: Using L-2 Norm.
+       Residual Norm k-1 =             0.0259
+       Residual Norm k =               5.66e-07
+       Calculated eta_k (pre-bounds) = 4.29e-10
+       Forcing Term: 0.0001
+------------------------------------------------------------------------------
+Re-computing the preconditioner...
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.232504, max = 0.752686 (0 zeros out of 1764)
+Dropping tolerance for DinvAP_0 = 0
+
+
+Prolongator Smoothing: Using energy minimization (scheme = 2)
+Damping parameter: min = 0.353794, max = 0.788548 (0 zeros out of 231)
+Dropping tolerance for DinvAP_0 = 0
+
+Time to re-build the hierarchy = 0.135074 (s)
+Number of actual levels : 3
+
+Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
+Smoother (level 0) : IFPACK, type=`ILU',
+Smoother (level 0) : both,overlap=5
+Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 0) : Setup time : 0.350469 (s)
+
+WARNING **********************************************************************
+You have requested to keep the finest level smoother from a previous
+solve.  In order to reuse part or all of the incomplete factorization
+from smoother "IFPACK", you must also specify the smoother options
+"reuse numeric factorization" and/or "reuse symbolic factorization".
+Not doing so  may result in memory leaks or crashes.
+
+Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz per row = 25.07
+Smoother (level 1) : IFPACK, type=`ILU',
+Smoother (level 1) : both,overlap=5
+Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
+Smoother (level 1) : Setup time : 0.0406692 (s)
+
+Amesos (level 2) : NumGlobalRows = 231
+Amesos (level 2) : NumGlobalNonzeros = 5589
+Amesos (level 2) : Fill-in = 10.4739 %
+Amesos (level 2) : Building KLU
+Amesos (level 2) : Time for factorization  = 0.000622988 (s)
+
+
+Cumulative timing for construction so far: 
+- for initial setup   = 0.00316596 (s)
+- for hierarchy setup = 0.153107 (s)
+- for smoothers setup = 8.9448 (s)
+- for coarse setup    = 0.0174294 (s)
+- for final setup     = 0.000255346 (s)
+------------------------------------------------------------------------------
+  
+  		*******************************************************
+  		***** Problem: Epetra::CrsMatrix
+  		***** Preconditioned GMRES solution
+  		***** ML (L=3, IFPACK_pre0/IFPACK_post0, ~/Amesos_KLU_2)
+  		***** No scaling
+  		*******************************************************
+  
+                  iter:    0           residual = 1.000000e+00
+                  iter:   10           residual = 1.018800e-03
+                  iter:   13           residual = 3.035876e-05
+  
+  
+  		Solution time: 0.178093 (sec.)
+  		total iterations: 13
+  
+
+************************************************************************
+-- Polynomial Line Search -- 
+       Merit Function = Sum Of Squares (default): 0.5 * ||F|| * ||F||
+L2 Error UX 1.64746509e+03 
+L2 Error UY 6.36483131e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.64031001e+02  7.92459719e+02  -9.30863066e+01
+UY         -2.66427029e+00 2.40863973e+01  -7.73096376e+01
+PRESSURE   1.72111748e+04  3.85124423e+04  -2.89303721e+04
+L2Error_UX 1.08565649e+05  4.97293108e+05  1.55469799e-04 
+L2Error_UY 1.62044310e+02  5.97678007e+03  1.17804247e-09 
+L2 Error UX 1.64746529e+03 
+L2 Error UY 6.36482667e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.64031046e+02  7.92459720e+02  -9.30862370e+01
+UY         -2.66426400e+00 2.40863973e+01  -7.73095829e+01
+PRESSURE   1.72111643e+04  3.85124672e+04  -2.89303752e+04
+L2Error_UX 1.08565675e+05  4.97293046e+05  1.56101851e-04 
+L2Error_UY 1.62044074e+02  5.97677160e+03  1.27670802e-09 
+  1: step = 1.000e+00 old f = 5.662e-07 new f = 5.326e-11 (STEP ACCEPTED!)
+************************************************************************
+
+************************************************************************
+-- Nonlinear Solver Step 23 -- 
+||F|| = 5.326e-11  step = 1.000e+00  dx = 7.606e-05 (Converged!)
+************************************************************************
+
+************************************************************************
+-- Final Status Test Results --
+Converged....OR Combination -> 
+  Converged....AND Combination -> 
+    Converged....F-Norm = 5.326e-11 < 1.000e-04
+                 (Unscaled Two-Norm, Absolute Tolerance)
+    Converged....WRMS-Norm = 3.377e-04 < 0.01
+                 (Min Step Size:  1.000e+00 >= 1)
+  **...........Number of Iterations = 23 < 400
+  **...........Finite Number Check (Two-Norm F) = Finite
+************************************************************************
+L2 Error UX 1.64746529e+03 
+L2 Error UY 6.36482667e+01 
+Field      Average         Maximum (@IP)   Minimum (@IP)  
+UX         2.64031046e+02  7.92459720e+02  -9.30862370e+01
+UY         -2.66426400e+00 2.40863973e+01  -7.73095829e+01
+PRESSURE   1.72111643e+04  3.85124672e+04  -2.89303752e+04
+L2Error_UX 1.08565675e+05  4.97293046e+05  1.56101851e-04 
+L2Error_UY 1.62044074e+02  5.97677160e+03  1.27670802e-09 
+------------------------------------------------------------------------------
+   ML time information (seconds)          total          avg
+
+   1- Construction                  =    12.0978    0.525992
+   2- Preconditioner apply          =    1.36818
+     a- first application(s) only   =   0.268874   0.0116902
+     b- remaining applications      =     1.0993  0.00923783
+
+   3- Total time required by ML so far is 13.466 seconds
+      (constr + all applications)
+------------------------------------------------------------------------------
+========================================================================================
+
+                          TimeMonitor results over 1 processor
+
+Timer Name                                                   Global time (num calls)    
+----------------------------------------------------------------------------------------
+Drekar: Total Time                                           21.22 (1)                  
+NOX Total Linear Solve                                       1.52 (23)                  
+NOX Total Preconditioner Construction                        12.13 (23)                 
+STK_Interface::setupTransientExodusFile(filename)            0.3204 (1)                 
+STK_Interface::writeToExodus(timestep)                       0.04757 (1)                
+Thyra::NOXNonlinearSolver::solve                             20.39 (1)                  
+panzer::ModelEvaluator::evalModel(J)                         4.897 (23)                 
+panzer::ModelEvaluator::evalModel(f)                         1.72 (60)                  
+panzer::SquareQuadMeshFactory::buildUncomittedMesh()         0.000123 (1)               
+panzer::SquareQuadMeshFactory::completeMeshConstruction()    0.1925 (1)                 
+========================================================================================
+Drekar run completed.
