@@ -1,21 +1,24 @@
 \chapter{Introduction}
 \label{ch:introduction}
 In nearly all high-fidelity nuclear reactor simulations, linear and
-nonlinear transport problems are a primary focus of study. Recent
-focus on multiple physics systems in the nuclear reactor modeling and
-simulation community adds a new level of complexity to common linear
-and nonlinear systems as solution strategies change when they are
-coupled to other problems
+nonlinear transport problems are a primary focus of study. Neutronics,
+fluid flow, and heat transfer are among the predominate physics that
+fall into this category and simulation technologies to solve these
+problems make up much of the analysis suite used for modern
+analysis. Recent focus on multiple physics systems in the nuclear
+reactor modeling and simulation community adds a new level of
+complexity to common linear and nonlinear systems as solution
+strategies change when they are coupled to other problems
 \citep{u.s._department_of_energy_casl_2011}. Furthermore, a desire for
 predictive simulations to enhance the safety and performance of
 nuclear systems creates a need for extremely high fidelity
-computations to be performed for these coupled transport systems as a
-means to capture effects not modeled by coarser methods.
+computations to be performed for these transport systems as a means to
+capture effects not modeled by coarser methods.
 
 In order to achieve this high fidelity, state-of-the-art computing
 \index{facilities} must be leveraged in a way that is both efficient
 and considerate of hardware-related issues. As scientific computing
-moves towards exascale facilities with machines of $O(1,000,000)$
+moves beyond petascale facilities with machines of $O(1,000,000)$
 cores already coming on-line, new algorithms to solve these complex
 problems must be developed to leverage this new hardware
 \citep{kogge_using_2011}. Issues such as resiliency to node failure,
@@ -26,17 +29,20 @@ massively parallel Monte Carlo method for linear problems and a novel
 Monte Carlo method to advance solution techniques for nonlinear
 problems.
 
+This goal of this work is to research and develop parallel solutions
+for discrete linear and nonlinear transport problems that improve
+performance and scalabilty using a novel set of Monte Carlo synthetic
+acceleration methods.
+
 We discuss in this chapter physics-based motivation for advancing
-Monte Carlo solvers and studying their application to transport
-systems by providing problems of interest in nuclear reactor
-analysis. Hardware-based motivations are also provided by considering
-the impact of forthcoming computing architectures. In addition,
-background on the current solver techniques for multiphysics problems
-and a brief comparison to the proposed methods is provided to further
-motivate this work. The organization of the document is then reviewed
-followed by an explanation of the key outcomes of this work and where
-in the document results and data supporting those outcomes can be
-located.
+Monte Carlo synthetic acceleration methods and studying their
+application to transport systems by providing problems of interest in
+nuclear reactor analysis. Hardware-based motivations are also provided
+by considering the impact of forthcoming computing architectures. In
+addition, background on the current solver techniques for these
+physics problems and a brief comparison to the proposed methods are
+provided to further motivate this work. The organization of the
+document is then reviewed.
 
 %%---------------------------------------------------------------------------%%
 \section{Physics-Based Motivation}
@@ -211,23 +217,23 @@ scalable than current $S_N$ transport practices.
 %%---------------------------------------------------------------------------%%
 \section{Hardware-Based Motivation}
 \label{sec:hardware_motivation}
-As leadership class machines move towards the exascale, new algorithms
+As leadership class machines move beyond the petascale, new algorithms
 must be developed that leverage their strengths and adapt to their
 shortcomings. Basic research is required now to advance methods in
 time for these new machines to become operational. Organized work is
 already moving forward in this area with the Department of Energy's
 Advanced Scientific Computing Research office specifically allocating
 funding for the next several years to research resilient solver
-technologies for exascale facilities
+technologies for extreme scale facilities
 \citep{u.s._department_of_energy_resilient_2012}. Based on the
 language in this call for proposals, we can identify key issues for
 which a set of robust, massively parallel Monte Carlo solvers could
 provide a solution. As machines begin to operate at hundreds of
 petaflops peak performance and beyond, trends toward reduced energy
 consumption will require incredibly high levels of concurrency to
-achieve the desired computation rates. Furthermore, this drop in
-power consumption will mean increased pressure on memory as memory per
-node is expected to stagnate while cores per node is expected to
+achieve the desired computation rates. Furthermore, this drop in power
+consumption will mean increased pressure on memory as memory per node
+is expected to stagnate while cores per node is expected to
 increase. As the number of cores increases, their clock speed is
 expected to stagnate or even decrease to further reduce power
 consumption and manufacturing costs.
@@ -245,7 +251,8 @@ while completely losing hardware during a hard failure is manifested
 as a high variance event where some portion of the Monte Carlo
 histories are lost. These stochastic methods are a paradigm shift from
 current deterministic solver techniques that will suffer greatly from
-the non-deterministic behavior expected from these exascale machines.
+the non-deterministic behavior expected from the next generation of
+machines.
 
 In addition to resiliency concerns, the memory restrictions on future
 hardware will hinder modern solvers that derive their robustness from
@@ -253,7 +260,7 @@ using large amounts of memory. Stochastic methods that are formulated
 to use less memory than conventional methods will serve to alleviate
 some of this pressure. In addition, new parallel strategies that may
 be implemented with stochastic methods could offer a new avenue for
-leveraging the expected levels of high concurrency in exascale
+leveraging the expected levels of high concurrency in extreme scale
 machines.
 
 %%---------------------------------------------------------------------------%%
@@ -329,6 +336,9 @@ iterations to converge the size of the Krylov subspace will grow
 beyond that of the Jacobian. Finally, using MCSA for the linear solve
 provides its benefits for preconditioning, potential resiliency, and
 parallelism.
+
+%%---------------------------------------------------------------------------%%
+\section{Outline}
 
 To present these new developments this document is arranged in the
 following manner. First, in Chapter~\ref{ch:stochastic_methods}, the

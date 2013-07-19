@@ -562,8 +562,8 @@ L2Error_UY 0.00000000e+00  2.22507386e-308 0.00000000e+00
      Printing -> 
       Output Precision = 3
       Output Processor = 0
-      Output Stream = Teuchos::RCP<std::ostream>{ptr=0x7c15b40,node=0x7bde5e0,strong_count=24,weak_count=0}
-      Error Stream = Teuchos::RCP<std::ostream>{ptr=0x7c15b40,node=0x7bde5e0,strong_count=24,weak_count=0}
+      Output Stream = Teuchos::RCP<std::ostream>{ptr=0x81a0b40,node=0x81695e0,strong_count=24,weak_count=0}
+      Error Stream = Teuchos::RCP<std::ostream>{ptr=0x81a0b40,node=0x81695e0,strong_count=24,weak_count=0}
       MyPID = 0   [default]
       Output Information -> 
        Error = 1
@@ -581,7 +581,7 @@ L2Error_UY 0.00000000e+00  2.22507386e-308 0.00000000e+00
        Debug = 0   [default]
      Solver Options -> 
       Status Test Check Type = Complete
-      User Defined Pre/Post Operator = Teuchos::RCP<NOX::Abstract::PrePostOperator>{ptr=0x9ea7d50,node=0xa074450,strong_count=2,weak_count=0}
+      User Defined Pre/Post Operator = Teuchos::RCP<NOX::Abstract::PrePostOperator>{ptr=0xa432ad0,node=0xa5ff1d0,strong_count=2,weak_count=0}
      Status Tests -> 
       Test Type = Combo
       Combo Type = OR
@@ -713,14 +713,14 @@ Damping parameter: min = 0.321502, max = 0.818125 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
 Smoothed Aggregation : operator complexity = 1.120823e+00.
-Time to build the hierarchy = 0.153001 (s)
+Time to build the hierarchy = 0.158966 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350414 (s)
+Smoother (level 0) : Setup time : 0.360624 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -733,13 +733,13 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0391049 (s)
+Smoother (level 1) : Setup time : 0.0389588 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000654936 (s)
+Amesos (level 2) : Time for factorization  = 0.000669003 (s)
 
 WARNING: Parameter "aggregation: damping factor" 0   [unused] is unused
 WARNING: Parameter "coarse: list"    [unused] is unused
@@ -756,11 +756,11 @@ WARNING: Parameter "smoother: list (level 0)"    [unused] is unused
 WARNING: Parameter "smoother: list (level 1)"    [unused] is unused
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153029 (s)
-- for smoothers setup = 0.389519 (s)
-- for coarse setup    = 0.000813007 (s)
-- for final setup     = 0.000154018 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159 (s)
+- for smoothers setup = 0.399583 (s)
+- for coarse setup    = 0.000833988 (s)
+- for final setup     = 0.000163078 (s)
 ------------------------------------------------------------------------------
  
  		*******************************************************
@@ -774,7 +774,7 @@ Cumulative timing for construction so far:
                  iter:    2           residual = 2.662470e-03
  
  
- 		Solution time: 0.040944 (sec.)
+ 		Solution time: 0.054266 (sec.)
  		total iterations: 2
  
 
@@ -844,14 +844,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.35556, max = 0.780053 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135008 (s)
+Time to re-build the hierarchy = 0.138627 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350674 (s)
+Smoother (level 0) : Setup time : 0.361545 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -864,21 +864,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0390189 (s)
+Smoother (level 1) : Setup time : 0.0395911 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000642776 (s)
+Amesos (level 2) : Time for factorization  = 0.000607967 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153035 (s)
-- for smoothers setup = 0.779212 (s)
-- for coarse setup    = 0.00159097 (s)
-- for final setup     = 0.000158072 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159006 (s)
+- for smoothers setup = 0.800719 (s)
+- for coarse setup    = 0.00158381 (s)
+- for final setup     = 0.000169039 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -892,7 +892,7 @@ Cumulative timing for construction so far:
                   iter:    1           residual = 1.933195e-01
   
   
-  		Solution time: 0.026775 (sec.)
+  		Solution time: 0.036858 (sec.)
   		total iterations: 1
   
 
@@ -962,14 +962,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.362379, max = 0.790751 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.134982 (s)
+Time to re-build the hierarchy = 0.138817 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.349092 (s)
+Smoother (level 0) : Setup time : 0.362426 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -982,21 +982,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0396481 (s)
+Smoother (level 1) : Setup time : 0.0396361 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000604868 (s)
+Amesos (level 2) : Time for factorization  = 0.000624895 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153041 (s)
-- for smoothers setup = 1.16795 (s)
-- for coarse setup    = 0.00233293 (s)
-- for final setup     = 0.000162125 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159013 (s)
+- for smoothers setup = 1.20278 (s)
+- for coarse setup    = 0.00236082 (s)
+- for final setup     = 0.000174999 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -1010,7 +1010,7 @@ Cumulative timing for construction so far:
                   iter:    1           residual = 4.814770e-01
   
   
-  		Solution time: 0.025911 (sec.)
+  		Solution time: 0.035349 (sec.)
   		total iterations: 1
   
 
@@ -1080,14 +1080,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.367596, max = 0.785197 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.13874 (s)
+Time to re-build the hierarchy = 0.138019 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.358539 (s)
+Smoother (level 0) : Setup time : 0.361869 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -1100,21 +1100,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038717 (s)
+Smoother (level 1) : Setup time : 0.0389931 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000624895 (s)
+Amesos (level 2) : Time for factorization  = 0.00062108 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153046 (s)
-- for smoothers setup = 1.56521 (s)
-- for coarse setup    = 0.00309706 (s)
-- for final setup     = 0.000167131 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159019 (s)
+- for smoothers setup = 1.60364 (s)
+- for coarse setup    = 0.00313282 (s)
+- for final setup     = 0.000179052 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -1128,7 +1128,7 @@ Cumulative timing for construction so far:
                   iter:    1           residual = 7.712028e-01
   
   
-  		Solution time: 0.026191 (sec.)
+  		Solution time: 0.043541 (sec.)
   		total iterations: 1
   
 
@@ -1198,14 +1198,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.367999, max = 0.784827 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135096 (s)
+Time to re-build the hierarchy = 0.138129 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350198 (s)
+Smoother (level 0) : Setup time : 0.360676 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -1218,21 +1218,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0383821 (s)
+Smoother (level 1) : Setup time : 0.038887 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000603199 (s)
+Amesos (level 2) : Time for factorization  = 0.000643969 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153053 (s)
-- for smoothers setup = 1.95379 (s)
-- for coarse setup    = 0.00383711 (s)
-- for final setup     = 0.000171185 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159025 (s)
+- for smoothers setup = 2.00321 (s)
+- for coarse setup    = 0.00391984 (s)
+- for final setup     = 0.000184059 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -1246,7 +1246,7 @@ Cumulative timing for construction so far:
                   iter:    1           residual = 8.633243e-01
   
   
-  		Solution time: 0.026163 (sec.)
+  		Solution time: 0.035413 (sec.)
   		total iterations: 1
   
 
@@ -1316,14 +1316,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.373908, max = 0.78403 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135477 (s)
+Time to re-build the hierarchy = 0.138701 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350678 (s)
+Smoother (level 0) : Setup time : 0.365528 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -1336,21 +1336,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.039156 (s)
+Smoother (level 1) : Setup time : 0.038866 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000610113 (s)
+Amesos (level 2) : Time for factorization  = 0.000613928 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153059 (s)
-- for smoothers setup = 2.34362 (s)
-- for coarse setup    = 0.00458193 (s)
-- for final setup     = 0.000175238 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159031 (s)
+- for smoothers setup = 2.4076 (s)
+- for coarse setup    = 0.00468588 (s)
+- for final setup     = 0.000189066 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -1364,7 +1364,7 @@ Cumulative timing for construction so far:
                   iter:    2           residual = 3.776251e-01
   
   
-  		Solution time: 0.038117 (sec.)
+  		Solution time: 0.052544 (sec.)
   		total iterations: 2
   
 
@@ -1434,14 +1434,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.366624, max = 0.78242 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.13567 (s)
+Time to re-build the hierarchy = 0.138186 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.353891 (s)
+Smoother (level 0) : Setup time : 0.360693 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -1454,21 +1454,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038362 (s)
+Smoother (level 1) : Setup time : 0.038856 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000607967 (s)
+Amesos (level 2) : Time for factorization  = 0.000622034 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153064 (s)
-- for smoothers setup = 2.73587 (s)
-- for coarse setup    = 0.00532675 (s)
-- for final setup     = 0.000180244 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159037 (s)
+- for smoothers setup = 2.80715 (s)
+- for coarse setup    = 0.00545979 (s)
+- for final setup     = 0.000194073 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -1482,7 +1482,7 @@ Cumulative timing for construction so far:
                   iter:    2           residual = 4.984938e-01
   
   
-  		Solution time: 0.038333 (sec.)
+  		Solution time: 0.052189 (sec.)
   		total iterations: 2
   
 
@@ -1552,14 +1552,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.36801, max = 0.799931 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135916 (s)
+Time to re-build the hierarchy = 0.138713 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.349301 (s)
+Smoother (level 0) : Setup time : 0.361195 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -1572,21 +1572,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038574 (s)
+Smoother (level 1) : Setup time : 0.0392928 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000614882 (s)
+Amesos (level 2) : Time for factorization  = 0.000627041 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.15307 (s)
-- for smoothers setup = 3.12375 (s)
-- for coarse setup    = 0.00608063 (s)
-- for final setup     = 0.000184298 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159043 (s)
+- for smoothers setup = 3.20764 (s)
+- for coarse setup    = 0.0062387 (s)
+- for final setup     = 0.00019908 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -1600,7 +1600,7 @@ Cumulative timing for construction so far:
                   iter:    2           residual = 6.166844e-01
   
   
-  		Solution time: 0.038500 (sec.)
+  		Solution time: 0.053769 (sec.)
   		total iterations: 2
   
 
@@ -1670,14 +1670,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.369354, max = 0.833398 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135159 (s)
+Time to re-build the hierarchy = 0.137885 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350158 (s)
+Smoother (level 0) : Setup time : 0.361155 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -1690,21 +1690,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038682 (s)
+Smoother (level 1) : Setup time : 0.0388138 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000622988 (s)
+Amesos (level 2) : Time for factorization  = 0.000625849 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153076 (s)
-- for smoothers setup = 3.51259 (s)
-- for coarse setup    = 0.00684261 (s)
-- for final setup     = 0.000189304 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159049 (s)
+- for smoothers setup = 3.60761 (s)
+- for coarse setup    = 0.00701976 (s)
+- for final setup     = 0.00020504 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -1718,7 +1718,7 @@ Cumulative timing for construction so far:
                   iter:    2           residual = 7.557410e-01
   
   
-  		Solution time: 0.038492 (sec.)
+  		Solution time: 0.051891 (sec.)
   		total iterations: 2
   
 
@@ -1788,14 +1788,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.36183, max = 0.844285 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135377 (s)
+Time to re-build the hierarchy = 0.138356 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350163 (s)
+Smoother (level 0) : Setup time : 0.361627 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -1808,21 +1808,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0386369 (s)
+Smoother (level 1) : Setup time : 0.039427 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000625849 (s)
+Amesos (level 2) : Time for factorization  = 0.000617981 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153082 (s)
-- for smoothers setup = 3.90139 (s)
-- for coarse setup    = 0.00760651 (s)
-- for final setup     = 0.000193357 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159055 (s)
+- for smoothers setup = 4.00866 (s)
+- for coarse setup    = 0.00779676 (s)
+- for final setup     = 0.000211239 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -1836,7 +1836,7 @@ Cumulative timing for construction so far:
                   iter:    3           residual = 8.001125e-01
   
   
-  		Solution time: 0.050980 (sec.)
+  		Solution time: 0.068974 (sec.)
   		total iterations: 3
   
 
@@ -1906,14 +1906,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.366518, max = 0.872586 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135642 (s)
+Time to re-build the hierarchy = 0.138614 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.349601 (s)
+Smoother (level 0) : Setup time : 0.361394 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -1926,21 +1926,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038758 (s)
+Smoother (level 1) : Setup time : 0.0387979 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000610113 (s)
+Amesos (level 2) : Time for factorization  = 0.00061202 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153088 (s)
-- for smoothers setup = 4.28975 (s)
-- for coarse setup    = 0.00835252 (s)
-- for final setup     = 0.000197411 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.15906 (s)
+- for smoothers setup = 4.40885 (s)
+- for coarse setup    = 0.0085597 (s)
+- for final setup     = 0.000216246 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -1954,7 +1954,7 @@ Cumulative timing for construction so far:
                   iter:    5           residual = 3.187319e-01
   
   
-  		Solution time: 0.077384 (sec.)
+  		Solution time: 0.105222 (sec.)
   		total iterations: 5
   
 
@@ -2024,14 +2024,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.36727, max = 0.868401 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135148 (s)
+Time to re-build the hierarchy = 0.138004 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350538 (s)
+Smoother (level 0) : Setup time : 0.359857 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -2044,21 +2044,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0392978 (s)
+Smoother (level 1) : Setup time : 0.039047 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000616074 (s)
+Amesos (level 2) : Time for factorization  = 0.000617027 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153094 (s)
-- for smoothers setup = 4.67958 (s)
-- for coarse setup    = 0.0091126 (s)
-- for final setup     = 0.000201464 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159067 (s)
+- for smoothers setup = 4.80776 (s)
+- for coarse setup    = 0.00932574 (s)
+- for final setup     = 0.00022316 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -2072,7 +2072,7 @@ Cumulative timing for construction so far:
                   iter:    5           residual = 5.840465e-01
   
   
-  		Solution time: 0.076410 (sec.)
+  		Solution time: 0.102828 (sec.)
   		total iterations: 5
   
 
@@ -2142,14 +2142,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.364156, max = 0.87489 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135352 (s)
+Time to re-build the hierarchy = 0.138092 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.363523 (s)
+Smoother (level 0) : Setup time : 0.36047 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -2162,21 +2162,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0404711 (s)
+Smoother (level 1) : Setup time : 0.0399601 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.00061512 (s)
+Amesos (level 2) : Time for factorization  = 0.000605106 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.1531 (s)
-- for smoothers setup = 5.08358 (s)
-- for coarse setup    = 0.00986958 (s)
-- for final setup     = 0.000205517 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159073 (s)
+- for smoothers setup = 5.20819 (s)
+- for coarse setup    = 0.0100927 (s)
+- for final setup     = 0.000227213 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -2190,7 +2190,7 @@ Cumulative timing for construction so far:
                   iter:    9           residual = 7.217289e-01
   
   
-  		Solution time: 0.127654 (sec.)
+  		Solution time: 0.174190 (sec.)
   		total iterations: 9
   
 
@@ -2251,14 +2251,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.358201, max = 0.84848 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135609 (s)
+Time to re-build the hierarchy = 0.13874 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.363137 (s)
+Smoother (level 0) : Setup time : 0.360256 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -2271,21 +2271,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038588 (s)
+Smoother (level 1) : Setup time : 0.038851 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000607967 (s)
+Amesos (level 2) : Time for factorization  = 0.000614166 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153106 (s)
-- for smoothers setup = 5.4853 (s)
-- for coarse setup    = 0.0106187 (s)
-- for final setup     = 0.000210524 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159079 (s)
+- for smoothers setup = 5.60729 (s)
+- for coarse setup    = 0.0108628 (s)
+- for final setup     = 0.00023222 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -2300,7 +2300,7 @@ Cumulative timing for construction so far:
                   iter:   11           residual = 4.391062e-01
   
   
-  		Solution time: 0.153863 (sec.)
+  		Solution time: 0.207579 (sec.)
   		total iterations: 11
   
 
@@ -2370,14 +2370,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.356988, max = 0.840729 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135354 (s)
+Time to re-build the hierarchy = 0.138159 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350348 (s)
+Smoother (level 0) : Setup time : 0.360486 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -2390,21 +2390,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038609 (s)
+Smoother (level 1) : Setup time : 0.038871 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000604868 (s)
+Amesos (level 2) : Time for factorization  = 0.00062418 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153112 (s)
-- for smoothers setup = 5.87426 (s)
-- for coarse setup    = 0.0113688 (s)
-- for final setup     = 0.000214577 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159085 (s)
+- for smoothers setup = 6.00665 (s)
+- for coarse setup    = 0.0116348 (s)
+- for final setup     = 0.00023818 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -2418,7 +2418,7 @@ Cumulative timing for construction so far:
                   iter:   10           residual = 8.204317e-01
   
   
-  		Solution time: 0.140794 (sec.)
+  		Solution time: 0.189820 (sec.)
   		total iterations: 10
   
 
@@ -2488,14 +2488,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.356025, max = 0.834403 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135114 (s)
+Time to re-build the hierarchy = 0.137619 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.349779 (s)
+Smoother (level 0) : Setup time : 0.360588 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -2508,21 +2508,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038758 (s)
+Smoother (level 1) : Setup time : 0.0389519 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000622034 (s)
+Amesos (level 2) : Time for factorization  = 0.000634909 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153118 (s)
-- for smoothers setup = 6.2628 (s)
-- for coarse setup    = 0.0121288 (s)
-- for final setup     = 0.000219584 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159091 (s)
+- for smoothers setup = 6.40619 (s)
+- for coarse setup    = 0.0124328 (s)
+- for final setup     = 0.000244141 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -2537,7 +2537,7 @@ Cumulative timing for construction so far:
                   iter:   17           residual = 7.209177e-01
   
   
-  		Solution time: 0.234172 (sec.)
+  		Solution time: 0.318533 (sec.)
   		total iterations: 17
   
 
@@ -2607,14 +2607,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.356292, max = 0.831268 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135273 (s)
+Time to re-build the hierarchy = 0.138546 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350454 (s)
+Smoother (level 0) : Setup time : 0.365097 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -2627,21 +2627,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0385201 (s)
+Smoother (level 1) : Setup time : 0.0390041 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000613928 (s)
+Amesos (level 2) : Time for factorization  = 0.000604868 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153124 (s)
-- for smoothers setup = 6.65177 (s)
-- for coarse setup    = 0.0128808 (s)
-- for final setup     = 0.000223637 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159096 (s)
+- for smoothers setup = 6.81029 (s)
+- for coarse setup    = 0.0131788 (s)
+- for final setup     = 0.00025034 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -2656,7 +2656,7 @@ Cumulative timing for construction so far:
                   iter:   11           residual = 8.613141e-01
   
   
-  		Solution time: 0.154065 (sec.)
+  		Solution time: 0.210354 (sec.)
   		total iterations: 11
   
 
@@ -2717,14 +2717,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.356265, max = 0.829658 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135137 (s)
+Time to re-build the hierarchy = 0.138551 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.351473 (s)
+Smoother (level 0) : Setup time : 0.362123 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -2737,21 +2737,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038763 (s)
+Smoother (level 1) : Setup time : 0.039115 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.00061512 (s)
+Amesos (level 2) : Time for factorization  = 0.000617981 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.15313 (s)
-- for smoothers setup = 7.04201 (s)
-- for coarse setup    = 0.0136328 (s)
-- for final setup     = 0.00022769 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159102 (s)
+- for smoothers setup = 7.21153 (s)
+- for coarse setup    = 0.0139499 (s)
+- for final setup     = 0.000255346 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -2766,7 +2766,7 @@ Cumulative timing for construction so far:
                   iter:   13           residual = 3.648542e-01
   
   
-  		Solution time: 0.179455 (sec.)
+  		Solution time: 0.247156 (sec.)
   		total iterations: 13
   
 
@@ -2836,14 +2836,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.358041, max = 0.82227 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135609 (s)
+Time to re-build the hierarchy = 0.138276 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.35113 (s)
+Smoother (level 0) : Setup time : 0.392239 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -2856,21 +2856,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.040664 (s)
+Smoother (level 1) : Setup time : 0.0393128 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000616074 (s)
+Amesos (level 2) : Time for factorization  = 0.000660181 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153136 (s)
-- for smoothers setup = 7.4338 (s)
-- for coarse setup    = 0.0143888 (s)
-- for final setup     = 0.000231504 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159108 (s)
+- for smoothers setup = 7.64308 (s)
+- for coarse setup    = 0.0148048 (s)
+- for final setup     = 0.000264168 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -2885,7 +2885,7 @@ Cumulative timing for construction so far:
                   iter:   16           residual = 6.913253e-01
   
   
-  		Solution time: 0.218976 (sec.)
+  		Solution time: 0.316903 (sec.)
   		total iterations: 16
   
 
@@ -2955,14 +2955,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.359558, max = 0.817606 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.136341 (s)
+Time to re-build the hierarchy = 0.138992 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.349404 (s)
+Smoother (level 0) : Setup time : 0.390266 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -2975,21 +2975,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0399899 (s)
+Smoother (level 1) : Setup time : 0.038954 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000613928 (s)
+Amesos (level 2) : Time for factorization  = 0.000638008 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153143 (s)
-- for smoothers setup = 7.8232 (s)
-- for coarse setup    = 0.0151429 (s)
-- for final setup     = 0.000235558 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159114 (s)
+- for smoothers setup = 8.0723 (s)
+- for coarse setup    = 0.0155907 (s)
+- for final setup     = 0.000269175 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -3004,7 +3004,7 @@ Cumulative timing for construction so far:
                   iter:   16           residual = 7.865201e-01
   
   
-  		Solution time: 0.219218 (sec.)
+  		Solution time: 0.299727 (sec.)
   		total iterations: 16
   
 
@@ -3074,14 +3074,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.361106, max = 0.813344 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135511 (s)
+Time to re-build the hierarchy = 0.140257 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350723 (s)
+Smoother (level 0) : Setup time : 0.361208 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -3094,21 +3094,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0388651 (s)
+Smoother (level 1) : Setup time : 0.0390749 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000610828 (s)
+Amesos (level 2) : Time for factorization  = 0.000619173 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153149 (s)
-- for smoothers setup = 8.21278 (s)
-- for coarse setup    = 0.015893 (s)
-- for final setup     = 0.000239611 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159121 (s)
+- for smoothers setup = 8.47258 (s)
+- for coarse setup    = 0.0163867 (s)
+- for final setup     = 0.000275373 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -3123,7 +3123,7 @@ Cumulative timing for construction so far:
                   iter:   16           residual = 8.283539e-01
   
   
-  		Solution time: 0.219397 (sec.)
+  		Solution time: 0.301888 (sec.)
   		total iterations: 16
   
 
@@ -3193,14 +3193,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.356719, max = 0.802593 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.1353 (s)
+Time to re-build the hierarchy = 0.138777 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.351914 (s)
+Smoother (level 0) : Setup time : 0.361212 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -3213,21 +3213,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.040128 (s)
+Smoother (level 1) : Setup time : 0.0417101 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000673056 (s)
+Amesos (level 2) : Time for factorization  = 0.000622034 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153155 (s)
-- for smoothers setup = 8.60483 (s)
-- for coarse setup    = 0.016717 (s)
-- for final setup     = 0.000243664 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159127 (s)
+- for smoothers setup = 8.87551 (s)
+- for coarse setup    = 0.0171766 (s)
+- for final setup     = 0.000281334 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -3242,7 +3242,7 @@ Cumulative timing for construction so far:
                   iter:   17           residual = 5.812916e-01
   
   
-  		Solution time: 0.233201 (sec.)
+  		Solution time: 0.333351 (sec.)
   		total iterations: 17
   
 
@@ -3312,14 +3312,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.354595, max = 0.797393 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135668 (s)
+Time to re-build the hierarchy = 0.140411 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350681 (s)
+Smoother (level 0) : Setup time : 0.362956 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -3332,21 +3332,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0387681 (s)
+Smoother (level 1) : Setup time : 0.0388432 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000612974 (s)
+Amesos (level 2) : Time for factorization  = 0.000619888 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153161 (s)
-- for smoothers setup = 8.99427 (s)
-- for coarse setup    = 0.017473 (s)
-- for final setup     = 0.000248671 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159134 (s)
+- for smoothers setup = 9.2773 (s)
+- for coarse setup    = 0.0179427 (s)
+- for final setup     = 0.000286341 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -3361,7 +3361,7 @@ Cumulative timing for construction so far:
                   iter:   17           residual = 7.214966e-01
   
   
-  		Solution time: 0.232490 (sec.)
+  		Solution time: 0.322519 (sec.)
   		total iterations: 17
   
 
@@ -3431,14 +3431,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.35303, max = 0.793157 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135251 (s)
+Time to re-build the hierarchy = 0.138945 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350826 (s)
+Smoother (level 0) : Setup time : 0.377321 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -3451,21 +3451,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0388482 (s)
+Smoother (level 1) : Setup time : 0.0390482 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000610828 (s)
+Amesos (level 2) : Time for factorization  = 0.000617027 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153167 (s)
-- for smoothers setup = 9.38395 (s)
-- for coarse setup    = 0.01823 (s)
-- for final setup     = 0.000252724 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.15914 (s)
+- for smoothers setup = 9.69367 (s)
+- for coarse setup    = 0.0187056 (s)
+- for final setup     = 0.00029254 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -3480,7 +3480,7 @@ Cumulative timing for construction so far:
                   iter:   17           residual = 8.188368e-01
   
   
-  		Solution time: 0.232668 (sec.)
+  		Solution time: 0.319359 (sec.)
   		total iterations: 17
   
 
@@ -3550,14 +3550,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.351024, max = 0.786643 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135952 (s)
+Time to re-build the hierarchy = 0.138441 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350921 (s)
+Smoother (level 0) : Setup time : 0.361155 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -3570,21 +3570,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0401762 (s)
+Smoother (level 1) : Setup time : 0.0393839 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000611067 (s)
+Amesos (level 2) : Time for factorization  = 0.000625134 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153173 (s)
-- for smoothers setup = 9.77505 (s)
-- for coarse setup    = 0.0189798 (s)
-- for final setup     = 0.000256777 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159146 (s)
+- for smoothers setup = 10.0942 (s)
+- for coarse setup    = 0.0194767 (s)
+- for final setup     = 0.000297546 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -3599,7 +3599,7 @@ Cumulative timing for construction so far:
                   iter:   18           residual = 8.128373e-01
   
   
-  		Solution time: 0.246567 (sec.)
+  		Solution time: 0.336238 (sec.)
   		total iterations: 18
   
 
@@ -3660,14 +3660,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.350524, max = 0.780514 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135061 (s)
+Time to re-build the hierarchy = 0.138748 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.349766 (s)
+Smoother (level 0) : Setup time : 0.360836 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -3680,21 +3680,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038595 (s)
+Smoother (level 1) : Setup time : 0.0392599 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000613928 (s)
+Amesos (level 2) : Time for factorization  = 0.000622034 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153179 (s)
-- for smoothers setup = 10.1634 (s)
-- for coarse setup    = 0.0197339 (s)
-- for final setup     = 0.00026083 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159153 (s)
+- for smoothers setup = 10.4943 (s)
+- for coarse setup    = 0.0202527 (s)
+- for final setup     = 0.000303745 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -3710,7 +3710,7 @@ Cumulative timing for construction so far:
                   iter:   22           residual = 5.705606e-01
   
   
-  		Solution time: 0.305400 (sec.)
+  		Solution time: 0.406749 (sec.)
   		total iterations: 22
   
 
@@ -3780,14 +3780,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.349606, max = 0.779526 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135191 (s)
+Time to re-build the hierarchy = 0.143437 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.360087 (s)
+Smoother (level 0) : Setup time : 0.359835 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -3800,21 +3800,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.040216 (s)
+Smoother (level 1) : Setup time : 0.0390031 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000612974 (s)
+Amesos (level 2) : Time for factorization  = 0.000623941 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153185 (s)
-- for smoothers setup = 10.5637 (s)
-- for coarse setup    = 0.0204947 (s)
-- for final setup     = 0.000265837 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.15916 (s)
+- for smoothers setup = 10.8931 (s)
+- for coarse setup    = 0.0210187 (s)
+- for final setup     = 0.000308752 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -3830,7 +3830,7 @@ Cumulative timing for construction so far:
                   iter:   22           residual = 8.315189e-01
   
   
-  		Solution time: 0.301081 (sec.)
+  		Solution time: 0.407950 (sec.)
   		total iterations: 22
   
 
@@ -3900,14 +3900,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.348472, max = 0.779443 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135087 (s)
+Time to re-build the hierarchy = 0.138817 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.349793 (s)
+Smoother (level 0) : Setup time : 0.360132 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -3920,21 +3920,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.039561 (s)
+Smoother (level 1) : Setup time : 0.0391359 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000609875 (s)
+Amesos (level 2) : Time for factorization  = 0.000627041 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153191 (s)
-- for smoothers setup = 10.9531 (s)
-- for coarse setup    = 0.0212908 (s)
-- for final setup     = 0.00026989 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159166 (s)
+- for smoothers setup = 11.2924 (s)
+- for coarse setup    = 0.0218077 (s)
+- for final setup     = 0.000314713 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -3950,7 +3950,7 @@ Cumulative timing for construction so far:
                   iter:   22           residual = 3.320224e-01
   
   
-  		Solution time: 0.300681 (sec.)
+  		Solution time: 0.408489 (sec.)
   		total iterations: 22
   
 
@@ -4020,14 +4020,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.348019, max = 0.779385 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135635 (s)
+Time to re-build the hierarchy = 0.13923 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.351818 (s)
+Smoother (level 0) : Setup time : 0.367053 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -4040,21 +4040,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0395279 (s)
+Smoother (level 1) : Setup time : 0.0391741 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000609875 (s)
+Amesos (level 2) : Time for factorization  = 0.000682831 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.15321 (s)
-- for smoothers setup = 11.3444 (s)
-- for coarse setup    = 0.0220418 (s)
-- for final setup     = 0.000273943 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159183 (s)
+- for smoothers setup = 11.6986 (s)
+- for coarse setup    = 0.0226376 (s)
+- for final setup     = 0.000319719 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -4070,7 +4070,7 @@ Cumulative timing for construction so far:
                   iter:   21           residual = 7.978453e-01
   
   
-  		Solution time: 0.285703 (sec.)
+  		Solution time: 0.389722 (sec.)
   		total iterations: 21
   
 
@@ -4140,14 +4140,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.34774, max = 0.775314 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.13578 (s)
+Time to re-build the hierarchy = 0.138053 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.370649 (s)
+Smoother (level 0) : Setup time : 0.361129 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -4160,21 +4160,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0391381 (s)
+Smoother (level 1) : Setup time : 0.0388319 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.00063014 (s)
+Amesos (level 2) : Time for factorization  = 0.000623941 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153216 (s)
-- for smoothers setup = 11.7542 (s)
-- for coarse setup    = 0.0228138 (s)
-- for final setup     = 0.000277996 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.15919 (s)
+- for smoothers setup = 12.0986 (s)
+- for coarse setup    = 0.0234318 (s)
+- for final setup     = 0.000325918 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -4190,7 +4190,7 @@ Cumulative timing for construction so far:
                   iter:   21           residual = 7.738123e-01
   
   
-  		Solution time: 0.293372 (sec.)
+  		Solution time: 0.391042 (sec.)
   		total iterations: 21
   
 
@@ -4260,14 +4260,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.347794, max = 0.779246 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.137629 (s)
+Time to re-build the hierarchy = 0.137163 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.361488 (s)
+Smoother (level 0) : Setup time : 0.360167 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -4280,21 +4280,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.03859 (s)
+Smoother (level 1) : Setup time : 0.0387528 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000607014 (s)
+Amesos (level 2) : Time for factorization  = 0.000632048 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153222 (s)
-- for smoothers setup = 12.1543 (s)
-- for coarse setup    = 0.0235648 (s)
-- for final setup     = 0.000281811 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159196 (s)
+- for smoothers setup = 12.4975 (s)
+- for coarse setup    = 0.0242116 (s)
+- for final setup     = 0.000330925 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -4310,7 +4310,7 @@ Cumulative timing for construction so far:
                   iter:   22           residual = 2.203677e-01
   
   
-  		Solution time: 0.299504 (sec.)
+  		Solution time: 0.411844 (sec.)
   		total iterations: 22
   
 
@@ -4380,14 +4380,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.348243, max = 0.779484 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135442 (s)
+Time to re-build the hierarchy = 0.139325 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.352441 (s)
+Smoother (level 0) : Setup time : 0.360813 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -4400,21 +4400,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0383899 (s)
+Smoother (level 1) : Setup time : 0.039304 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.00061202 (s)
+Amesos (level 2) : Time for factorization  = 0.000617027 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153228 (s)
-- for smoothers setup = 12.5451 (s)
-- for coarse setup    = 0.0243158 (s)
-- for final setup     = 0.000285864 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159202 (s)
+- for smoothers setup = 12.8976 (s)
+- for coarse setup    = 0.0249836 (s)
+- for final setup     = 0.000335932 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -4430,7 +4430,7 @@ Cumulative timing for construction so far:
                   iter:   21           residual = 7.412420e-01
   
   
-  		Solution time: 0.286524 (sec.)
+  		Solution time: 0.391950 (sec.)
   		total iterations: 21
   
 
@@ -4491,14 +4491,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.349726, max = 0.779402 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.13555 (s)
+Time to re-build the hierarchy = 0.138493 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.350626 (s)
+Smoother (level 0) : Setup time : 0.36075 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -4511,21 +4511,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0398371 (s)
+Smoother (level 1) : Setup time : 0.0391598 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000603914 (s)
+Amesos (level 2) : Time for factorization  = 0.000610828 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153234 (s)
-- for smoothers setup = 12.9356 (s)
-- for coarse setup    = 0.0250568 (s)
-- for final setup     = 0.000290871 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159208 (s)
+- for smoothers setup = 13.2975 (s)
+- for coarse setup    = 0.0257437 (s)
+- for final setup     = 0.000340939 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -4541,7 +4541,7 @@ Cumulative timing for construction so far:
                   iter:   21           residual = 3.892894e-01
   
   
-  		Solution time: 0.283356 (sec.)
+  		Solution time: 0.399039 (sec.)
   		total iterations: 21
   
 
@@ -4602,14 +4602,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.352653, max = 0.778902 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135464 (s)
+Time to re-build the hierarchy = 0.138565 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.351513 (s)
+Smoother (level 0) : Setup time : 0.360512 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -4622,21 +4622,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038929 (s)
+Smoother (level 1) : Setup time : 0.0394831 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.00061512 (s)
+Amesos (level 2) : Time for factorization  = 0.000681877 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.15324 (s)
-- for smoothers setup = 13.326 (s)
-- for coarse setup    = 0.0258198 (s)
-- for final setup     = 0.000294685 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159214 (s)
+- for smoothers setup = 13.6975 (s)
+- for coarse setup    = 0.0265787 (s)
+- for final setup     = 0.000345945 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -4651,7 +4651,7 @@ Cumulative timing for construction so far:
                   iter:   17           residual = 3.765992e-01
   
   
-  		Solution time: 0.233606 (sec.)
+  		Solution time: 0.319183 (sec.)
   		total iterations: 17
   
 
@@ -4712,14 +4712,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.354459, max = 0.775652 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.136153 (s)
+Time to re-build the hierarchy = 0.137841 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.351263 (s)
+Smoother (level 0) : Setup time : 0.360121 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -4732,21 +4732,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0388801 (s)
+Smoother (level 1) : Setup time : 0.0389161 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000607014 (s)
+Amesos (level 2) : Time for factorization  = 0.000638008 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153247 (s)
-- for smoothers setup = 13.7162 (s)
-- for coarse setup    = 0.0265799 (s)
-- for final setup     = 0.000298738 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159219 (s)
+- for smoothers setup = 14.0966 (s)
+- for coarse setup    = 0.0273628 (s)
+- for final setup     = 0.000350952 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -4761,7 +4761,7 @@ Cumulative timing for construction so far:
                   iter:   19           residual = 1.960374e-01
   
   
-  		Solution time: 0.257598 (sec.)
+  		Solution time: 0.359734 (sec.)
   		total iterations: 19
   
 
@@ -4822,14 +4822,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.354107, max = 0.778884 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135582 (s)
+Time to re-build the hierarchy = 0.138152 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.360134 (s)
+Smoother (level 0) : Setup time : 0.361813 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -4842,21 +4842,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0403421 (s)
+Smoother (level 1) : Setup time : 0.0388541 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000612974 (s)
+Amesos (level 2) : Time for factorization  = 0.000622034 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153253 (s)
-- for smoothers setup = 14.1166 (s)
-- for coarse setup    = 0.0273318 (s)
-- for final setup     = 0.000302553 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159226 (s)
+- for smoothers setup = 14.4972 (s)
+- for coarse setup    = 0.0281358 (s)
+- for final setup     = 0.000356913 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -4872,7 +4872,7 @@ Cumulative timing for construction so far:
                   iter:   22           residual = 2.205968e-02
   
   
-  		Solution time: 0.300796 (sec.)
+  		Solution time: 0.435529 (sec.)
   		total iterations: 22
   
 
@@ -4933,14 +4933,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.354075, max = 0.779174 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.136006 (s)
+Time to re-build the hierarchy = 0.13829 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.352432 (s)
+Smoother (level 0) : Setup time : 0.361046 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -4953,21 +4953,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.038662 (s)
+Smoother (level 1) : Setup time : 0.0388689 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000627995 (s)
+Amesos (level 2) : Time for factorization  = 0.000610113 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153259 (s)
-- for smoothers setup = 14.5077 (s)
-- for coarse setup    = 0.0281098 (s)
-- for final setup     = 0.000306606 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159232 (s)
+- for smoothers setup = 14.8972 (s)
+- for coarse setup    = 0.0289156 (s)
+- for final setup     = 0.000362873 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -4983,7 +4983,7 @@ Cumulative timing for construction so far:
                   iter:   25           residual = 4.267394e-04
   
   
-  		Solution time: 0.339517 (sec.)
+  		Solution time: 0.473661 (sec.)
   		total iterations: 25
   
 
@@ -5044,14 +5044,14 @@ Prolongator Smoothing: Using energy minimization (scheme = 2)
 Damping parameter: min = 0.354074, max = 0.779282 (0 zeros out of 231)
 Dropping tolerance for DinvAP_0 = 0
 
-Time to re-build the hierarchy = 0.135652 (s)
+Time to re-build the hierarchy = 0.138622 (s)
 Number of actual levels : 3
 
 Smoother (level 0) : # global rows = 15813, # estim. global nnz = 412299, # nnz per row = 26.07
 Smoother (level 0) : IFPACK, type=`ILU',
 Smoother (level 0) : both,overlap=5
 Smoother (level 0) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 0) : Setup time : 0.354498 (s)
+Smoother (level 0) : Setup time : 0.361392 (s)
 
 WARNING **********************************************************************
 You have requested to keep the finest level smoother from a previous
@@ -5064,21 +5064,21 @@ Smoother (level 1) : # global rows = 1764, # estim. global nnz = 44226, # nnz pe
 Smoother (level 1) : IFPACK, type=`ILU',
 Smoother (level 1) : both,overlap=5
 Smoother (level 1) : level-of-fill=5,rel. threshold=1,abs. threshold=0
-Smoother (level 1) : Setup time : 0.0386069 (s)
+Smoother (level 1) : Setup time : 0.0417268 (s)
 
 Amesos (level 2) : NumGlobalRows = 231
 Amesos (level 2) : NumGlobalNonzeros = 5589
 Amesos (level 2) : Fill-in = 10.4739 %
 Amesos (level 2) : Building KLU
-Amesos (level 2) : Time for factorization  = 0.000617027 (s)
+Amesos (level 2) : Time for factorization  = 0.000612974 (s)
 
 
 Cumulative timing for construction so far: 
-- for initial setup   = 0.00311685 (s)
-- for hierarchy setup = 0.153265 (s)
-- for smoothers setup = 14.9008 (s)
-- for coarse setup    = 0.0288677 (s)
-- for final setup     = 0.000310421 (s)
+- for initial setup   = 0.00321698 (s)
+- for hierarchy setup = 0.159238 (s)
+- for smoothers setup = 15.3003 (s)
+- for coarse setup    = 0.0296776 (s)
+- for final setup     = 0.00036788 (s)
 ------------------------------------------------------------------------------
   
   		*******************************************************
@@ -5094,7 +5094,7 @@ Cumulative timing for construction so far:
                   iter:   27           residual = 6.489264e-05
   
   
-  		Solution time: 0.368511 (sec.)
+  		Solution time: 0.507314 (sec.)
   		total iterations: 27
   
 
@@ -5147,12 +5147,12 @@ L2Error_UY 3.79001425e+02  1.51566911e+04  3.92948260e-09
 ------------------------------------------------------------------------------
    ML time information (seconds)          total          avg
 
-   1- Construction                  =     20.114    0.529316
-   2- Preconditioner apply          =    6.15354
-     a- first application(s) only   =    0.44824   0.0117958
-     b- remaining applications      =     5.7053   0.0106641
+   1- Construction                  =     20.634    0.542999
+   2- Preconditioner apply          =    8.50438
+     a- first application(s) only   =    0.61248   0.0161179
+     b- remaining applications      =     7.8919   0.0147512
 
-   3- Total time required by ML so far is 26.2675 seconds
+   3- Total time required by ML so far is 29.1384 seconds
       (constr + all applications)
 ------------------------------------------------------------------------------
 ========================================================================================
@@ -5161,15 +5161,15 @@ L2Error_UY 3.79001425e+02  1.51566911e+04  3.92948260e-09
 
 Timer Name                                                   Global time (num calls)    
 ----------------------------------------------------------------------------------------
-Drekar: Total Time                                           39.29 (1)                  
-NOX Total Linear Solve                                       6.96 (38)                  
-NOX Total Preconditioner Construction                        20.16 (38)                 
-STK_Interface::setupTransientExodusFile(filename)            0.3106 (1)                 
-STK_Interface::writeToExodus(timestep)                       0.04452 (1)                
-Thyra::NOXNonlinearSolver::solve                             38.47 (1)                  
-panzer::ModelEvaluator::evalModel(J)                         8.154 (38)                 
-panzer::ModelEvaluator::evalModel(f)                         3.046 (105)                
-panzer::SquareQuadMeshFactory::buildUncomittedMesh()         0.0001249 (1)              
-panzer::SquareQuadMeshFactory::completeMeshConstruction()    0.1901 (1)                 
+Drekar: Total Time                                           42.56 (1)                  
+NOX Total Linear Solve                                       9.581 (38)                 
+NOX Total Preconditioner Construction                        20.7 (38)                  
+STK_Interface::setupTransientExodusFile(filename)            0.2512 (1)                 
+STK_Interface::writeToExodus(timestep)                       0.04571 (1)                
+Thyra::NOXNonlinearSolver::solve                             41.78 (1)                  
+panzer::ModelEvaluator::evalModel(J)                         8.116 (38)                 
+panzer::ModelEvaluator::evalModel(f)                         3.22 (105)                 
+panzer::SquareQuadMeshFactory::buildUncomittedMesh()         0.00014 (1)                
+panzer::SquareQuadMeshFactory::completeMeshConstruction()    0.1899 (1)                 
 ========================================================================================
 Drekar run completed.

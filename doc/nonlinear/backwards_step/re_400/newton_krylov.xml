@@ -339,7 +339,7 @@
                   <Parameter name="print unused" type="int" value="0"/>
                   <Parameter name="PDE equations" type="int" value="3"/>
                   <Parameter name="max levels" type="int" value="10"/>
-                  <Parameter name="cycle applications" type="int" value="1"/>
+                  <Parameter name="cycle applications" type="int" value="3"/>
                   <Parameter name="aggregation: threshold" type="double" value="0.0"/>
                   <Parameter name="aggregation: type" type="string" value="Uncoupled"/>
                   <Parameter name="aggregation: damping factor" type="double" value="0.0"/>
