@@ -425,8 +425,8 @@
         <Parameter name="Full Step" type="double" value="1"/>
       </ParameterList>
       <!-- <Parameter name="Method" type="string" value="Full Step"/> -->
-      <Parameter name="Method" type="string" value="Backtrack"/>
-      <!-- <Parameter name="Method" type="string" value="Polynomial"/> -->
+      <!-- <Parameter name="Method" type="string" value="Backtrack"/> -->
+      <Parameter name="Method" type="string" value="Polynomial"/>
     </ParameterList>
     <Parameter name="Nonlinear Solver" type="string" value="Line Search Based"/>
     <ParameterList name="Printing">
