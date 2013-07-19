@@ -13,11 +13,11 @@
             <ParameterList name="Mesh Factory Parameter List">
                 <Parameter name="X Blocks" type="int" value="1" />
                 <Parameter name="Y Blocks" type="int" value="1" />
-                <Parameter name="X Elements" type="int" value="400" />
+                <Parameter name="X Elements" type="int" value="250" />
                 <Parameter name="Y Elements" type="int" value="20" />
                 <Parameter name="X0" type="double" value="0.0" />
                 <Parameter name="Y0" type="double" value="0.0" />
-                <Parameter name="Xf" type="double" value="30.0" />
+                <Parameter name="Xf" type="double" value="25.0" />
                 <Parameter name="Yf" type="double" value="1.0" />
             </ParameterList>
         </ParameterList>
@@ -105,7 +105,7 @@
 
     <ParameterList name="User Data">
       <ParameterList name="ParabolicInflow">
-            <Parameter name="Ustar" type="double" value="600.0"/>
+            <Parameter name="Ustar" type="double" value="800.0"/>
             <Parameter name="L" type="double" value="0.5"/>
             <Parameter name="ramp_in_time" type="bool" value="false"/>
             <Parameter name="timeConstant" type="double" value="0.025"/>
