@@ -105,7 +105,7 @@
 
     <ParameterList name="User Data">
       <ParameterList name="ParabolicInflow">
-            <Parameter name="Ustar" type="double" value="800.0"/>
+            <Parameter name="Ustar" type="double" value="667.0"/>
             <Parameter name="L" type="double" value="0.5"/>
             <Parameter name="ramp_in_time" type="bool" value="false"/>
             <Parameter name="timeConstant" type="double" value="0.025"/>
@@ -339,7 +339,7 @@
                   <Parameter name="print unused" type="int" value="0"/>
                   <Parameter name="PDE equations" type="int" value="3"/>
                   <Parameter name="max levels" type="int" value="10"/>
-                  <Parameter name="cycle applications" type="int" value="3"/>
+                  <Parameter name="cycle applications" type="int" value="4"/>
                   <Parameter name="aggregation: threshold" type="double" value="0.0"/>
                   <Parameter name="aggregation: type" type="string" value="Uncoupled"/>
                   <Parameter name="aggregation: damping factor" type="double" value="0.0"/>
@@ -350,9 +350,9 @@
                   <Parameter name="smoother: ifpack type" type="string" value="ILU"/>
                   <Parameter name="smoother: ifpack overlap" type="int" value="5"/>
                   <ParameterList name="smoother: ifpack list">
-               <Parameter name="fact: level-of-fill" type="int" value="5"/>
-               <Parameter name="schwarz: reordering type" type="string" value="rcm"/>
-                   </ParameterList>
+                    <Parameter name="fact: level-of-fill" type="int" value="5"/>
+                    <Parameter name="schwarz: reordering type" type="string" value="rcm"/>
+                  </ParameterList>
                   <Parameter name="smoother: damping factor" type="double" value="1.0"/>
                   <Parameter name="smoother: pre or post" type="string" value="both"/>
                   <Parameter name="smoother: sweeps" type="int" value="1"/>

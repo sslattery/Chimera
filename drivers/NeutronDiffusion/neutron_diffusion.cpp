@@ -96,32 +96,17 @@ int main( int argc, char * argv[] )
     Teuchos::RCP<const Teuchos::Comm<int> > set_comm = 
         comm->createSubcommunicator( comm_ranks() );
     Teuchos::RCP<Chimera::DiffusionProblem> diffusion_problem;
+    Teuchos::RCP<Chimera::Partitioner> partitioner;
     if ( 0 == set_id )
     {
         // Build and partition the mesh.
-        Teuchos::RCP<Chimera::Partitioner> partitioner = Teuchos::rcp(
-            new Chimera::Partitioner( set_comm, plist ) );
+        partitioner = Teuchos::rcp( new Chimera::Partitioner(set_comm, plist) );
 
         // Build the diffusion problem.
         diffusion_problem = Teuchos::rcp(
-            new Chimera::DiffusionProblem( set_comm, partitioner, plist, true ) );
+            new Chimera::DiffusionProblem(set_comm, partitioner, plist, true) );
     }
     comm->barrier();
-
-//     // // CHIMERA SOLVE
-//     // Build the solver.
-//     Teuchos::RCP<Chimera::LinearSolver<double,int,int> > csolver =
-//         Chimera::LinearSolverFactory::create( 
-//             plist, diffusion_problem->getProblem() );
-
-//     // Compute the iteration matrix spectral radius.
-//     double spec_rad = Chimera::OperatorTools::spectralRadius(
-//         csolver->linearOperatorSplit()->iterationMatrix() );
-//     if ( comm->getRank() == 0 )
-//     {
-//         std::cout << "SPECTRAL RADIUS: " << spec_rad << std::endl; 
-//     }
-//     comm->barrier();
 
     typedef Tpetra::Vector<double,int,int> Vector;
     typedef Tpetra::CrsMatrix<double,int,int> Matrix;
@@ -206,12 +191,15 @@ int main( int argc, char * argv[] )
         }
     }
 
-//     // Write the solution to VTK.
-//     Chimera::VTKOutput vtk_output( comm, partitioner, plist );
-//     vtk_output.addField( Chimera::VTKOutput::VERTEX_FIELD,
-//                          diffusion_problem->getProblem()->getLHS(),
-//                          "NEUTRON_FLUX" );
-//     vtk_output.write();
+    // Write the solution to VTK.
+    Chimera::VTKOutput vtk_output( comm, partitioner, plist );
+    vtk_output.addField( Chimera::VTKOutput::VERTEX_FIELD,
+                         diffusion_problem->getProblem()->getLHS(),
+                         "NEUTRON_FLUX" );
+    // vtk_output.addField( Chimera::VTKOutput::VERTEX_FIELD,
+    //                      eigenvector,
+    //                      "EIGENVECTOR" );
+    vtk_output.write();
 
     int global_length = 0;
     Teuchos::ArrayRCP<double> global_vector;

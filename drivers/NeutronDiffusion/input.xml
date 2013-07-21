@@ -1,5 +1,5 @@
 <ParameterList name="Neutron Diffusion">
-  <Parameter name="I_BLOCKS" type="int" value="2"/>
+  <Parameter name="I_BLOCKS" type="int" value="1"/>
   <Parameter name="J_BLOCKS" type="int" value="1"/>
   <Parameter name="X_MIN" type="double" value="0.0"/>
   <Parameter name="X_MAX" type="double" value="1.0"/>
@@ -24,7 +24,7 @@
   <Parameter name="NUM OVERLAP" type="int" value="0"/>
   <Parameter name="OUTPUT_FILENAME" type="string" value="diffusion_out.vtk"/>
   <Parameter name="Solver Type" type="string" value="MCSA"/>
-  <Parameter name="MC Type" type="string" value="Adjoint"/>
+  <Parameter name="MC Type" type="string" value="Maximal Entropy"/>
   <Parameter name="Convergence Tolerance" type="double" value="1.0e-8"/>
   <Parameter name="Max Number of Iterations" type="int" value="1000"/>
   <Parameter name="Weight Cutoff" type="double" value="1.0e-4"/>

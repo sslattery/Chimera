@@ -41,6 +41,7 @@
 
 #include <Teuchos_RCP.hpp>
 
+#include <Tpetra_Vector.hpp>
 #include <Tpetra_CrsMatrix.hpp>
 
 namespace Chimera
@@ -85,8 +86,10 @@ class OperatorTools
 
     // Compute the spectral radius of an operator.
     template<class Scalar, class LO, class GO>
-    static Scalar spectralRadius( 
-	const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix );
+    static void spectralRadius( 
+	const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix,
+        double& spec_rad,
+        Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& eigenvector );
 
     // Compute the condition number of an operator.
     template<class Scalar, class LO, class GO>

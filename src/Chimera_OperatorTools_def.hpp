@@ -163,8 +163,10 @@ Teuchos::Array<GO> OperatorTools::getOffProcColumns(
  * \brief Compute the spectral radius of an operator.
  */
 template<class Scalar,class LO, class GO>
-Scalar OperatorTools::spectralRadius( 
-    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix )
+void OperatorTools::spectralRadius( 
+    const Teuchos::RCP<Tpetra::CrsMatrix<Scalar,LO,GO> >& matrix,
+    double& spec_rad,
+    Teuchos::RCP<Tpetra::Vector<Scalar,LO,GO> >& eigenvector )
 {
     typedef Tpetra::MultiVector<Scalar,LO,GO> MV;
     typedef Tpetra::Operator<Scalar,LO,GO> OP;
@@ -173,9 +175,13 @@ Scalar OperatorTools::spectralRadius(
     const int block_size = 1;
     const int num_blocks = 10;
     const int max_restarts = 100;
-    const Scalar tol = 1.0e-4;
+    const Scalar tol = 1.0e-8;
+
+    int verbosity = Anasazi::Errors + Anasazi::Warnings + 
+                    Anasazi::FinalSummary + Anasazi::TimingDetails;
 
     Teuchos::ParameterList krylovschur_params;
+    krylovschur_params.set( "Verbosity", verbosity );
     krylovschur_params.set( "Which", "LM" );
     krylovschur_params.set( "Block Size", block_size );
     krylovschur_params.set( "Num Blocks", num_blocks );
@@ -201,9 +207,11 @@ Scalar OperatorTools::spectralRadius(
     Teuchos::RCP<MV> evecs = sol.Evecs;
 
     testPostcondition( sol.numVecs > 0 );
-    
-    return std::pow( evals[0].realpart*evals[0].realpart +
-		     evals[0].imagpart*evals[0].imagpart, 0.5 );
+
+    spec_rad = std::pow( evals[0].realpart*evals[0].realpart +
+                         evals[0].imagpart*evals[0].imagpart, 0.5 );
+
+    eigenvector = evecs->getVectorNonConst(0);
 }
 
 //---------------------------------------------------------------------------//
