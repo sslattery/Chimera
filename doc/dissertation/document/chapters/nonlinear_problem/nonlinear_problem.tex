@@ -39,16 +39,17 @@ algorithm and Newton's method.
 
 In this chapter the fundamentals of Newton's method will be presented
 along with a brief discussion of inexact Newton methods. Newton-Krylov
-methods, a variant of inexact Newton methods, will be outlined along
-with two common techniques for Jacobian generation as a means of
-defining current practices. Following this, the new algorithm will be
-presented and implementation details will be discussed. Using the new
-algorithm and a production fluid physics code, a group of challenging
-nonlinear benchmark problems for the Navier-Stokes equations will be
-used to verify the correctness of the method relative to solutions
-obtained using conventional methods in various flow regimes. Finally,
-we will compare the performance of the new method against contemporary
-Newton-Krylov methods for the same benchmark problems.
+methods, a variant of inexact Newton methods, will be outlined
+including with two common techniques for numerically representing the
+Jacobian most commonly used in today's applications. Following this,
+the new algorithm will be presented and implementation details will be
+discussed. Using the new algorithm and a production fluid physics
+code, a group of challenging nonlinear benchmark problems for the
+Navier-Stokes equations will be used to verify the correctness of the
+method relative to solutions obtained using conventional methods in
+various flow regimes and geometries. Finally, we will compare the
+performance of the new method against contemporary Newton-Krylov
+methods for the same benchmark problems.
 
 %%---------------------------------------------------------------------------%%
 \section{Preliminaries\ }
@@ -600,12 +601,7 @@ domain with a 1/25 aspect ratio used for this work\footnote{The
   this work was not observed to disturb the recirculation zones and
   was therefore used to reduce memory pressure on the FANM solver.}
 with the boundary conditions as shown in
-Figure~\ref{fig:backward_facing_step}. For this work, a slightly
-different parabolic formulation was used than in the benchmark. In the
-benchmark solutions, the average velocity in the parabola was 2/3 that
-of the maximum velocity while formula given in
-Figure~\ref{fig:backward_facing_step} produces a more plug-like flow
-with an average velocity of 3/4 that of the maximum velocity.
+Figure~\ref{fig:backward_facing_step}.
 
 \begin{figure}[htpb!]
   \begin{center}
@@ -627,13 +623,19 @@ with an average velocity of 3/4 that of the maximum velocity.
 
 In this problem, the inflow condition is specified by a fully-formed
 parabolic flow profile over a zero velocity boundary representing a
-step. The flow over this step will generate a recirculating backflow
-under the inlet flow towards the step and at higher Reynolds numbers a
-recirculating zone will form farther downstream from the step. As in
-the lid driven cavity problem, the nonlinear behavior of this
-benchmark and the difficulty in obtaining a solution is dictated by
-the Reynolds number of the fluid. In Shadid's work, a Reynolds numbers
-up to 800 were used.
+step. For this work, a slightly different parabolic formulation for
+the inlet velocities was used than in the benchmark. In the benchmark
+solutions, the average velocity in the parabola was 2/3 that of the
+maximum velocity while the formula given in
+Figure~\ref{fig:backward_facing_step} produces a more plug-like flow
+with an average velocity 3/4 that of the maximum velocity. The flow
+over this step will generate a recirculating backflow under the inlet
+flow towards the step and at higher Reynolds numbers a recirculating
+zone will form farther downstream from the step. As in the lid driven
+cavity problem, the nonlinear behavior of this benchmark and the
+difficulty in obtaining a solution is dictated by the Reynolds number
+of the fluid. In Shadid's work, a Reynolds numbers up to 800 were
+used.
 
 Compared to the lid driven cavity benchmark, the flow over a backward
 step is much more representative of flow driven by inertial forces in
@@ -823,13 +825,13 @@ solutions will be analyzed in the following section.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & -1.288835730E-05 & -1.288835730E-05 \\
-      Minimum $U_x$ & -3.677243960E+00 & -3.677243960E+00 \\
-      Maximum $U_x$ & 3.688908550E+00 & 3.688908550E+00 \\
+      Average $U$ & -1.288835730E-05 & -1.288835730E-05 \\
+      Minimum $U$ & -3.677243960E+00 & -3.677243960E+00 \\
+      Maximum $U$ & 3.688908550E+00 & 3.688908550E+00 \\
       \hline
-      Average $U_y$ & 3.403670530E-02 & 3.403670530E-02 \\
-      Minimum $U_y$ & -3.721178580E+00 & -3.721178580E+00 \\
-      Maximum $U_y$ & 3.791483420E+00 & 3.791483420E+00 \\
+      Average $V$ & 3.403670530E-02 & 3.403670530E-02 \\
+      Minimum $V$ & -3.721178580E+00 & -3.721178580E+00 \\
+      Maximum $V$ & 3.791483420E+00 & 3.791483420E+00 \\
       \hline
       Average $P$ & 2.345554770E+02 & 2.345554770E+02 \\
       Minimum $P$ & -5.509779180E+00 & -5.509779180E+00 \\
@@ -857,13 +859,13 @@ solutions will be analyzed in the following section.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & -7.489201240E-04 & -7.489201240E-04 \\
-      Minimum $U_x$ & -1.607318000E+01 & -1.607318000E+01 \\
-      Maximum $U_x$ & 1.669098270E+01 & 1.669098270E+01 \\
+      Average $U$ & -7.489201240E-04 & -7.489201240E-04 \\
+      Minimum $U$ & -1.607318000E+01 & -1.607318000E+01 \\
+      Maximum $U$ & 1.669098270E+01 & 1.669098270E+01 \\
       \hline
-      Average $U_y$ & 3.377624420E-01 & 3.377624420E-01 \\
-      Minimum $U_y$ & -1.932174800E+01 & -1.932174800E+01 \\
-      Maximum $U_y$ & 2.047326820E+01 & 2.047326820E+01 \\
+      Average $V$ & 3.377624420E-01 & 3.377624420E-01 \\
+      Minimum $V$ & -1.932174800E+01 & -1.932174800E+01 \\
+      Maximum $V$ & 2.047326820E+01 & 2.047326820E+01 \\
       \hline
       Average $P$ & 1.861894950E+03 & 1.861894950E+03 \\
       Minimum $P$ & -3.353416240E+01 & -3.353416240E+01 \\
@@ -891,13 +893,13 @@ solutions will be analyzed in the following section.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & -2.043639370E-02 & -2.043639370E-02 \\
-      Minimum $U_x$ & -3.814922470E+01 & -3.814922470E+01 \\
-      Maximum $U_x$ & -3.814922470E+01 & -3.814922470E+01 \\
+      Average $U$ & -2.043639370E-02 & -2.043639370E-02 \\
+      Minimum $U$ & -3.814922470E+01 & -3.814922470E+01 \\
+      Maximum $U$ & -3.814922470E+01 & -3.814922470E+01 \\
       \hline
-      Average $U_y$ & 2.774864300E+00 & 2.774864300E+00 \\
-      Minimum $U_y$ & -6.038682990E+01 & -6.038682990E+01 \\
-      Maximum $U_y$ & 7.873873560E+01 & 7.873873560E+01 \\
+      Average $V$ & 2.774864300E+00 & 2.774864300E+00 \\
+      Minimum $V$ & -6.038682990E+01 & -6.038682990E+01 \\
+      Maximum $V$ & 7.873873560E+01 & 7.873873560E+01 \\
       \hline
       Average $P$ & 1.324208380E+04 & 1.324208380E+04 \\
       Minimum $P$ & -1.390235490E+02 & -1.390235490E+02 \\
@@ -925,13 +927,13 @@ solutions will be analyzed in the following section.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & -1.802569840E-01 & -1.802569840E-01 \\
-      Minimum $U_x$ & -6.292084130E+01 & -6.292084130E+01 \\
-      Maximum $U_x$ & 2.951113240E+02 & 2.951113240E+02 \\
+      Average $U$ & -1.802569840E-01 & -1.802569840E-01 \\
+      Minimum $U$ & -6.292084130E+01 & -6.292084130E+01 \\
+      Maximum $U$ & 2.951113240E+02 & 2.951113240E+02 \\
       \hline
-      Average $U_y$ & 1.336398550E+01 & 1.336398550E+01 \\
-      Minimum $U_y$ & -1.345663290E+02 & -1.345663290E+02 \\
-      Maximum $U_y$ & 3.227873890E+02 & 3.227873890E+02 \\
+      Average $V$ & 1.336398550E+01 & 1.336398550E+01 \\
+      Minimum $V$ & -1.345663290E+02 & -1.345663290E+02 \\
+      Maximum $V$ & 3.227873890E+02 & 3.227873890E+02 \\
       \hline
       Average $P$ & 6.354313840E+04 & 6.354313840E+04 \\
       Minimum $P$ & -1.356309630E+02 & -1.356309630E+02 \\
@@ -1089,13 +1091,13 @@ values were within these tolerances.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & 1.165632320E-01 & 1.165632320E-01 \\
-      Minimum $U_x$ & -2.423642920E+01 & -2.423642920E+01 \\
-      Maximum $U_x$ & 9.742670880E+01 & 9.742670880E+01 \\
+      Average $U$ & 1.165632320E-01 & 1.165632320E-01 \\
+      Minimum $U$ & -2.423642920E+01 & -2.423642920E+01 \\
+      Maximum $U$ & 9.742670880E+01 & 9.742670880E+01 \\
       \hline
-      Average $U_y$ & 2.038480420E-02 & 2.038480420E-02 \\
-      Minimum $U_y$ & -5.266315430E+01 & -5.266315430E+01 \\
-      Maximum $U_y$ & 2.720044160E+01 & 2.720044160E+01 \\
+      Average $V$ & 2.038480420E-02 & 2.038480420E-02 \\
+      Minimum $V$ & -5.266315430E+01 & -5.266315430E+01 \\
+      Maximum $V$ & 2.720044160E+01 & 2.720044160E+01 \\
       \hline
       Average $P$ & -1.656193900E+02 & -1.656193900E+02 \\
       Minimum $P$ & -9.635479370E+03 & -9.635479370E+03 \\
@@ -1118,13 +1120,13 @@ values were within these tolerances.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & 3.382078040E-01 & 3.382078040E-01 \\
-      Minimum $U_x$ & -9.467140360E+01 & -9.467140360E+01 \\
-      Maximum $U_x$ & 2.895885380E+02 & 2.895885380E+02 \\
+      Average $U$ & 3.382078040E-01 & 3.382078040E-01 \\
+      Minimum $U$ & -9.467140360E+01 & -9.467140360E+01 \\
+      Maximum $U$ & 2.895885380E+02 & 2.895885380E+02 \\
       \hline
-      Average $U_y$ & 8.780242440E-02 & 8.780242440E-02 \\
-      Minimum $U_y$ & -1.830156060E+02 & -1.830156060E+02 \\
-      Maximum $U_y$ & 8.827373340E+01 & 8.827373340E+01 \\
+      Average $V$ & 8.780242440E-02 & 8.780242440E-02 \\
+      Minimum $V$ & -1.830156060E+02 & -1.830156060E+02 \\
+      Maximum $V$ & 8.827373340E+01 & 8.827373340E+01 \\
       \hline
       Average $P$ & -2.830380160E+03 & -2.830380160E+03 \\
       Minimum $P$ & -2.352177540E+04 & -2.352177540E+04 \\
@@ -1147,13 +1149,13 @@ values were within these tolerances.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & 5.098921320E-01 & 5.098921320E-01 \\
-      Minimum $U_x$ & -1.731861690E+02 & -1.731861690E+02 \\
-      Maximum $U_x$ & 4.789146040E+02 & 4.789146040E+02 \\
+      Average $U$ & 5.098921320E-01 & 5.098921320E-01 \\
+      Minimum $U$ & -1.731861690E+02 & -1.731861690E+02 \\
+      Maximum $U$ & 4.789146040E+02 & 4.789146040E+02 \\
       \hline
-      Average $U_y$ & 1.365493140E-01 & 1.365493140E-01 \\
-      Minimum $U_y$ & -3.170930360E+02 & -3.170930360E+02 \\
-      Maximum $U_y$ & 1.655401440E+02 & 1.655401440E+02 \\
+      Average $V$ & 1.365493140E-01 & 1.365493140E-01 \\
+      Minimum $V$ & -3.170930360E+02 & -3.170930360E+02 \\
+      Maximum $V$ & 1.655401440E+02 & 1.655401440E+02 \\
       \hline
       Average $P$ & -9.378317550E+03 & -9.378317550E+03 \\
       Minimum $P$ & -4.155215280E+04 & -4.155215280E+04 \\
@@ -1176,13 +1178,13 @@ values were within these tolerances.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & 6.479541170E-01 & 6.479541170E-01 \\
-      Minimum $U_x$ & -2.550685400E+02 & -2.550685400E+02 \\
-      Maximum $U_x$ & 6.663054900E+02 & 6.663054900E+02 \\
+      Average $U$ & 6.479541170E-01 & 6.479541170E-01 \\
+      Minimum $U$ & -2.550685400E+02 & -2.550685400E+02 \\
+      Maximum $U$ & 6.663054900E+02 & 6.663054900E+02 \\
       \hline
-      Average $U_y$ & 1.833690840E-01 & 1.833690840E-01 \\
-      Minimum $U_y$ & -4.491052980E+02 & -4.491052980E+02 \\
-      Maximum $U_y$ & 2.474376340E+02 & 2.474376340E+02 \\
+      Average $V$ & 1.833690840E-01 & 1.833690840E-01 \\
+      Minimum $V$ & -4.491052980E+02 & -4.491052980E+02 \\
+      Maximum $V$ & 2.474376340E+02 & 2.474376340E+02 \\
       \hline
       Average $P$ & 1.833690840E-01 & 1.833690840E-01 \\
       Minimum $P$ & -6.241704500E+04 & -6.241704500E+04 \\
@@ -1337,13 +1339,13 @@ values were within these tolerances.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & \\
-      Minimum $U_x$ & \\ 
-      Maximum $U_x$ & \\
+      Average $U$ & \\
+      Minimum $U$ & \\
+      Maximum $U$ & \\
       \hline
-      Average $U_y$ & \\
-      Minimum $U_y$ & \\ 
-      Maximum $U_y$ & \\ 
+      Average $V$ & \\
+      Minimum $V$ & \\
+      Maximum $V$ & \\
       \hline
       Average $P$ & \\ 
       Minimum $P$ & \\ 
@@ -1367,13 +1369,13 @@ values were within these tolerances.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & \\
-      Minimum $U_x$ & \\
-      Maximum $U_x$ & \\
+      Average $U$ & \\
+      Minimum $U$ & \\
+      Maximum $U$ & \\
       \hline
-      Average $U_y$ & \\
-      Minimum $U_y$ & \\
-      Maximum $U_y$ & \\
+      Average $V$ & \\
+      Minimum $V$ & \\
+      Maximum $V$ & \\
       \hline
       Average $P$ & \\
       Minimum $P$ & \\
@@ -1397,13 +1399,13 @@ values were within these tolerances.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & \\
-      Minimum $U_x$ & \\
-      Maximum $U_x$ & \\
+      Average $U$ & \\
+      Minimum $U$ & \\
+      Maximum $U$ & \\
       \hline
-      Average $U_y$ & \\
-      Minimum $U_y$ & \\
-      Maximum $U_y$ & \\
+      Average $V$ & \\
+      Minimum $V$ & \\
+      Maximum $V$ & \\
       \hline
       Average $P$ & \\
       Minimum $P$ & \\
@@ -1427,13 +1429,13 @@ values were within these tolerances.
       \multicolumn{1}{l}{Newton-Krylov Result}&
       \multicolumn{1}{l}{FANM Result}\\
       \hline
-      Average $U_x$ & \\
-      Minimum $U_x$ & \\
-      Maximum $U_x$ & \\
+      Average $U$ & \\
+      Minimum $U$ & \\
+      Maximum $U$ & \\
       \hline
-      Average $U_y$ & \\
-      Minimum $U_y$ & \\
-      Maximum $U_y$ & \\
+      Average $V$ & \\
+      Minimum $V$ & \\
+      Maximum $V$ & \\
       \hline
       Average $P$ & \\
       Minimum $P$ & \\
@@ -1881,7 +1883,7 @@ implementation optimization to avoid these large overheads.
 \clearpage
 
 %%---------------------------------------------------------------------------%%
-\section{Summary}
+\section{Summary\ }
 \label{sec:nonlinear_summary}
 
 In this chapter we have developed and explored Monte Carlo synthetic

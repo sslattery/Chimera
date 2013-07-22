@@ -8,9 +8,11 @@
 \copyrightpage
 
 % DEDICATION
-%% \begin{dedication}
-%% 	\emph{Please insert your dedication here.}
-%% \end{dedication}
+\begin{dedication}
+	\emph{Please insert your dedication here.}
+\end{dedication}
+
+\clearpage
 
 %% BEGIN PAGESTYLE
 
@@ -26,10 +28,29 @@
 
 \setcounter{secnumdepth}{3}
 
+\clearpage
+
 % ACKNOWLEDGMENTS
 \begin{acks}
 \input{frontmatter/acks}
 \end{acks}
+
+\clearpage
+
+\advisorname{Paul P.H. Wilson}
+\advisortitle{Professor}
+% ABSTRACT
+\begin{umiabstract}
+%%  \input{frontmatter/abstract}
+\end{umiabstract}
+
+\blankpage
+
+\begin{abstract}
+  \input{frontmatter/abstract}
+\end{abstract}
+
+\blankpage
 
 % CONTENTS, TABLES, FIGURES
 \renewcommand{\printtoctitle}[1]{\chapter*{#1}}
@@ -66,14 +87,14 @@
 
 \tableofcontents
 
-%% \clearpage
-%% \listoftables
+\clearpage
+\listoftables
 
-%% \clearpage
-%% \listoffigures
+\clearpage
+\listoffigures
 
-%% \clearpage
-%% \listofalgorithms
+\clearpage
+\listofalgorithms
 
 \clearpage
 % NOMENCLATURE
@@ -85,16 +106,7 @@
 % \input{conventions}
 % \end{conventions}
 
-\advisorname{Paul P.H. Wilson}
-\advisortitle{Professor}
-% ABSTRACT
-\begin{umiabstract}
-  \input{frontmatter/abstract}
-\end{umiabstract}
-
-\begin{abstract}
-  \input{frontmatter/abstract}
-\end{abstract}
+\blankpage
 
 \clearpage\pagenumbering{arabic}
 
