@@ -528,7 +528,7 @@ advective derivatives to grow.
         cavity problem.} \textit{Top left: Ra = \sn{1}{3}; Top right:
         Ra = \sn{1}{4}; Bottom left: Ra = \sn{1}{5}; Bottom left: Ra =
         \sn{1}{6}. Isotherms on unit temperature scale from 0 to 1
-        with divisions of 0.1 for each calculation.}}
+        with 10 uniformly spaced curves for each calculation.}}
   \label{fig:convection_isotherms}
 \end{figure}
 
@@ -578,10 +578,10 @@ near the center of the box.
     \includegraphics[width=6in]{chapters/nonlinear_problem/driven_velocity_isocurves.png}
   \end{center}
   \caption{\textbf{Velocity magnitude isocurves from solution to the
-      thermal convection cavity problem.} \textit{Top left: Re = 100;
-      Top right: Re= 300; Bottom left: Re = 500; Bottom left: Re =
-      700. Isocurves on unit velocity scale from 0 to 1 with divisions
-      of 0.05 for each calculation.}}
+      lid driven cavity problem.} \textit{Top left: Re = 100; Top
+      right: Re= 300; Bottom left: Re = 500; Bottom left: Re =
+      700. Isocurves on unit velocity scale from 0 to 1 with 20
+      uniformly spaced curves for each calculation.}}
   \label{fig:driven_velocity_isocurves}
 \end{figure}
 
@@ -600,7 +600,12 @@ domain with a 1/25 aspect ratio used for this work\footnote{The
   this work was not observed to disturb the recirculation zones and
   was therefore used to reduce memory pressure on the FANM solver.}
 with the boundary conditions as shown in
-Figure~\ref{fig:backward_facing_step}.
+Figure~\ref{fig:backward_facing_step}. For this work, a slightly
+different parabolic formulation was used than in the benchmark. In the
+benchmark solutions, the average velocity in the parabola was 2/3 that
+of the maximum velocity while formula given in
+Figure~\ref{fig:backward_facing_step} produces a more plug-like flow
+with an average velocity of 3/4 that of the maximum velocity.
 
 \begin{figure}[htpb!]
   \begin{center}
@@ -615,7 +620,8 @@ Figure~\ref{fig:backward_facing_step}.
       inlet conditions, the left boundary is split such that the top
       half has a fully formed parabolic flow profile and the bottom
       half has a zero velocity condition, simulating flow over a
-      step.}}
+      step. The $H$ parameter given in the parabolic inlet condition
+      is the width of the inlet.}}
   \label{fig:backward_facing_step}
 \end{figure}
 
@@ -637,18 +643,18 @@ designed to induce turbulence and improve heat transfer will create
 recirculation zones much like those observed for this benchmark
 problem. Figure~\ref{fig:step_velocity_isocurves} gives the velocity
 magnitude contours for solutions to this problem with Reynolds numbers
-of 200, 400, 600, and 800.
+of 200, 300, 400, and 500.
 
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/nonlinear_problem/driven_velocity_isocurves.png}
   \end{center}
   \caption{\textbf{Velocity magnitude isocurves from solution to the
-      thermal convection cavity problem.} \textit{From top to bottom:
-      Re = 200, Re = 400, Re = 600, Re = 800. Isocurves on unit
-      velocity scale from 0 to 1 with divisions of 0.05 for each
+      backward facing step problem.} \textit{From top to bottom: Re =
+      200, Re = 300, Re = 400, Re = 500. Isocurves on unit velocity
+      scale from 0 to 1 with 20 uniformly spaced curves for each
       calculation.}}
-  \label{fig:driven_velocity_isocurves}
+  \label{fig:step_velocity_isocurves}
 \end{figure}
 
 \clearpage
@@ -1220,7 +1226,7 @@ values were within these tolerances.
 
 A Drekar model of the backward facing step problem was solved using
 both the Newton-Krylov solver and a FANM solver for Reynolds numbers
-of 200, 400, 600, and 800 on a $20 \times 250$ rectangular
+of 200, 300, 400, and 500 on a $20 \times 250$ rectangular
 grid. Table~\ref{tab:backward_step_parameters} gives the physical
 parameters of the problem and Table~\ref{tab:step_mcsa_parameters}
 gives the MCSA solver parameters used within the FANM
@@ -1273,10 +1279,10 @@ again computed using method 2 from Shadid's work
       Weight Cutoff & \sn{1}{-2} \\
       Fixed Point Iteration & Richardson \\
       Estimator & Adjoint Collision \\
-      Histories, Re=200 & 600,000 per iteration \\
-      Histories, Re=400 & 600,000 per iteration \\
-      Histories, Re=600 & 600,000 per iteration \\
-      Histories, Re=800 & 1,000,000 per iteration \\
+      Histories, Re=200 & 500,000 per iteration \\
+      Histories, Re=300 & 500,000 per iteration \\
+      Histories, Re=400 & 500,000 per iteration \\
+      Histories, Re=500 & 1,000,000 per iteration \\
       Reduced Domain Fill Level, Re=200 & 200 \\
       Reduced Domain Fill Level, Re=400 & 200 \\
       Reduced Domain Fill Level, Re=600 & 200 \\
@@ -1295,12 +1301,26 @@ again computed using method 2 from Shadid's work
   \label{tab:step_mcsa_parameters}
 \end{table}
 
+In the literature on this benchmark, solutions at Reynolds numbers of
+up to 800 were achieved using a variety of nonlinear solution
+techniques. In identical fashion to the lid driven cavity problem, at
+Reynolds numbers above 500 convergence of the linear iterations could
+not be achieved with FANM regardless of how agressive the multigrid
+preconditioner was set. In these cases, the Jacobian operators are
+again ill-conditioned enough that a spectral radius of less than one
+could not be achieved with multigrid preconditioning and several cycle
+applications. Therefore, the spectral radius limitation on MCSA is
+extremely prohibitive in this case as well and even more so than the
+lid driven cavity problem where solutions at higher Reynolds numbers
+were achieved. Because of this, only solutions to the backward facing
+step benchmark at Reynolds numbers of up to 500 are presented.
+
 For the verification calculations, at each Reynolds number variation
 the global minimum, maximum, and average values were recorded for the
 fluid velocity in the x and y directions and the fluid
 pressure. Tables~\ref{tab:step_re200_results},
-\ref{tab:step_re400_results}, \ref{tab:step_re600_results}, and
-\ref{tab:step_re800_results} give the results of these
+\ref{tab:step_re300_results}, \ref{tab:step_re400_results}, and
+\ref{tab:step_re500_results} give the results of these
 computations. As with the thermal convection problem, the negative
 pressures computed are due to a relative pressure being reported. For
 each of the data points given, both Newton-Krylov solutions and FANM
@@ -1332,7 +1352,7 @@ values were within these tolerances.
       \hline\hline
     \end{tabular}
   \end{center}
-  \caption{\textbf{Backward facing step cavity FANM verification for a
+  \caption{\textbf{Backward facing step FANM verification for a
       Reynolds number of 200.} \textit{The values reported are global
       minima, maxima, and averages for each variable in the
       problem. The velocity is given in components in the $x$ and $y$
@@ -1362,7 +1382,37 @@ values were within these tolerances.
       \hline\hline
     \end{tabular}
   \end{center}
-  \caption{\textbf{Backward facing step cavity FANM verification for a
+  \caption{\textbf{Backward facing step FANM verification for a
+      Reynolds number of 300.} \textit{The values reported are global
+      minima, maxima, and averages for each variable in the
+      problem. The velocity is given in components in the $x$ and $y$
+      directions.}}
+  \label{tab:step_re300_results}
+\end{table}
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lll}\hline\hline
+      \multicolumn{1}{l}{Parameter}& 
+      \multicolumn{1}{l}{Newton-Krylov Result}&
+      \multicolumn{1}{l}{FANM Result}\\
+      \hline
+      Average $U_x$ & \\
+      Minimum $U_x$ & \\
+      Maximum $U_x$ & \\
+      \hline
+      Average $U_y$ & \\
+      Minimum $U_y$ & \\
+      Maximum $U_y$ & \\
+      \hline
+      Average $P$ & \\
+      Minimum $P$ & \\
+      Maximum $P$ & \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Backward facing step FANM verification for a
       Reynolds number of 400.} \textit{The values reported are global
       minima, maxima, and averages for each variable in the
       problem. The velocity is given in components in the $x$ and $y$
@@ -1392,42 +1442,12 @@ values were within these tolerances.
       \hline\hline
     \end{tabular}
   \end{center}
-  \caption{\textbf{Backward facing step cavity FANM verification for a
-      Reynolds number of 600.} \textit{The values reported are global
+  \caption{\textbf{Backward facing step FANM verification for a
+      Reynolds number of 500.} \textit{The values reported are global
       minima, maxima, and averages for each variable in the
       problem. The velocity is given in components in the $x$ and $y$
       directions.}}
-  \label{tab:step_re600_results}
-\end{table}
-
-\begin{table}[h!]
-  \begin{center}
-    \begin{tabular}{lll}\hline\hline
-      \multicolumn{1}{l}{Parameter}& 
-      \multicolumn{1}{l}{Newton-Krylov Result}&
-      \multicolumn{1}{l}{FANM Result}\\
-      \hline
-      Average $U_x$ & \\
-      Minimum $U_x$ & \\
-      Maximum $U_x$ & \\
-      \hline
-      Average $U_y$ & \\
-      Minimum $U_y$ & \\
-      Maximum $U_y$ & \\
-      \hline
-      Average $P$ & \\
-      Minimum $P$ & \\
-      Maximum $P$ & \\
-      %%
-      \hline\hline
-    \end{tabular}
-  \end{center}
-  \caption{\textbf{Backward facing step cavity FANM verification for a
-      Reynolds number of 800.} \textit{The values reported are global
-      minima, maxima, and averages for each variable in the
-      problem. The velocity is given in components in the $x$ and $y$
-      directions.}}
-  \label{tab:step_re800_results}
+  \label{tab:step_re500_results}
 \end{table}
 
 \begin{table}[h!]
@@ -1438,14 +1458,14 @@ values were within these tolerances.
       \multicolumn{1}{c}{FANM $||\ve{F(\ve{u})}||$}\\
       \hline
       200 & \\
+      300 & \\
       400 & \\
-      600 & \\
-      800 & \\
+      500 & \\
       %%
       \hline\hline
     \end{tabular}
   \end{center}
-  \caption{\textbf{Backward facing step cavity nonlinear residual norm
+  \caption{\textbf{Backward facing step nonlinear residual norm
       achieved convergence.} \textit{The results presented here were
       obtained from the benchmark verification calculations.}}
   \label{tab:step_residual_norm_comparison}
@@ -1808,7 +1828,7 @@ implementation optimization to avoid these large overheads.
       \hline\hline
     \end{tabular}
   \end{center}
-  \caption{\textbf{Backward facing step cavity nonlinear iteration
+  \caption{\textbf{Backward facing step nonlinear iteration
       results for the performance comparison.} \textit{The results
       presented here were obtained from the benchmark verification
       calculations.}}
@@ -1830,7 +1850,7 @@ implementation optimization to avoid these large overheads.
       \hline\hline
     \end{tabular}
   \end{center}
-  \caption{\textbf{Backward facing step cavity total sum of linear
+  \caption{\textbf{Backward facing step total sum of linear
       iterations for all nonlinear iterations.} \textit{The results
       presented here were obtained from the benchmark verification
       calculations.}}
@@ -1851,7 +1871,7 @@ implementation optimization to avoid these large overheads.
       \hline\hline
     \end{tabular}
   \end{center}
-  \caption{\textbf{Backward facing step cavity Newton-Krylov speedup
+  \caption{\textbf{Backward facing step Newton-Krylov speedup
       over FANM method.} \textit{Speedup values are rounded to the
       nearest integer. The results presented here were obtained from
       the benchmark verification calculations.}}
@@ -1871,14 +1891,15 @@ and findings.
 
 \begin{itemize}
 \item Forward-Automated Newton-MCSA (FANM), a new inexact Newton
-  method based on Monte Carlo synthetic acceleration, has been
+  method leveraging Monte Carlo synthetic acceleration, has been
   developed
 \item The FANM method has been incorporated into the Drekar
   multiphysics production code base developed at Sandia National
   Laboratories
 \item The FANM method has been verified to produce the same solutions
-  as a production Newton-Krylov method for two benchmark problems for
-  the Navier-Stokes equations in different flow regimes
+  as a production Newton-Krylov method for three difficult benchmark
+  problems for the Navier-Stokes equations in different flow regimes
+  and geometries
 \item The FANM method has better iterative performance than the
   Newton-Krylov method for convection dominated problems, converging
   in fewer linear solver iterations with the same preconditioning for
@@ -1890,13 +1911,15 @@ and findings.
 \item The spectral radius convergence restriction on MCSA was observed
   to be a signficant hinderance by preventing solutions to forced flow
   problems at high Reynolds numbers
-\item Explict algebraic preconditioning of MCSA creates FANM run times
-  $O(100)$ slower than the Newton-Krylov solver
+\item Explict algebraic preconditioning used to overcome the spectral
+  radius restriction of MCSA creates FANM run times
+  $O(100)$-$O(1,000)$ slower than the Newton-Krylov solver
 \item More Monte Carlo histories at every FANM iteration can reduce
   the number of linear and nonlinear iterations required to converge
   the problem
-\item With future optimization, reactor accident scenario analyses
-  that rely on convection dominated transport could experience
-  improved time to solution with FANM given the improved iterative
-  performance for problems of this type
+\item With future optimization, reactor accident analyses that rely on
+  convection dominated transport or steady state calculations
+  requiring flow at low Reynolds numbers could experience improved
+  time to solution with FANM given the improved iterative performance
+  observed for problems of these types
 \end{itemize}

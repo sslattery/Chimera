@@ -11,10 +11,11 @@ in a Monte Carlo context. From the $P_N$ equations, we apply a set of
 approximations to yield the $SP_N$ equations for fixed source and
 criticality problems. Using the fully-formed linear operator for the
 transport problem, we explore solutions to the $SP_N$ equations with
-Monte Carlo Synthetic Acceleration using a light water reactor fuel
-assembly criticality calculation as the driving problem. Several
-difficulties arise when applying MCSA to these problems that were not
-observed when investigating the simpler transport systems.
+Monte Carlo Synthetic Acceleration using a challenging light water
+reactor fuel assembly criticality calculation as the driving
+problem. Several difficulties arise when applying MCSA to these
+problems that were not observed when investigating the simpler
+transport systems.
 
 For Jacobi-based preconditioners, convergence with MCSA is difficult
 if not impossible for ill-conditioned systems with this behavior
@@ -1625,8 +1626,8 @@ preconditioners will next be studied with both the collision and
 expected value estimators using the best preconditioning and
 relaxation parameter combinations found by the previous
 analysis. Additionally, both the Richardson-based MCSA iteration given
-by Eq~(\ref{eq:mcsa}) and the MINRES-based MCSA iteration given by
-Eq~(\ref{eq:mcsa_minres}) will be used. Although the expected value
+by Eq~(\ref{eq:mcsa}) and the minimal residual-based MCSA iteration given by
+Eq~(\ref{eq:mcsa_min_res}) will be used. Although the expected value
 estimator achieved the best iterative performance in the previous
 comparison and analysis for the simple Poisson problem in
 \S~\ref{sec:parameter_estimator_analysis}, it is possible that the
@@ -1640,9 +1641,9 @@ magnitude more states at every transition event.
 For this study, the fuel assembly problem with a 1-group $SP_1$
 discretization was solved using MCSA with the adjoint Monte Carlo
 solver using both the collision and expected value estimators and both
-the Richardson and MINRES fixed point iterations. Using the results
-from the previous section, a Neumann relaxation parameter of 0.7 was
-used with both estimators and fixed point iterations. For the
+the Richardson and minimal residual fixed point iterations. Using the
+results from the previous section, a Neumann relaxation parameter of
+0.7 was used with both estimators and fixed point iterations. For the
 collision estimator, a Richardson relaxation parameter of 1.1 was used
 with the Richardson iteration while it was found the expected value
 estimator had the best performance when a Richardson relaxation
@@ -1672,21 +1673,22 @@ iterations creates a relative insensitivity to the number of histories
 used to compute the correction. Marginally better iterative and timing
 performance was observed for the expected value estimator when using
 the Richardson iteration. Better timing performance is expected as
-computing the extrapolation parameter in the MINRES iteration requires
-several additional parallel operations. However, we expect that
-because the MINRES iteration will converge faster on its own when
-compared to the Richardson iteration that better iterative performance
-will be observed when it is accelerated with MCSA. The fact that this
-was not observed signals that an MCSA scheme leveraging the expected
-value estimator is also effectively insensitive to the fixed point
-iteration used. For the collision estimator, the MINRES iteration
-permits fewer stochastic histories to be used with each MCSA iteration
-while still maintaining good iterative performance. With respect to
-CPU time, there is a more pronounced effect due to the larger density
-of states created by the explicit ILUT preconditioning. Using a
-reduced domain fill level of 100 creates a situation where the
-expected value estimator is significantly more expensive per history
-to compute that the collision estimator due to the coupling of states.
+computing the extrapolation parameter in the minimal residual
+iteration requires several additional parallel operations. However, we
+expect that because the minimal residual iteration will converge
+faster on its own when compared to the Richardson iteration that
+better iterative performance will be observed when it is accelerated
+with MCSA. The fact that this was not observed signals that an MCSA
+scheme leveraging the expected value estimator is also effectively
+insensitive to the fixed point iteration used. For the collision
+estimator, the minimal residual iteration permits fewer stochastic
+histories to be used with each MCSA iteration while still maintaining
+good iterative performance. With respect to CPU time, there is a more
+pronounced effect due to the larger density of states created by the
+explicit ILUT preconditioning. Using a reduced domain fill level of
+100 creates a situation where the expected value estimator is
+significantly more expensive per history to compute that the collision
+estimator due to the coupling of states.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1697,7 +1699,8 @@ to compute that the collision estimator due to the coupling of states.
       collision and expected value estimators were used with the
       adjoint Monte Carlo solver to compute the correction at each
       iteration. Each estimator was used with the Richardson and
-      MINRES fixed point iterations within an MCSA iteration.}}
+      minimal residual fixed point iterations within an MCSA
+      iteration.}}
   \label{fig:spn_estimator_iters}
 \end{figure}
 
@@ -1710,7 +1713,8 @@ to compute that the collision estimator due to the coupling of states.
     \textit{Both the collision and expected value estimators were used
       with the adjoint Monte Carlo solver to compute the correction at
       each iteration. Each estimator was used with the Richardson and
-      MINRES fixed point iterations within an MCSA iteration.}}
+      minimal residual fixed point iterations within an MCSA
+      iteration.}}
   \label{fig:spn_estimator_time}
 \end{figure}
 
@@ -1745,7 +1749,8 @@ all have similar minimum CPU times over the range of values tested.
     \textit{Both the collision and expected value estimators were used
       with the adjoint Monte Carlo solver to compute the correction at
       each iteration. Each estimator was used with the Richardson and
-      MINRES fixed point iterations within an MCSA iteration.}}
+      minimal residual fixed point iterations within an MCSA
+      iteration.}}
   \label{fig:spn_estimator_convergence}
 \end{figure}
 
@@ -1817,11 +1822,11 @@ group 0).
       GMRES-ILUT & GMRES preconditioned with ILUT \\
       MCSA-ILUT-R-C & MCSA preconditioned with ILUT using Richardson \\ 
                     & fixed point iteration and collision estimator \\
-      MCSA-ILUT-MR-C & MCSA preconditioned with ILUT using MINRES \\
+      MCSA-ILUT-MR-C & MCSA preconditioned with ILUT using minimal residual \\
                      & fixed point iteration and collision estimator \\
       MCSA-ILUT-R-EV & MCSA preconditioned with ILUT using Richardson \\
                      & fixed point iteration and expected value estimator \\
-      MCSA-ILUT-MR-EV & MCSA preconditioned with ILUT using MINRES \\
+      MCSA-ILUT-MR-EV & MCSA preconditioned with ILUT using minimal residual \\
                       & fixed point iteration and expected value estimator \\
       %%
       \hline\hline
@@ -2250,7 +2255,8 @@ observations and findings.
 \item MCSA was observed to converge in fewer iterations per eigenvalue
   iteration than GMRES for the fuel assembly criticality problem and
   more then Bi-CGStab
-\item The explicit preconditioning strategy creates MCSA runtimes
-  $O(100)$ larger than the production Krylov methods for the fuel
-  assembly criticality problem
+\item The explicit preconditioning strategy required to overcome the
+  MCSA spectral radius restriction creates runtimes $O(100)$ larger
+  than the production Krylov methods for the fuel assembly criticality
+  problem
 \end{itemize}
