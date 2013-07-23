@@ -264,20 +264,9 @@ which simplifies to:
   \label{eq:iteration_spectrum}
 \end{equation}
 giving the eigenvalue spectrum for the Jacobi preconditioned iteration
-matrix. To find the maximum eigenvalue,
-Eq~(\ref{eq:preconditioned_eigenvalues}) is plotted as a function of
-$p$ with $p=q$ in Figure~\ref{fig:diffusion_spectrum} for various
-values of $\Sigma_a$.
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=5in,clip]{chapters/parallel_mc/diffusion_spectrum.png}
-  \end{center}
-  \caption{\textbf{Eigenvalue spectra for the diffusion equation.}}
-  \label{fig:diffusion_spectrum}
-\end{figure}
-We find that the maximum eigenvalue exists when $p=q=0$, giving the
-following for the spectral radius of the Jacobi preconditioned
-iteration matrix:
+matrix. We find that the maximum eigenvalue exists when $p=q=0$,
+giving the following for the spectral radius of the Jacobi
+preconditioned iteration matrix:
 \begin{equation}
   \rho(\ve{H}) = \frac{10 \alpha D}{3 h^2}\:.
   \label{eq:iteration_radius}
@@ -448,7 +437,7 @@ solver.
 \begin{figure}[t!]
   \begin{spacing}{1.0}
     \begin{center}
-      \includegraphics[width=5in,clip]{chapters/parallel_mc/measured_spec_rad.png}
+      \includegraphics[width=4in,clip]{chapters/parallel_mc/measured_spec_rad.png}
     \end{center}
     \caption{\textbf{Measured and analytic preconditioned diffusion
         operator spectral radius as a function of the absorption cross
@@ -554,7 +543,7 @@ matrix spectral radius.
 \begin{figure}[t!]
   \begin{spacing}{1.0}
     \begin{center}
-      \includegraphics[width=6.0in,clip]{chapters/parallel_mc/leakage_variation_2.pdf}
+      \includegraphics[width=4.75in,clip]{chapters/parallel_mc/leakage_variation_2.pdf}
     \end{center}
     \caption{\textbf{Measured and analytic domain leakage as a
         function of the iteration matrix spectral radius.} \textit{To
@@ -580,7 +569,7 @@ Figure~\ref{fig:leakage_error} for all domain sizes tested.
 \begin{figure}[t!]
   \begin{spacing}{1.0}
     \begin{center}
-      \includegraphics[width=6.0in,clip]{chapters/parallel_mc/leakage_error_2.pdf}
+      \includegraphics[width=4.75in,clip]{chapters/parallel_mc/leakage_error_2.pdf}
     \end{center}
     \caption{\textbf{Measured and analytic domain leakage absolute
         difference as a function of the iteration matrix spectral radius.}
@@ -2386,7 +2375,7 @@ that increase the time to solution for a single iteration.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_ms_impeff.pdf}
+    \includegraphics[width=5in]{chapters/parallel_mc/titan_strong_ms_impeff.pdf}
   \end{center}
   \caption{\textbf{Multiple set strong scaling implementation
       efficiency.} \textit{Computed relative to the 16-core 1-set base
@@ -2772,7 +2761,7 @@ solution.
 \label{sec:parallel_summary}
 
 In this chapter we have developed a domain-decomposed parallel
-algorithm for Monte Carlo synthetic acceleration and explored the
+algorithm for Monte Carlo Synthetic Acceleration and explored the
 qualities of the algorithm through parallel scaling studies. The
 following are the significant observations and findings.
 
