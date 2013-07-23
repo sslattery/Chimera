@@ -1,55 +1,21 @@
 \chapter{Monte Carlo Synthetic Acceleration Methods for the
   Navier-Stokes \\Equations\ }
 \label{ch:nonlinear_problem}
-Nonlinear transport problems are a common occurrence in single and
-multiple physics problems in nuclear engineering. Systems of partial
-differential equations, such as the Navier-Stokes equations that
-describe fluid flow, yield discrete sets of stiff equations with
-nonlinearities present in the variables when discretized by
-conventional methods. These sets of equations characterize momentum
-and energy transport through diffusion, viscous forces and convection,
-and inertial forces. Traditionally, such systems have been solved by
-linearizing them in a form where the nonlinearities in the variables
-are eliminated and more traditional linear methods can be used for
-solutions. Often characterized as segregated methods where physics
-operators are split and their action on the system approximated in
-steps, such methods lack consistency and accuracy in resolving the
-nonlinear component of the solution. In the last 30 years, fully
-consistent nonlinear methods based on Newton's method have become more
-popular and many advances have been made in the nuclear engineering
-field to employ these methods.
-
-In the context of solving standalone linear systems, Monte Carlo
-methods do not provide significant merit over subspace methods due to
-the fact that the linear operator must be explicitly formed. For many
-applications including higher fidelity neutron transport
-discretizations beyond the $SP_N$ equations solved in the previous
-chapter, such a requirement is prohibitive and perhaps not even
-feasible to implement. Therefore, a discrete Monte Carlo solution
-method is best suited for situations in which the operator is readily,
-if not naturally, formed. Modern nonlinear methods meet this
-requirement with Newton methods used in conjunction with Krylov
-methods operating on a fully formed matrix for a robust solution
-strategy. Furthermore, modern techniques exist that permit the
-automatic construction of the Jacobian operator generated within a
-Newton method based on the nonlinear residual evaluations, providing
-all of the components necessary for a Monte Carlo solver to provide
-value. We therefore devise a new nonlinear method based on the MCSA
-algorithm and Newton's method.
 
 In this chapter the fundamentals of Newton's method will be presented
 along with a brief discussion of inexact Newton methods. Newton-Krylov
 methods, a variant of inexact Newton methods, will be outlined
 including with two common techniques for numerically representing the
-Jacobian most commonly used in today's applications. Following this,
-the new algorithm will be presented and implementation details will be
-discussed. Using the new algorithm and a production fluid physics
-code, a group of challenging nonlinear benchmark problems for the
-Navier-Stokes equations will be used to verify the correctness of the
-method relative to solutions obtained using conventional methods in
-various flow regimes and geometries. Finally, we will compare the
-performance of the new method against contemporary Newton-Krylov
-methods for the same benchmark problems.
+Jacobian most commonly used in today's applications. Following this, a
+new algorithm utilizing Monte Carlo Synthetic Acceleration will be
+presented and implementation details will be discussed. Using the new
+algorithm and a production fluid physics code, a group of challenging
+nonlinear benchmark problems for the Navier-Stokes equations will be
+used to verify the correctness of the method relative to solutions
+obtained using conventional methods in various flow regimes and
+geometries. Finally, we will compare the performance of the new method
+against contemporary Newton-Krylov methods for the same benchmark
+problems.
 
 %%---------------------------------------------------------------------------%%
 \section{Preliminaries\ }
