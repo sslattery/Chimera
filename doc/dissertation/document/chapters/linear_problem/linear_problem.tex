@@ -2,9 +2,9 @@
 \label{ch:linear_problem}
 The discretization of partial differential equations (\textit{PDEs})
 through common methods such as finite differences
-\citep{leveque_finite_2007}, finite volumes
-\citep{leveque_finite_2002}, and finite elements
-\citep{zienkiewicz_finite_2005} ultimately generates sets of coupled
+\cite{leveque_finite_2007}, finite volumes
+\cite{leveque_finite_2002}, and finite elements
+\cite{zienkiewicz_finite_2005} ultimately generates sets of coupled
 equations in the form of matrix problems. In many cases, these
 matrices are sparse, meaning that the vast majority of their
 constituent elements are zero. This sparsity is due to the fact that
@@ -20,7 +20,7 @@ remainder of this work. Details on the parallelization of conventional
 methods are discussed.\footnote{The contents of this appendix,
   particularly those sections relating to projection methods and
   matrix analysis, are heavily based on Saad's text
-  \citep{saad_iterative_2003}.}
+  \cite{saad_iterative_2003}.}
 
 \section{Stationary Methods\ }
 \label{sec:stationary_methods}
@@ -74,7 +74,7 @@ place restrictions on the iteration matrix by using the tools
 developed in \S~(\ref{sec:linear_preliminaries}). By assuming $\ve{H}$
 is diagonalizable\footnote{We may generalize this to
   non-diagonalizable matrices with the Jordan canonical form of
-  $\ve{H}$.} \citep{saad_iterative_2003}, we then have:
+  $\ve{H}$.} \cite{saad_iterative_2003}, we then have:
 \begin{equation}
   \ve{e}^{k} =
   \ve{R}\boldsymbol{\Lambda}^k\ve{R}^{-1}\ve{e}^0\:,
@@ -233,7 +233,7 @@ constraint subspace also then gives us the result via
 Eq~(\ref{eq:linear_projection_constraint}) that the residual is
 minimized for all $\boldsymbol{\delta} \in \mathcal{K}$, forming the
 basis for the \textit{generalized minimum residual method} (GMRES)
-\citep{saad_gmres:_1986}.
+\cite{saad_gmres:_1986}.
 
 Choosing GMRES as our model Krylov method, we are first tasked with
 finding a projector onto the subspace. We seek an orthonormal basis
@@ -290,7 +290,7 @@ directions (and therefore less than optimal). From an implementation
 perspective, because the operator is not required to be formed, GMRES
 is significantly more flexible in its usage in that there are many
 instances where various processes serve to provide the action of that
-operator (e.g. radiation transport sweeps \citep{evans_denovo:_2010})
+operator (e.g. radiation transport sweeps \cite{evans_denovo:_2010})
 that normally may not be amenable to its full construction. In
 addition, the minimization problem is a straight-forward least-squares
 problem where $\ve{H}$ is an upper-Hessenberg matrix.
@@ -302,17 +302,17 @@ memory architectures rely heavily on capabilities provided by general
 linear algebra frameworks. For methods like GMRES, this arises from
 the fact that Krylov methods require only a handful of operation types
 in their implementation that can be efficiently programmed on these
-architectures. Per Saad's text \citep{saad_iterative_2003} and as
+architectures. Per Saad's text \cite{saad_iterative_2003} and as
 noted in Algorithm~\ref{alg:gmres}, these operations are
 preconditioning, matrix-vector multiplications, vector updates, and
 inner products. For the last three items, linear algebra libraries
-such as PETSc \citep{gropp_scalable_1993} and Trilinos
-\citep{heroux_overview_2005} provide efficient parallel
+such as PETSc \cite{gropp_scalable_1993} and Trilinos
+\cite{heroux_overview_2005} provide efficient parallel
 implementations for these operations. Depending on the type of
 preconditioning used, efficient parallel implementations may also be
 available for those operations. Due to their prevalence in modern
 numerical methods, parallel formulations these operations have
-warranted intense study \citep{tuminaro_parallel_1998}. In all cases, a series
+warranted intense study \cite{tuminaro_parallel_1998}. In all cases, a series
 of scatter/gather operations are required such that global
 communication operations must occur. Although the relative performance
 of such operations is bound to the implementation, asymptotically
@@ -322,7 +322,7 @@ We will look at the three primary parallel matrix/vector operations as
 preconditioning is not an immediate requirement for implementing the
 algorithms. We note here that variants are available that reduce the
 number of global communications required (consider
-\citep{sosonkina_scalable_1998} as an example of reducing global
+\cite{sosonkina_scalable_1998} as an example of reducing global
 operation counts using a different orthogonalization procedure than
 Arnoldi), however, we will only consider the basic algorithms here as
 this handful of operations can be generalized to fit more complicated
@@ -337,7 +337,7 @@ subset forms a local set of complete equations. The form of this
 partitioning is problem dependent and often has a geometric or
 graph-based aspect to its construction in order to optimize
 communication patterns. Libraries such as Zoltan
-\citep{devine_zoltan_2002}, provide implementations of such
+\cite{devine_zoltan_2002}, provide implementations of such
 algorithms.
 
 \subsection{Parallel Vector Update}
@@ -402,7 +402,7 @@ distributed to all processes.
 We finally consider parallel matrix-vector multiplication operations
 using sparse matrices in a compressed storage format by considering
 Saad's outline as well as the more formal work of Tuminaro
-\citep{tuminaro_parallel_1998}. For these operations, more complex
+\cite{tuminaro_parallel_1998}. For these operations, more complex
 communication patterns will be required given that the entire global
 vector is required in order to compute a single element of the local
 product vector. Fortunately, the vast majority of the global vector
@@ -499,7 +499,7 @@ orthogonalize that subspace to increase.
 As an example of these performance implications in practice, in a 2001
 work, Gropp and colleagues presented results on fluid dynamic
 simulations that heavily leveraged Krylov methods in their solution
-schemes \citep{gropp_high-performance_2001}. In this follow-on to
+schemes \cite{gropp_high-performance_2001}. In this follow-on to
 their 1997 Bell Prize-winning work, part of their analysis included
 identifying parallel scalability bottlenecks generated by solver
 implementations in a strong scaling exercise where the number of

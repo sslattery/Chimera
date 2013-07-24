@@ -130,7 +130,7 @@ be quantified analytically for a simple model problem.
 \label{sec:analytic_framework}
 To date, parallel Neumann-Ulam methods have been limited to full
 domain replication with parallelism exploited through individual
-histories \citep{alexandrov_efficient_1998} and in this chapter we
+histories \cite{alexandrov_efficient_1998} and in this chapter we
 will exploit particle transport algorithms to alleviate this. To
 accomplish this, we recognize from the literature that stochastic
 histories must be transported from domain to domain as the simulation
@@ -141,7 +141,7 @@ must occur between compute nodes owning neighboring pieces of the
 global domain. We wish to characterize this communication not only
 because communication is in general expensive, but also because these
 nearest-neighbor communication sequences, specifically, have poor
-algorithmic strong scaling \citep{gropp_high-performance_2001} in much
+algorithmic strong scaling \cite{gropp_high-performance_2001} in much
 the same way as a parallel matrix-vector multiply
 operation. Therefore, we desire a framework to provide a simple,
 analytic theory based on the properties of the transport system that
@@ -174,7 +174,7 @@ The convergence of the Neumann series in
 Eq~(\ref{eq:adjoint_neumann_series}) approximated by the Monte Carlo
 solver is dependent on the eigenvalues of the iteration matrix. We
 will compute these eigenvalues by assuming eigenfunctions of the form
-\citep{leveque_finite_2007}:
+\cite{leveque_finite_2007}:
 \begin{equation}
   \Phi_{p,q}(x,y) = e^{2 \pi \imath p x} e^{2 \pi \imath q y}\:,
   \label{eq:eigenfunction_form}
@@ -282,7 +282,7 @@ adjoint Neumann-Ulam method, $k$ iterations, equivalent to $k$
 applications of the iteration matrix, are approximated by a random
 walk of average length $k$ to yield the summation in
 Eq~(\ref{eq:adjoint_neumann_solution})
-\citep{dimov_new_1998,danilov_asymptotic_2000}. This random walk
+\cite{dimov_new_1998,danilov_asymptotic_2000}. This random walk
 length, or the number of transitions before the termination of a
 history (either by the weight cutoff, absorption, or exiting the
 global domain) is therefore approximately the number of stationary
@@ -320,7 +320,7 @@ the domain they started in and must instead be communicated. This
 communication, expected to be expensive, was analyzed by Siegel and
 colleagues for idealized, load balanced situations for full nuclear
 reactor core Monte Carlo neutral particle simulations
-\citep{siegel_analysis_2012}.  To quantify the number of particles
+\cite{siegel_analysis_2012}.  To quantify the number of particles
 that leak out of the local domain they define a leakage fraction,
 $\Lambda$, as:
 \begin{equation}
@@ -331,7 +331,7 @@ $\Lambda$, as:
 For their studies, Siegel and colleagues assumed that the value of
 $\Lambda$ was dependent on the total cross section of the system via
 the Wigner rational approximation. Outlined more thoroughly by Hwang's
-chapter in \citep{azmy_nuclear_2010}, we will use both the Wigner
+chapter in \cite{azmy_nuclear_2010}, we will use both the Wigner
 rational approximation and the mean chord approximation as a means to
 estimate the leakage fraction.
 
@@ -604,7 +604,7 @@ $\rho(\ve{H})$), the approximations are more accurate.
 In the context of radiation transport, in 2009 Brunner and colleagues
 provided a fully asynchronous domain decomposed parallel algorithm as
 implemented in production implicit Monte Carlo codes
-\citep{brunner_efficient_2009}. We will adapt their algorithm and
+\cite{brunner_efficient_2009}. We will adapt their algorithm and
 directly apply it to a parallel formulation of the Neumann-Ulam
 method. Direct analogs can be derived from their works by noting that
 the primary difference between solving a linear transport system with
@@ -631,7 +631,7 @@ In this section Brunner and Brantley's fully asynchronous algorithm,
 which was effectively implemented verbatim for this work, is presented
 along with its application to the Neumann-Ulam method. For
 considerably more detail, the algorithm presented can be found in
-\citep{brunner_efficient_2009}. In their work they identify two data
+\cite{brunner_efficient_2009}. In their work they identify two data
 sets that are required to be communicated: the sharing of particles
 that are transported from one domain to another and therefore from one
 processor to another and a global communication that signals if
@@ -952,14 +952,14 @@ child processes if transport is complete.
 In this manner the transport loop continues until all process have
 received the stop signal from their parents. Older versions of this
 algorithm, particularly some of those presented in
-\citep{brunner_comparison_2006}, use a master/slave approach as given
+\cite{brunner_comparison_2006}, use a master/slave approach as given
 by Figure~\ref{fig:master_comm_tree} for the completion of a transport
 stage instead of the binary tree scheme. In this approach, the root
 process still manages the final summation of the completion tally, it
 directly receives completed tally results from all other processes in
 the problem instead of from just its children. Although this
 implementation is potentially simpler to understand than the binary
-tree approach, the authors of \citep{brunner_comparison_2006} observed
+tree approach, the authors of \cite{brunner_comparison_2006} observed
 that this type of termination pattern, even when implemented in a
 fully asynchronous manner, was a major scalability bottleneck. This
 bottleneck is due to the fact that the master process falls behind the
@@ -1015,7 +1015,7 @@ replication could be used to solve some of these issues. In 2010,
 Wagner and colleagues developed the \textit{multiple-set
   overlapping-domain} (MSOD) decomposition for parallel Monte Carlo
 applications for full-core light water reactor analysis
-\citep{wagner_hybrid_2010}. In their work, an extension of Brunner's,
+\cite{wagner_hybrid_2010}. In their work, an extension of Brunner's,
 their scheme employed similar parallel algorithms for particle
 transport but a certain amount of overlap between adjacent domains was
 used to decrease the number of particles leaving the local domain. In
@@ -1041,7 +1041,7 @@ source is sampled in the local domain that would exist if no overlap
 was used while tallies can be made over the entire overlapping domain.
 
 To demonstrate this, consider the example adapted from Mervin's work
-with Wagner and others in the same area \citep{mervin_variance_2012}
+with Wagner and others in the same area \cite{mervin_variance_2012}
 and presented in Figure~\ref{fig:msod_example}.
 \begin{figure}[t!]
   \begin{center}
@@ -1314,7 +1314,7 @@ diffusion system presented in
 Appendix~\ref{chap:diffusion_problem}. As the reference computation,
 serial results will be used from the conjugate gradient solver in
 Belos, a linear solvers package in the Trilinos scientific computing
-libraries \citep{heroux_overview_2005}. In identical fashion to the
+libraries \cite{heroux_overview_2005}. In identical fashion to the
 verification for the $SP_N$ equations performed in
 \S~\ref{sec:spn_mcsa_verification}, we will solve the neutron
 diffusion problem in parallel using multiple cores on a desktop
@@ -1462,7 +1462,7 @@ How effectively the presented algorithms parallelize MCSA will be
 determined by several performance measures. For this work, these
 measures will come directly from Keyes' primer on the scalability of
 domain decomposed methods and specifically his discussion on how to
-measure their parallel performance \citep{keyes_how_1999}. All of
+measure their parallel performance \cite{keyes_how_1999}. All of
 these metrics are derived from two measured quantities: the number of
 iterations required for convergence and the total wall time required
 for convergence. Each of these quantities are then measured in varying
@@ -1483,7 +1483,7 @@ be provided.
 
 Of primary interest to the nuclear engineer is the \textit{strong
   scaling} performance of an algorithm
-\citep{siegel_analysis_2012}. In this type of scaling study, the
+\cite{siegel_analysis_2012}. In this type of scaling study, the
 global problem size is fixed and the local problem size changes with
 the number of processes in the calculation. In this case, as $P$
 increases, $N$ is fixed, thus reducing the local problem size and
@@ -1606,7 +1606,7 @@ computed using the Monte Carlo Linear Solvers\footnote{MCLS is an open
 library generated specifically for this work while the conjugate
 gradient and GMRES Krylov solvers used are part of the Belos linear
 solver package within the Trilinos framework
-\citep{heroux_overview_2005}. In general, the Belos package produces
+\cite{heroux_overview_2005}. In general, the Belos package produces
 solutions to the neutron diffusion problem nearly two orders of
 magnitude faster than the MCLS library for serial computations using
 the conjugate gradient solver. Therefore, when we directly compare
@@ -2569,7 +2569,7 @@ problem.
 Considering using MCSA in this way such that the Monte Carlo solve
 occurs only in the subdomains casts the method as more of a true
 domain decomposition as outlined by Chapter 14 of Saad's text on
-iterative methods \citep{saad_iterative_2003}. Compared to traditional
+iterative methods \cite{saad_iterative_2003}. Compared to traditional
 domain decomposition methods we see many similarities including the
 potential to overlap the subdomains to improve the results. By
 building the boundary data as outlined in
@@ -2579,7 +2579,7 @@ requirements of the Monte Carlo estimators. Furthermore, the fact that
 we are using residual Monte Carlo to compute the correction vector
 casts MCSA as a stochastic realization of an additive Schwarz method
 with a fixed point iteration used as a relaxation step\footnote{See
-  section 14.3.3 in \citep{saad_iterative_2003} for a full definition
+  section 14.3.3 in \cite{saad_iterative_2003} for a full definition
   of the additive Schwarz method.}. Both the fixed point iteration and
 the computation of the residual propagate the solution from individual
 subdomains to the others through the matrix-vector multiply operation
@@ -2783,9 +2783,10 @@ following are the significant observations and findings.
 \item Overlap in small quantities determined analytically by random
   walk length can provide parallel efficiency boosts of a few percent
   in strong scaling cases but is ineffective in weak scaling cases
-\item Multiple sets will never boost parallel efficiencies in both
-  weak and strong scaling cases due to additional communication
-  overhead from added reduction operations
+\item Multiple sets will never boost parallel efficiencies in the weak
+  scaling case due to additional communication overhead from added
+  reduction operations but will boost efficiencies beyond the strong
+  scaling wall
 \item Multiple sets offers a means to reduce time to solution by
   solving multiple copies of the original problem and combining the
   solutions using superposition

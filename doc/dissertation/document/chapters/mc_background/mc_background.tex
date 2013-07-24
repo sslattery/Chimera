@@ -5,26 +5,26 @@ Monte Carlo methods that sample a distribution with an expectation
 value equivalent to that of the inverted operator. Such methods have
 been in existence for decades with the earliest reference noted here a
 manuscript published in 1950 by Forsythe and Leibler
-\citep{forsythe_matrix_1950}. In their outline, Forsythe and Leibler
+\cite{forsythe_matrix_1950}. In their outline, Forsythe and Leibler
 in fact credit the creation of this technique to J. Von Neumann and
 S.M. Ulam some years earlier than its publication. In 1952 Wasow
 provided a more formal explanation of Von Neumann and Ulam's method
-\citep{wasow_note_1952} and Hammersley and Handscomb's 1964 monograph
-\citep{hammersley_monte_1964} and Spanier and Gelbard's 1969 book
-\citep{spanier_monte_1969} present additional detail on this topic
+\cite{wasow_note_1952} and Hammersley and Handscomb's 1964 monograph
+\cite{hammersley_monte_1964} and Spanier and Gelbard's 1969 book
+\cite{spanier_monte_1969} present additional detail on this topic
 using a collection of references from the 1950's and early
 1960's. 
 
 Following this work, Halton presented a residual Monte Carlo scheme
 that improved dramatically on the performance of these methods
-\citep{halton_sequential_1962}. Recent work in this area has utilized
+\cite{halton_sequential_1962}. Recent work in this area has utilized
 these residual Monte Carlo methods in particle transport
-\citep{evans_residual_2003}, giving accelerated convergence over
+\cite{evans_residual_2003}, giving accelerated convergence over
 traditional methods. As an expansion of Halton's work, Evans and
 others have leveraged these methods in a synthetic acceleration scheme
 that has been shown to be competitive with production Krylov methods
 for radiation transport problems and improve performance significantly
-over Halton's sequential method \citep{evans_monte_2012}.
+over Halton's sequential method \cite{evans_monte_2012}.
 
 In this chapter, we will present the fundamentals of the Monte Carlo
 method for discrete linear systems. Both the forward and adjoint
@@ -90,7 +90,7 @@ Eq~(\ref{eq:eigenvalue_problem_2}) for a particular permutation of
 $\ve{x}$. The set of all permutations form the \textit{eigenvectors}
 of $\ve{A}$. A quantity of particular interest that is computable from
 the eigenvalues of a matrix $\ve{A}$ is the \textit{spectral radius},
-$\rho(\ve{A})$, defined by Saad \citep{saad_iterative_2003} as:
+$\rho(\ve{A})$, defined by Saad \cite{saad_iterative_2003} as:
 \begin{equation}
   \rho(\ve{A}) = \max_{\lambda \in \sigma(\ve{A})} |\lambda| \:.
   \label{eq:spectral_radius}
@@ -104,7 +104,7 @@ to Eq~(\ref{eq:linear_problem}). For a given linear operator $\ve{A}$,
 we can use diagonal splitting in a similar manner as the stationary
 method in Eq~(\ref{eq:linear_split_equation2}) to define the following
 operator\footnote{It should be noted that non-diagonal splittings have
-  been recently explored \citep{srinivasan_monte_2010} and have the
+  been recently explored \cite{srinivasan_monte_2010} and have the
   potential to improve efficiency. However, it was observed in this
   work that this type of splitting did not improve performance in the
   asymptotic limit of $\rho(\ve{H}) \rightarrow 1$ for non-trivial
@@ -162,7 +162,7 @@ where $\circ$ denotes the Hadamard product operation\footnote{The
   element-wise as $a_{ij} = b_{ij} c_{ij}$.}, $\ve{P}$ denotes the
 transition probability matrix, and $\ve{W}$ denotes the transition
 weight matrix. This decomposition, a generalization of Dimov's work
-\citep{dimov_new_1998}, is an extension of the original Neumann-Ulam
+\cite{dimov_new_1998}, is an extension of the original Neumann-Ulam
 scheme in that now a weight cutoff can be used to terminate a random
 walk sequence and therefore truncate the Neumann series it is
 approximating. The formulation of $\ve{P}$ and $\ve{W}$ will be
@@ -433,7 +433,7 @@ As was required for convergence with the direct method using
 Eq~(\ref{eq:richardson_split}), the spectral radius of $\ve{H}$ must
 remain less than 1 as $\ve{H}^T$ contains the same eigenvalues and
 therefore has the same spectral radius. By defining the following
-inner product equivalence \citep{spanier_monte_1969}:
+inner product equivalence \cite{spanier_monte_1969}:
 \begin{equation}
   \langle \ve{A}^T \ve{x}, \ve{y} \rangle = \langle \ve{x}, \ve{A}
   \ve{y} \rangle\:.
@@ -648,10 +648,10 @@ finite.
 \subsection{Expected Value Estimator}
 \label{subsec:expected_value_estimator}
 In addition to the collision estimator, an additional estimator is
-available due to the work of Okten \citep{okten_solving_2005} that
+available due to the work of Okten \cite{okten_solving_2005} that
 uses the method of expected values as a means to improve the Monte
 Carlo estimate. As outlined by Spanier and Gelbard
-\citep{spanier_monte_1969}, the method of expected values is a
+\cite{spanier_monte_1969}, the method of expected values is a
 deterministic averaging of events that may potentially occur in the
 Monte Carlo random walk sequence. Okten applied this principle
 directly to discrete Monte Carlo by forming the \textit{expected value
@@ -753,10 +753,10 @@ The direct and adjoint Neumann-Ulam methods described are limited by a
 convergence rate of $1/\sqrt{N}$ by the Central Limit Theorem where
 $N$ is the number of random walk permutations. In 1962, Halton
 presented a residual Monte Carlo method that moves towards exponential
-convergence rates \citep{halton_sequential_1962} and further refined
-his work some years later \citep{halton_sequential_1994}. Applications
+convergence rates \cite{halton_sequential_1962} and further refined
+his work some years later \cite{halton_sequential_1994}. Applications
 of his work by the transport community have confirmed convergence
-rates on the order of of $e^{-N}$ \citep{evans_residual_2003}. In much
+rates on the order of of $e^{-N}$ \cite{evans_residual_2003}. In much
 the same way as the projection methods outlined in
 Appendix~\ref{ch:linear_problem}, Halton's method, sequential Monte
 Carlo, utilizes the adjoint Monte Carlo solver as a means of directly
@@ -789,9 +789,9 @@ the Central Limit Theorem) does dominate in this situation.
 \label{sec:mcsa}
 Using the ideas of Halton, Evans and Mosher recently developed a Monte
 Carlo solution method that was not prohibited severely by the quality
-of the initial guess for the system \citep{evans_monte_2009} and later
+of the initial guess for the system \cite{evans_monte_2009} and later
 applied it more rigorously as a solution mechanism for the radiation
-diffusion equation \citep{evans_monte_2012}. With their new methods,
+diffusion equation \cite{evans_monte_2012}. With their new methods,
 they achieved identical numerical results as conventional Krylov
 solvers as well as comparable performance in both number of iterations
 and CPU time. Their approach was instead to use residual Monte Carlo
@@ -898,7 +898,7 @@ Eq~(\ref{eq:linear_projection_iteration}). Those that are
 one-dimensional may be used with fixed-point MCSA as they only depend
 the previous iteration for information. As an example, for
 positive-definite but not necessarily symmetric problems, the minimal
-residual iteration \citep{saad_iterative_2003} can be used in
+residual iteration \cite{saad_iterative_2003} can be used in
 conjunction with MCSA where the residual vector, $\mathbf{r}$, defines
 the search subspace and the action of the linear operator on the
 residual vector, $\mathbf{A}\mathbf{r}$, defines the constraint

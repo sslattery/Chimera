@@ -21,7 +21,7 @@ problems.
 \section{Preliminaries\ }
 \label{sec:nonlinear_preliminaries}
 We formulate the \textit{nonlinear problem} as follows
-\citep{knoll_jacobian-free_2004}:
+\cite{knoll_jacobian-free_2004}:
 \begin{equation}
   \ve{F}(\ve{u}) = \ve{0}\:,
   \label{eq:nonlinear_problem}
@@ -83,7 +83,7 @@ Jacobian matrix of the nonlinear equation set is the linear operator,
 and the application of the correction to the previous iterate's
 solution to arrive at the next iterate's solution. In the asymptotic
 limit, the iterations of Newton's method will converge the nonlinear
-residual quadratically \citep{kelley_iterative_1995}. Convergence
+residual quadratically \cite{kelley_iterative_1995}. Convergence
 criteria is set for stopping the iteration sequence based on the
 nonlinear residual. Commonly, the following criteria is used:
 \begin{equation}
@@ -97,7 +97,7 @@ nonlinear functions that describe the physics we are modeling are
 updated simultaneously in the iteration sequence with respect to one
 another. This is in comparison to \textit{inconsistent} strategies,
 such as a pressure correction strategy for solving the Navier-Stokes
-equations \citep{pletcher_computational_1997}, where the components of
+equations \cite{pletcher_computational_1997}, where the components of
 $\ve{u}$ are updated in a staggered fashion depending on the
 particular equations that they are associated with.
 
@@ -105,7 +105,7 @@ particular equations that they are associated with.
 \label{subsec:inexact_newton_methods}
 Inexact Newton methods arise when the Jacobian operator is not exactly
 inverted, resulting in an inexact Newton correction as initially
-described by Dembo and others \citep{dembo_inexact_1982}. For common
+described by Dembo and others \cite{dembo_inexact_1982}. For common
 sparse nonlinear systems, which in turn yield a sparse Jacobian
 matrix, this situation occurs when conventional iterative methods are
 applied. In their definition, Dembo formulated inexact methods such
@@ -129,18 +129,18 @@ where $\eta^k \in [0,1)$ is defined as the \textit{forcing term} at
   result, strategies for determining the forcing term can vary
   depending on the problem type and can greatly affect the convergence
   of the method or even prohibit convergence
-  \citep{eisenstat_choosing_1996}. In addition, \textit{globalization
+  \cite{eisenstat_choosing_1996}. In addition, \textit{globalization
     methods} may be used to modify the Newton correction in a more
   desirable direction such that convergence properties can be
   improved when the initial guess for $\ve{u}$ is poor
-  \citep{pawlowski_globalization_2006}.
+  \cite{pawlowski_globalization_2006}.
 
 \subsection{Newton-Krylov Methods\ }
 \label{subsec:newton_krylov_methods}
 A form of inexact Newton methods, \textit{Newton-Krylov methods} are
 nonlinear iterative methods that leverage a Krylov subspace method as
 the linear solver for generating the Newton correction
-\citep{kelley_iterative_1995}. As outlined in
+\cite{kelley_iterative_1995}. As outlined in
 Appendix~\ref{ch:linear_problem}, Krylov methods are robust and enjoy
 efficient parallel implementations on modern
 architectures. Furthermore, their lack of explicit dependence on the
@@ -162,7 +162,7 @@ methods can be potentially be used.
 With many Krylov methods available, which to use with the Newton
 method is dependent on many factors including convergence rates and
 memory usage. Several studies have been performed to investigate this
-\citep{mchugh_inexact_1993,knoll_newton-krylov_1995}. In their
+\cite{mchugh_inexact_1993,knoll_newton-krylov_1995}. In their
 numerical studies in 1995, Knoll and McHugh used the set of highly
 nonlinear and stiff convection-diffusion-reaction equations to solve a
 set of tokamak plasma problems with the goal of measuring solver
@@ -200,14 +200,14 @@ tedious, error prone, and must be repeated for every equation
 set. Furthermore, in their 1995 work, Knoll and McHugh also noted that
 a dominating part of their computation time was the evaluation of the
 difference equations for building the Jacobian
-\citep{knoll_newton-krylov_1995}. By recognizing that Krylov methods
+\cite{knoll_newton-krylov_1995}. By recognizing that Krylov methods
 only need the action of the operator on a vector instead of the
 operator itself, the Jacobian can instead be approximated through
 various numerical methods including a difference-based Jacobian-free
 formulation.
 
 Jacobian-Free methods, and in particular \textit{Jacobian-Free
-  Newton-Krylov} (JFNK) methods \citep{knoll_jacobian-free_2004}, rely
+  Newton-Krylov} (JFNK) methods \cite{knoll_jacobian-free_2004}, rely
 on forming the action of the Jacobian on a vector as required by the
 Krylov solver through a forward difference scheme. In this case, the
 action of the Jacobian on some vector $\ve{v}$ is given as:
@@ -217,7 +217,7 @@ action of the Jacobian on some vector $\ve{v}$ is given as:
   \label{eq:jacobian_free_product}
 \end{equation}
 where $\epsilon$ is a small number typically on the order of machine
-precision. Kelley \citep{kelley_iterative_1995} points out a potential
+precision. Kelley \cite{kelley_iterative_1995} points out a potential
 downfall of this formulation in that if the discretization error in
 $\ve{F}(\ve{u})$ is on the order of the perturbation parameter
 $\epsilon$, then the finite difference error from
@@ -250,12 +250,12 @@ are ultimately represented by elementary mathematical operations. If
 the chain rule is applied to those elementary operations, then the
 derivatives of those functions can be computed to the order of
 accuracy of their original discretization in a completely automated
-way \citep{averick_computing_1994}.
+way \cite{averick_computing_1994}.
 
-The work of Bartlett and others \citep{bartlett_automatic_2006}
+The work of Bartlett and others \cite{bartlett_automatic_2006}
 extended initial Fortran-based work in the area of automatic
 differentiation implementations to leverage the parametric type and
-operator overloading features of C++ \citep{stroustrup_c++_1997}. They
+operator overloading features of C++ \cite{stroustrup_c++_1997}. They
 formulate the differentiation problem from an element viewpoint by
 assuming that a global Jacobian can be assembled from local element
 function evaluations of $e_k : \mathbb{R}^{n_k} \rightarrow
@@ -316,7 +316,7 @@ large-scale, production physics codes.
 In production physics codes based on nonlinear equations sets,
 Newton-Krylov methods are the primary means of generating a fully
 consistent solution scheme
-\citep{evans_development_2006,evans_enhanced_2007,gaston_parallel_2009,godoy_parallel_2012}. It
+\cite{evans_development_2006,evans_enhanced_2007,gaston_parallel_2009,godoy_parallel_2012}. It
 is common that for large scale simulations these problems are memory
 limited due to the subspaces generated by robust Krylov methods which
 may often build hundreds of vectors during a Newton step. Often, a
@@ -402,7 +402,7 @@ To verify the FANM method for nonlinear problems, we choose benchmark
 solutions for the 2-dimensional, steady, incompressible Navier-Stokes
 equations on a rectilinear grid in much the same way as Shadid and
 Pawlowski's work on Newton-Krylov methods for the solution of these
-equations \citep{shadid_inexact_1997,pawlowski_globalization_2006}. We
+equations \cite{shadid_inexact_1997,pawlowski_globalization_2006}. We
 define these equations as follows:
 \begin{subequations}
   \begin{gather}
@@ -447,7 +447,7 @@ forces in two different geometries.
 \subsection{Thermal Convection Cavity Problem}
 \label{subsec:natural_convection_cavity}
 In 1983 a set of benchmark solutions for the natural convection of air
-in a square cavity was published \citep{de_vahl_davis_natural_1983} as
+in a square cavity was published \cite{de_vahl_davis_natural_1983} as
 shown in Figure~\ref{fig:natural_convection_cavity} for the solution
 of the energy, mass, and momentum equations.
 
@@ -504,7 +504,7 @@ advective derivatives to grow.
 \subsection{Lid Driven Cavity Problem}
 \label{subsec:lid_driven_cavity}
 To study performance for flow driven by inertial forces, the second
-benchmark problem given by Ghia \citep{ghia_high-re_1982} incorporates
+benchmark problem given by Ghia \cite{ghia_high-re_1982} incorporates
 a driver for the flow to introduce higher Reynolds numbers into the
 system, providing more inertial force to overcome the viscous forces
 in the fluid. The setup for this problem is equally simple, containing
@@ -558,7 +558,7 @@ near the center of the box.
 \label{subsubsec:backward_facing_step}
 The third benchmark was generated by Gartling in 1990 and consists of
 both flow over a backward step and an outflow boundary condition
-\citep{gartling_test_1990}. Using the mass and momentum equations
+\cite{gartling_test_1990}. Using the mass and momentum equations
 while neglecting the energy equation, this problem utilizes a longer
 domain with a 1/25 aspect ratio used for this work\footnote{The
   literature on this benchmark suggests using a domain with a 1/30
@@ -648,9 +648,9 @@ converged as an additional means of comparison for correctness.
 Given the difficulty of these benchmark problems, the linear solve at
 each Newton step was preconditioned with an algebraic multigrid
 method\footnote{The ML algebraic multigrid library in the Trilinos
-  scientific computing libraries \citep{heroux_overview_2005} was used
+  scientific computing libraries \cite{heroux_overview_2005} was used
   for all problems.}, a common technique for preconditioning these
-equations \citep{ghia_high-re_1982,evans_enhanced_2007} with the
+equations \cite{ghia_high-re_1982,evans_enhanced_2007} with the
 preconditioner reconstructed at every Newton step for the new
 Jacobian. Without multigrid preconditioning, the residual in MCSA was
 observed to stagnate. Typically this happens because the Richardson
@@ -682,7 +682,7 @@ each benchmark problem.
 Results in this and the following section were produced by the Drekar
 multiphysics code base being developed at Sandia National Laboratories
 for fluid flow and other multiple physics simulations
-\citep{pawlowski_drekar_2012}. Drekar is a massively parallel physics
+\cite{pawlowski_drekar_2012}. Drekar is a massively parallel physics
 framework that utilizes Newton-Krylov methods to generate a fully
 consistent solution scheme for the Navier-Stokes equations among other
 systems with Jacobian generation through automatic differentiation. To
@@ -690,7 +690,7 @@ achieve these results, a Monte Carlo solver generated for this work
 was injected into the nonlinear tool chain within Drekar to form an
 implementation of the FANM method. For the Newton-Krylov solutions,
 the same production implementation of GMRES from the Trilinos
-scientific computing library Aztec \citep{heroux_overview_2005} used
+scientific computing library Aztec \cite{heroux_overview_2005} used
 for the verification of MCSA for the $SP_N$ solutions in the previous
 chapter was also used here as a means of comparison and FANM
 benchmarking.
@@ -709,7 +709,7 @@ number of the system was achieved by keeping the parameters given in
 Table~\ref{tab:thermal_convection_parameters} constant and varying
 temperature of the hot side of the cavity. In addition to multigrid
 preconditioning for the linear solution at each Newton step,
-backtracking as outlined in Shadid's work \citep{shadid_inexact_1997}
+backtracking as outlined in Shadid's work \cite{shadid_inexact_1997}
 was used as a means of globalization to assist the Newton correction
 computation while the forcing term at all Rayleigh numbers but
 \sn{1}{6} was computed at each Newton step using method 2 from
@@ -969,8 +969,8 @@ boundary. In addition to multigrid preconditioning for the linear
 solution at each Newton step, a polynomial line search method was used
 as a means of globalization assisting the Newton correction
 computation as outlined by Pawlowski in
-\citep{pawlowski_globalization_2006} while the forcing term was again
-computed using method 2 from Shadid's work \citep{shadid_inexact_1997}
+\cite{pawlowski_globalization_2006} while the forcing term was again
+computed using method 2 from Shadid's work \cite{shadid_inexact_1997}
 at all Reynolds numbers.
 
 \begin{table}[h!]
@@ -1215,9 +1215,9 @@ fluid velocity in the parabolic inlet condition. In addition to
 multigrid preconditioning for the linear solution at each Newton step,
 a polynomial line search method was used as a means of globalization
 assisting the Newton correction computation as outlined by Pawlowski
-in \citep{pawlowski_globalization_2006} while the forcing term was
+in \cite{pawlowski_globalization_2006} while the forcing term was
 again computed using method 2 from Shadid's work
-\citep{shadid_inexact_1997}.
+\cite{shadid_inexact_1997}.
 
 \begin{table}[h!]
   \begin{center}

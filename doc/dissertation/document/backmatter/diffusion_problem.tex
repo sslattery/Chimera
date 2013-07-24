@@ -2,7 +2,7 @@
 \label{chap:diffusion_problem}
 For many numerical experiments in this work, we choose the one-speed,
 two-dimensional neutron diffusion equation as a model neutron
-transport problem \citep{duderstadt_nuclear_1976}:
+transport problem \cite{duderstadt_nuclear_1976}:
 \begin{equation}
   -\boldsymbol{\nabla} \cdot D \boldsymbol{\nabla} \phi + \Sigma_a
   \phi = S\:,
@@ -30,7 +30,7 @@ us to rewrite Eq~(\ref{eq:diffusion_eq}) as:
 We choose a finite difference scheme on a square Cartesian grid to
 discretize the problem. For the Laplacian, we choose the 9-point
 stencil shown in Figure~\ref{fig:stencil} over a grid of size $h$
-\citep{leveque_finite_2007}:
+\cite{leveque_finite_2007}:
 \begin{multline}
   \nabla^2_9\phi = \frac{1}{6h^2}[4 \phi_{i-1,j} + 4 \phi_{i+1,j}
     + 4 \phi_{i,j-1} + 4 \phi_{i,j+1} + \phi_{i-1,j-1}\\ +
