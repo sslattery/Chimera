@@ -20,7 +20,7 @@ techniques that are aware of coming changes in hardware.
 In this work, we have presented Monte Carlo Synthetic Acceleration as
 a viable solution technique for both neutron transport and fluid flow
 problems on future hardware. To do this, we carried out three research
-and developement activities. First, we applied MCSA to the $SP_N$ form
+and development activities. First, we applied MCSA to the $SP_N$ form
 of the neutron transport equation and analyzed the preconditioning
 requirements and subsequent performance of the method when compared to
 conventional practices. Second, we used the knowledge gained from the
@@ -28,7 +28,7 @@ research on neutron transport to develop the FANM method for nonlinear
 problems and studied its performance on three different benchmarks for
 the Navier-Stokes equations to demonstrate its applicability. Finally,
 we parallelized MCSA such that it may be applied to physics problems
-in a leadership-class computing environment.
+on leadership-class computing platforms.
 
 In this chapter, we review the work presented in this document and
 describe how this work met the goals of the research. We then
@@ -81,27 +81,28 @@ remained along with prohibitive time for construction.
 
 Using the developed preconditioners and the reduced domain
 approximation, a set of $SP_N$ calculations using up to 4 energy
-groups were enabled for the fuel assembly problem. To verify MCSA, the
+groups was enabled for the fuel assembly problem. To verify MCSA, the
 fuel assembly problem was solved with different energy groups using
 both MCSA and two production Krylov methods. MCSA was observed to
 produce the same scalar flux in all groups at all spatial locations
 and generate the same k-eigenvalue in the same number of eigenvalue
-iterations. 
+iterations when used in conjuction with an eigenvalue solver.
 
 For the same calculations, MCSA had qualitatively similar iterative
 performance to the production Krylov methods, showing improved
 performance over GMRES while a Conjugate Gradient-based method
-performed better using the same preconditioining. Improved performance
+performed better using the same preconditioning. Improved performance
 over GMRES meets the goal of improving iterative performance to a
 certain extent but this was not the true for the Conjugate
 Gradient-based method. However, although the $SP_N$ equations are
 asymmetric for multigroup calculations, they are symmetric at the
 block level and therefore we expect the Conjugate Gradient-based
 method to perform better as this structure can be more readily
-utilized than the more general GMRES and MCSA methods. In terms of CPU
-time, MCSA was observed to perform $O(100)$ times slower than the
-Krylov methods due to both lack of optimization in the random walk
-sequence and the explicit preconditioning strategy.
+leveraged to improve performance than with the more general GMRES and
+MCSA methods. In terms of CPU time, MCSA was observed to perform
+$O(100)$ times slower than the Krylov methods due to both lack of
+optimization in the random walk sequence and the explicit
+preconditioning strategy.
 
 %%---------------------------------------------------------------------------%%
 \section{Monte Carlo Synthetic Acceleration Solutions for Navier-Stokes Equations\ }
@@ -133,7 +134,7 @@ demonstrated superior iterative performance for problems dominated by
 natural convection, meeting the goal of improved iterative performance
 in this case.
 
-Iterative performance for the problems dominated by intertial driven
+Iterative performance for the problems dominated by inertial driven
 flow varied depending on the situation. For the lid driven cavity
 problem, FANM converged in more linear solver iterations for 3 out of
 4 cases. However, for each of these cases it was observed that the
@@ -148,7 +149,7 @@ in fewer iterations, again meeting the goal of improved iterative
 performance.
 
 The backward facing step problem at low Reynolds number gave better
-performance with FANM convergining in fewer linear solver
+performance with FANM converging in fewer linear solver
 iterations. However, as the Reynolds number was increased so did the
 number of MCSA iterations required to converge the linear model at
 each FANM iteration. Unlike the lid driven cavity problem, this was
@@ -160,7 +161,7 @@ Timing performance for all benchmarks favored the Newton-Krylov solver
 with FANM observed to be $O(100)$ slower for the thermal convection
 cavity and lid driven cavity problems and $O(1,000)$ times for the
 backward facing step problem. For the first two cases, the timing
-differences were observed to be qualititavely the same as those
+differences were observed to be qualitatively the same as those
 observed for the $SP_N$ performance analysis. Again, this comes from
 both lack of optimization of the Monte Carlo sequence and the
 introduction of explicit preconditioning. For the backward facing step
@@ -197,15 +198,15 @@ analytically using the algebraic properties of the system. These
 relationships were then used to determine the amount of overlap one
 may require in the parallel algorithm to reduce communication costs
 and increase parallel efficiencies. Scaling studies showed that in the
-strong case overlap in small quanities on the order of the
+strong case overlap in small quantities on the order of the
 mean-free-path of a stochastic history in the simulation could boost
 parallel efficiencies by a few percent. However, it was found that
-this additional overal was not effective in boosting strong scaling
-efficiencies. It was found that overall overlap was not very effective
-due to the fact that the parallel communication saved during the Monte
-Carlo transport sequence is simply deferred until after transport is
-complete when it manifests itself as an overlapping parallel vector
-reduction operation.
+this additional overlap was not effective in boosting strong scaling
+efficiencies. It was found that in general overlap was not very
+effective due to the fact that the parallel communication saved during
+the Monte Carlo transport sequence is simply deferred until after
+transport is complete when it manifests itself as an overlapping
+parallel vector reduction operation.
 
 Applying multiple sets in the parallel algorithm was found to not
 enhance the weak scaling of the problem as an additional parallel
@@ -218,7 +219,7 @@ that although the parallel efficiency was reduced, multiple sets were
 observed to actually improve the time to solution. Unlike a
 traditional Krylov method that we might apply to solve a neutron
 transport problem, using MCSA means that we can actually make a
-physical copy of the problem on the machine and can combine seperate
+physical copy of the problem on the machine and can combine separate
 Monte Carlo solutions for each copy through superposition to enhance
 time to solution. Time to solution is then improved because fewer
 histories were run in each copy and therefore each MCSA iteration is
@@ -227,7 +228,7 @@ are required to converge.
 
 Finally, given that overlap was not very constructive in boosting
 parallel efficiencies, it was postulated that very little
-domain-to-domain communication of histories was occuring in the first
+domain-to-domain communication of histories was occurring in the first
 place and then subsequently verified using the analytic relationships
 for domain leakage. Using this idea, we implemented a subdomain
 Neumann-Ulam method with MCSA such that MCSA now takes the form of a
@@ -254,7 +255,7 @@ and weights for the Monte Carlo game. Third, perhaps the most
 restrictive and unattractive piece of MCSA as a whole is the simple
 fact that the spectral radius of the physics operator iteration matrix
 be less than one. This was demonstrated to prohibit convergence for
-cases where the preconditioning was considered agressive and Krylov
+cases where the preconditioning was considered aggressive and Krylov
 solvers exhibited excellent convergence properties. We will address
 each one of these problems in turn in this section and provide
 suggestions for their solution.
@@ -286,7 +287,7 @@ scheme. Because of this, each time a random walk wants to sample its
 current probability distribution function, get a weight for its
 transition, or add its estimate to a tally, a call must first be made
 to translate the current global state of the random walk into its
-local state\footnote{This is a lookup in a hash table.}. What this
+local state\footnote{This is a look-up in a hash table.}. What this
 then means is that we are performing orders of magnitude more
 operations during the Monte Carlo sequence than if the random walk
 sequence operated in the local index space rather than the global
@@ -307,7 +308,7 @@ starting state for each random walk in the problem through
 Eq~(\ref{eq:adjoint_source_probability}). The current implementation
 uses the inverse transform method for sampling where the a random
 number is generated and the cumulative distribution function is
-queried with a binary seach to find the next discrete state. This
+queried with a binary search to find the next discrete state. This
 algorithm has $O(log(N))$ time complexity for sampling and $O(N)$ time
 complexity for construction. The alias sampling method is suggested
 instead as it produces $O(1)$ complexity for sampling and $O(N)$ time
@@ -321,16 +322,17 @@ For the parallel MCSA algorithm, overall parallel scaling results
 indicated that the implementation was of good quality in both the
 strong and weak scaling cases. However, for the multiple set cases in
 the weak scaling analysis, it was noted that there was a growing
-parallel overhead as a function of core count. This was counter
-intuitive in that the size of the parallel group over which the set
-reductions were occuring was fixed at all core counts and therefore we
-do not expect the addition of such an operation to increase parallel
-run times. It did, however, and therefore future research should
-explore why the implementation for multiple sets generated parallel
-overhead that increased with core count instead of remaining constant.
+parallel overhead as a function of core count. This was
+counter-intuitive in that the size of the parallel group over which
+the set reductions were occurring was fixed at all core counts and
+therefore we do not expect the addition of such an operation to
+increase parallel run times. It did, however, and therefore future
+research should explore why the implementation for multiple sets
+generated parallel overhead that increased with core count instead of
+remaining constant.
 
 Nonlinear performance may also be improved by a closer relationship
-between MCSA and the Newton iteration. We saw in our reseaerch how the
+between MCSA and the Newton iteration. We saw in our research how the
 forcing term selected very tightly controls the convergence of the
 linear model in FANM. For MCSA, in addition to the residual tolerance
 that is dictated by this forcing term, convergence may also be
@@ -361,10 +363,10 @@ this way, we were able to leverage modern algebraic preconditioning
 strategies used in current physics applications and enable solutions
 for both neutronics and fluid flow simulations. The downside is that
 in order to generate weights and probabilities with which to play the
-Monte Carlo game, we must first invert each of the preconditioners
+Monte Carlo game we must first invert each of the preconditioners
 which in many cases means applying their inverse over each row in the
-system, and then we must perform matrix-matrix multiply operations to
-build the composite physics operator.
+system and then perform matrix-matrix multiply operations to build the
+composite physics operator.
 
 These operations were observed to substantially increase runtimes of
 MCSA and consume unacceptable amounts of memory, mostly due to the
@@ -378,22 +380,21 @@ incurred for inverting the preconditioners. We therefore propose the
 following three developments in preconditioning for Monte Carlo
 methods:
 
-\begin{itemize}
-\item \textbf{Research and develop alternative sampling schemes for
+\paragraph{\textbf{Research and develop alternative sampling schemes for
   the general left/right preconditioned Monte Carlo method not relying
-  on composite matrix generation.} Developments that break away from
-  matrix-matrix multiplications within the preconditioned solver
-  framework improve scalability. This means avoiding the generation of
-  the composite operator and instead playing the Monte Carlo game with
-  weights and probabilities formed by considering the original linear
-  operator and the preconditioners individually. This individual
-  consideration may come from an alternative algebraic formulation of
-  the general preconditioned MCSA method in
-  Eq~(\ref{eq:left_right_mcsa}) or from an alternative random sampling
-  strategy for the Monte Carlo game.
-\item \textbf{Develop Monte Carlo variance reduction based
+  on composite matrix generation.}} Developments that break away from
+matrix-matrix multiplications within the preconditioned solver
+framework improve scalability. This means avoiding the generation of
+the composite operator and instead playing the Monte Carlo game with
+weights and probabilities formed by considering the original linear
+operator and the preconditioners individually. This individual
+consideration may come from an alternative algebraic formulation of
+the general preconditioned MCSA method in
+Eq~(\ref{eq:left_right_mcsa}) or from an alternative random sampling
+strategy for the Monte Carlo game.
+\paragraph{\textbf{Develop Monte Carlo variance reduction based
   preconditioning strategies that do not rely on an algebraic
-  preconditioner.}  Constructing the complete inverse of the
+  preconditioner.}} Constructing the complete inverse of the
   preconditioner is the core time and scalability constraint when
   modern algebraic preconditioners are used. Building the inverse for
   preconditioners where a sparsity pattern is not enforced typically
@@ -408,26 +409,24 @@ methods:
   possibly be applied to variance reduction techniques to improve MCSA
   convergence by modifying the weights and probabilities of the Monte
   Carlo game as an effective means of preconditioning.
-\item \textbf{Study physics or PDE-based preconditioners for linear
+\paragraph{\textbf{Study physics or PDE-based preconditioners for linear
   systems that produce a reduced-order model of the original system to
-  which the Monte Carlo method may be applied.} As the Monte Carlo
-  method serves to construct the solution correction vector in the
-  MCSA method, the Monte Carlo method may be applied to a
-  reduced-order physics or PDE-based system that captures the essence
-  of the original system and still allows for acceleration of the
-  iterative procedure. By reducing the order of the system, we are
-  effectively generating a Monte Carlo problem within MCSA in which
-  the linear operator is either more sparse, has a better-conditioned
-  eigenvalue spectrum, or both. The reduced domain approximation has
-  shown that a purely algebraic strategy for reducing the order of the
-  Monte Carlo problem can result in improved overall timing
-  performance due to increased sparsity at the cost of iterative
-  performance as a result of loss of information. A more well informed
-  strategy for order reduction via either an intelligent
-  simplification of the PDEs that describe the system or a
-  simplification of the physics involved may prove to be a more
-  effective strategy.
-\end{itemize}
+  which the Monte Carlo method may be applied.}} As the Monte Carlo
+method serves to construct the solution correction vector in the MCSA
+method, the Monte Carlo method may be applied to a reduced-order
+physics or PDE-based system that captures the essence of the original
+system and still allows for acceleration of the iterative
+procedure. By reducing the order of the system, we are effectively
+generating a Monte Carlo problem within MCSA in which the linear
+operator is either more sparse, has a better-conditioned eigenvalue
+spectrum, or both. The reduced domain approximation has shown that a
+purely algebraic strategy for reducing the order of the Monte Carlo
+problem can result in improved overall timing performance due to
+increased sparsity at the cost of iterative performance as a result of
+loss of information. A more well informed strategy for order reduction
+via either an intelligent simplification of the PDEs that describe the
+system or a simplification of the physics involved may prove to be a
+more effective strategy.
 
 \subsection{Breaking Away from $\rho(H) < 1$}
 \label{subsec:future_spec_rad}
@@ -435,9 +434,9 @@ methods:
 All numerical methods for solving linear problems require quality
 preconditioning. Even a Krylov method may be effectively useful
 without it. However, these methods typically converge eventually
-whereas quality preconditioning may not be enough to gaurantee
+whereas quality preconditioning may not be enough to guarantee
 convergence of MCSA. We saw in our work that in many cases very
-agressive preconditioning was not enough to condition the eigenvalues
+aggressive preconditioning was not enough to condition the eigenvalues
 of the system into a regime where MCSA would apply. The limitation
 that the spectral radius of the physics operator iteration matrix must
 be less than one is by far the most prohibitive component of MCSA. The
@@ -457,19 +456,20 @@ iteration of the following form:
   \ve{x}^{k+1} = F(\ve{A},\ve{b},\ve{x}^{k},\ve{x}^{k-1},\dots,\ve{x}^{k-n+1})\:,
 \label{eq:nth_degree_iter}
 \end{equation}
-where $\ve{A}$ is the linear operator $\ve{b}$ is the right hand side
-as defined by Eq~(\ref{eq:linear_problem}). Richardson's iteration is
-an iterative method of the first degree such that $\ve{x}^{k+1} =
-F(\ve{A},\ve{b},\ve{x}^{k})$. To move the Monte Carlo method away from
-the spectral radius limitation and therefore we seek higher order
-methods as outlined by Hallett \cite{hughes_hallett_second-order_1984}
-that have gauranteed convergence at all eigenvalue spectra. In his
-work, Hallett builds a second order method such that $\ve{x}^{k+1} =
-F(\ve{A},\ve{b},\ve{x}^{k-1})$. Such a method results from mapping the
-original Richardson iteration into a different of eigenvalues in the
-complex plane that have a spectral radius less than one, thus
-garanteeing convergence. Derived as expansions of the iteration
-sequence in Chebyshev polynomials, Hallett arrives at simple
+where $\ve{A}$ is the linear operator and $\ve{b}$ is the right hand
+side as defined by Eq~(\ref{eq:linear_problem}). Richardson's
+iteration is an iterative method of the first degree such that
+$\ve{x}^{k+1} = F(\ve{A},\ve{b},\ve{x}^{k})$. To move the Monte Carlo
+method away from the spectral radius limitation we therefore we seek
+higher order methods as outlined by Hallett
+\cite{hughes_hallett_second-order_1984} that have guaranteed
+convergence at all eigenvalue spectra. In his work, Hallett builds a
+second order method such that $\ve{x}^{k+1} =
+F(\ve{A},\ve{b},\ve{x}^{k},\ve{x}^{k-1})$. Such a method results from
+mapping the original Richardson iteration onto a different set of
+eigenvalues in the complex plane that have a spectral radius less than
+one, thus guaranteeing convergence. Derived as expansions of the
+iteration sequence in Chebyshev polynomials, Hallett arrives at simple
 formulation for the second degree method that requires knowledge of
 the bounding curve in the complex plane of the eigenvalue spectra for
 good convergence properties.
@@ -478,8 +478,8 @@ As it turns out, Sabelfeld has already applied such a technique to the
 Monte Carlo method but arrived at the same conclusions in a different
 way \cite{sabelfeld_sparsified_2009}\footnote{Although the technique
   is outlined in this document, Sabelfeld cites his previous work in
-  this area in 1982.} with this work effectively re-developed by Dimov
-without citation of Sabelfeld
+  this area in 1982.} with this work effectively re-developed later by
+Dimov without citation of Sabelfeld
 \cite{dimov_parallel_2001,dimov_new_1998}. In his work, Sabelfeld
 formulated the random walk sequence by instead building the Neumann
 series from the \textit{resolvent} of the operator. The resolvent
@@ -492,7 +492,7 @@ the same spectral mapping procedure as Hallett. Just like the
 deterministic case, some knowledge of the eigenvalue spectrum of the
 system was required to ensure convergence. These methods should be
 researched and developed further in the context of MCSA as a potential
-means of always gauranteeing convergence of the algorithm regardless
+means of always guaranteeing convergence of the algorithm regardless
 of the eigenvalue spectrum.
 
 \subsubsection{Stochastic Projection Methods}
@@ -501,7 +501,7 @@ of the eigenvalue spectrum.
 As a final means of improvement we consider stochastic projection
 methods as developed by Sabelfeld \cite{hutchison_stochastic_2011}. In
 his work, Sabelfeld claims his method is 'beyond Markov chains and von
-Neumann-Ulam scheme'. To a certain extent this is true, his method is
+Neumann-Ulam scheme'. To a certain extent this is true; his method is
 based on a projection method and should always converge. In his work,
 he utilizes a Kaczmarz iteration:
 \begin{equation}
@@ -513,14 +513,14 @@ where $\ve{a}_i$ is the $i^{th}$ row vector of the operator and
 $\lambda_k$ is a relaxation parameter.
 
 The stochastic nature of the algorithm comes from effectively
-modifying the algorithm such that the value of $i$ is now selected at
-random. This is interesting but arguably does not serve our purposes
-at well. We have an interest in a fully stochastic process like a
-random walk sequence because of its potential benefits in terms of
-resiliency and the ability to use superposition to combine results
-from replicated problems to enhance performance. In Sabelfeld's work,
-the randomness is used to select which deterministic iteration step
-will be performed and does not meet either of these
+modifying the iteration sequence such that the value of $i$ is now
+selected at random. This is interesting but arguably does not serve
+our purposes at well. We have an interest in a fully stochastic
+process like a random walk sequence because of its potential benefits
+in terms of resiliency and the ability to use superposition to combine
+results from replicated problems to enhance performance. In
+Sabelfeld's work, the randomness is used to select which deterministic
+iteration step will be performed and does not meet either of these
 requirements. However, that does not mean there is nothing to learn
 from this work. If one writes Eq~\ref{eq:kaczmarz_iteration} in terms
 of applications of projection operators as that outlined in
@@ -539,17 +539,17 @@ means of moving beyond the spectral radius limitation.
 This work was performed with the goal of investigating new solution
 techniques based on Monte Carlo Synthetic Acceleration and how they
 perform when applied to real problems in nuclear engineering. These
-methods aim to improve over conventional methods when looking towards
-the advanced computer architecutures of the near future. Parallelism
-at high levels of concurrency, a potential reduction in memory
-footprint, and a natural element of resiliency deriving from the
-stochastic nature of the algorithm motivated us to research their
-strengths and weaknesses and develop solutions to further their
-applicability. 
+methods aim to make improvements over conventional methods when
+looking towards the advanced computer architectures of the near
+future. Parallelism at high levels of concurrency, a potential
+reduction in memory footprint, and a natural element of resiliency
+deriving from the stochastic nature of the algorithm motivated us to
+research their strengths and weaknesses and develop solutions to
+further their applicability.
 
 Before this work was performed, MCSA had yet to be applied to the
 neutron transport problem, asymmetric systems, and nonlinear problems
-including fluid flow systems. Techniques was developed by this work
+including fluid flow systems. Techniques were developed by this work
 that enabled solutions for all of these problems using MCSA. In many
 cases, it was found that the iterative performance of the MCSA-based
 methods were superior to that of conventional solution techniques
@@ -562,7 +562,7 @@ When this work began, the Neumann-Ulam sequence and MCSA in general
 had yet to be parallelized in a domain decomposed framework. This
 research developed a new parallel algorithm based on Monte Carlo
 particle transport that permitted MCSA solutions to be generated on
-$O(100,000)$ cores on a leadership class computing facility. The new
+$O(100,000)$ cores on a leadership class computing platform. The new
 algorithm was also demonstrated to achieve better strong and weak
 scaling than conventional Krylov methods at high levels of
 concurrency. If future work can improve the time to solution using
@@ -571,7 +571,7 @@ the algorithm can potentially improve the time to solution for the
 engineer and more efficiently leverage high performance computing
 hardware for analysis.
 
-With this work, a new foundation for Monte Carlo Synethic Acceleration
+With this work, a new foundation for Monte Carlo Synthetic Acceleration
 methods has been laid with new theory, algorithms, and numerical
 experiments that demonstrate both their potential to make great
 contributions to nuclear engineering calculations in the future and

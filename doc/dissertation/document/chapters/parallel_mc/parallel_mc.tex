@@ -166,8 +166,6 @@ domain and will therefore have to be communicated. Finally, we compare
 these analytic results to numerical experiments conducted with the
 model transport problem.
 
-\clearpage
-
 \subsection{Spectral Analysis }
 \label{subsec:spectral_analysis}
 The convergence of the Neumann series in
@@ -271,8 +269,6 @@ preconditioned iteration matrix:
   \rho(\ve{H}) = \frac{10 \alpha D}{3 h^2}\:.
   \label{eq:iteration_radius}
 \end{equation}
-
-\clearpage 
 
 \subsection{Neumann Series Convergence }
 \label{subsec:neumann_convergence}
@@ -596,8 +592,6 @@ fractions within 0.05 of the measured results. As the domain becomes
 more optically thick (with both increasing $n_i$ and decreasing
 $\rho(\ve{H})$), the approximations are more accurate.
 
-\clearpage
-
 %%---------------------------------------------------------------------------%%
 \section{Domain Decomposed Neumann-Ulam Algorithm\ }
 \label{sec:asynchronous_algorithm}
@@ -709,8 +703,6 @@ source, these adjacent states are not required as histories may only
 be born in states in the local domain. Once the local Neumann-Ulam
 decomposition has been generated with the proper data collected from
 adjacent domains, Monte Carlo transport may proceed in parallel.
-
-\clearpage
 
 \subsection{Domain Decomposed Algorithm}
 \label{subsec:parallel_mc_algorithm}
@@ -999,8 +991,6 @@ splitting, have the potential to be successfully employed as a means
 of accelerating the time to solution for a given problem using
 MCSA. The parallel Neumann-Ulam algorithm presented here may be
 adapted to account for these additional techniques.
-
-\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{Multiple-Set Overlapping-Domain Algorithm\ }
@@ -1579,8 +1569,6 @@ trade-off between the absolute efficiencies computed for a given
 method and the degrading algorithmic efficiencies that arise when
 increasing the fidelity. Both time and hardware constraints should be
 considered when preparing a parallel calculation.
-
-\clearpage
 
 %%---------------------------------------------------------------------------%%
 \section{Leadership-Class Parallel Scaling Studies\ }

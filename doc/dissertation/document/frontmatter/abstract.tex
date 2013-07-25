@@ -1,9 +1,9 @@
 Predictive modeling and simulation is an important and developing
 component of modern nuclear reactor analysis. New high performance
 computing hardware and algorithms that leverage this hardware are
-required to help meet the meet the goals and requirements of
-engineering analysis. Current practices in neutron transport and fluid
-flow leverage methods based on subspace iterations to achieve good
+required to help meet the goals and requirements of engineering
+analysis. Current practices in neutron transport and fluid flow
+leverage methods based on subspace iterations to achieve good
 convergence properties and quality parallel scaling on large
 machines. However, the next generation of machines is expected to
 possess both high levels of concurrency and low memory availability
@@ -38,14 +38,14 @@ iterative performance over GMRES by converging in fewer iterations
 when using the same preconditioning.
 
 Second, solutions to the full Navier-Stokes equations were obtained by
-developing the Forward-Automated Newton-MCSA (FANM) scheme for
+developing the Forward-Automated Newton-MCSA (FANM) method for
 nonlinear systems based on Newton's method. Three difficult fluid
 benchmark problems in both convective and driven flow regimes were
 used to drive the research and development of the method. It was found
-that for all benchmarks that FANM produced identical solutions to
-modern Newton-Krylov methods. For each benchmark, performance
-comparisons between FANM and Newton-Krylov were also conducted. For 8
-out of 12 benchmark cases, it was found that FANM had better iterative
+for all benchmarks that FANM produced identical solutions to modern
+Newton-Krylov methods. For each benchmark, performance comparisons
+between FANM and Newton-Krylov were also conducted. For 8 out of 12
+benchmark cases, it was found that FANM had better iterative
 performance than the Newton-Krylov method by converging the nonlinear
 residual in fewer linear solver iterations with the same
 preconditioning.
@@ -75,12 +75,12 @@ this work by producing methods that in many cases were demonstrated to
 converge in fewer iterations than conventional methods and exhibit
 better parallel efficiencies at high levels of concurrency. All the
 components of this work are required to enable future simulation of
-nonlinear physics problems on the next generation hardware. To enable
-high performance simulations with FANM, we require the MCSA techniques
-developed in the research on the neutron transport problem and in turn
-effectively leveraging MCSA on leadership-class hardware requires the
-new parallel algorithm developed by this work. With the further
-development of these methods based on this work, future nuclear
-reactor simulations may be enabled that have an improved time to
-solution and more efficiently utilize the available computational
+nonlinear physics problems on the next generation of hardware. To
+enable high performance simulations with FANM, we require the MCSA
+techniques developed in the research on the neutron transport problem
+and in turn effectively leveraging MCSA on leadership-class hardware
+requires the new parallel algorithm developed by this work. With the
+further development of these methods based on this work, future
+nuclear reactor simulations may be enabled that have an improved time
+to solution and more efficiently utilize the available computational
 resources.
