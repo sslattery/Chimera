@@ -1749,7 +1749,7 @@ iterations.
   \caption{\textbf{Lid driven cavity forcing terms as a function of
       Newton iteration for the 500 Reynolds number case.} \textit{Once
       the region of fast quadratic convergence is reached, MCSA
-      forcing terms were much larger.}}
+      forcing terms were much smaller.}}
   \label{fig:driven_re500_forcing}
 \end{figure}
 
@@ -1885,13 +1885,13 @@ and the same data is given in Figure~\ref{fig:step_re500_iters} and
 Figure~\ref{fig:step_re500_forcing} for the 500 Reynolds number
 case. For both cases, FANM always has larger forcing terms and should
 therefore use fewer MCSA iterations at each Newton step to converge
-the linear model. This is indeed the case for the 400 Reynolds number
-case where the linear model is better conditioned and FANM used fewer
-total linear solver iterations to converge the nonlinear
-residual. However, at a Reynolds number of 500 FANM has larger forcing
-terms but requires many more MCSA iterations to converge the last 2
-Newton steps. Therefore, these extra iterations in this case must come
-from ill-conditioning.
+the linear model if the iterative performance is comparable. This is
+indeed the case for the 400 Reynolds number case where the linear
+model is better conditioned and FANM used fewer total linear solver
+iterations to converge the nonlinear residual. However, at a Reynolds
+number of 500 FANM has larger forcing terms but requires many more
+MCSA iterations to converge the last 2 Newton steps. Therefore, these
+extra iterations in this case must come from ill-conditioning.
 
 \begin{figure}[t!]
   \begin{center}
