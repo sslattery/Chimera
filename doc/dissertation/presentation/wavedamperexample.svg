@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="wavedamperexample.png">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="493.3354"
+     inkscape:cy="854.94489"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1056"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect2985"
+       width="224.25386"
+       height="171.22086"
+       x="27.27412"
+       y="71.504059" />
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="88.388329"
+       y="106.85941"
+       id="text3773"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3775"
+         x="88.388329"
+         y="106.85941"
+         style="font-size:32px;font-style:italic;font-weight:normal">Wave</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="535.38086"
+       y="102.31371"
+       id="text3777"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3779"
+         x="535.38086"
+         y="102.31371"
+         style="font-size:32px;font-style:italic">Damper</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="528.81482"
+       y="166.96347"
+       id="text3787"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="528.81482"
+         y="166.96347"
+         style="font-size:24px"
+         id="tspan3821"><tspan
+   style="font-size:24px;font-weight:bold"
+   id="tspan3793">Solve: </tspan>Apply </tspan><tspan
+         sodipodi:role="line"
+         x="528.81482"
+         y="196.96347"
+         id="tspan3791"
+         style="font-size:24px">damping to </tspan><tspan
+         sodipodi:role="line"
+         x="528.81482"
+         y="226.96347"
+         style="font-size:24px"
+         id="tspan3831">internal data</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text3807"
+       y="172.5193"
+       x="39.90102"
+       style="font-size:16px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"><tspan
+         style="font-size:24px"
+         y="172.5193"
+         x="39.90102"
+         id="tspan3809"
+         sodipodi:role="line"><tspan
+   id="tspan3811"
+   style="font-size:24px;font-weight:bold">Solve:</tspan> Apply </tspan><tspan
+         style="font-size:24px"
+         id="tspan3815"
+         y="202.5193"
+         x="39.90102"
+         sodipodi:role="line">internal damping </tspan><tspan
+         style="font-size:24px"
+         y="232.5193"
+         x="39.90102"
+         sodipodi:role="line"
+         id="tspan3819">to solution</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect2985-0"
+       width="224.25386"
+       height="171.22086"
+       x="490.93414"
+       y="71.251526" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 266.1752,70.998984 c 0,0 101.01525,-70.20560165 219.70817,0.505077"
+       id="path3857"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 258.59905,241.71476 c 0,0 117.68277,55.55839 226.27417,0.50508"
+       id="path3859"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 270.35714,48.076467 -4.28571,22.142857 17.85714,11.071429"
+       id="path3867"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 466.07143,231.6479 17.5,10 1.07143,19.64285"
+       id="path3869"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="301.21979"
+       y="212.93666"
+       id="text3871"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="301.21979"
+         y="212.93666"
+         id="tspan3881"
+         style="font-size:16px"><tspan
+   style="font-size:16px;font-style:italic"
+   id="tspan3879">Transfer:</tspan> Wave </tspan><tspan
+         sodipodi:role="line"
+         x="301.21979"
+         y="232.93666"
+         id="tspan3875"
+         style="font-size:16px">solution to Damper </tspan><tspan
+         sodipodi:role="line"
+         x="301.21979"
+         y="252.93666"
+         id="tspan3877"
+         style="font-size:16px">internal data</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3895"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:20px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion3897"><rect
+           id="rect3899"
+           width="151.52289"
+           height="37.375645"
+           x="276.27673"
+           y="296.263" /></flowRegion><flowPara
+         id="flowPara3901"></flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="307.5"
+       y="65.219322"
+       id="text3943"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="307.5"
+         y="65.219322"
+         id="tspan3947"><tspan
+   style="font-style:italic"
+   id="tspan3955">Transfer:</tspan> Damper</tspan><tspan
+         sodipodi:role="line"
+         x="307.5"
+         y="85.219322"
+         id="tspan3951">data to wave </tspan><tspan
+         sodipodi:role="line"
+         x="307.5"
+         y="105.21931"
+         id="tspan3953">damping</tspan></text>
+  </g>
+</svg>

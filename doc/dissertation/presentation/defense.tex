@@ -1,0 +1,1598 @@
+\documentclass{beamer}
+\usetheme[white]{Wisconsin}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{color}
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+\usepackage{amsthm} 
+\usepackage{amsmath} 
+\usepackage{tmadd,tmath}
+\usepackage[mathcal]{euscript} 
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage{algorithm,algorithmic}
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\lstset{
+  backgroundcolor=\color{lbcolor},
+  tabsize=4,
+  rulecolor=,
+  language=c++,
+  basicstyle=\scriptsize,
+  upquote=true,
+  aboveskip={1.5\baselineskip},
+  columns=fixed,
+  showstringspaces=false,
+  extendedchars=true,
+  breaklines=true,
+  prebreak =
+  \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+  frame=single,
+  showtabs=false,
+  showspaces=false,
+  showstringspaces=false,
+  identifierstyle=\ttfamily,
+  keywordstyle=\color[rgb]{0,0,1},
+  commentstyle=\color[rgb]{0.133,0.545,0.133},
+  stringstyle=\color[rgb]{0.627,0.126,0.941},
+}
+
+%% colors
+\setbeamercolor{boxheadcolor}{fg=white,bg=UWRed}
+\setbeamercolor{boxbodycolor}{fg=black,bg=white}
+
+
+%%---------------------------------------------------------------------------%%
+\author{Stuart R. Slattery\\ University of Wisconsin - Madison}
+
+\date{\today} 
+\title{Parallel Monte Carlo Synthetic Acceleration Methods for
+  Discrete Transport Problems}
+\begin{document}
+\maketitle
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Outline}
+
+  \begin{itemize}
+  \item Monte Carlo Synthetic Acceleration Methods
+    \bigskip
+  \item Application to Neutron Transport
+    \bigskip
+  \item Application to Fluid Flow
+    \bigskip
+  \item Parallelization of MCSA
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Acknowledgments}
+
+  This work was performed under appointment to the Nuclear Regulatory
+  Commission Fellowship program at the University of Wisconsin - Madison
+  Engineering Physics Department
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Statement of Work}
+
+The goal of this work is to improve the iterative performance and
+parallel scalability of solutions to discrete linear and nonlinear
+transport problems by researching and developing a new set of domain
+decomposed Monte Carlo Synthetic Acceleration methods.
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Hardware-Based Motivation}
+
+  \begin{itemize}
+  \item Modern hardware is moving in two directions (Kogge,2011):
+    \begin{itemize}
+    \item Lightweight machines
+    \item Heterogeneous machines
+    \item Both characterized by low power and high concurrency
+    \end{itemize}
+    \medskip \medskip
+  \item Some issues:
+    \begin{itemize}
+    \item Higher potential for both soft and hard failures (DOE,2012)
+    \item Memory restrictions are expected with a continued decrease
+      in memory/FLOPS
+    \end{itemize}
+    \medskip \medskip
+  \item Potential resolution from Monte Carlo:
+    \begin{itemize}
+    \item Soft failures buried within the tally variance
+    \item Hard failures are high variance events
+    \item Memory savings over conventional methods
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Research Outline}
+  \begin{itemize}
+  \item Development of a linear solver for discrete systems leveraging
+    Monte Carlo Synthetic Acceleration
+    \medskip
+    \begin{itemize}
+    \item Application to neutron transport
+    \item Research is required to explore general solver development
+    \item Performance is of concern
+    \end{itemize}
+    \bigskip
+  \item Development of a nonlinear solver for discrete systems
+    leveraging Monte Carlo Synthetic Acceleration
+    \begin{itemize}
+    \item Application to fluid flow
+    \item Potential memory benefits
+    \item Convergence of the linear model is of concern
+    \end{itemize}
+    \bigskip
+  \item Parallelization of Monte Carlo Synthetic Acceleration
+    \medskip
+    \begin{itemize}
+    \item Parallel strategies taken from modern reactor physics
+      methods
+    \item Research is required to explore varying parallel strategies
+    \item Scalability is of concern
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Outline}
+
+  \begin{itemize}
+  \item \textbf{Monte Carlo Synthetic Acceleration Methods}
+    \bigskip
+  \item Application to Neutron Transport
+    \bigskip
+  \item Application to Fluid Flow
+    \bigskip
+  \item Parallelization of MCSA
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Monte Carlo Methods for Discrete Linear Systems}
+
+  \begin{itemize}
+  \item First proposed by J. Von Neumann and S.M. Ulam in the 1940's
+    \medskip \medskip
+  \item Earliest published reference in 1950
+    \medskip \medskip
+  \item General lack of published work
+    \medskip \medskip
+  \item Modern work by Evans and others has yielded new
+    applications\let\thefootnote\relax\footnote{\tiny{Thomas Evans and
+        Scott Mosher, "A Monte Carlo Synthetic Acceleration method for
+        the non-linear, time-dependent diffusion equation", American
+        Nuclear Society - International Conference on Mathematics,
+        Computational Methods and Reactor Physics, 2009.}}
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Monte Carlo Linear Solver Preliminaries}
+
+  \begin{itemize}
+  \item Split the linear operator
+  \end{itemize}
+
+  \[
+  \ve{A}\ve{x} = \ve{b} \ \ \ \rightarrow \ \ \ \ve{x} = \ve{H} \ve{x}
+  + \ve{b}
+  \]
+
+  \[
+  \ve{H} = \ve{I} - \ve{A}
+  \]
+
+  \medskip
+  \begin{itemize}
+  \item Generate the \textit{Neumann series}
+  \end{itemize}
+  
+  \[
+  \ve{A}^{-1} = (\ve{I}-\ve{H})^{-1} = \sum_{k=0}^{\infty} \ve{H}^k
+  \]
+
+  \medskip
+  \begin{itemize}
+  \item Require $\rho(\ve{H}) < 1$ for convergence
+  \end{itemize}
+
+  \[
+  \ve{A}^{-1}\ve{b} = \sum_{k=0}^{\infty} \ve{H}^k\ve{b} = \ve{x}
+  \]
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Monte Carlo Linear Solver Preliminaries}
+
+  \begin{itemize}
+  \item Expand the Neumann series
+  \end{itemize}
+
+  \[
+  x_i = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}h_{i,i_1}h_{i_1,i_2}\ldots h_{i_{k-1},i_k}b_{i_k}
+  \]
+
+  \begin{itemize}
+  \item Define a sequence of state transitions
+  \end{itemize}
+  
+  \[
+  \nu = i \rightarrow i_1 \rightarrow \cdots \rightarrow i_{k-1}
+  \rightarrow i_{k}
+  \]
+
+  \begin{itemize}
+  \item Use the adjoint Neumann-Ulam
+    decomposition\let\thefootnote\relax\footnote{The Hadamard product
+      $\ve{A} = \ve{B} \circ \ve{C}$ is defined element-wise as
+      $a_{ij} = b_{ij} c_{ij}$.}
+  \end{itemize}
+
+  \[
+  \ve{H}^{T} = \ve{P} \circ \ve{W}
+  \]
+
+  \[
+  p_{ij} = \frac{|h_{ji}|}{\sum_j |h_{ji}|},\ w_{ij} =
+  \frac{h_{ji}}{p_{ij}}
+  \]
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Evolution of a Solution}
+
+  \begin{figure}[htpb!]
+    \begin{center}
+      \scalebox{1.0}{ \input{heat_eq_setup.pdftex_t} }
+    \end{center}
+    \caption{\textbf{Poisson Problem.}
+      \textit{Distributed source of 1.0 in the domain.}}
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Evolution of a Solution}
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=4in]{adjoint_1.png}
+    \end{center}
+    \caption{\textbf{Adjoint solution to Poisson Equation.}
+      \textit{\sn{1}{0} total histories, 0.286 seconds CPU time.} }
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Evolution of a Solution}
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=4in]{adjoint_10.png}
+    \end{center}
+    \caption{\textbf{Adjoint solution to Poisson Equation.}
+      \textit{\sn{1}{1} total histories, 0.278 seconds CPU time.} }
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Evolution of a Solution}
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=4in]{adjoint_100.png}
+    \end{center}
+    \caption{\textbf{Adjoint solution to Poisson Equation.}
+      \textit{\sn{1}{2} total histories, 0.275 seconds CPU time.} }
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Evolution of a Solution}
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=4in]{adjoint_1000.png}
+    \end{center}
+    \caption{\textbf{Adjoint solution to Poisson Equation.}
+      \textit{\sn{1}{3} total histories, 0.291 seconds CPU time.} }
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Evolution of a Solution}
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=4in]{adjoint_10000.png}
+    \end{center}
+    \caption{\textbf{Adjoint solution to Poisson Equation.}
+      \textit{\sn{1}{4} total histories, 0.428 seconds CPU time.} }
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Evolution of a Solution}
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=4in]{adjoint_100000.png}
+    \end{center}
+    \caption{\textbf{Adjoint solution to Poisson Equation.}
+      \textit{\sn{1}{5} total histories, 1.76 seconds CPU time.} }
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Evolution of a Solution}
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=4in]{adjoint_1000000.png}
+    \end{center}
+    \caption{\textbf{Adjoint solution to Poisson Equation.}
+      \textit{\sn{1}{6} total histories, 15.1 seconds CPU time.} }
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Evolution of a Solution}
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=4in]{adjoint_10000000.png}
+    \end{center}
+    \caption{\textbf{Adjoint solution to Poisson Equation.}
+      \textit{\sn{1}{7} total histories, 149 seconds CPU time.} }
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Monte Carlo Synthetic-Acceleration}
+
+  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
+    {MCSA Iteration}
+
+    \[
+    \ve{r}^{k} = \ve{b} - \ve{A}\ve{x}^{k}
+    \]
+    \[
+    \ve{x}^{k+1/2} = \ve{x}^k + \ve{r}^k
+    \]
+    \[
+    \ve{r}^{k+1/2} = \ve{b} - \ve{A}\ve{x}^{k+1/2}
+    \]
+    \[
+    \hat{\ve{A}}\delta\ve{x}^{k+1/2} = \ve{r}^{k+1/2}
+    \]
+    \[
+    \ve{x}^{k+1} = \ve{x}^{k+1/2} + \delta \ve{x}^{k+1/2}
+    \]
+
+  \end{beamerboxesrounded}
+
+  \medskip \medskip
+  \begin{itemize}
+  \item Neumann-Ulam methods bound by the Central Limit Theorem
+  \item Build on Halton's 1962 Sequential Monte Carlo method
+  \item Neumann-Ulam Monte Carlo solver computes the correction
+  \item Decouples MC error from solution error, exponential convergence
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Monte Carlo Linear Solvers Library (MCLS)}
+
+  \begin{itemize}
+  \item Preliminary development during January of 2013
+    \bigskip
+  \item General asynchronous MSOD MCSA implementation
+    \begin{itemize}
+    \item Forward and adjoint Monte Carlo with method of expected
+      values
+    \item Parallel row matrix/vector interface
+    \item General fixed point iteration strategy
+    \item Explicit algebraic preconditioner suite
+    \end{itemize}
+    \medskip
+  \item Implemented in C++
+    \bigskip
+  \item Heavy use of the Trilinos scientific computing libraries
+    \bigskip
+  \item Open-source BSD 3-clause license
+    \bigskip
+  \item https://github.com/sslattery/MCLS
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Outline}
+
+  \begin{itemize}
+  \item Monte Carlo Synthetic Acceleration Methods
+    \bigskip
+  \item \textbf{Application to Neutron Transport}
+    \bigskip
+  \item Application to Fluid Flow
+    \bigskip
+  \item Parallelization of MCSA
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{$SP_N$ Equations}
+
+  \begin{multline}
+    \hat{\Omega} \cdot \vec{\nabla} \psi(\vec{r},\hat{\Omega},E) +
+    \sigma(\vec{r},E) \psi(\vec{r},\hat{\Omega},E) = \\ \iint
+    \sigma_s(\vec{r},E' \rightarrow E,\hat{\Omega}' \cdot \hat{\Omega})
+    \psi(\vec{r},\hat{\Omega}',E') d\Omega' dE' +
+    q(\vec{r},\hat{\Omega},E)\:,
+    \label{eq:general_transport}
+  \end{multline}
+
+  \begin{multline}
+    -\nabla \cdot \Bigg[\frac{n}{2n+1}\frac{1}{\Sigma_{n-1}} \nabla
+      \Big(\frac{n-1}{2n-1} \phi_{n-2} + \frac{n}{2n-1}\phi_n \Big) \\+
+      \frac{n+1}{2n+1}\frac{1}{\Sigma_{n+1}} \nabla
+      \Big(\frac{n+1}{2n+3}\phi_n + \frac{n+2}{2n+3}\phi_{n+2}\Big)
+      \Bigg] \\+ \Sigma_n \phi_n = q \delta_{n0}\ \ \ \ \ \ \ \ \ n =
+    0,2,4,\cdots,N\:,
+    \label{eq:spn_equations}
+  \end{multline}
+
+  \begin{equation}
+    -\nabla \cdot \mathbb{D}_n \nabla \mathbb{U}_n + \sum_{m=1}^4
+    \mathbb{A}_{nm} \mathbb{U}_m = \frac{1}{k} \sum_{m=1}^4
+    \mathbb{F}_{nm} \mathbb{U}_n\ \ \ \ \ \ \ n = 1,2,3,4\:.
+    \label{eq:spn_fission_matrix}
+  \end{equation}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{k-eigenvalue Solutions with MCSA}
+
+  \begin{algorithm}[H]
+    \caption{Power Iteration MCSA Scheme}
+    \label{alg:power_iteration}
+    \begin{algorithmic}
+      \STATE $k_0 =$ initial guess
+      \STATE $\mathbf{\Phi}_0 =$ initial guess
+      \STATE $n = 0$
+      \WHILE{$|\frac{k^n - k^{n-1}}{k^n}| < \epsilon$}
+      \STATE $\mathbf{M} \mathbf{\Phi}^{n+1} = \frac{1}{k^n} \mathbf{F} \mathbf{\Phi}^n$
+      \COMMENT{Solve for the new flux state with MCSA}
+      \STATE $k^{n+1} = k^n \frac{\int \mathbf{F} \mathbf{\Phi}^{n+1} d\mathbf{r}}{\int
+        \mathbf{F} \mathbf{\Phi}^n d\mathbf{r}}$
+      \STATE $n = n+1$
+      \ENDWHILE
+    \end{algorithmic}
+  \end{algorithm}
+
+  \begin{itemize}
+  \item Swap in MCSA as the solver at each eigenvalue operation
+    \medskip
+  \item Use Thyra/Stratimikos interfaces for plug and play - Thanks
+    Ross!
+    \medskip
+  \item Current Exnihilo implementation gives the full operator
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Fuel Assembly Criticality Calculations}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=1.5in]{problem3_radial_mat.png}
+        \end{center}
+      \end{figure}
+
+      \begin{figure}[htbp!]
+        \begin{center}
+          \includegraphics[width=2in]{problem3_axial_mat.png}
+        \end{center}
+      \end{figure}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2in]{problem3_end.png}
+        \end{center}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      {\small
+        \begin{itemize}
+        \item CASL Problem 3: $17 \times 17$ quarter symmetry HZP LWR
+          fuel assembly
+        \item $SP_N$ criticality calculation
+        \item MCLS leveraged by the Exnihilo code base (ORNL)
+        \item Comparison to Trilinos Aztec Krylov solvers with ILUT
+        \end{itemize}
+      }
+      {\tiny
+        \begin{table}[htpb!]
+          \begin{center}
+            \begin{tabular}{ll}\hline\hline
+              \multicolumn{1}{l}{\textbf{Parameter}} & 
+              \multicolumn{1}{l}{\textbf{Value}} \\
+              Power Level & 0 MW \\
+              Inlet Temperature & 326.85C \\
+              Fuel Temperature & 600C \\
+              Boron Concentration & 1300 ppm \\
+              Moderator Density & 0.743 g/cc \\
+              Helium Density & \sn{1.79}{-4} g/cc \\
+              Zirconium Density & 6.56 g/cc \\
+              Stainless Steel Density & 8.0 g/cc \\
+              Inconel Density & 8.19 g/cc \\
+              UO2 Density & 10.257 g/cc \\
+              Fuel Pin Radius (w/o clad) & 0.4096 cm \\
+              %%
+              \hline\hline
+            \end{tabular}
+          \end{center}
+        \end{table}
+      }
+    \end{column}
+
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Jacobi Preconditioned Calculations}
+
+{\tiny  \begin{table}[h!]
+    \begin{center}
+      \begin{tabular}{cccccc}\hline\hline
+        \multicolumn{1}{c}{}& 
+        \multicolumn{1}{c}{}& 
+        \multicolumn{1}{c}{}& 
+        \multicolumn{1}{c}{$SP_N$ Order}& 
+        \multicolumn{1}{c}{}& 
+        \multicolumn{1}{c}{} \\
+        &   & \textbf{1} & \textbf{3} & \textbf{5} & \textbf{7}  \\
+        & \textbf{0} & 0.0647 & 0.1275 & 0.1449 & 0.1514 \\
+        & \textbf{1} & 0.0686 & 0.1338 & 0.1484 & 0.1547 \\
+        $P_N$ Order & \textbf{3} & 0.0687 & 0.1399 & 0.1582 & 0.1625 \\
+        & \textbf{5} & 0.0692 & 0.1399 & 0.1582 & 0.1657 \\
+        & \textbf{7} & 0.0678 & 0.1393 & 0.1624 & 0.166 \\
+        %%
+        \hline\hline
+      \end{tabular}
+    \end{center}
+    \caption{\textbf{Spectral radius results for the block Jacobi
+        preconditioned iteration matrix with 10 energy groups and full
+        downscatter for sample problem.}}
+    \label{tab:group10dsbj}
+  \end{table}
+}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[t!]
+        \begin{center}
+          \includegraphics[width=2.0in]{block_jacobi_res.pdf}
+        \end{center}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item Light water moderator creates a lot of scattering and
+        $\mathbf{\rho}(\mathbf{H}) \approx 1$
+        \medskip
+      \item Intractable number of histories required for MCSA
+        convergence 
+      \end{itemize}
+    \end{column}
+
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{MCSA Breakdown}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[h!]
+        \begin{center}
+          \includegraphics[width=1.9in]{breakdown_iterations.pdf}
+        \end{center}
+      \end{figure}
+
+      \begin{figure}[h!]
+        \begin{center}
+          \includegraphics[width=1.9in]{breakdown_histories.pdf}
+        \end{center}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+
+    \begin{itemize}
+    \item As $\mathbf{\rho}(\mathbf{H}) \rightarrow 1$ terrible things
+      happen...
+      \medskip
+    \item A more robust set of preconditioners is required for the
+      $SP_N$ equations
+    \end{itemize}
+
+      \begin{figure}[h!]
+        \begin{center}
+          \includegraphics[width=1.9in]{breakdown_time.pdf}
+        \end{center}
+      \end{figure}
+
+    \end{column}
+
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Explicit Preconditioning}
+
+  \[
+  \ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}\ve{M}_R\ve{x} = \ve{M}_L^{-1}\ve{b}
+  \ \ \ \rightarrow \ \ \ 
+  \ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}\ve{u} = \ve{M}_L^{-1}\ve{b}
+  \]
+
+  \[
+  \ve{x} = \ve{M}_R^{-1}\ve{u}
+  \]
+
+  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
+    {Left/Right Preconditioned MCSA Iteration}
+
+    \[
+    \ve{r}^{k} = \ve{M}_L^{-1}(\ve{b}-\ve{A}\ve{M}_R^{-1}\ve{u}^{k})
+    \]
+    \[
+    \ve{u}^{k+1/2} = \ve{u}^k + \ve{r}^k
+    \]
+    \[
+    \ve{r}^{k+1/2} = \ve{M}_L^{-1}(\ve{b}-\ve{A}\ve{M}_R^{-1}\ve{u}^{k+1/2})
+    \]
+    \[
+    \ve{M}_L^{-1}\ve{A}\ve{M}_R^{-1}\delta\ve{u}^{k+1/2} = \ve{r}^{k+1/2}
+    \]
+    \[
+    \ve{u}^{k+1} = \ve{u}^{k+1/2} + \delta \ve{u}^{k+1/2}
+    \]
+
+  \end{beamerboxesrounded}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Fuel Assembly Results}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=1.9in]{solver_iters.pdf}
+        \end{center}
+      \end{figure}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=1.9in]{solver_time.pdf}
+        \end{center}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      
+      \begin{itemize}
+        \item MCLS generates the same k-eigenvalue and neutron flux in
+          all groups and spatial locations
+          \bigskip
+        \item MCSA converged in fewer iterations than GMRES, more
+          iterations than BiCGStab
+          \bigskip
+        \item Explicit preconditioning strategy destroys sparsity and
+          elevates CPU times (Ifpack ILUT)
+          \bigskip
+        \item Spectral radius and memory limitations combined to
+          prevent solutions at finer discretizations
+      \end{itemize}
+
+    \end{column}
+
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Outline}
+
+  \begin{itemize}
+  \item Monte Carlo Synthetic Acceleration Methods
+    \bigskip
+  \item Application to Neutron Transport
+    \bigskip
+  \item \textbf{Application to Fluid Flow}
+    \bigskip
+  \item Parallelization of MCSA
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Monte Carlo Synthetic Acceleration for Nonlinear Problems}
+
+  \begin{itemize}
+  \item Many physics problems of interest are nonlinear
+    \bigskip
+  \item Signficant research on Newton methods since the 1980's
+    \bigskip
+  \item Newton methods often leverage Krylov solvers
+    \begin{itemize}
+    \item Robust implementations
+    \item No operator required
+    \end{itemize}
+    \bigskip
+  \item Monte Carlo methods need the full operator
+    \bigskip
+  \item Automatic construction of the linear model is available
+    \begin{itemize}
+    \item Operator overloading for nonlinear residual differentiation
+    \item Ideal for Monte Carlo
+    \item Potential scaling improvements
+    \item Resiliency benefits
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Newton's Method}
+
+  \begin{itemize}
+  \item Seek solutions of the general nonlinear problem
+  \end{itemize}
+
+  \[
+  \ve{F}(\ve{u}) = \ve{0}
+  \]
+  \[
+  \ve{u} \in \mathbb{R}^n,\ \ve{F}:\mathbb{R}^N \rightarrow
+  \mathbb{R}^N
+  \]
+
+  \begin{itemize}
+  \item Interpret the exact solution $\ve{u}$ to be the roots of
+    $\ve{F}(\ve{u})$
+  \end{itemize}
+
+  \[
+  \ve{F}(\ve{u}^{k+1}) = \ve{F}(\ve{u}^{k}) +
+  \ve{F}'(\ve{u}^{k})(\ve{u}^{k+1}-\ve{u}^{k}) +
+  \frac{\ve{F}''(\ve{u}^{k})}{2}(\ve{u}^{k+1}-\ve{u}^{k})^2 + \cdots
+  \]
+
+  \begin{itemize}
+  \item Form Newton's method
+  \end{itemize}
+  \[
+  \ve{J}(\ve{u}) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})
+  \]
+  \[
+  \ve{u}^{k+1} = \ve{u}^k + \delta \ve{u}^k
+  \]
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{The FANM Method}
+
+  Forward-Automated Newton-MCSA
+
+  \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+      \STATE $k := 0$ 
+      \WHILE{$||\ve{F}(\ve{u}^{k})|| > \epsilon
+        ||\ve{F}(\ve{u}^{0})||$} 
+      \STATE $\ve{J}(\ve{u}^{k}) \leftarrow AD(\ve{F}(\ve{u}^k))$ 
+      \COMMENT{Automatic differentiation} 
+      \STATE $\ve{J}(\ve{u}^k) \delta \ve{u}^k = -\ve{F}(\ve{u}^{k})$
+      \COMMENT{Solve for the Newton correction with MCSA} 
+      \STATE $\ve{u}^{k+1} \leftarrow \ve{u}^k + \delta \ve{u}^k$ 
+      \STATE $k \leftarrow k+1$ 
+      \ENDWHILE
+    \end{algorithmic}
+    \caption{FANM}
+  \end{algorithm}
+
+  \begin{itemize}
+  \item Robustness of Newton's method (inexact)
+  \item Accuracy and convenience of FAD
+  \item Potential parallelism, and resiliency benefits of MCSA
+  \item Requires only nonlinear function evaluations
+  \item Can utilize globalization and forcing term selection methods
+  \end{itemize}
+
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{FANM Numerical Experiments}
+
+  \begin{itemize}
+  \item Sequence of Navier-Stokes benchmarks for the nonlinear methods
+    \begin{itemize}
+    \item Thermal convection cavity problem (De Vahl Davis, 1983)
+    \item Lid driven cavity problem (Ghia et al., 1982)
+    \item Backward-Facing step problem (Gartling, 1990)
+    \end{itemize}
+    \medskip
+  \item Tuning benchmark parameters varies the strength of
+    nonlinearities
+    \medskip
+  \item Newton-Krylov method leveraging Aztec GMRES used for
+    comparisons
+    \medskip
+  \item All problems preconditioned with algebraic multigrid (ML) and
+    leveraged some kind of globalization (e.g. backtracking)
+  \end{itemize}
+
+  \medskip  \medskip
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \[
+      \rho \ve{u} \cdot \nabla \ve{u} - \nabla \cdot \ve{T} - \rho
+      \ve{g} = \ve{0}
+      \]
+      \[
+      \nabla \cdot \ve{u} = 0
+      \]
+      \[
+      \rho C_p \ve{u} \cdot \nabla T + \nabla \cdot \ve{q} = 0
+      \]
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \[
+      \ve{T} = -P \ve{I} + \mu[\nabla \ve{u} + \nabla \ve{u}^T]
+      \]
+      \[
+      \ve{q} = - k \nabla T
+      \]
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{FANM Numerical Experiments}
+
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.5in]{drekar1.png}
+        \end{center}
+      \end{figure}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.5in]{drekar2.png}
+        \end{center}
+      \end{figure}
+    \end{column}
+  \end{columns}
+
+  \bigskip
+
+  \begin{itemize}
+  \item Drekar is a production physics suite that leverages Newton
+    methods with FAD
+  \item MCLS incorporated into the Drekar nonlinear solver scheme
+    using Thyra/Stratimikos to implement FANM
+  \item Thanks Roger!
+  \end{itemize}
+
+  {\small \sl Images source: www.casl.gov}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{FANM Nonlinear Iteration Results}
+
+  \begin{table}[h!]
+    \begin{center}
+      \begin{tabular}{lcc}\hline\hline
+        \multicolumn{1}{l}{Benchmark}& 
+        \multicolumn{1}{c}{Newton-Krylov}&
+        \multicolumn{1}{c}{FANM}\\
+        \hline
+        Convection, Ra=\sn{1}{3} & 5 & 5 \\
+        Convection, Ra=\sn{1}{4} & 7 & 7 \\
+        Convection, Ra=\sn{1}{5} & 9 & 10 \\
+        Convection, Ra=\sn{1}{6} & 11 & 11 \\
+        \hline
+        Lid Driven, Re=100 & 6 & 6 \\
+        Lid Driven, Re=300 & 9 & 9 \\
+        Lid Driven, Re=500 & 11 & 11 \\
+        Lid Driven, Re=700 & 14 & 10 \\
+        \hline
+        Backward Step, Re=200 & 10 & 9 \\
+        Backward Step, Re=300 & 15 & 14 \\
+        Backward Step, Re=400 & 10 & 10 \\
+        Backward Step, Re=500 & 19 & 20 \\
+        %%
+        \hline\hline
+      \end{tabular}`
+    \end{center}
+    \caption{\textbf{Navier-Stokes benchmark comparison for nonlinear
+        iterations.} \textit{Over all benchmarks, FANM performed better
+        in terms of nonlinear iterations for 1 more case than the
+        Newton-Krylov method.}}
+    \label{tab:benchmark_nonlinear_comparison}
+
+  \end{table}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{FANM Linear Solver Iteration Results}
+
+  \begin{table}[h!]
+    \begin{center}
+      \begin{tabular}{lcc}\hline\hline
+        \multicolumn{1}{l}{Benchmark}& 
+        \multicolumn{1}{c}{Newton-Krylov}&
+        \multicolumn{1}{c}{FANM}\\
+        \hline
+        Convection, Ra=\sn{1}{3} & 32 & 18 \\
+        Convection, Ra=\sn{1}{4} & 23 & 17 \\
+        Convection, Ra=\sn{1}{5} & 25 & 20 \\
+        Convection, Ra=\sn{1}{6} & 39 & 25 \\
+        \hline
+        Lid Driven, Re=100 & 27 & 42 \\
+        Lid Driven, Re=300 & 35 & 52 \\
+        Lid Driven, Re=500 & 41 & 56 \\
+        Lid Driven, Re=700 & 21 & 14 \\
+        \hline
+        Backward Step, Re=200 & 24 & 13 \\
+        Backward Step, Re=300 & 23 & 17 \\
+        Backward Step, Re=400 & 18 & 12 \\
+        Backward Step, Re=500 & 30 & 52 \\
+        %%
+        \hline\hline
+      \end{tabular}
+    \end{center}
+    \caption{\textbf{Navier-Stokes benchmark comparison for total linear
+        solver iterations.} \textit{Over all benchmarks, FANM performed
+        better in terms of linear solver iterations for twice as many
+        cases as the Newton-Krylov method.}}
+    \label{tab:benchmark_linear_comparison}
+  \end{table}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{FANM CPU Time Results}
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lc}\hline\hline
+      \multicolumn{1}{l}{Benchmark}& 
+      \multicolumn{1}{c}{Newton-Krylov Speedup}\\
+      \hline
+      Convection, Ra=\sn{1}{3} & 338 \\
+      Convection, Ra=\sn{1}{4} & 336 \\
+      Convection, Ra=\sn{1}{5} & 346 \\
+      Convection, Ra=\sn{1}{6} & 465 \\
+      \hline
+      Lid Driven, Re=100 & 299 \\
+      Lid Driven, Re=300 & 322 \\
+      Lid Driven, Re=500 & 288 \\
+      Lid Driven, Re=700 & 488 \\
+      \hline
+      Backward Step, Re=200 & 400 \\
+      Backward Step, Re=300 & 593 \\
+      Backward Step, Re=400 & 825 \\
+      Backward Step, Re=500 & 1057 \\
+      %%
+      \hline\hline
+    \end{tabular}
+  \end{center}
+  \caption{\textbf{Newton-Krylov speedup over FANM.}  \textit{For all
+      benchmarks the explicit MCSA preconditioning strategy caused
+      significantly larger CPU times for FANM when compared to the
+      Newton-Krylov solutions.}}
+  \label{tab:benchmark_time_comparison}
+\end{table}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Outline}
+
+  \begin{itemize}
+  \item Monte Carlo Synthetic Acceleration Methods
+    \bigskip
+  \item Application to Neutron Transport
+    \bigskip
+  \item Application to Fluid Flow
+    \bigskip
+  \item \textbf{Parallelization of MCSA}
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Parallelization of Monte Carlo Methods}
+
+  \begin{itemize}
+  \item No literature observed for parallel Neumann-Ulam solvers
+    beyond history-level parallelism
+    \medskip \medskip
+  \item Numerous references for modern parallel Monte Carlo methods in
+    reactor physics
+    \medskip \medskip
+  \item Build a strategy for applying modern methods to the
+    Neumann-Ulam method
+    \medskip \medskip
+  \item MCSA iteration-level parallelism comes from parallel
+    matrix/vector operations
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Domain Decomposed Monte Carlo}
+
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item Each parallel process owns a piece of the domain (linear
+        system)
+        \bigskip
+      \item Random walks must be transported between adjacent domains
+        through parallel communication
+        \bigskip
+      \item Domain decomposition determined by the input system
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{figure}[htpb!]
+        \begin{center}
+          \scalebox{0.75}{ \input{ddnu_example.pdftex_t} }
+        \end{center}
+        \caption{\small \sl Domain decomposition example illustrating
+          how domain-to-domain transport creates communication costs.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Asynchronous Monte Carlo Transport Kernel}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{itemize}
+      \item Developed by Brunner and Brantley in 2009
+      \item Asynchronous nearest neighbor communication of histories
+      \item Binary asynchronous communication tree for completing
+        transport
+      \end{itemize}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \scalebox{0.45}{ \input{domain_to_domain.pdftex_t} }
+        \end{center}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{itemize}
+      \item Extensible to problems where histories may be created
+        (i.e. variance reduction)
+      \end{itemize}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \scalebox{0.45}{ \input{binary_comm_tree.pdftex_t} }
+        \end{center}
+      \end{figure}
+
+    \end{column}
+
+
+  \end{columns}
+
+  \let\thefootnote\relax\footnote{\tiny{Thomas A. Brunner and Patrick
+      S. Brantley, "An efficient, robust, domain-decomposition
+      algorithm for particle Monte Carlo", Journal of Computational
+      Physics, vol. 228, pp.3882-3890, 2009.}}
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Multiple-Set Overlapping-Domain Decomposition}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+      \begin{figure}[htpb!]
+        \begin{center}
+          \scalebox{0.75}{ \input{msod_example.pdftex_t} }
+        \end{center}
+        \caption{\small \sl Overlapping domain example illustrating
+          how domain overlap can reduce communication costs.}
+      \end{figure}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item Developed by Wagner and colleagues in 2010
+        \medskip
+      \item Each set contains the full domain
+        \medskip
+      \item Multiple sets replicate the domain
+        \medskip
+      \item Domains overlap within a set
+        \medskip
+      \item Redundancy for resiliency (and useful work)
+      \end{itemize}
+    \end{column}
+
+  \end{columns}
+
+  \let\thefootnote\relax\footnote{\tiny{Wagner et. al., "Hybrid and
+      parallel domain-decomposition methods development to enable
+      Monte Carlo for reactor analysis", Joint International
+      Conference on Supercomputing in Nuclear Applications and Monte
+      Carl (SNA+MC 2010), 2010.}}
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Multiple-Set Overlapping-Domain Decomposition}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \scalebox{0.25}{ \input{msod_construction.pdftex_t} }
+        \end{center}
+        \caption{\small \sl MSOD construction.}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \scalebox{0.25}{ \input{msod_tally.pdftex_t} }
+        \end{center}
+        \caption{\small \sl MSOD tally reduction.}
+      \end{figure}
+
+    \end{column}
+
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Parallel Scaling}
+
+  \begin{itemize}
+  \item Simple 2D neutron diffusion problem for control - spectral
+    radius is maintained as global problem size grows
+    \medskip
+  \item Comparison to Trilinos Belos Krylov solvers with Jacobi
+    preconditioning - conjugate gradient and GMRES
+    \medskip
+  \item Strong scaling - Global size fixed at 1.6E7 DOFs
+    \medskip
+  \item Weak scaling - Local size fixed at 4.0E4 DOFs
+    \medskip
+  \item Calculations performed on the Titan Cray XK7 machine at ORNL
+    (MPI only)
+    \medskip
+  \item Limited MCLS arithmetic optimization artificially inflates
+    efficiencies
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Strong Scaling Results}
+
+  \begin{figure}[htpb!]
+    \begin{center}
+      \includegraphics[width=4in]{titan_pure_strong.pdf}
+    \end{center}
+    \caption{\textbf{Pure domain decomposition.} \textit{Super-linear
+        speed-up from memory thrashing in base case. MCLS is an order
+        of magnitude slower arithmetically.}}
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Weak Scaling Results}
+
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.5in]{titan_weak_absolute.pdf}
+        \end{center}
+      \end{figure}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.5in]{titan_weak_implementation.pdf}
+        \end{center}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.45\textwidth}
+
+      \begin{itemize}
+      \item CG demonstrates poor scaling due to the cheaper iteration
+        sequence
+        \bigskip
+      \item Implementation efficiency is effectively the parallel
+        efficiency of a single iteration
+        \bigskip
+      \item Improved implementation efficiency means improved
+        iterative performance will potentially give a better time to
+        solution
+      \end{itemize}
+
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Strong Scaling Results with Multiple Sets}
+
+  \textbf{Splitting:} same global number of histories as the single
+  set
+
+  \bigskip 
+
+  \textbf{Replicating:} set-multiple of single set problem global
+  histories
+
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.35in]{titan_strong_ms_eff.pdf}
+        \end{center}
+        \caption{\small{Absolute parallel efficiency relative to
+            16-core 1-set base case.}}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.35in]{titan_strong_ms_time.pdf}
+        \end{center}
+        \caption{\small{Wall time in seconds to solution for each
+            case.}}
+      \end{figure}
+
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Weak Scaling Results with Multiple Sets}
+
+  \begin{itemize}
+  \item Need to consider adding sets is a strong scaling exercise
+  \item Modify the weak scaling efficiency computation to account for
+    these extra resources
+  \item Superposition of Monte Carlo results enhances time to solution!
+  \end{itemize}
+
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.4in]{titan_weak_ms_eff.pdf}
+        \end{center}
+        \caption{Absolute parallel efficiency relative to 16-core
+          1-set base case.}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.4in]{titan_weak_ms_time.pdf}
+        \end{center}
+        \caption{Wall time in seconds to solution for each case.}
+      \end{figure}
+
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Strong Scaling Results with Overlap}
+
+  \begin{itemize}
+  \item Overlap values selected based on average 'diffusion length'
+    of a history in the system of 2.6 discrete states
+    \bigskip
+  \item Overlap eliminates communication in the Monte Carlo sequence
+    but simply differs it to an overlapping tally vector reduction
+  \end{itemize}
+
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.4in]{titan_strong_overlap_diff.pdf}
+        \end{center}
+        \caption{Strong scaling efficiency difference compared to the
+          0 overlap case.}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.4in]{titan_weak_overlap_diff.pdf}
+        \end{center}
+        \caption{Weak scaling efficiency difference compared to the 0
+          overlap case.}
+      \end{figure}
+
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{MCSA as a Stochastic Additive Schwarz Method}
+
+  \begin{itemize}
+  \item No domain-to-domain communication in Monte Carlo sequence
+    \smallskip
+  \item Fixed point iteration acts as a smoother
+    \smallskip
+  \item Observed to converge in the same number of iterations
+    \smallskip
+  \item Can add overlap to preserve iterative performance for more
+    ill-conditioned problems
+  \end{itemize}
+
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[t!]
+        \begin{center}
+          \includegraphics[width=2.35in]{titan_strong_subdomain.pdf}
+        \end{center}
+        \caption{Strong scaling absolute efficiency for pure domain
+          decomposition.}
+        \label{fig:titan_strong_subdomain}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[t!]
+        \begin{center}
+          \includegraphics[width=2.35in]{titan_weak_subdomain.pdf}
+        \end{center}
+        \caption{Weak scaling absolute efficiency for pure domain
+          decomposition.}
+        \label{fig:titan_weak_subdomain}
+      \end{figure}
+
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{MCSA Application to Neutronics Summary}
+
+  \small{
+    \begin{itemize}
+    \item MCSA can solve the asymmetric system generated by the $SP_N$
+      equations
+      \medskip
+    \item Light water reactor problems are difficult to solve with MCSA as
+      they have large spectral radii due to the neutron scattering in the
+      moderator
+      \medskip
+    \item Advanced algebraic preconditioning strategies were applied to
+      the $SP_N$ equations to obtain convergence with ILUT chosen for
+      subsequent investigations
+      \medskip
+    \item MCSA was verified to produce the same flux distribution and
+      k-eigenvalue for the fuel assembly as production Krylov methods
+      \medskip
+    \item MCSA was observed to converge in fewer iterations per eigenvalue
+      iteration than GMRES for the fuel assembly criticality problem and
+      more than Bi-CGStab using the same preconditioning
+    \end{itemize}
+  }
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{MCSA Application to Fluid Flow Summary}
+
+  \small{
+    \begin{itemize}
+    \item Forward-Automated Newton-MCSA (FANM) has been developed
+      \medskip
+    \item The FANM method has been verified to produce the same solutions
+      as a production Newton-Krylov method for three difficult benchmark
+      problems
+      \medskip
+    \item The FANM method has better iterative performance than the
+      Newton-Krylov method for convection dominated problems, converging
+      in fewer linear solver iterations with the same preconditioning for
+      high and low Rayleigh numbers
+      \medskip
+    \item The spectral radius convergence restriction on MCSA was observed
+      to be a significant hindrance by preventing solutions to forced flow
+      problems at high Reynolds numbers
+      \medskip
+    \item More Monte Carlo histories at every FANM iteration can reduce
+      the number of linear and nonlinear iterations required to converge
+      the problem
+    \end{itemize}
+  }
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Parallelization of MCSA Summary}
+
+  \small{
+    \begin{itemize}
+    \item The multiple-set overlapping-domain (MSOD) parallel algorithm
+      for particle transport has been adapted to parallelize MCSA
+      \medskip
+    \item MCSA scales favorably compared to production Krylov methods for
+      both strong and weak scaling cases
+      \medskip
+    \item Overlap in small quantities can provide parallel efficiency
+      boosts of a few percent in strong scaling cases but is
+      ineffective in weak scaling cases
+      \medskip
+    \item Multiple sets offers a means to reduce time to solution by
+      solving multiple copies of the original problem and combining the
+      solutions using superposition
+      \medskip
+    \item MCSA is most efficiently used in parallel as a stochastic
+      realization of an additive Schwarz method
+    \end{itemize}
+  }
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Future Work}
+
+  \begin{itemize}
+  \item Shortcomings observed on real problems
+    \begin{itemize}
+    \item Significant optimization required to determine production
+      feasibility and true scalability
+    \item Explicit algebraic preconditioning methods not sufficient
+    \item Spectral radius limitation is severe
+    \end{itemize}
+    \medskip
+  \item Performance improvements
+    \begin{itemize}
+    \item Random walk optimizations
+    \item Alias sampling implementations
+    \item Multiple set reduction analysis
+    \item FANM forcing term and MCSA history relationships
+    \end{itemize}
+    \medskip
+  \item Preconditioning improvements
+    \begin{itemize}
+    \item Alternative left/right sampling schemes
+    \item Variance reduction based strategy
+    \item Reduced order physics/PDE models for acceleration
+    \end{itemize}
+    \medskip
+  \item Breaking away from $\rho(\mathbf{H}) < 1$
+    \begin{itemize}
+    \item Monte Carlo methods of the second degree
+    \item Stochastic projection methods
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Discussion}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+
+\end{document}
