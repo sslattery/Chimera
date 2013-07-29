@@ -2081,9 +2081,13 @@ the solvers tested is comparable with BiCGStab performing the best. We
 expect this because not only are the multigroup $SP_N$ equations
 elliptic and positive-definite, but they are also nearly symmetric and
 therefore we expect the conjugate gradient-based methods to perform
-well. It also important to note that the iterative performance of each
-solver is not a strong function of the number of energy groups in the
-problem (and therefore the problem size). 
+well due to the structure of the projection scheme. It important to
+note that the iterative performance of each solver is not a strong
+function of the number of energy groups in the problem (and therefore
+the problem size). Even more important, although BiCGStab produced the
+best iterative results, MCSA did perform better than GMRES in many
+cases with the Richardson iteration accelerated with Monte Carlo using
+the collision estimator performing best.
 
 For MCSA, we are linearly increasing the number of stochastic
 histories used to compute the correction at each iteration as the
