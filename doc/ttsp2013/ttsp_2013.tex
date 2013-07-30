@@ -2,10 +2,16 @@
 \usepackage[top=1.0in,bottom=1.0in,left=1.25in,right=1.25in]{geometry}
 \usepackage{verbatim}
 \usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{graphicx}
+\usepackage{tmadd,tmath}
 \usepackage{longtable}
 \usepackage{amsfonts}
 \usepackage{amsmath}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage[mathcal]{euscript} 
 \usepackage[usenames]{color}
 \usepackage[
 naturalnames = true, 
@@ -16,33 +22,6 @@ citecolor = black,
 menucolor = black,
 urlcolor = blue
 ]{hyperref}
-\usepackage{listings}
-\usepackage{textcomp}
-\definecolor{listinggray}{gray}{0.9}
-\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
-\lstset{
-  backgroundcolor=\color{lbcolor},
-  tabsize=4,
-  rulecolor=,
-  language=c++,
-  basicstyle=\scriptsize,
-  upquote=true,
-  aboveskip={1.5\baselineskip},
-  columns=fixed,
-  showstringspaces=false,
-  extendedchars=true,
-  breaklines=true,
-  prebreak =
-  \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
-  frame=single,
-  showtabs=false,
-  showspaces=false,
-  showstringspaces=false,
-  identifierstyle=\ttfamily,
-  keywordstyle=\color[rgb]{0,0,1},
-  commentstyle=\color[rgb]{0.133,0.545,0.133},
-  stringstyle=\color[rgb]{0.627,0.126,0.941},
-}
 
 %%---------------------------------------------------------------------------%%
 \author{Stuart R. Slattery
@@ -212,7 +191,7 @@ Figure~\ref{fig:problem3_radial_mat}) is resolved by a $2 \times 2$
 mesh with materials and cross sections homogenized over this region.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4in]{chapters/spn_equations/problem3_radial_mat.png}
+    \includegraphics[width=4in]{problem3_radial_mat.png}
   \end{center}
   \caption{\textbf{Fuel assembly mesh and geometry cross section.}
     \textit{Reflecting boundaries are used on the left and lower
@@ -224,7 +203,7 @@ mesh with materials and cross sections homogenized over this region.
 \end{figure}
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6.0in]{chapters/spn_equations/problem3_axial_mat.png}
+    \includegraphics[width=6.0in]{problem3_axial_mat.png}
   \end{center}
   \caption{\textbf{Fuel assembly geometry cross section.} \textit{The
       geometry is subdivided along the axial direction into 50 zones
@@ -237,7 +216,7 @@ mesh with materials and cross sections homogenized over this region.
 \end{figure}
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6.0in]{chapters/spn_equations/problem3_end.png}
+    \includegraphics[width=6.0in]{problem3_end.png}
   \end{center}
   \caption{\textbf{Fuel assembly geometry end detail.}
     \textit{Reactor core structure including spacer grids and plenum
@@ -425,7 +404,7 @@ the first eigenvalue iteration using 25,000 stochastic histories at
 every iteration for the adjoint Neumann-Ulam solve.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/block_jacobi_res.pdf}
+    \includegraphics[width=5in]{block_jacobi_res.pdf}
   \end{center}
   \caption{\textbf{Residual infinity norm vs. iteration for the block
       Jacobi preconditioned MCSA solve during the first eigenvalue
@@ -448,7 +427,7 @@ residual infinity norm as a function of iteration for the Richardson
 linear solve in the first eigenvalue iteration.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/block_jacobi_rich_res.pdf}
+    \includegraphics[width=5in]{block_jacobi_rich_res.pdf}
   \end{center}
   \caption{\textbf{Residual infinity norm vs. iteration for the block
       Jacobi preconditioned Richardson solve during the first
@@ -535,7 +514,7 @@ factor and flux spectrum within the $SP_N$ eigenvalue scheme for more
 difficult problems like the fuel assembly, making the method unusable.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/breakdown_iterations.pdf}
+    \includegraphics[width=4.25in]{breakdown_iterations.pdf}
   \end{center}
   \caption{\textbf{Iterations required to converge as a function of
       spectral radius for the neutron diffusion problem.} \textit{The
@@ -546,7 +525,7 @@ difficult problems like the fuel assembly, making the method unusable.
 \end{figure}
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/breakdown_histories.pdf}
+    \includegraphics[width=4.25in]{breakdown_histories.pdf}
   \end{center}
   \caption{\textbf{Histories per DOF required to converge as a
       function of spectral radius for the neutron diffusion problem.}
@@ -577,7 +556,7 @@ to move the eigenvalue spectrum of the $SP_N$ problem into a regime in
 which MCSA is more applicable and in which performance is improved.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/breakdown_time.pdf}
+    \includegraphics[width=4.25in]{breakdown_time.pdf}
   \end{center}
   \caption{\textbf{CPU time per history as a function of spectral
       radius for the neutron diffusion problem.} \textit{As the
@@ -684,7 +663,7 @@ fill levels used, convergence was not achieved for the fuel assembly
 problem with a drop tolerance larger than \sn{1}{-3}.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/ilut_iterations.pdf}
+    \includegraphics[width=4.25in]{ilut_iterations.pdf}
   \end{center}
   \caption{\textbf{Number of MCSA iterations required to converge an
       eigenvalue iteration for the fuel assembly problem with ILUT
@@ -721,7 +700,7 @@ communications among orders of magnitude more processors for
 nearest-neighbor type algorithms.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/ilut_size.pdf}
+    \includegraphics[width=4.25in]{ilut_size.pdf}
   \end{center}
   \caption{\textbf{Maximum number of non-zero entries observed for all
       rows in the composite linear operator for the fuel assembly
@@ -756,7 +735,7 @@ iterations required to converge as the non-zero row entries changed by
 a smaller fraction over drop tolerances tested.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/ilut_quality.pdf}
+    \includegraphics[width=4.25in]{ilut_quality.pdf}
   \end{center}
   \caption{\textbf{ILUT preconditioning quality metric for the fuel
       assembly problem given as a function of ILUT drop tolerance.}
@@ -849,7 +828,7 @@ important components of the preconditioned MCSA algorithm.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/rda_iterations.pdf}
+    \includegraphics[width=4.25in]{rda_iterations.pdf}
   \end{center}
   \caption{\textbf{Number of MCSA iterations required to converge a
       single eigenvalue iteration for the fuel assembly problem with
@@ -862,7 +841,7 @@ important components of the preconditioned MCSA algorithm.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/rda_quality.pdf}
+    \includegraphics[width=4.25in]{rda_quality.pdf}
   \end{center}
   \caption{\textbf{Preconditioning quality metric for the fuel
       assembly problem given as a function of reduced domain
@@ -954,7 +933,7 @@ although they did not necessarily have the best iterative performance.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6in]{chapters/spn_equations/relax_iters.pdf}
+    \includegraphics[width=6in]{relax_iters.pdf}
   \end{center}
   \caption{\textbf{Number of iterations to converge a single
       eigenvalue iteration of the fuel assembly problem as a function
@@ -970,7 +949,7 @@ although they did not necessarily have the best iterative performance.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6in]{chapters/spn_equations/relax_time.pdf}
+    \includegraphics[width=6in]{relax_time.pdf}
   \end{center}
   \caption{\textbf{CPU time in seconds to converge a single eigenvalue
       iteration of the fuel assembly problem as a function of the
@@ -1066,7 +1045,7 @@ preconditioner for the fuel assembly problem.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/solver_iters.pdf}
+    \includegraphics[width=5in]{solver_iters.pdf}
   \end{center}
   \caption{\textbf{Average number of iterations required to converge
       each eigenvalue iteration for the fuel assembly problem as a
@@ -1118,7 +1097,7 @@ with these production Krylov methods using CPU time as a measure
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/solver_time.pdf}
+    \includegraphics[width=5in]{solver_time.pdf}
   \end{center}
   \caption{\textbf{Average CPU time per linear solver iteration in
       seconds for the fuel assembly problem as a function of energy
@@ -1143,7 +1122,7 @@ the MCSA computation time by another order of magnitude.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/solver_p_time.pdf}
+    \includegraphics[width=5in]{solver_p_time.pdf}
   \end{center}
   \caption{\textbf{Average CPU time per iteration in seconds for the
       fuel assembly problem as a function of energy groups with
