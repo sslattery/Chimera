@@ -2114,7 +2114,8 @@ preconditioner for the fuel assembly problem.
       each eigenvalue iteration for the fuel assembly problem as a
       function of energy groups.}
     \textit{Table~\ref{tab:spn_solver_defs} gives the description for
-      each solver type presented in the legend.}}
+      each solver type presented in the legend with the Krylov solvers
+      represented in black and the MCSA solvers represented in red.}}
   \label{fig:spn_comparison_iterations}
 \end{figure}
 
@@ -2167,7 +2168,9 @@ with these production Krylov methods using CPU time as a measure
       groups.}  \textit{All linear solver iterations over all
       eigenvalue iterations were used to compute the
       average. Table~\ref{tab:spn_solver_defs} gives the description
-      for each solver type presented in the legend.}}
+      for each solver type presented in the legend with the Krylov
+      solvers represented in black and the MCSA solvers represented in
+      red.}}
   \label{fig:spn_comparison_time}
 \end{figure}
 
@@ -2194,9 +2197,10 @@ the MCSA computation time by another order of magnitude.
       iterations were used to compute the
       average. Table~\ref{tab:spn_solver_defs} gives the description
       for each solver type presented in the legend. Data labeled
-      starting with PMCSA is identical to those labeled with MCSA
-      except that they additionally include the cost of generating the
-      inverse of the preconditioners and composite linear operator.}}
+      starting with PMCSA and shown in blue is identical to those
+      labeled with MCSA except that they additionally include the cost
+      of generating the inverse of the preconditioners and composite
+      linear operator.}}
   \label{fig:spn_comparison_prec_time}
 \end{figure}
 
