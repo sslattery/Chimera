@@ -1,0 +1,2826 @@
+===============================
+Denovo-Neutronics, CASL VERA-CS
+(C) ORNL, Batelle, 2007-2012
+-------------------------------
+Release      :    denovo-3_0_0
+Release date :      3-MAR-2011
+Build date   :        20130721
+===============================
+WARNING: Dancoff Factors are disabled!!
+>>> Building/partitioning mesh
+>>> Setting up cross section builder
+>>> Building the cross sections
+MCLS ILUT: Generating ILUT Factorization
+MCLS ILUT: Inverting ILUT Factorization
+MCLS ILUT: Complete in 3143.95 seconds.
+************************************************************
+
+Database for Neutronics_PL->INSILICO has:
+        15 integer entries
+         4 double entries
+        11 bool entries
+         8 string entries
+         0 vector<int> entries
+         2 vector<double> entries
+         5 nested database entries
+
+============================================================
+Entries in                  Neutronics_PL->INSILICO database
+============================================================
+integer entries
+------------------------------------------------------------
+                           Pn_order                        1
+                          SPN_order                        1
+                cell_broadcast_size                      289
+                          dimension                        3
+                        first_group                        0
+                         last_group                        3
+                            max_itr                      100
+                               mesh                        2
+                     neutron_groups                        4
+                       num_blocks_i                        1
+                       num_blocks_j                        1
+                         num_groups                        4
+                           num_sets                        1
+                       num_z_blocks                        1
+                      photon_groups                        0
+
+double entries
+------------------------------------------------------------
+                     axial_geom_eps                     0.01
+                        max_delta_z                       30
+                    radial_geom_eps                   0.0001
+                          tolerance                    1e-06
+
+bool entries
+------------------------------------------------------------
+                            adjoint                        0
+                    cell_homogenize                        1
+                 create_unique_pins                        0
+                          do_output                        1
+                       do_transport                        1
+                        downscatter                        0
+                iterate_downscatter                        0
+                partition_upscatter                        0
+                 spn_block_matrices                        0
+               store_fulcrum_string                        1
+                       use_symmetry                        1
+
+string entries
+------------------------------------------------------------
+                           boundary                  reflect
+                       eigen_solver                  arnoldi
+                             eq_set                   spn_fv
+                        mat_library            casl_comp.sh5
+                          mg_solver                   krylov
+                       problem_name               neutronics
+                       problem_type               EIGENVALUE
+                         xs_librarylib252_HetBondOneAbs-NoAbsSigP
+
+vector<double> entries                (number of elements)
+------------------------------------------------------------
+                        neutron_bnd                        5
+                     new_grp_bounds                        4
+
+============================================================
+Entries in                                 boundary database
+============================================================
+vector<int> entries                   (number of elements)
+------------------------------------------------------------
+                            reflect                        6
+
+============================================================
+Entries in                            eigenvalue_db database
+============================================================
+integer entries
+------------------------------------------------------------
+                         Block Size                        1
+                   diagnostic_level                        2
+                           subspace                       20
+
+double entries
+------------------------------------------------------------
+              Convergence Tolerance                    1e-06
+                       L2_tolerance                    1e-05
+
+string entries
+------------------------------------------------------------
+                        eigensolver                  Arnoldi
+
+============================================================
+Entries in                               quadrature database
+============================================================
+integer entries
+------------------------------------------------------------
+                           Pn_order                        1
+                  azimuthals_octant                        8
+                      polars_octant                        6
+
+bool entries
+------------------------------------------------------------
+                            adjoint                        0
+
+string entries
+------------------------------------------------------------
+                          quad_type                       qr
+
+============================================================
+Entries in                                  silo_db database
+============================================================
+bool entries
+------------------------------------------------------------
+                       mixing_table                        0
+
+string entries
+------------------------------------------------------------
+                        silo_output             richardson_4
+
+============================================================
+Entries in                             upscatter_db database
+============================================================
+integer entries
+------------------------------------------------------------
+                         aztec_diag                        0
+                       aztec_output                        0
+
+double entries
+------------------------------------------------------------
+                          tolerance                    1e-05
+
+************************************************************
+=================================
+     GLOBAL MESH DESCRIPTION     
+=================================
+num cells I                    18
+num cells J                    18
+num cells K                    62
+I-Partitions                    1
+J-Partitions                    1
+K-Blocks                        1
+---------------------------------
+Num blocks                      1
+Num cells                   20088
+=================================
+      MATERIAL DESCRIPTION       
+=================================
+Clean materials                34
+Mixed materials              3981
+=================================
+ MULTILEVEL ENERGY DECOMPOSITION 
+=================================
+num groups                      4
+num solved groups               4
+num upscatter groups            3
+---------------------------------
+num sets                        1
+num replicated groups           0
+num decomposed groups           4
+---------------------------------
+Domains (blocks X sets)         1
+=================================
+       MEMORY  ALLOCATIONS       
+=================================
+state                       80352
+(GB)                   5.9867e-04
+DoF                         80352
+(GB)                   5.9867e-04
+=================================
+>>> Running the transport calculation
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 0
+The block size is         1
+The number of blocks is   20
+The current basis size is 0
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 0
+
+CURRENT RITZ VALUES             
+   [ NONE COMPUTED ]
+
+================================================================================
+
+Richardson Iteration 1: Residual = 5.885884e-01
+Richardson Iteration 2: Residual = 3.088975e-01
+Richardson Iteration 3: Residual = 1.930471e-01
+Richardson Iteration 4: Residual = 1.070963e-01
+Richardson Iteration 5: Residual = 6.190186e-02
+Richardson Iteration 6: Residual = 4.527570e-02
+Richardson Iteration 7: Residual = 3.351493e-02
+Richardson Iteration 8: Residual = 2.465507e-02
+Richardson Iteration 9: Residual = 1.806656e-02
+Richardson Iteration 10: Residual = 1.321126e-02
+Richardson Iteration 11: Residual = 9.648488e-03
+Richardson Iteration 12: Residual = 7.041443e-03
+Richardson Iteration 13: Residual = 5.136558e-03
+Richardson Iteration 14: Residual = 3.746011e-03
+Richardson Iteration 15: Residual = 2.848628e-03
+Richardson Iteration 16: Residual = 2.280832e-03
+Richardson Iteration 17: Residual = 1.825771e-03
+Richardson Iteration 18: Residual = 1.461239e-03
+Richardson Iteration 19: Residual = 1.169341e-03
+Richardson Iteration 20: Residual = 9.356666e-04
+Richardson Iteration 21: Residual = 7.486405e-04
+Richardson Iteration 22: Residual = 5.989708e-04
+Richardson Iteration 23: Residual = 4.792081e-04
+Richardson Iteration 24: Residual = 3.833830e-04
+Richardson Iteration 25: Residual = 3.067148e-04
+Richardson Iteration 26: Residual = 2.453759e-04
+Richardson Iteration 27: Residual = 1.963025e-04
+Richardson Iteration 28: Residual = 1.570426e-04
+Richardson Iteration 29: Residual = 1.256341e-04
+Richardson Iteration 30: Residual = 1.005070e-04
+Richardson Iteration 31: Residual = 8.040527e-05
+Richardson Iteration 32: Residual = 6.432387e-05
+Richardson Iteration 33: Residual = 5.145877e-05
+Richardson Iteration 34: Residual = 4.116674e-05
+Richardson Iteration 35: Residual = 3.293315e-05
+Richardson Iteration 36: Residual = 2.634633e-05
+Richardson Iteration 37: Residual = 2.107690e-05
+Richardson Iteration 38: Residual = 1.686139e-05
+Richardson Iteration 39: Residual = 1.348900e-05
+Richardson Iteration 40: Residual = 1.079112e-05
+Richardson Iteration 41: Residual = 8.632826e-06
+Richardson Iteration 42: Residual = 6.906205e-06
+Richardson Iteration 43: Residual = 5.524920e-06
+Richardson Iteration 44: Residual = 4.419901e-06
+Richardson Iteration 45: Residual = 3.535892e-06
+Richardson Iteration 46: Residual = 2.828691e-06
+Richardson Iteration 47: Residual = 2.262934e-06
+Richardson Iteration 48: Residual = 1.810333e-06
+Richardson Iteration 49: Residual = 1.448255e-06
+Richardson Iteration 50: Residual = 1.158594e-06
+Richardson Iteration 51: Residual = 9.268681e-07
+Richardson Iteration 52: Residual = 7.414885e-07
+Richardson Iteration 53: Residual = 5.931860e-07
+Richardson Iteration 54: Residual = 4.745450e-07
+Richardson Iteration 55: Residual = 3.796329e-07
+Richardson Iteration 56: Residual = 3.037039e-07
+Richardson Iteration 57: Residual = 2.429612e-07
+Richardson Iteration 58: Residual = 1.943674e-07
+Richardson Iteration 59: Residual = 1.554926e-07
+Richardson Iteration 60: Residual = 1.243931e-07
+Richardson Iteration 61: Residual = 9.951368e-08
+Richardson Iteration 62: Residual = 7.961030e-08
+Richardson Iteration 63: Residual = 6.368773e-08
+Richardson Iteration 64: Residual = 5.094977e-08
+Richardson Iteration 65: Residual = 4.075949e-08
+Richardson Iteration 66: Residual = 3.260733e-08
+Richardson Iteration 67: Residual = 2.608565e-08
+Richardson Iteration 68: Residual = 2.086835e-08
+Richardson Iteration 69: Residual = 1.669455e-08
+Richardson Iteration 70: Residual = 1.335553e-08
+Richardson Iteration 71: Residual = 1.068434e-08
+Richardson Iteration 72: Residual = 8.547402e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 72 cumulative iterations for an average of 72 iterations/RHS and with total CPU time of 24.9644 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 1
+The block size is         1
+The number of blocks is   20
+The current basis size is 1
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 1
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   2.621684e+00 + i   0.000000e+00        3.720019e+00
+
+================================================================================
+
+Richardson Iteration 1: Residual = 5.315576e-01
+Richardson Iteration 2: Residual = 2.797448e-01
+Richardson Iteration 3: Residual = 1.736932e-01
+Richardson Iteration 4: Residual = 9.661428e-02
+Richardson Iteration 5: Residual = 6.406873e-02
+Richardson Iteration 6: Residual = 4.790558e-02
+Richardson Iteration 7: Residual = 3.537975e-02
+Richardson Iteration 8: Residual = 2.599569e-02
+Richardson Iteration 9: Residual = 1.903341e-02
+Richardson Iteration 10: Residual = 1.391177e-02
+Richardson Iteration 11: Residual = 1.015697e-02
+Richardson Iteration 12: Residual = 7.411148e-03
+Richardson Iteration 13: Residual = 5.405587e-03
+Richardson Iteration 14: Residual = 3.941901e-03
+Richardson Iteration 15: Residual = 2.891697e-03
+Richardson Iteration 16: Residual = 2.315197e-03
+Richardson Iteration 17: Residual = 1.853212e-03
+Richardson Iteration 18: Residual = 1.483161e-03
+Richardson Iteration 19: Residual = 1.186861e-03
+Richardson Iteration 20: Residual = 9.496731e-04
+Richardson Iteration 21: Residual = 7.598399e-04
+Richardson Iteration 22: Residual = 6.079270e-04
+Richardson Iteration 23: Residual = 4.863711e-04
+Richardson Iteration 24: Residual = 3.891123e-04
+Richardson Iteration 25: Residual = 3.112976e-04
+Richardson Iteration 26: Residual = 2.490417e-04
+Richardson Iteration 27: Residual = 1.992349e-04
+Richardson Iteration 28: Residual = 1.593884e-04
+Richardson Iteration 29: Residual = 1.275106e-04
+Richardson Iteration 30: Residual = 1.020082e-04
+Richardson Iteration 31: Residual = 8.160621e-05
+Richardson Iteration 32: Residual = 6.528460e-05
+Richardson Iteration 33: Residual = 5.222735e-05
+Richardson Iteration 34: Residual = 4.178159e-05
+Richardson Iteration 35: Residual = 3.342503e-05
+Richardson Iteration 36: Residual = 2.673982e-05
+Richardson Iteration 37: Residual = 2.139169e-05
+Richardson Iteration 38: Residual = 1.711322e-05
+Richardson Iteration 39: Residual = 1.369047e-05
+Richardson Iteration 40: Residual = 1.095229e-05
+Richardson Iteration 41: Residual = 8.761761e-06
+Richardson Iteration 42: Residual = 7.009352e-06
+Richardson Iteration 43: Residual = 5.607437e-06
+Richardson Iteration 44: Residual = 4.485914e-06
+Richardson Iteration 45: Residual = 3.588702e-06
+Richardson Iteration 46: Residual = 2.870938e-06
+Richardson Iteration 47: Residual = 2.296732e-06
+Richardson Iteration 48: Residual = 1.837371e-06
+Richardson Iteration 49: Residual = 1.469885e-06
+Richardson Iteration 50: Residual = 1.175899e-06
+Richardson Iteration 51: Residual = 9.407112e-07
+Richardson Iteration 52: Residual = 7.525629e-07
+Richardson Iteration 53: Residual = 6.020455e-07
+Richardson Iteration 54: Residual = 4.816325e-07
+Richardson Iteration 55: Residual = 3.853029e-07
+Richardson Iteration 56: Residual = 3.082398e-07
+Richardson Iteration 57: Residual = 2.465899e-07
+Richardson Iteration 58: Residual = 1.972703e-07
+Richardson Iteration 59: Residual = 1.578150e-07
+Richardson Iteration 60: Residual = 1.262510e-07
+Richardson Iteration 61: Residual = 1.010000e-07
+Richardson Iteration 62: Residual = 8.079931e-08
+Richardson Iteration 63: Residual = 6.463893e-08
+Richardson Iteration 64: Residual = 5.171073e-08
+Richardson Iteration 65: Residual = 4.136825e-08
+Richardson Iteration 66: Residual = 3.309433e-08
+Richardson Iteration 67: Residual = 2.647525e-08
+Richardson Iteration 68: Residual = 2.118003e-08
+Richardson Iteration 69: Residual = 1.694389e-08
+Richardson Iteration 70: Residual = 1.355500e-08
+Richardson Iteration 71: Residual = 1.084391e-08
+Richardson Iteration 72: Residual = 8.675061e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 72 cumulative iterations for an average of 72 iterations/RHS and with total CPU time of 32.0674 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 2
+The block size is         1
+The number of blocks is   20
+The current basis size is 2
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 2
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.133407e+00 + i   0.000000e+00        4.925368e-02
+
+================================================================================
+
+Richardson Iteration 1: Residual = 3.104917e-01
+Richardson Iteration 2: Residual = 1.299014e-01
+Richardson Iteration 3: Residual = 9.648560e-02
+Richardson Iteration 4: Residual = 7.409935e-02
+Richardson Iteration 5: Residual = 5.475317e-02
+Richardson Iteration 6: Residual = 4.014701e-02
+Richardson Iteration 7: Residual = 2.928917e-02
+Richardson Iteration 8: Residual = 2.134574e-02
+Richardson Iteration 9: Residual = 1.554860e-02
+Richardson Iteration 10: Residual = 1.132651e-02
+Richardson Iteration 11: Residual = 8.251658e-03
+Richardson Iteration 12: Residual = 6.012403e-03
+Richardson Iteration 13: Residual = 4.381297e-03
+Richardson Iteration 14: Residual = 3.192984e-03
+Richardson Iteration 15: Residual = 2.327121e-03
+Richardson Iteration 16: Residual = 1.816101e-03
+Richardson Iteration 17: Residual = 1.453149e-03
+Richardson Iteration 18: Residual = 1.162660e-03
+Richardson Iteration 19: Residual = 9.302024e-04
+Richardson Iteration 20: Residual = 7.441993e-04
+Richardson Iteration 21: Residual = 5.953776e-04
+Richardson Iteration 22: Residual = 4.763102e-04
+Richardson Iteration 23: Residual = 3.810512e-04
+Richardson Iteration 24: Residual = 3.048416e-04
+Richardson Iteration 25: Residual = 2.438729e-04
+Richardson Iteration 26: Residual = 1.950975e-04
+Richardson Iteration 27: Residual = 1.560771e-04
+Richardson Iteration 28: Residual = 1.248609e-04
+Richardson Iteration 29: Residual = 9.988799e-05
+Richardson Iteration 30: Residual = 7.990979e-05
+Richardson Iteration 31: Residual = 6.392733e-05
+Richardson Iteration 32: Residual = 5.114146e-05
+Richardson Iteration 33: Residual = 4.091284e-05
+Richardson Iteration 34: Residual = 3.273001e-05
+Richardson Iteration 35: Residual = 2.618379e-05
+Richardson Iteration 36: Residual = 2.094687e-05
+Richardson Iteration 37: Residual = 1.675736e-05
+Richardson Iteration 38: Residual = 1.340578e-05
+Richardson Iteration 39: Residual = 1.072454e-05
+Richardson Iteration 40: Residual = 8.579559e-06
+Richardson Iteration 41: Residual = 6.863592e-06
+Richardson Iteration 42: Residual = 5.490829e-06
+Richardson Iteration 43: Residual = 4.392628e-06
+Richardson Iteration 44: Residual = 3.514074e-06
+Richardson Iteration 45: Residual = 2.811237e-06
+Richardson Iteration 46: Residual = 2.248971e-06
+Richardson Iteration 47: Residual = 1.799162e-06
+Richardson Iteration 48: Residual = 1.439318e-06
+Richardson Iteration 49: Residual = 1.151445e-06
+Richardson Iteration 50: Residual = 9.211489e-07
+Richardson Iteration 51: Residual = 7.369132e-07
+Richardson Iteration 52: Residual = 5.895258e-07
+Richardson Iteration 53: Residual = 4.716168e-07
+Richardson Iteration 54: Residual = 3.772904e-07
+Richardson Iteration 55: Residual = 3.018299e-07
+Richardson Iteration 56: Residual = 2.414620e-07
+Richardson Iteration 57: Residual = 1.931680e-07
+Richardson Iteration 58: Residual = 1.545332e-07
+Richardson Iteration 59: Residual = 1.236255e-07
+Richardson Iteration 60: Residual = 9.889963e-08
+Richardson Iteration 61: Residual = 7.911907e-08
+Richardson Iteration 62: Residual = 6.329474e-08
+Richardson Iteration 63: Residual = 5.063539e-08
+Richardson Iteration 64: Residual = 4.050798e-08
+Richardson Iteration 65: Residual = 3.240613e-08
+Richardson Iteration 66: Residual = 2.592469e-08
+Richardson Iteration 67: Residual = 2.073959e-08
+Richardson Iteration 68: Residual = 1.659154e-08
+Richardson Iteration 69: Residual = 1.327312e-08
+Richardson Iteration 70: Residual = 1.061841e-08
+Richardson Iteration 71: Residual = 8.494661e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 71 cumulative iterations for an average of 71 iterations/RHS and with total CPU time of 33.8642 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 3
+The block size is         1
+The number of blocks is   20
+The current basis size is 3
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 3
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.176148e+00 + i   0.000000e+00        2.606270e-02
+
+================================================================================
+
+Richardson Iteration 1: Residual = 3.501688e-01
+Richardson Iteration 2: Residual = 1.455018e-01
+Richardson Iteration 3: Residual = 6.748408e-02
+Richardson Iteration 4: Residual = 3.178529e-02
+Richardson Iteration 5: Residual = 1.911254e-02
+Richardson Iteration 6: Residual = 1.214817e-02
+Richardson Iteration 7: Residual = 8.411216e-03
+Richardson Iteration 8: Residual = 6.688923e-03
+Richardson Iteration 9: Residual = 5.402631e-03
+Richardson Iteration 10: Residual = 4.350789e-03
+Richardson Iteration 11: Residual = 3.495273e-03
+Richardson Iteration 12: Residual = 2.804683e-03
+Richardson Iteration 13: Residual = 2.248446e-03
+Richardson Iteration 14: Residual = 1.801480e-03
+Richardson Iteration 15: Residual = 1.442728e-03
+Richardson Iteration 16: Residual = 1.155066e-03
+Richardson Iteration 17: Residual = 9.245508e-04
+Richardson Iteration 18: Residual = 7.399208e-04
+Richardson Iteration 19: Residual = 5.920923e-04
+Richardson Iteration 20: Residual = 4.737597e-04
+Richardson Iteration 21: Residual = 3.790545e-04
+Richardson Iteration 22: Residual = 3.032687e-04
+Richardson Iteration 23: Residual = 2.426282e-04
+Richardson Iteration 24: Residual = 1.941093e-04
+Richardson Iteration 25: Residual = 1.552907e-04
+Richardson Iteration 26: Residual = 1.242341e-04
+Richardson Iteration 27: Residual = 9.938780e-05
+Richardson Iteration 28: Residual = 7.951033e-05
+Richardson Iteration 29: Residual = 6.360815e-05
+Richardson Iteration 30: Residual = 5.088633e-05
+Richardson Iteration 31: Residual = 4.070885e-05
+Richardson Iteration 32: Residual = 3.256688e-05
+Richardson Iteration 33: Residual = 2.605333e-05
+Richardson Iteration 34: Residual = 2.084251e-05
+Richardson Iteration 35: Residual = 1.667389e-05
+Richardson Iteration 36: Residual = 1.333901e-05
+Richardson Iteration 37: Residual = 1.067112e-05
+Richardson Iteration 38: Residual = 8.536830e-06
+Richardson Iteration 39: Residual = 6.829410e-06
+Richardson Iteration 40: Residual = 5.463484e-06
+Richardson Iteration 41: Residual = 4.370752e-06
+Richardson Iteration 42: Residual = 3.496574e-06
+Richardson Iteration 43: Residual = 2.797237e-06
+Richardson Iteration 44: Residual = 2.237771e-06
+Richardson Iteration 45: Residual = 1.790203e-06
+Richardson Iteration 46: Residual = 1.432151e-06
+Richardson Iteration 47: Residual = 1.145711e-06
+Richardson Iteration 48: Residual = 9.165616e-07
+Richardson Iteration 49: Residual = 7.332434e-07
+Richardson Iteration 50: Residual = 5.865900e-07
+Richardson Iteration 51: Residual = 4.692682e-07
+Richardson Iteration 52: Residual = 3.754115e-07
+Richardson Iteration 53: Residual = 3.003268e-07
+Richardson Iteration 54: Residual = 2.402595e-07
+Richardson Iteration 55: Residual = 1.922061e-07
+Richardson Iteration 56: Residual = 1.537636e-07
+Richardson Iteration 57: Residual = 1.230099e-07
+Richardson Iteration 58: Residual = 9.840712e-08
+Richardson Iteration 59: Residual = 7.872506e-08
+Richardson Iteration 60: Residual = 6.297954e-08
+Richardson Iteration 61: Residual = 5.038323e-08
+Richardson Iteration 62: Residual = 4.030626e-08
+Richardson Iteration 63: Residual = 3.224474e-08
+Richardson Iteration 64: Residual = 2.579559e-08
+Richardson Iteration 65: Residual = 2.063630e-08
+Richardson Iteration 66: Residual = 1.650891e-08
+Richardson Iteration 67: Residual = 1.320702e-08
+Richardson Iteration 68: Residual = 1.056553e-08
+Richardson Iteration 69: Residual = 8.452357e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 69 cumulative iterations for an average of 69 iterations/RHS and with total CPU time of 32.9021 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 4
+The block size is         1
+The number of blocks is   20
+The current basis size is 4
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 4
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.172938e+00 + i   0.000000e+00        1.888255e-02
+
+================================================================================
+
+Richardson Iteration 1: Residual = 3.395514e-01
+Richardson Iteration 2: Residual = 1.339397e-01
+Richardson Iteration 3: Residual = 6.767305e-02
+Richardson Iteration 4: Residual = 3.724003e-02
+Richardson Iteration 5: Residual = 2.021436e-02
+Richardson Iteration 6: Residual = 1.101748e-02
+Richardson Iteration 7: Residual = 5.978186e-03
+Richardson Iteration 8: Residual = 4.087835e-03
+Richardson Iteration 9: Residual = 3.255343e-03
+Richardson Iteration 10: Residual = 2.590358e-03
+Richardson Iteration 11: Residual = 2.068698e-03
+Richardson Iteration 12: Residual = 1.652427e-03
+Richardson Iteration 13: Residual = 1.321039e-03
+Richardson Iteration 14: Residual = 1.056255e-03
+Richardson Iteration 15: Residual = 8.447274e-04
+Richardson Iteration 16: Residual = 6.756086e-04
+Richardson Iteration 17: Residual = 5.403886e-04
+Richardson Iteration 18: Residual = 4.322494e-04
+Richardson Iteration 19: Residual = 3.457625e-04
+Richardson Iteration 20: Residual = 2.765870e-04
+Richardson Iteration 21: Residual = 2.212554e-04
+Richardson Iteration 22: Residual = 1.769955e-04
+Richardson Iteration 23: Residual = 1.415909e-04
+Richardson Iteration 24: Residual = 1.132693e-04
+Richardson Iteration 25: Residual = 9.061319e-05
+Richardson Iteration 26: Residual = 7.248910e-05
+Richardson Iteration 27: Residual = 5.799031e-05
+Richardson Iteration 28: Residual = 4.639159e-05
+Richardson Iteration 29: Residual = 3.711281e-05
+Richardson Iteration 30: Residual = 2.968992e-05
+Richardson Iteration 31: Residual = 2.375169e-05
+Richardson Iteration 32: Residual = 1.900117e-05
+Richardson Iteration 33: Residual = 1.520079e-05
+Richardson Iteration 34: Residual = 1.216053e-05
+Richardson Iteration 35: Residual = 9.728339e-06
+Richardson Iteration 36: Residual = 7.782605e-06
+Richardson Iteration 37: Residual = 6.226033e-06
+Richardson Iteration 38: Residual = 4.980785e-06
+Richardson Iteration 39: Residual = 3.984595e-06
+Richardson Iteration 40: Residual = 3.187650e-06
+Richardson Iteration 41: Residual = 2.550100e-06
+Richardson Iteration 42: Residual = 2.040063e-06
+Richardson Iteration 43: Residual = 1.632037e-06
+Richardson Iteration 44: Residual = 1.305619e-06
+Richardson Iteration 45: Residual = 1.044487e-06
+Richardson Iteration 46: Residual = 8.355828e-07
+Richardson Iteration 47: Residual = 6.684609e-07
+Richardson Iteration 48: Residual = 5.347644e-07
+Richardson Iteration 49: Residual = 4.278081e-07
+Richardson Iteration 50: Residual = 3.422437e-07
+Richardson Iteration 51: Residual = 2.737927e-07
+Richardson Iteration 52: Residual = 2.190324e-07
+Richardson Iteration 53: Residual = 1.752245e-07
+Richardson Iteration 54: Residual = 1.401785e-07
+Richardson Iteration 55: Residual = 1.121419e-07
+Richardson Iteration 56: Residual = 8.971279e-08
+Richardson Iteration 57: Residual = 7.176965e-08
+Richardson Iteration 58: Residual = 5.741526e-08
+Richardson Iteration 59: Residual = 4.593184e-08
+Richardson Iteration 60: Residual = 3.674517e-08
+Richardson Iteration 61: Residual = 2.939590e-08
+Richardson Iteration 62: Residual = 2.351653e-08
+Richardson Iteration 63: Residual = 1.881307e-08
+Richardson Iteration 64: Residual = 1.505034e-08
+Richardson Iteration 65: Residual = 1.204017e-08
+Richardson Iteration 66: Residual = 9.632061e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 66 cumulative iterations for an average of 66 iterations/RHS and with total CPU time of 31.6151 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 5
+The block size is         1
+The number of blocks is   20
+The current basis size is 5
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 5
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.172961e+00 + i   0.000000e+00        1.538885e-02
+
+================================================================================
+
+Richardson Iteration 1: Residual = 4.131468e-01
+Richardson Iteration 2: Residual = 1.664254e-01
+Richardson Iteration 3: Residual = 1.030576e-01
+Richardson Iteration 4: Residual = 4.972372e-02
+Richardson Iteration 5: Residual = 2.822556e-02
+Richardson Iteration 6: Residual = 1.460678e-02
+Richardson Iteration 7: Residual = 8.053808e-03
+Richardson Iteration 8: Residual = 4.291001e-03
+Richardson Iteration 9: Residual = 2.343201e-03
+Richardson Iteration 10: Residual = 1.263739e-03
+Richardson Iteration 11: Residual = 6.881862e-04
+Richardson Iteration 12: Residual = 4.518656e-04
+Richardson Iteration 13: Residual = 3.634358e-04
+Richardson Iteration 14: Residual = 2.916446e-04
+Richardson Iteration 15: Residual = 2.338884e-04
+Richardson Iteration 16: Residual = 1.874064e-04
+Richardson Iteration 17: Residual = 1.500993e-04
+Richardson Iteration 18: Residual = 1.201741e-04
+Richardson Iteration 19: Residual = 9.619360e-05
+Richardson Iteration 20: Residual = 7.698510e-05
+Richardson Iteration 21: Residual = 6.160524e-05
+Richardson Iteration 22: Residual = 4.929379e-05
+Richardson Iteration 23: Residual = 3.944043e-05
+Richardson Iteration 24: Residual = 3.155534e-05
+Richardson Iteration 25: Residual = 2.524592e-05
+Richardson Iteration 26: Residual = 2.019763e-05
+Richardson Iteration 27: Residual = 1.615858e-05
+Richardson Iteration 28: Residual = 1.292710e-05
+Richardson Iteration 29: Residual = 1.034179e-05
+Richardson Iteration 30: Residual = 8.273474e-06
+Richardson Iteration 31: Residual = 6.618788e-06
+Richardson Iteration 32: Residual = 5.295023e-06
+Richardson Iteration 33: Residual = 4.236004e-06
+Richardson Iteration 34: Residual = 3.388787e-06
+Richardson Iteration 35: Residual = 2.711014e-06
+Richardson Iteration 36: Residual = 2.168797e-06
+Richardson Iteration 37: Residual = 1.735026e-06
+Richardson Iteration 38: Residual = 1.388010e-06
+Richardson Iteration 39: Residual = 1.110400e-06
+Richardson Iteration 40: Residual = 8.883132e-07
+Richardson Iteration 41: Residual = 7.106450e-07
+Richardson Iteration 42: Residual = 5.685115e-07
+Richardson Iteration 43: Residual = 4.548056e-07
+Richardson Iteration 44: Residual = 3.638416e-07
+Richardson Iteration 45: Residual = 2.910709e-07
+Richardson Iteration 46: Residual = 2.328549e-07
+Richardson Iteration 47: Residual = 1.862824e-07
+Richardson Iteration 48: Residual = 1.490247e-07
+Richardson Iteration 49: Residual = 1.192188e-07
+Richardson Iteration 50: Residual = 9.537429e-08
+Richardson Iteration 51: Residual = 7.629882e-08
+Richardson Iteration 52: Residual = 6.103856e-08
+Richardson Iteration 53: Residual = 4.883046e-08
+Richardson Iteration 54: Residual = 3.906405e-08
+Richardson Iteration 55: Residual = 3.125099e-08
+Richardson Iteration 56: Residual = 2.500059e-08
+Richardson Iteration 57: Residual = 2.000031e-08
+Richardson Iteration 58: Residual = 1.600012e-08
+Richardson Iteration 59: Residual = 1.279999e-08
+Richardson Iteration 60: Residual = 1.023991e-08
+Richardson Iteration 61: Residual = 8.191863e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 61 cumulative iterations for an average of 61 iterations/RHS and with total CPU time of 26.375 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 6
+The block size is         1
+The number of blocks is   20
+The current basis size is 6
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 6
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.174774e+00 + i   0.000000e+00        1.291006e-02
+
+================================================================================
+
+Richardson Iteration 1: Residual = 3.468473e-01
+Richardson Iteration 2: Residual = 1.790156e-01
+Richardson Iteration 3: Residual = 1.011462e-01
+Richardson Iteration 4: Residual = 5.436184e-02
+Richardson Iteration 5: Residual = 2.947010e-02
+Richardson Iteration 6: Residual = 1.581167e-02
+Richardson Iteration 7: Residual = 8.510404e-03
+Richardson Iteration 8: Residual = 4.574775e-03
+Richardson Iteration 9: Residual = 2.471182e-03
+Richardson Iteration 10: Residual = 1.565049e-03
+Richardson Iteration 11: Residual = 1.256361e-03
+Richardson Iteration 12: Residual = 1.008669e-03
+Richardson Iteration 13: Residual = 8.089559e-04
+Richardson Iteration 14: Residual = 6.484599e-04
+Richardson Iteration 15: Residual = 5.195031e-04
+Richardson Iteration 16: Residual = 4.160356e-04
+Richardson Iteration 17: Residual = 3.330727e-04
+Richardson Iteration 18: Residual = 2.665972e-04
+Richardson Iteration 19: Residual = 2.133557e-04
+Richardson Iteration 20: Residual = 1.707282e-04
+Richardson Iteration 21: Residual = 1.366067e-04
+Richardson Iteration 22: Residual = 1.092987e-04
+Richardson Iteration 23: Residual = 8.744630e-05
+Richardson Iteration 24: Residual = 6.996097e-05
+Richardson Iteration 25: Residual = 5.597085e-05
+Richardson Iteration 26: Residual = 4.477774e-05
+Richardson Iteration 27: Residual = 3.582270e-05
+Richardson Iteration 28: Residual = 2.865838e-05
+Richardson Iteration 29: Residual = 2.292677e-05
+Richardson Iteration 30: Residual = 1.834140e-05
+Richardson Iteration 31: Residual = 1.467308e-05
+Richardson Iteration 32: Residual = 1.173842e-05
+Richardson Iteration 33: Residual = 9.390682e-06
+Richardson Iteration 34: Residual = 7.512498e-06
+Richardson Iteration 35: Residual = 6.009958e-06
+Richardson Iteration 36: Residual = 4.807932e-06
+Richardson Iteration 37: Residual = 3.846317e-06
+Richardson Iteration 38: Residual = 3.077030e-06
+Richardson Iteration 39: Residual = 2.461605e-06
+Richardson Iteration 40: Residual = 1.969268e-06
+Richardson Iteration 41: Residual = 1.575402e-06
+Richardson Iteration 42: Residual = 1.260312e-06
+Richardson Iteration 43: Residual = 1.008241e-06
+Richardson Iteration 44: Residual = 8.065866e-07
+Richardson Iteration 45: Residual = 6.452641e-07
+Richardson Iteration 46: Residual = 5.162071e-07
+Richardson Iteration 47: Residual = 4.129624e-07
+Richardson Iteration 48: Residual = 3.303673e-07
+Richardson Iteration 49: Residual = 2.642917e-07
+Richardson Iteration 50: Residual = 2.114316e-07
+Richardson Iteration 51: Residual = 1.691439e-07
+Richardson Iteration 52: Residual = 1.353141e-07
+Richardson Iteration 53: Residual = 1.082504e-07
+Richardson Iteration 54: Residual = 8.659961e-08
+Richardson Iteration 55: Residual = 6.927913e-08
+Richardson Iteration 56: Residual = 5.542285e-08
+Richardson Iteration 57: Residual = 4.433793e-08
+Richardson Iteration 58: Residual = 3.547005e-08
+Richardson Iteration 59: Residual = 2.837581e-08
+Richardson Iteration 60: Residual = 2.270047e-08
+Richardson Iteration 61: Residual = 1.816023e-08
+Richardson Iteration 62: Residual = 1.452807e-08
+Richardson Iteration 63: Residual = 1.162236e-08
+Richardson Iteration 64: Residual = 9.297812e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 64 cumulative iterations for an average of 64 iterations/RHS and with total CPU time of 22.4731 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 7
+The block size is         1
+The number of blocks is   20
+The current basis size is 7
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 7
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175111e+00 + i   0.000000e+00        1.048353e-02
+
+================================================================================
+
+Richardson Iteration 1: Residual = 5.250497e-01
+Richardson Iteration 2: Residual = 2.336712e-01
+Richardson Iteration 3: Residual = 1.350086e-01
+Richardson Iteration 4: Residual = 6.716119e-02
+Richardson Iteration 5: Residual = 3.690328e-02
+Richardson Iteration 6: Residual = 1.924640e-02
+Richardson Iteration 7: Residual = 1.042036e-02
+Richardson Iteration 8: Residual = 5.541502e-03
+Richardson Iteration 9: Residual = 2.988256e-03
+Richardson Iteration 10: Residual = 1.972357e-03
+Richardson Iteration 11: Residual = 1.581959e-03
+Richardson Iteration 12: Residual = 1.266402e-03
+Richardson Iteration 13: Residual = 1.013944e-03
+Richardson Iteration 14: Residual = 8.114166e-04
+Richardson Iteration 15: Residual = 6.493068e-04
+Richardson Iteration 16: Residual = 5.195119e-04
+Richardson Iteration 17: Residual = 4.156457e-04
+Richardson Iteration 18: Residual = 3.325307e-04
+Richardson Iteration 19: Residual = 2.660308e-04
+Richardson Iteration 20: Residual = 2.128264e-04
+Richardson Iteration 21: Residual = 1.702613e-04
+Richardson Iteration 22: Residual = 1.362085e-04
+Richardson Iteration 23: Residual = 1.089660e-04
+Richardson Iteration 24: Residual = 8.717210e-05
+Richardson Iteration 25: Residual = 6.973705e-05
+Richardson Iteration 26: Residual = 5.578913e-05
+Richardson Iteration 27: Residual = 4.463089e-05
+Richardson Iteration 28: Residual = 3.570439e-05
+Richardson Iteration 29: Residual = 2.856325e-05
+Richardson Iteration 30: Residual = 2.285040e-05
+Richardson Iteration 31: Residual = 1.828016e-05
+Richardson Iteration 32: Residual = 1.462400e-05
+Richardson Iteration 33: Residual = 1.169911e-05
+Richardson Iteration 34: Residual = 9.359206e-06
+Richardson Iteration 35: Residual = 7.487303e-06
+Richardson Iteration 36: Residual = 5.989793e-06
+Richardson Iteration 37: Residual = 4.791795e-06
+Richardson Iteration 38: Residual = 3.833405e-06
+Richardson Iteration 39: Residual = 3.066699e-06
+Richardson Iteration 40: Residual = 2.453339e-06
+Richardson Iteration 41: Residual = 1.962656e-06
+Richardson Iteration 42: Residual = 1.570112e-06
+Richardson Iteration 43: Residual = 1.256079e-06
+Richardson Iteration 44: Residual = 1.004855e-06
+Richardson Iteration 45: Residual = 8.038778e-07
+Richardson Iteration 46: Residual = 6.430970e-07
+Richardson Iteration 47: Residual = 5.144735e-07
+Richardson Iteration 48: Residual = 4.115755e-07
+Richardson Iteration 49: Residual = 3.292577e-07
+Richardson Iteration 50: Residual = 2.634041e-07
+Richardson Iteration 51: Residual = 2.107215e-07
+Richardson Iteration 52: Residual = 1.685759e-07
+Richardson Iteration 53: Residual = 1.348596e-07
+Richardson Iteration 54: Residual = 1.078868e-07
+Richardson Iteration 55: Residual = 8.630876e-08
+Richardson Iteration 56: Residual = 6.904645e-08
+Richardson Iteration 57: Residual = 5.523672e-08
+Richardson Iteration 58: Residual = 4.418902e-08
+Richardson Iteration 59: Residual = 3.535093e-08
+Richardson Iteration 60: Residual = 2.828051e-08
+Richardson Iteration 61: Residual = 2.262423e-08
+Richardson Iteration 62: Residual = 1.809924e-08
+Richardson Iteration 63: Residual = 1.447927e-08
+Richardson Iteration 64: Residual = 1.158332e-08
+Richardson Iteration 65: Residual = 9.266585e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 65 cumulative iterations for an average of 65 iterations/RHS and with total CPU time of 29.365 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 8
+The block size is         1
+The number of blocks is   20
+The current basis size is 8
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 8
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175088e+00 + i   0.000000e+00        8.351883e-03
+
+================================================================================
+
+Richardson Iteration 1: Residual = 4.013622e-01
+Richardson Iteration 2: Residual = 2.004778e-01
+Richardson Iteration 3: Residual = 9.478423e-02
+Richardson Iteration 4: Residual = 4.611069e-02
+Richardson Iteration 5: Residual = 2.588234e-02
+Richardson Iteration 6: Residual = 1.320474e-02
+Richardson Iteration 7: Residual = 7.363594e-03
+Richardson Iteration 8: Residual = 3.887564e-03
+Richardson Iteration 9: Residual = 2.126114e-03
+Richardson Iteration 10: Residual = 1.137704e-03
+Richardson Iteration 11: Residual = 6.173975e-04
+Richardson Iteration 12: Residual = 3.321663e-04
+Richardson Iteration 13: Residual = 2.039404e-04
+Richardson Iteration 14: Residual = 1.627796e-04
+Richardson Iteration 15: Residual = 1.300968e-04
+Richardson Iteration 16: Residual = 1.039809e-04
+Richardson Iteration 17: Residual = 8.314056e-05
+Richardson Iteration 18: Residual = 6.648485e-05
+Richardson Iteration 19: Residual = 5.317350e-05
+Richardson Iteration 20: Residual = 4.253033e-05
+Richardson Iteration 21: Residual = 3.401957e-05
+Richardson Iteration 22: Residual = 2.721291e-05
+Richardson Iteration 23: Residual = 2.176875e-05
+Richardson Iteration 24: Residual = 1.741407e-05
+Richardson Iteration 25: Residual = 1.393070e-05
+Richardson Iteration 26: Residual = 1.114422e-05
+Richardson Iteration 27: Residual = 8.915168e-06
+Richardson Iteration 28: Residual = 7.132000e-06
+Richardson Iteration 29: Residual = 5.705511e-06
+Richardson Iteration 30: Residual = 4.564348e-06
+Richardson Iteration 31: Residual = 3.651436e-06
+Richardson Iteration 32: Residual = 2.921118e-06
+Richardson Iteration 33: Residual = 2.336872e-06
+Richardson Iteration 34: Residual = 1.869480e-06
+Richardson Iteration 35: Residual = 1.495571e-06
+Richardson Iteration 36: Residual = 1.196446e-06
+Richardson Iteration 37: Residual = 9.571490e-07
+Richardson Iteration 38: Residual = 7.657128e-07
+Richardson Iteration 39: Residual = 6.125652e-07
+Richardson Iteration 40: Residual = 4.900482e-07
+Richardson Iteration 41: Residual = 3.920354e-07
+Richardson Iteration 42: Residual = 3.136257e-07
+Richardson Iteration 43: Residual = 2.508986e-07
+Richardson Iteration 44: Residual = 2.007172e-07
+Richardson Iteration 45: Residual = 1.605725e-07
+Richardson Iteration 46: Residual = 1.284569e-07
+Richardson Iteration 47: Residual = 1.027647e-07
+Richardson Iteration 48: Residual = 8.221112e-08
+Richardson Iteration 49: Residual = 6.576837e-08
+Richardson Iteration 50: Residual = 5.261427e-08
+Richardson Iteration 51: Residual = 4.209108e-08
+Richardson Iteration 52: Residual = 3.367259e-08
+Richardson Iteration 53: Residual = 2.693785e-08
+Richardson Iteration 54: Residual = 2.155011e-08
+Richardson Iteration 55: Residual = 1.723995e-08
+Richardson Iteration 56: Residual = 1.379185e-08
+Richardson Iteration 57: Residual = 1.103339e-08
+Richardson Iteration 58: Residual = 8.826640e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 58 cumulative iterations for an average of 58 iterations/RHS and with total CPU time of 27.5578 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 9
+The block size is         1
+The number of blocks is   20
+The current basis size is 9
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 9
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175404e+00 + i   0.000000e+00        7.014940e-03
+
+================================================================================
+
+Richardson Iteration 1: Residual = 4.161634e-01
+Richardson Iteration 2: Residual = 2.059488e-01
+Richardson Iteration 3: Residual = 1.076358e-01
+Richardson Iteration 4: Residual = 6.022052e-02
+Richardson Iteration 5: Residual = 3.171752e-02
+Richardson Iteration 6: Residual = 1.722667e-02
+Richardson Iteration 7: Residual = 9.185866e-03
+Richardson Iteration 8: Residual = 4.955784e-03
+Richardson Iteration 9: Residual = 2.659599e-03
+Richardson Iteration 10: Residual = 1.433224e-03
+Richardson Iteration 11: Residual = 7.713628e-04
+Richardson Iteration 12: Residual = 4.666556e-04
+Richardson Iteration 13: Residual = 3.734235e-04
+Richardson Iteration 14: Residual = 2.989871e-04
+Richardson Iteration 15: Residual = 2.392658e-04
+Richardson Iteration 16: Residual = 1.914817e-04
+Richardson Iteration 17: Residual = 1.532169e-04
+Richardson Iteration 18: Residual = 1.225946e-04
+Richardson Iteration 19: Residual = 9.808651e-05
+Richardson Iteration 20: Residual = 7.847559e-05
+Richardson Iteration 21: Residual = 6.278381e-05
+Richardson Iteration 22: Residual = 5.022884e-05
+Richardson Iteration 23: Residual = 4.018396e-05
+Richardson Iteration 24: Residual = 3.214758e-05
+Richardson Iteration 25: Residual = 2.571823e-05
+Richardson Iteration 26: Residual = 2.057462e-05
+Richardson Iteration 27: Residual = 1.645968e-05
+Richardson Iteration 28: Residual = 1.316770e-05
+Richardson Iteration 29: Residual = 1.053411e-05
+Richardson Iteration 30: Residual = 8.427237e-06
+Richardson Iteration 31: Residual = 6.741746e-06
+Richardson Iteration 32: Residual = 5.393359e-06
+Richardson Iteration 33: Residual = 4.314655e-06
+Richardson Iteration 34: Residual = 3.451698e-06
+Richardson Iteration 35: Residual = 2.761337e-06
+Richardson Iteration 36: Residual = 2.209053e-06
+Richardson Iteration 37: Residual = 1.767228e-06
+Richardson Iteration 38: Residual = 1.413771e-06
+Richardson Iteration 39: Residual = 1.131008e-06
+Richardson Iteration 40: Residual = 9.047991e-07
+Richardson Iteration 41: Residual = 7.238335e-07
+Richardson Iteration 42: Residual = 5.790621e-07
+Richardson Iteration 43: Residual = 4.632460e-07
+Richardson Iteration 44: Residual = 3.705938e-07
+Richardson Iteration 45: Residual = 2.964727e-07
+Richardson Iteration 46: Residual = 2.371762e-07
+Richardson Iteration 47: Residual = 1.897394e-07
+Richardson Iteration 48: Residual = 1.517903e-07
+Richardson Iteration 49: Residual = 1.214313e-07
+Richardson Iteration 50: Residual = 9.714425e-08
+Richardson Iteration 51: Residual = 7.771477e-08
+Richardson Iteration 52: Residual = 6.217131e-08
+Richardson Iteration 53: Residual = 4.973665e-08
+Richardson Iteration 54: Residual = 3.978900e-08
+Richardson Iteration 55: Residual = 3.183094e-08
+Richardson Iteration 56: Residual = 2.546455e-08
+Richardson Iteration 57: Residual = 2.037148e-08
+Richardson Iteration 58: Residual = 1.629705e-08
+Richardson Iteration 59: Residual = 1.303753e-08
+Richardson Iteration 60: Residual = 1.042994e-08
+Richardson Iteration 61: Residual = 8.343887e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 61 cumulative iterations for an average of 61 iterations/RHS and with total CPU time of 29.2134 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 10
+The block size is         1
+The number of blocks is   20
+The current basis size is 10
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 10
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175799e+00 + i   0.000000e+00        6.237203e-03
+
+================================================================================
+
+Richardson Iteration 1: Residual = 5.442299e-01
+Richardson Iteration 2: Residual = 2.090901e-01
+Richardson Iteration 3: Residual = 1.359905e-01
+Richardson Iteration 4: Residual = 6.468593e-02
+Richardson Iteration 5: Residual = 3.712319e-02
+Richardson Iteration 6: Residual = 1.913610e-02
+Richardson Iteration 7: Residual = 1.056132e-02
+Richardson Iteration 8: Residual = 5.610857e-03
+Richardson Iteration 9: Residual = 3.055941e-03
+Richardson Iteration 10: Residual = 1.641957e-03
+Richardson Iteration 11: Residual = 1.018298e-03
+Richardson Iteration 12: Residual = 8.153403e-04
+Richardson Iteration 13: Residual = 6.528143e-04
+Richardson Iteration 14: Residual = 5.225305e-04
+Richardson Iteration 15: Residual = 4.181930e-04
+Richardson Iteration 16: Residual = 3.346478e-04
+Richardson Iteration 17: Residual = 2.677700e-04
+Richardson Iteration 18: Residual = 2.142440e-04
+Richardson Iteration 19: Residual = 1.714098e-04
+Richardson Iteration 20: Residual = 1.371353e-04
+Richardson Iteration 21: Residual = 1.097119e-04
+Richardson Iteration 22: Residual = 8.777112e-05
+Richardson Iteration 23: Residual = 7.021751e-05
+Richardson Iteration 24: Residual = 5.617415e-05
+Richardson Iteration 25: Residual = 4.493924e-05
+Richardson Iteration 26: Residual = 3.595124e-05
+Richardson Iteration 27: Residual = 2.876083e-05
+Richardson Iteration 28: Residual = 2.300851e-05
+Richardson Iteration 29: Residual = 1.840667e-05
+Richardson Iteration 30: Residual = 1.472522e-05
+Richardson Iteration 31: Residual = 1.178008e-05
+Richardson Iteration 32: Residual = 9.423990e-06
+Richardson Iteration 33: Residual = 7.539131e-06
+Richardson Iteration 34: Residual = 6.031256e-06
+Richardson Iteration 35: Residual = 4.824965e-06
+Richardson Iteration 36: Residual = 3.859941e-06
+Richardson Iteration 37: Residual = 3.087928e-06
+Richardson Iteration 38: Residual = 2.470322e-06
+Richardson Iteration 39: Residual = 1.976242e-06
+Richardson Iteration 40: Residual = 1.580981e-06
+Richardson Iteration 41: Residual = 1.264774e-06
+Richardson Iteration 42: Residual = 1.011811e-06
+Richardson Iteration 43: Residual = 8.094424e-07
+Richardson Iteration 44: Residual = 6.475487e-07
+Richardson Iteration 45: Residual = 5.180348e-07
+Richardson Iteration 46: Residual = 4.144245e-07
+Richardson Iteration 47: Residual = 3.315369e-07
+Richardson Iteration 48: Residual = 2.652274e-07
+Richardson Iteration 49: Residual = 2.121802e-07
+Richardson Iteration 50: Residual = 1.697428e-07
+Richardson Iteration 51: Residual = 1.357931e-07
+Richardson Iteration 52: Residual = 1.086336e-07
+Richardson Iteration 53: Residual = 8.690621e-08
+Richardson Iteration 54: Residual = 6.952441e-08
+Richardson Iteration 55: Residual = 5.561908e-08
+Richardson Iteration 56: Residual = 4.449490e-08
+Richardson Iteration 57: Residual = 3.559564e-08
+Richardson Iteration 58: Residual = 2.847628e-08
+Richardson Iteration 59: Residual = 2.278084e-08
+Richardson Iteration 60: Residual = 1.822452e-08
+Richardson Iteration 61: Residual = 1.457950e-08
+Richardson Iteration 62: Residual = 1.166351e-08
+Richardson Iteration 63: Residual = 9.330731e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 63 cumulative iterations for an average of 63 iterations/RHS and with total CPU time of 30.131 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 11
+The block size is         1
+The number of blocks is   20
+The current basis size is 11
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 11
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175574e+00 + i   0.000000e+00        4.849410e-03
+
+================================================================================
+
+Richardson Iteration 1: Residual = 4.602154e-01
+Richardson Iteration 2: Residual = 2.347933e-01
+Richardson Iteration 3: Residual = 1.374732e-01
+Richardson Iteration 4: Residual = 7.141184e-02
+Richardson Iteration 5: Residual = 3.914051e-02
+Richardson Iteration 6: Residual = 2.065083e-02
+Richardson Iteration 7: Residual = 1.114382e-02
+Richardson Iteration 8: Residual = 5.937907e-03
+Richardson Iteration 9: Residual = 3.194610e-03
+Richardson Iteration 10: Residual = 1.711354e-03
+Richardson Iteration 11: Residual = 9.206433e-04
+Richardson Iteration 12: Residual = 7.257164e-04
+Richardson Iteration 13: Residual = 5.815327e-04
+Richardson Iteration 14: Residual = 4.654737e-04
+Richardson Iteration 15: Residual = 3.726215e-04
+Richardson Iteration 16: Residual = 2.981970e-04
+Richardson Iteration 17: Residual = 2.386244e-04
+Richardson Iteration 18: Residual = 1.909319e-04
+Richardson Iteration 19: Residual = 1.527644e-04
+Richardson Iteration 20: Residual = 1.222211e-04
+Richardson Iteration 21: Residual = 9.778211e-05
+Richardson Iteration 22: Residual = 7.822831e-05
+Richardson Iteration 23: Residual = 6.258395e-05
+Richardson Iteration 24: Residual = 5.006775e-05
+Richardson Iteration 25: Residual = 4.005442e-05
+Richardson Iteration 26: Residual = 3.204358e-05
+Richardson Iteration 27: Residual = 2.563482e-05
+Richardson Iteration 28: Residual = 2.050779e-05
+Richardson Iteration 29: Residual = 1.640615e-05
+Richardson Iteration 30: Residual = 1.312484e-05
+Richardson Iteration 31: Residual = 1.049980e-05
+Richardson Iteration 32: Residual = 8.399783e-06
+Richardson Iteration 33: Residual = 6.719777e-06
+Richardson Iteration 34: Residual = 5.375781e-06
+Richardson Iteration 35: Residual = 4.300592e-06
+Richardson Iteration 36: Residual = 3.440446e-06
+Richardson Iteration 37: Residual = 2.752335e-06
+Richardson Iteration 38: Residual = 2.201851e-06
+Richardson Iteration 39: Residual = 1.761467e-06
+Richardson Iteration 40: Residual = 1.409162e-06
+Richardson Iteration 41: Residual = 1.127321e-06
+Richardson Iteration 42: Residual = 9.018492e-07
+Richardson Iteration 43: Residual = 7.214735e-07
+Richardson Iteration 44: Residual = 5.771742e-07
+Richardson Iteration 45: Residual = 4.617356e-07
+Richardson Iteration 46: Residual = 3.693855e-07
+Richardson Iteration 47: Residual = 2.955060e-07
+Richardson Iteration 48: Residual = 2.364029e-07
+Richardson Iteration 49: Residual = 1.891208e-07
+Richardson Iteration 50: Residual = 1.512954e-07
+Richardson Iteration 51: Residual = 1.210354e-07
+Richardson Iteration 52: Residual = 9.682752e-08
+Richardson Iteration 53: Residual = 7.746139e-08
+Richardson Iteration 54: Residual = 6.196861e-08
+Richardson Iteration 55: Residual = 4.957449e-08
+Richardson Iteration 56: Residual = 3.965927e-08
+Richardson Iteration 57: Residual = 3.172716e-08
+Richardson Iteration 58: Residual = 2.538153e-08
+Richardson Iteration 59: Residual = 2.030506e-08
+Richardson Iteration 60: Residual = 1.624391e-08
+Richardson Iteration 61: Residual = 1.299503e-08
+Richardson Iteration 62: Residual = 1.039594e-08
+Richardson Iteration 63: Residual = 8.316683e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 63 cumulative iterations for an average of 63 iterations/RHS and with total CPU time of 30.1226 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 12
+The block size is         1
+The number of blocks is   20
+The current basis size is 12
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 12
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175761e+00 + i   0.000000e+00        3.990781e-03
+
+================================================================================
+
+Richardson Iteration 1: Residual = 5.545164e-01
+Richardson Iteration 2: Residual = 2.556415e-01
+Richardson Iteration 3: Residual = 1.469777e-01
+Richardson Iteration 4: Residual = 7.354062e-02
+Richardson Iteration 5: Residual = 3.998609e-02
+Richardson Iteration 6: Residual = 2.083463e-02
+Richardson Iteration 7: Residual = 1.122429e-02
+Richardson Iteration 8: Residual = 5.964235e-03
+Richardson Iteration 9: Residual = 3.211553e-03
+Richardson Iteration 10: Residual = 1.722092e-03
+Richardson Iteration 11: Residual = 9.283382e-04
+Richardson Iteration 12: Residual = 6.173749e-04
+Richardson Iteration 13: Residual = 4.946792e-04
+Richardson Iteration 14: Residual = 3.958759e-04
+Richardson Iteration 15: Residual = 3.168917e-04
+Richardson Iteration 16: Residual = 2.535806e-04
+Richardson Iteration 17: Residual = 2.029156e-04
+Richardson Iteration 18: Residual = 1.623554e-04
+Richardson Iteration 19: Residual = 1.298983e-04
+Richardson Iteration 20: Residual = 1.039254e-04
+Richardson Iteration 21: Residual = 8.314403e-05
+Richardson Iteration 22: Residual = 6.651699e-05
+Richardson Iteration 23: Residual = 5.321443e-05
+Richardson Iteration 24: Residual = 4.257189e-05
+Richardson Iteration 25: Residual = 3.405761e-05
+Richardson Iteration 26: Residual = 2.724607e-05
+Richardson Iteration 27: Residual = 2.179679e-05
+Richardson Iteration 28: Residual = 1.743735e-05
+Richardson Iteration 29: Residual = 1.394980e-05
+Richardson Iteration 30: Residual = 1.115977e-05
+Richardson Iteration 31: Residual = 8.927750e-06
+Richardson Iteration 32: Residual = 7.142147e-06
+Richardson Iteration 33: Residual = 5.713675e-06
+Richardson Iteration 34: Residual = 4.570904e-06
+Richardson Iteration 35: Residual = 3.656695e-06
+Richardson Iteration 36: Residual = 2.925333e-06
+Richardson Iteration 37: Residual = 2.340248e-06
+Richardson Iteration 38: Residual = 1.872183e-06
+Richardson Iteration 39: Residual = 1.497734e-06
+Richardson Iteration 40: Residual = 1.198178e-06
+Richardson Iteration 41: Residual = 9.585346e-07
+Richardson Iteration 42: Residual = 7.668215e-07
+Richardson Iteration 43: Residual = 6.134523e-07
+Richardson Iteration 44: Residual = 4.907579e-07
+Richardson Iteration 45: Residual = 3.926031e-07
+Richardson Iteration 46: Residual = 3.140800e-07
+Richardson Iteration 47: Residual = 2.512620e-07
+Richardson Iteration 48: Residual = 2.010079e-07
+Richardson Iteration 49: Residual = 1.608051e-07
+Richardson Iteration 50: Residual = 1.286430e-07
+Richardson Iteration 51: Residual = 1.029136e-07
+Richardson Iteration 52: Residual = 8.233020e-08
+Richardson Iteration 53: Residual = 6.586363e-08
+Richardson Iteration 54: Residual = 5.269048e-08
+Richardson Iteration 55: Residual = 4.215204e-08
+Richardson Iteration 56: Residual = 3.372136e-08
+Richardson Iteration 57: Residual = 2.697687e-08
+Richardson Iteration 58: Residual = 2.158132e-08
+Richardson Iteration 59: Residual = 1.726492e-08
+Richardson Iteration 60: Residual = 1.381182e-08
+Richardson Iteration 61: Residual = 1.104937e-08
+Richardson Iteration 62: Residual = 8.839425e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 62 cumulative iterations for an average of 62 iterations/RHS and with total CPU time of 22.688 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 13
+The block size is         1
+The number of blocks is   20
+The current basis size is 13
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 13
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175928e+00 + i   0.000000e+00        3.048546e-03
+
+================================================================================
+
+Richardson Iteration 1: Residual = 4.005236e-01
+Richardson Iteration 2: Residual = 1.889797e-01
+Richardson Iteration 3: Residual = 9.221800e-02
+Richardson Iteration 4: Residual = 4.970219e-02
+Richardson Iteration 5: Residual = 2.686128e-02
+Richardson Iteration 6: Residual = 1.437535e-02
+Richardson Iteration 7: Residual = 7.715674e-03
+Richardson Iteration 8: Residual = 4.127834e-03
+Richardson Iteration 9: Residual = 2.213903e-03
+Richardson Iteration 10: Residual = 1.185767e-03
+Richardson Iteration 11: Residual = 6.361836e-04
+Richardson Iteration 12: Residual = 3.411267e-04
+Richardson Iteration 13: Residual = 1.831042e-04
+Richardson Iteration 14: Residual = 1.028199e-04
+Richardson Iteration 15: Residual = 7.495300e-05
+Richardson Iteration 16: Residual = 5.463203e-05
+Richardson Iteration 17: Residual = 3.982018e-05
+Richardson Iteration 18: Residual = 2.902384e-05
+Richardson Iteration 19: Residual = 2.115496e-05
+Richardson Iteration 20: Residual = 1.541965e-05
+Richardson Iteration 21: Residual = 1.123939e-05
+Richardson Iteration 22: Residual = 8.192495e-06
+Richardson Iteration 23: Residual = 5.971641e-06
+Richardson Iteration 24: Residual = 4.352860e-06
+Richardson Iteration 25: Residual = 3.172914e-06
+Richardson Iteration 26: Residual = 2.312832e-06
+Richardson Iteration 27: Residual = 1.685899e-06
+Richardson Iteration 28: Residual = 1.228911e-06
+Richardson Iteration 29: Residual = 8.957978e-07
+Richardson Iteration 30: Residual = 6.529808e-07
+Richardson Iteration 31: Residual = 4.759830e-07
+Richardson Iteration 32: Residual = 3.469628e-07
+Richardson Iteration 33: Residual = 2.529151e-07
+Richardson Iteration 34: Residual = 1.843600e-07
+Richardson Iteration 35: Residual = 1.343876e-07
+Richardson Iteration 36: Residual = 9.796060e-08
+Richardson Iteration 37: Residual = 7.140753e-08
+Richardson Iteration 38: Residual = 5.205190e-08
+Richardson Iteration 39: Residual = 3.794279e-08
+Richardson Iteration 40: Residual = 2.765808e-08
+Richardson Iteration 41: Residual = 2.016113e-08
+Richardson Iteration 42: Residual = 1.469629e-08
+Richardson Iteration 43: Residual = 1.071274e-08
+Richardson Iteration 44: Residual = 7.808963e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 44 cumulative iterations for an average of 44 iterations/RHS and with total CPU time of 15.7202 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 14
+The block size is         1
+The number of blocks is   20
+The current basis size is 14
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 14
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175779e+00 + i   0.000000e+00        1.908062e-03
+
+================================================================================
+
+Richardson Iteration 1: Residual = 4.237530e-01
+Richardson Iteration 2: Residual = 2.044448e-01
+Richardson Iteration 3: Residual = 1.018190e-01
+Richardson Iteration 4: Residual = 5.139235e-02
+Richardson Iteration 5: Residual = 2.771488e-02
+Richardson Iteration 6: Residual = 1.422712e-02
+Richardson Iteration 7: Residual = 7.750278e-03
+Richardson Iteration 8: Residual = 4.088447e-03
+Richardson Iteration 9: Residual = 2.207807e-03
+Richardson Iteration 10: Residual = 1.618406e-03
+Richardson Iteration 11: Residual = 1.299590e-03
+Richardson Iteration 12: Residual = 1.039860e-03
+Richardson Iteration 13: Residual = 8.329888e-04
+Richardson Iteration 14: Residual = 6.666943e-04
+Richardson Iteration 15: Residual = 5.336475e-04
+Richardson Iteration 16: Residual = 4.270418e-04
+Richardson Iteration 17: Residual = 3.417159e-04
+Richardson Iteration 18: Residual = 2.734129e-04
+Richardson Iteration 19: Residual = 2.187534e-04
+Richardson Iteration 20: Residual = 1.750143e-04
+Richardson Iteration 21: Residual = 1.400175e-04
+Richardson Iteration 22: Residual = 1.120169e-04
+Richardson Iteration 23: Residual = 8.961489e-05
+Richardson Iteration 24: Residual = 7.169242e-05
+Richardson Iteration 25: Residual = 5.735406e-05
+Richardson Iteration 26: Residual = 4.588318e-05
+Richardson Iteration 27: Residual = 3.670641e-05
+Richardson Iteration 28: Residual = 2.936498e-05
+Richardson Iteration 29: Residual = 2.349184e-05
+Richardson Iteration 30: Residual = 1.879334e-05
+Richardson Iteration 31: Residual = 1.503456e-05
+Richardson Iteration 32: Residual = 1.202756e-05
+Richardson Iteration 33: Residual = 9.621974e-06
+Richardson Iteration 34: Residual = 7.697519e-06
+Richardson Iteration 35: Residual = 6.157966e-06
+Richardson Iteration 36: Residual = 4.926334e-06
+Richardson Iteration 37: Residual = 3.941036e-06
+Richardson Iteration 38: Residual = 3.152803e-06
+Richardson Iteration 39: Residual = 2.522222e-06
+Richardson Iteration 40: Residual = 2.017762e-06
+Richardson Iteration 41: Residual = 1.614196e-06
+Richardson Iteration 42: Residual = 1.291347e-06
+Richardson Iteration 43: Residual = 1.033069e-06
+Richardson Iteration 44: Residual = 8.264485e-07
+Richardson Iteration 45: Residual = 6.611535e-07
+Richardson Iteration 46: Residual = 5.289185e-07
+Richardson Iteration 47: Residual = 4.231314e-07
+Richardson Iteration 48: Residual = 3.385024e-07
+Richardson Iteration 49: Residual = 2.707997e-07
+Richardson Iteration 50: Residual = 2.166380e-07
+Richardson Iteration 51: Residual = 1.733090e-07
+Richardson Iteration 52: Residual = 1.386461e-07
+Richardson Iteration 53: Residual = 1.109160e-07
+Richardson Iteration 54: Residual = 8.873208e-08
+Richardson Iteration 55: Residual = 7.098509e-08
+Richardson Iteration 56: Residual = 5.678761e-08
+Richardson Iteration 57: Residual = 4.542972e-08
+Richardson Iteration 58: Residual = 3.634349e-08
+Richardson Iteration 59: Residual = 2.907455e-08
+Richardson Iteration 60: Residual = 2.325946e-08
+Richardson Iteration 61: Residual = 1.860742e-08
+Richardson Iteration 62: Residual = 1.488581e-08
+Richardson Iteration 63: Residual = 1.190855e-08
+Richardson Iteration 64: Residual = 9.526766e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 64 cumulative iterations for an average of 64 iterations/RHS and with total CPU time of 30.5436 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 15
+The block size is         1
+The number of blocks is   20
+The current basis size is 15
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 15
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175851e+00 + i   0.000000e+00        1.011723e-03
+
+================================================================================
+
+Richardson Iteration 1: Residual = 4.194934e-01
+Richardson Iteration 2: Residual = 1.734984e-01
+Richardson Iteration 3: Residual = 1.014085e-01
+Richardson Iteration 4: Residual = 4.684161e-02
+Richardson Iteration 5: Residual = 2.531770e-02
+Richardson Iteration 6: Residual = 1.255010e-02
+Richardson Iteration 7: Residual = 6.659115e-03
+Richardson Iteration 8: Residual = 3.430383e-03
+Richardson Iteration 9: Residual = 1.820674e-03
+Richardson Iteration 10: Residual = 1.104677e-03
+Richardson Iteration 11: Residual = 8.880714e-04
+Richardson Iteration 12: Residual = 7.101718e-04
+Richardson Iteration 13: Residual = 5.689941e-04
+Richardson Iteration 14: Residual = 4.553212e-04
+Richardson Iteration 15: Residual = 3.644538e-04
+Richardson Iteration 16: Residual = 2.916267e-04
+Richardson Iteration 17: Residual = 2.333512e-04
+Richardson Iteration 18: Residual = 1.867021e-04
+Richardson Iteration 19: Residual = 1.493746e-04
+Richardson Iteration 20: Residual = 1.195056e-04
+Richardson Iteration 21: Residual = 9.560761e-05
+Richardson Iteration 22: Residual = 7.648746e-05
+Richardson Iteration 23: Residual = 6.119056e-05
+Richardson Iteration 24: Residual = 4.895261e-05
+Richardson Iteration 25: Residual = 3.916207e-05
+Richardson Iteration 26: Residual = 3.132956e-05
+Richardson Iteration 27: Residual = 2.506353e-05
+Richardson Iteration 28: Residual = 2.005070e-05
+Richardson Iteration 29: Residual = 1.604046e-05
+Richardson Iteration 30: Residual = 1.283227e-05
+Richardson Iteration 31: Residual = 1.026574e-05
+Richardson Iteration 32: Residual = 8.212530e-06
+Richardson Iteration 33: Residual = 6.569972e-06
+Richardson Iteration 34: Residual = 5.255936e-06
+Richardson Iteration 35: Residual = 4.204716e-06
+Richardson Iteration 36: Residual = 3.363746e-06
+Richardson Iteration 37: Residual = 2.690975e-06
+Richardson Iteration 38: Residual = 2.152763e-06
+Richardson Iteration 39: Residual = 1.722196e-06
+Richardson Iteration 40: Residual = 1.377746e-06
+Richardson Iteration 41: Residual = 1.102188e-06
+Richardson Iteration 42: Residual = 8.817431e-07
+Richardson Iteration 43: Residual = 7.053888e-07
+Richardson Iteration 44: Residual = 5.643065e-07
+Richardson Iteration 45: Residual = 4.514416e-07
+Richardson Iteration 46: Residual = 3.611503e-07
+Richardson Iteration 47: Residual = 2.889179e-07
+Richardson Iteration 48: Residual = 2.311325e-07
+Richardson Iteration 49: Residual = 1.849045e-07
+Richardson Iteration 50: Residual = 1.479224e-07
+Richardson Iteration 51: Residual = 1.183370e-07
+Richardson Iteration 52: Residual = 9.466882e-08
+Richardson Iteration 53: Residual = 7.573444e-08
+Richardson Iteration 54: Residual = 6.058707e-08
+Richardson Iteration 55: Residual = 4.846926e-08
+Richardson Iteration 56: Residual = 3.877510e-08
+Richardson Iteration 57: Residual = 3.101983e-08
+Richardson Iteration 58: Residual = 2.481566e-08
+Richardson Iteration 59: Residual = 1.985237e-08
+Richardson Iteration 60: Residual = 1.588177e-08
+Richardson Iteration 61: Residual = 1.270531e-08
+Richardson Iteration 62: Residual = 1.016417e-08
+Richardson Iteration 63: Residual = 8.131268e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 63 cumulative iterations for an average of 63 iterations/RHS and with total CPU time of 30.1725 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 16
+The block size is         1
+The number of blocks is   20
+The current basis size is 16
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 16
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175862e+00 + i   0.000000e+00        4.481873e-04
+
+================================================================================
+
+Richardson Iteration 1: Residual = 4.190270e-01
+Richardson Iteration 2: Residual = 1.579514e-01
+Richardson Iteration 3: Residual = 8.895489e-02
+Richardson Iteration 4: Residual = 4.035470e-02
+Richardson Iteration 5: Residual = 2.183897e-02
+Richardson Iteration 6: Residual = 1.082329e-02
+Richardson Iteration 7: Residual = 5.789568e-03
+Richardson Iteration 8: Residual = 3.000131e-03
+Richardson Iteration 9: Residual = 1.833892e-03
+Richardson Iteration 10: Residual = 1.467886e-03
+Richardson Iteration 11: Residual = 1.179338e-03
+Richardson Iteration 12: Residual = 9.446335e-04
+Richardson Iteration 13: Residual = 7.569901e-04
+Richardson Iteration 14: Residual = 6.060946e-04
+Richardson Iteration 15: Residual = 4.852377e-04
+Richardson Iteration 16: Residual = 3.883639e-04
+Richardson Iteration 17: Residual = 3.107971e-04
+Richardson Iteration 18: Residual = 2.486923e-04
+Richardson Iteration 19: Residual = 1.989847e-04
+Richardson Iteration 20: Residual = 1.592039e-04
+Richardson Iteration 21: Residual = 1.273717e-04
+Richardson Iteration 22: Residual = 1.019018e-04
+Richardson Iteration 23: Residual = 8.152362e-05
+Richardson Iteration 24: Residual = 6.521991e-05
+Richardson Iteration 25: Residual = 5.217634e-05
+Richardson Iteration 26: Residual = 4.174118e-05
+Richardson Iteration 27: Residual = 3.339292e-05
+Richardson Iteration 28: Residual = 2.671425e-05
+Richardson Iteration 29: Residual = 2.137130e-05
+Richardson Iteration 30: Residual = 1.709694e-05
+Richardson Iteration 31: Residual = 1.367746e-05
+Richardson Iteration 32: Residual = 1.094189e-05
+Richardson Iteration 33: Residual = 8.753448e-06
+Richardson Iteration 34: Residual = 7.002705e-06
+Richardson Iteration 35: Residual = 5.602121e-06
+Richardson Iteration 36: Residual = 4.481661e-06
+Richardson Iteration 37: Residual = 3.585301e-06
+Richardson Iteration 38: Residual = 2.868218e-06
+Richardson Iteration 39: Residual = 2.294556e-06
+Richardson Iteration 40: Residual = 1.835630e-06
+Richardson Iteration 41: Residual = 1.468492e-06
+Richardson Iteration 42: Residual = 1.174784e-06
+Richardson Iteration 43: Residual = 9.398198e-07
+Richardson Iteration 44: Residual = 7.518498e-07
+Richardson Iteration 45: Residual = 6.014750e-07
+Richardson Iteration 46: Residual = 4.811761e-07
+Richardson Iteration 47: Residual = 3.849378e-07
+Richardson Iteration 48: Residual = 3.079478e-07
+Richardson Iteration 49: Residual = 2.463562e-07
+Richardson Iteration 50: Residual = 1.970834e-07
+Richardson Iteration 51: Residual = 1.576654e-07
+Richardson Iteration 52: Residual = 1.261313e-07
+Richardson Iteration 53: Residual = 1.009043e-07
+Richardson Iteration 54: Residual = 8.072275e-08
+Richardson Iteration 55: Residual = 6.457768e-08
+Richardson Iteration 56: Residual = 5.166173e-08
+Richardson Iteration 57: Residual = 4.132905e-08
+Richardson Iteration 58: Residual = 3.306297e-08
+Richardson Iteration 59: Residual = 2.645016e-08
+Richardson Iteration 60: Residual = 2.115996e-08
+Richardson Iteration 61: Residual = 1.692783e-08
+Richardson Iteration 62: Residual = 1.354216e-08
+Richardson Iteration 63: Residual = 1.083364e-08
+Richardson Iteration 64: Residual = 8.666841e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 64 cumulative iterations for an average of 64 iterations/RHS and with total CPU time of 30.7048 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 17
+The block size is         1
+The number of blocks is   20
+The current basis size is 17
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 17
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175840e+00 + i   0.000000e+00        1.867982e-04
+
+================================================================================
+
+Richardson Iteration 1: Residual = 3.333145e-01
+Richardson Iteration 2: Residual = 1.225168e-01
+Richardson Iteration 3: Residual = 4.811688e-02
+Richardson Iteration 4: Residual = 2.161572e-02
+Richardson Iteration 5: Residual = 1.129293e-02
+Richardson Iteration 6: Residual = 5.501034e-03
+Richardson Iteration 7: Residual = 2.857555e-03
+Richardson Iteration 8: Residual = 1.454117e-03
+Richardson Iteration 9: Residual = 1.022215e-03
+Richardson Iteration 10: Residual = 7.425506e-04
+Richardson Iteration 11: Residual = 5.403487e-04
+Richardson Iteration 12: Residual = 3.934325e-04
+Richardson Iteration 13: Residual = 2.866061e-04
+Richardson Iteration 14: Residual = 2.088353e-04
+Richardson Iteration 15: Residual = 1.521930e-04
+Richardson Iteration 16: Residual = 1.109238e-04
+Richardson Iteration 17: Residual = 8.085011e-05
+Richardson Iteration 18: Residual = 5.893201e-05
+Richardson Iteration 19: Residual = 4.295672e-05
+Richardson Iteration 20: Residual = 3.131241e-05
+Richardson Iteration 21: Residual = 2.282470e-05
+Richardson Iteration 22: Residual = 1.751640e-05
+Richardson Iteration 23: Residual = 1.401390e-05
+Richardson Iteration 24: Residual = 1.121152e-05
+Richardson Iteration 25: Residual = 8.969412e-06
+Richardson Iteration 26: Residual = 7.175617e-06
+Richardson Iteration 27: Residual = 5.740525e-06
+Richardson Iteration 28: Residual = 4.592426e-06
+Richardson Iteration 29: Residual = 3.673934e-06
+Richardson Iteration 30: Residual = 2.939136e-06
+Richardson Iteration 31: Residual = 2.351296e-06
+Richardson Iteration 32: Residual = 1.881026e-06
+Richardson Iteration 33: Residual = 1.504810e-06
+Richardson Iteration 34: Residual = 1.203840e-06
+Richardson Iteration 35: Residual = 9.630645e-07
+Richardson Iteration 36: Residual = 7.704457e-07
+Richardson Iteration 37: Residual = 6.163518e-07
+Richardson Iteration 38: Residual = 4.930775e-07
+Richardson Iteration 39: Residual = 3.944589e-07
+Richardson Iteration 40: Residual = 3.155646e-07
+Richardson Iteration 41: Residual = 2.524497e-07
+Richardson Iteration 42: Residual = 2.019581e-07
+Richardson Iteration 43: Residual = 1.615652e-07
+Richardson Iteration 44: Residual = 1.292511e-07
+Richardson Iteration 45: Residual = 1.034001e-07
+Richardson Iteration 46: Residual = 8.271938e-08
+Richardson Iteration 47: Residual = 6.617497e-08
+Richardson Iteration 48: Residual = 5.293955e-08
+Richardson Iteration 49: Residual = 4.235130e-08
+Richardson Iteration 50: Residual = 3.388077e-08
+Richardson Iteration 51: Residual = 2.710439e-08
+Richardson Iteration 52: Residual = 2.168334e-08
+Richardson Iteration 53: Residual = 1.734653e-08
+Richardson Iteration 54: Residual = 1.387711e-08
+Richardson Iteration 55: Residual = 1.110160e-08
+Richardson Iteration 56: Residual = 8.881210e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 56 cumulative iterations for an average of 56 iterations/RHS and with total CPU time of 27.0349 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 18
+The block size is         1
+The number of blocks is   20
+The current basis size is 18
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 18
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        5.418705e-05
+
+================================================================================
+
+Richardson Iteration 1: Residual = 2.709996e-01
+Richardson Iteration 2: Residual = 1.186618e-01
+Richardson Iteration 3: Residual = 3.917839e-02
+Richardson Iteration 4: Residual = 1.948386e-02
+Richardson Iteration 5: Residual = 8.908171e-03
+Richardson Iteration 6: Residual = 4.161631e-03
+Richardson Iteration 7: Residual = 2.322361e-03
+Richardson Iteration 8: Residual = 1.412720e-03
+Richardson Iteration 9: Residual = 1.145869e-03
+Richardson Iteration 10: Residual = 9.099638e-04
+Richardson Iteration 11: Residual = 7.305836e-04
+Richardson Iteration 12: Residual = 5.837748e-04
+Richardson Iteration 13: Residual = 4.674984e-04
+Richardson Iteration 14: Residual = 3.739819e-04
+Richardson Iteration 15: Residual = 2.992845e-04
+Richardson Iteration 16: Residual = 2.394448e-04
+Richardson Iteration 17: Residual = 1.915774e-04
+Richardson Iteration 18: Residual = 1.532683e-04
+Richardson Iteration 19: Residual = 1.226190e-04
+Richardson Iteration 20: Residual = 9.809654e-05
+Richardson Iteration 21: Residual = 7.847779e-05
+Richardson Iteration 22: Residual = 6.278221e-05
+Richardson Iteration 23: Residual = 5.022560e-05
+Richardson Iteration 24: Residual = 4.018025e-05
+Richardson Iteration 25: Residual = 3.214397e-05
+Richardson Iteration 26: Residual = 2.571498e-05
+Richardson Iteration 27: Residual = 2.057182e-05
+Richardson Iteration 28: Residual = 1.645732e-05
+Richardson Iteration 29: Residual = 1.316575e-05
+Richardson Iteration 30: Residual = 1.053251e-05
+Richardson Iteration 31: Residual = 8.425940e-06
+Richardson Iteration 32: Residual = 6.740697e-06
+Richardson Iteration 33: Residual = 5.392513e-06
+Richardson Iteration 34: Residual = 4.313976e-06
+Richardson Iteration 35: Residual = 3.451152e-06
+Richardson Iteration 36: Residual = 2.760900e-06
+Richardson Iteration 37: Residual = 2.208702e-06
+Richardson Iteration 38: Residual = 1.766947e-06
+Richardson Iteration 39: Residual = 1.413546e-06
+Richardson Iteration 40: Residual = 1.130828e-06
+Richardson Iteration 41: Residual = 9.046550e-07
+Richardson Iteration 42: Residual = 7.237181e-07
+Richardson Iteration 43: Residual = 5.789698e-07
+Richardson Iteration 44: Residual = 4.631721e-07
+Richardson Iteration 45: Residual = 3.705347e-07
+Richardson Iteration 46: Residual = 2.964254e-07
+Richardson Iteration 47: Residual = 2.371384e-07
+Richardson Iteration 48: Residual = 1.897092e-07
+Richardson Iteration 49: Residual = 1.517661e-07
+Richardson Iteration 50: Residual = 1.214119e-07
+Richardson Iteration 51: Residual = 9.712876e-08
+Richardson Iteration 52: Residual = 7.770238e-08
+Richardson Iteration 53: Residual = 6.216140e-08
+Richardson Iteration 54: Residual = 4.972872e-08
+Richardson Iteration 55: Residual = 3.978266e-08
+Richardson Iteration 56: Residual = 3.182587e-08
+Richardson Iteration 57: Residual = 2.546049e-08
+Richardson Iteration 58: Residual = 2.036823e-08
+Richardson Iteration 59: Residual = 1.629445e-08
+Richardson Iteration 60: Residual = 1.303545e-08
+Richardson Iteration 61: Residual = 1.042828e-08
+Richardson Iteration 62: Residual = 8.342557e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 62 cumulative iterations for an average of 62 iterations/RHS and with total CPU time of 26.0014 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 19
+The block size is         1
+The number of blocks is   20
+The current basis size is 19
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 19
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        1.427410e-05
+
+================================================================================
+
+Richardson Iteration 1: Residual = 3.209357e-01
+Richardson Iteration 2: Residual = 1.411784e-01
+Richardson Iteration 3: Residual = 6.637755e-02
+Richardson Iteration 4: Residual = 3.051391e-02
+Richardson Iteration 5: Residual = 1.690141e-02
+Richardson Iteration 6: Residual = 8.573846e-03
+Richardson Iteration 7: Residual = 4.663131e-03
+Richardson Iteration 8: Residual = 2.694258e-03
+Richardson Iteration 9: Residual = 2.185879e-03
+Richardson Iteration 10: Residual = 1.758972e-03
+Richardson Iteration 11: Residual = 1.414590e-03
+Richardson Iteration 12: Residual = 1.134951e-03
+Richardson Iteration 13: Residual = 9.100514e-04
+Richardson Iteration 14: Residual = 7.291136e-04
+Richardson Iteration 15: Residual = 5.839283e-04
+Richardson Iteration 16: Residual = 4.674886e-04
+Richardson Iteration 17: Residual = 3.741886e-04
+Richardson Iteration 18: Residual = 2.994595e-04
+Richardson Iteration 19: Residual = 2.396280e-04
+Richardson Iteration 20: Residual = 1.917353e-04
+Richardson Iteration 21: Residual = 1.534061e-04
+Richardson Iteration 22: Residual = 1.227344e-04
+Richardson Iteration 23: Residual = 9.819244e-05
+Richardson Iteration 24: Residual = 7.855646e-05
+Richardson Iteration 25: Residual = 6.284637e-05
+Richardson Iteration 26: Residual = 5.027761e-05
+Richardson Iteration 27: Residual = 4.022227e-05
+Richardson Iteration 28: Residual = 3.217782e-05
+Richardson Iteration 29: Residual = 2.574220e-05
+Richardson Iteration 30: Residual = 2.059367e-05
+Richardson Iteration 31: Residual = 1.647485e-05
+Richardson Iteration 32: Residual = 1.317979e-05
+Richardson Iteration 33: Residual = 1.054376e-05
+Richardson Iteration 34: Residual = 8.434947e-06
+Richardson Iteration 35: Residual = 6.747907e-06
+Richardson Iteration 36: Residual = 5.398284e-06
+Richardson Iteration 37: Residual = 4.318593e-06
+Richardson Iteration 38: Residual = 3.454847e-06
+Richardson Iteration 39: Residual = 2.763856e-06
+Richardson Iteration 40: Residual = 2.211067e-06
+Richardson Iteration 41: Residual = 1.768839e-06
+Richardson Iteration 42: Residual = 1.415060e-06
+Richardson Iteration 43: Residual = 1.132039e-06
+Richardson Iteration 44: Residual = 9.056239e-07
+Richardson Iteration 45: Residual = 7.244933e-07
+Richardson Iteration 46: Residual = 5.795900e-07
+Richardson Iteration 47: Residual = 4.636682e-07
+Richardson Iteration 48: Residual = 3.709316e-07
+Richardson Iteration 49: Residual = 2.967429e-07
+Richardson Iteration 50: Residual = 2.373924e-07
+Richardson Iteration 51: Residual = 1.899124e-07
+Richardson Iteration 52: Residual = 1.519287e-07
+Richardson Iteration 53: Residual = 1.215420e-07
+Richardson Iteration 54: Residual = 9.723279e-08
+Richardson Iteration 55: Residual = 7.778561e-08
+Richardson Iteration 56: Residual = 6.222798e-08
+Richardson Iteration 57: Residual = 4.978199e-08
+Richardson Iteration 58: Residual = 3.982527e-08
+Richardson Iteration 59: Residual = 3.185996e-08
+Richardson Iteration 60: Residual = 2.548776e-08
+Richardson Iteration 61: Residual = 2.039004e-08
+Richardson Iteration 62: Residual = 1.631190e-08
+Richardson Iteration 63: Residual = 1.304942e-08
+Richardson Iteration 64: Residual = 1.043945e-08
+Richardson Iteration 65: Residual = 8.351493e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 65 cumulative iterations for an average of 65 iterations/RHS and with total CPU time of 23.3021 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 20
+The block size is         1
+The number of blocks is   20
+The current basis size is 20
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 20
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        5.157529e-06
+
+================================================================================
+
+Richardson Iteration 1: Residual = 3.728410e-01
+Richardson Iteration 2: Residual = 1.594854e-01
+Richardson Iteration 3: Residual = 9.054577e-02
+Richardson Iteration 4: Residual = 4.461089e-02
+Richardson Iteration 5: Residual = 2.484737e-02
+Richardson Iteration 6: Residual = 1.419959e-02
+Richardson Iteration 7: Residual = 1.063908e-02
+Richardson Iteration 8: Residual = 7.860220e-03
+Richardson Iteration 9: Residual = 5.775016e-03
+Richardson Iteration 10: Residual = 4.226812e-03
+Richardson Iteration 11: Residual = 3.088043e-03
+Richardson Iteration 12: Residual = 2.253592e-03
+Richardson Iteration 13: Residual = 1.643703e-03
+Richardson Iteration 14: Residual = 1.198493e-03
+Richardson Iteration 15: Residual = 8.737323e-04
+Richardson Iteration 16: Residual = 6.568963e-04
+Richardson Iteration 17: Residual = 5.257731e-04
+Richardson Iteration 18: Residual = 4.207588e-04
+Richardson Iteration 19: Residual = 3.366855e-04
+Richardson Iteration 20: Residual = 2.693910e-04
+Richardson Iteration 21: Residual = 2.155359e-04
+Richardson Iteration 22: Residual = 1.724410e-04
+Richardson Iteration 23: Residual = 1.379591e-04
+Richardson Iteration 24: Residual = 1.103705e-04
+Richardson Iteration 25: Residual = 8.829787e-05
+Richardson Iteration 26: Residual = 7.063891e-05
+Richardson Iteration 27: Residual = 5.651132e-05
+Richardson Iteration 28: Residual = 4.520903e-05
+Richardson Iteration 29: Residual = 3.616712e-05
+Richardson Iteration 30: Residual = 2.893356e-05
+Richardson Iteration 31: Residual = 2.314671e-05
+Richardson Iteration 32: Residual = 1.851725e-05
+Richardson Iteration 33: Residual = 1.481369e-05
+Richardson Iteration 34: Residual = 1.185087e-05
+Richardson Iteration 35: Residual = 9.480621e-06
+Richardson Iteration 36: Residual = 7.584438e-06
+Richardson Iteration 37: Residual = 6.067502e-06
+Richardson Iteration 38: Residual = 4.853963e-06
+Richardson Iteration 39: Residual = 3.883140e-06
+Richardson Iteration 40: Residual = 3.106487e-06
+Richardson Iteration 41: Residual = 2.485170e-06
+Richardson Iteration 42: Residual = 1.988120e-06
+Richardson Iteration 43: Residual = 1.590483e-06
+Richardson Iteration 44: Residual = 1.272376e-06
+Richardson Iteration 45: Residual = 1.017893e-06
+Richardson Iteration 46: Residual = 8.143076e-07
+Richardson Iteration 47: Residual = 6.514408e-07
+Richardson Iteration 48: Residual = 5.211484e-07
+Richardson Iteration 49: Residual = 4.169154e-07
+Richardson Iteration 50: Residual = 3.335296e-07
+Richardson Iteration 51: Residual = 2.668215e-07
+Richardson Iteration 52: Residual = 2.134555e-07
+Richardson Iteration 53: Residual = 1.707630e-07
+Richardson Iteration 54: Residual = 1.366093e-07
+Richardson Iteration 55: Residual = 1.092866e-07
+Richardson Iteration 56: Residual = 8.742856e-08
+Richardson Iteration 57: Residual = 6.994228e-08
+Richardson Iteration 58: Residual = 5.595338e-08
+Richardson Iteration 59: Residual = 4.476234e-08
+Richardson Iteration 60: Residual = 3.580958e-08
+Richardson Iteration 61: Residual = 2.864744e-08
+Richardson Iteration 62: Residual = 2.291776e-08
+Richardson Iteration 63: Residual = 1.833406e-08
+Richardson Iteration 64: Residual = 1.466713e-08
+Richardson Iteration 65: Residual = 1.173361e-08
+Richardson Iteration 66: Residual = 9.386814e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 66 cumulative iterations for an average of 66 iterations/RHS and with total CPU time of 31.2479 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 21
+The block size is         1
+The number of blocks is   20
+The current basis size is 21
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 21
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        3.135561e-06
+
+================================================================================
+
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 21
+The block size is         1
+The number of blocks is   20
+The current basis size is 1
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 21
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        3.135561e-06
+
+================================================================================
+
+Richardson Iteration 1: Residual = 3.436323e-01
+Richardson Iteration 2: Residual = 1.515907e-01
+Richardson Iteration 3: Residual = 7.941687e-02
+Richardson Iteration 4: Residual = 4.336190e-02
+Richardson Iteration 5: Residual = 2.410715e-02
+Richardson Iteration 6: Residual = 1.780311e-02
+Richardson Iteration 7: Residual = 1.328751e-02
+Richardson Iteration 8: Residual = 9.797137e-03
+Richardson Iteration 9: Residual = 7.189985e-03
+Richardson Iteration 10: Residual = 5.258936e-03
+Richardson Iteration 11: Residual = 3.840831e-03
+Richardson Iteration 12: Residual = 2.802417e-03
+Richardson Iteration 13: Residual = 2.043823e-03
+Richardson Iteration 14: Residual = 1.490168e-03
+Richardson Iteration 15: Residual = 1.155647e-03
+Richardson Iteration 16: Residual = 9.250665e-04
+Richardson Iteration 17: Residual = 7.403571e-04
+Richardson Iteration 18: Residual = 5.924556e-04
+Richardson Iteration 19: Residual = 4.740574e-04
+Richardson Iteration 20: Residual = 3.792966e-04
+Richardson Iteration 21: Residual = 3.034643e-04
+Richardson Iteration 22: Residual = 2.427856e-04
+Richardson Iteration 23: Residual = 1.942358e-04
+Richardson Iteration 24: Residual = 1.553921e-04
+Richardson Iteration 25: Residual = 1.243153e-04
+Richardson Iteration 26: Residual = 9.945281e-05
+Richardson Iteration 27: Residual = 7.956236e-05
+Richardson Iteration 28: Residual = 6.364977e-05
+Richardson Iteration 29: Residual = 5.091962e-05
+Richardson Iteration 30: Residual = 4.073548e-05
+Richardson Iteration 31: Residual = 3.258818e-05
+Richardson Iteration 32: Residual = 2.607037e-05
+Richardson Iteration 33: Residual = 2.085614e-05
+Richardson Iteration 34: Residual = 1.668479e-05
+Richardson Iteration 35: Residual = 1.334773e-05
+Richardson Iteration 36: Residual = 1.067810e-05
+Richardson Iteration 37: Residual = 8.542411e-06
+Richardson Iteration 38: Residual = 6.833875e-06
+Richardson Iteration 39: Residual = 5.467056e-06
+Richardson Iteration 40: Residual = 4.373610e-06
+Richardson Iteration 41: Residual = 3.498860e-06
+Richardson Iteration 42: Residual = 2.799065e-06
+Richardson Iteration 43: Residual = 2.239234e-06
+Richardson Iteration 44: Residual = 1.791373e-06
+Richardson Iteration 45: Residual = 1.433087e-06
+Richardson Iteration 46: Residual = 1.146460e-06
+Richardson Iteration 47: Residual = 9.171607e-07
+Richardson Iteration 48: Residual = 7.337227e-07
+Richardson Iteration 49: Residual = 5.869734e-07
+Richardson Iteration 50: Residual = 4.695749e-07
+Richardson Iteration 51: Residual = 3.756569e-07
+Richardson Iteration 52: Residual = 3.005231e-07
+Richardson Iteration 53: Residual = 2.404166e-07
+Richardson Iteration 54: Residual = 1.923317e-07
+Richardson Iteration 55: Residual = 1.538641e-07
+Richardson Iteration 56: Residual = 1.230903e-07
+Richardson Iteration 57: Residual = 9.847145e-08
+Richardson Iteration 58: Residual = 7.877652e-08
+Richardson Iteration 59: Residual = 6.302071e-08
+Richardson Iteration 60: Residual = 5.041616e-08
+Richardson Iteration 61: Residual = 4.033260e-08
+Richardson Iteration 62: Residual = 3.226582e-08
+Richardson Iteration 63: Residual = 2.581245e-08
+Richardson Iteration 64: Residual = 2.064979e-08
+Richardson Iteration 65: Residual = 1.651970e-08
+Richardson Iteration 66: Residual = 1.321565e-08
+Richardson Iteration 67: Residual = 1.057244e-08
+Richardson Iteration 68: Residual = 8.457883e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 68 cumulative iterations for an average of 68 iterations/RHS and with total CPU time of 32.44 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 22
+The block size is         1
+The number of blocks is   20
+The current basis size is 2
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 22
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        2.620746e-06
+
+================================================================================
+
+Richardson Iteration 1: Residual = 8.145221e-01
+Richardson Iteration 2: Residual = 3.627701e-01
+Richardson Iteration 3: Residual = 1.768864e-01
+Richardson Iteration 4: Residual = 8.783229e-02
+Richardson Iteration 5: Residual = 4.511274e-02
+Richardson Iteration 6: Residual = 2.560106e-02
+Richardson Iteration 7: Residual = 1.366941e-02
+Richardson Iteration 8: Residual = 7.958728e-03
+Richardson Iteration 9: Residual = 5.672230e-03
+Richardson Iteration 10: Residual = 4.111867e-03
+Richardson Iteration 11: Residual = 2.982568e-03
+Richardson Iteration 12: Residual = 2.171635e-03
+Richardson Iteration 13: Residual = 1.581764e-03
+Richardson Iteration 14: Residual = 1.153022e-03
+Richardson Iteration 15: Residual = 8.405510e-04
+Richardson Iteration 16: Residual = 6.128331e-04
+Richardson Iteration 17: Residual = 4.467970e-04
+Richardson Iteration 18: Residual = 3.257415e-04
+Richardson Iteration 19: Residual = 2.374768e-04
+Richardson Iteration 20: Residual = 1.731243e-04
+Richardson Iteration 21: Residual = 1.262072e-04
+Richardson Iteration 22: Residual = 9.200300e-05
+Richardson Iteration 23: Residual = 6.706770e-05
+Richardson Iteration 24: Residual = 4.889000e-05
+Richardson Iteration 25: Residual = 3.563880e-05
+Richardson Iteration 26: Residual = 2.597905e-05
+Richardson Iteration 27: Residual = 1.893745e-05
+Richardson Iteration 28: Residual = 1.380443e-05
+Richardson Iteration 29: Residual = 1.006269e-05
+Richardson Iteration 30: Residual = 7.335155e-06
+Richardson Iteration 31: Residual = 5.346921e-06
+Richardson Iteration 32: Residual = 3.897605e-06
+Richardson Iteration 33: Residual = 2.841133e-06
+Richardson Iteration 34: Residual = 2.071024e-06
+Richardson Iteration 35: Residual = 1.509658e-06
+Richardson Iteration 36: Residual = 1.100454e-06
+Richardson Iteration 37: Residual = 8.021673e-07
+Richardson Iteration 38: Residual = 5.847336e-07
+Richardson Iteration 39: Residual = 4.262370e-07
+Richardson Iteration 40: Residual = 3.107021e-07
+Richardson Iteration 41: Residual = 2.264838e-07
+Richardson Iteration 42: Residual = 1.650935e-07
+Richardson Iteration 43: Residual = 1.203436e-07
+Richardson Iteration 44: Residual = 8.772351e-08
+Richardson Iteration 45: Residual = 6.394535e-08
+Richardson Iteration 46: Residual = 4.661245e-08
+Richardson Iteration 47: Residual = 3.397777e-08
+Richardson Iteration 48: Residual = 2.686562e-08
+Richardson Iteration 49: Residual = 2.149232e-08
+Richardson Iteration 50: Residual = 1.719372e-08
+Richardson Iteration 51: Residual = 1.375487e-08
+Richardson Iteration 52: Residual = 1.100380e-08
+Richardson Iteration 53: Residual = 8.802972e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 53 cumulative iterations for an average of 53 iterations/RHS and with total CPU time of 25.5017 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 23
+The block size is         1
+The number of blocks is   20
+The current basis size is 3
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 23
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        2.245063e-06
+
+================================================================================
+
+Richardson Iteration 1: Residual = 5.256040e-01
+Richardson Iteration 2: Residual = 2.553386e-01
+Richardson Iteration 3: Residual = 1.506904e-01
+Richardson Iteration 4: Residual = 6.986465e-02
+Richardson Iteration 5: Residual = 4.407194e-02
+Richardson Iteration 6: Residual = 2.233855e-02
+Richardson Iteration 7: Residual = 1.304943e-02
+Richardson Iteration 8: Residual = 8.354928e-03
+Richardson Iteration 9: Residual = 6.760434e-03
+Richardson Iteration 10: Residual = 5.418604e-03
+Richardson Iteration 11: Residual = 4.352827e-03
+Richardson Iteration 12: Residual = 3.488040e-03
+Richardson Iteration 13: Residual = 2.795081e-03
+Richardson Iteration 14: Residual = 2.238019e-03
+Richardson Iteration 15: Residual = 1.791611e-03
+Richardson Iteration 16: Residual = 1.433832e-03
+Richardson Iteration 17: Residual = 1.147355e-03
+Richardson Iteration 18: Residual = 9.180150e-04
+Richardson Iteration 19: Residual = 7.344743e-04
+Richardson Iteration 20: Residual = 5.876053e-04
+Richardson Iteration 21: Residual = 4.700942e-04
+Richardson Iteration 22: Residual = 3.760779e-04
+Richardson Iteration 23: Residual = 3.008620e-04
+Richardson Iteration 24: Residual = 2.406883e-04
+Richardson Iteration 25: Residual = 1.925491e-04
+Richardson Iteration 26: Residual = 1.540379e-04
+Richardson Iteration 27: Residual = 1.232292e-04
+Richardson Iteration 28: Residual = 9.858242e-05
+Richardson Iteration 29: Residual = 7.886521e-05
+Richardson Iteration 30: Residual = 6.309160e-05
+Richardson Iteration 31: Residual = 5.047283e-05
+Richardson Iteration 32: Residual = 4.037791e-05
+Richardson Iteration 33: Residual = 3.230205e-05
+Richardson Iteration 34: Residual = 2.584142e-05
+Richardson Iteration 35: Residual = 2.067297e-05
+Richardson Iteration 36: Residual = 1.653824e-05
+Richardson Iteration 37: Residual = 1.323048e-05
+Richardson Iteration 38: Residual = 1.058430e-05
+Richardson Iteration 39: Residual = 8.467369e-06
+Richardson Iteration 40: Residual = 6.773840e-06
+Richardson Iteration 41: Residual = 5.419028e-06
+Richardson Iteration 42: Residual = 4.335188e-06
+Richardson Iteration 43: Residual = 3.468122e-06
+Richardson Iteration 44: Residual = 2.774475e-06
+Richardson Iteration 45: Residual = 2.219562e-06
+Richardson Iteration 46: Residual = 1.775636e-06
+Richardson Iteration 47: Residual = 1.420497e-06
+Richardson Iteration 48: Residual = 1.136388e-06
+Richardson Iteration 49: Residual = 9.091034e-07
+Richardson Iteration 50: Residual = 7.272768e-07
+Richardson Iteration 51: Residual = 5.818168e-07
+Richardson Iteration 52: Residual = 4.654497e-07
+Richardson Iteration 53: Residual = 3.723567e-07
+Richardson Iteration 54: Residual = 2.978830e-07
+Richardson Iteration 55: Residual = 2.383045e-07
+Richardson Iteration 56: Residual = 1.906420e-07
+Richardson Iteration 57: Residual = 1.525124e-07
+Richardson Iteration 58: Residual = 1.220089e-07
+Richardson Iteration 59: Residual = 9.760636e-08
+Richardson Iteration 60: Residual = 7.808446e-08
+Richardson Iteration 61: Residual = 6.246706e-08
+Richardson Iteration 62: Residual = 4.997325e-08
+Richardson Iteration 63: Residual = 3.997828e-08
+Richardson Iteration 64: Residual = 3.198236e-08
+Richardson Iteration 65: Residual = 2.558568e-08
+Richardson Iteration 66: Residual = 2.046838e-08
+Richardson Iteration 67: Residual = 1.637457e-08
+Richardson Iteration 68: Residual = 1.309955e-08
+Richardson Iteration 69: Residual = 1.047956e-08
+Richardson Iteration 70: Residual = 8.383579e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 70 cumulative iterations for an average of 70 iterations/RHS and with total CPU time of 33.3105 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 24
+The block size is         1
+The number of blocks is   20
+The current basis size is 4
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 24
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        1.519986e-06
+
+================================================================================
+
+Richardson Iteration 1: Residual = 6.010594e-01
+Richardson Iteration 2: Residual = 3.926121e-01
+Richardson Iteration 3: Residual = 1.989538e-01
+Richardson Iteration 4: Residual = 1.171954e-01
+Richardson Iteration 5: Residual = 6.207455e-02
+Richardson Iteration 6: Residual = 3.481304e-02
+Richardson Iteration 7: Residual = 1.880117e-02
+Richardson Iteration 8: Residual = 1.034816e-02
+Richardson Iteration 9: Residual = 5.622940e-03
+Richardson Iteration 10: Residual = 4.484511e-03
+Richardson Iteration 11: Residual = 3.623747e-03
+Richardson Iteration 12: Residual = 2.910786e-03
+Richardson Iteration 13: Residual = 2.338181e-03
+Richardson Iteration 14: Residual = 1.874751e-03
+Richardson Iteration 15: Residual = 1.502493e-03
+Richardson Iteration 16: Residual = 1.203339e-03
+Richardson Iteration 17: Residual = 9.634561e-04
+Richardson Iteration 18: Residual = 7.711782e-04
+Richardson Iteration 19: Residual = 6.171744e-04
+Richardson Iteration 20: Residual = 4.938640e-04
+Richardson Iteration 21: Residual = 3.951595e-04
+Richardson Iteration 22: Residual = 3.161643e-04
+Richardson Iteration 23: Residual = 2.529511e-04
+Richardson Iteration 24: Residual = 2.023712e-04
+Richardson Iteration 25: Residual = 1.619023e-04
+Richardson Iteration 26: Residual = 1.295245e-04
+Richardson Iteration 27: Residual = 1.036208e-04
+Richardson Iteration 28: Residual = 8.289706e-05
+Richardson Iteration 29: Residual = 6.631773e-05
+Richardson Iteration 30: Residual = 5.305410e-05
+Richardson Iteration 31: Residual = 4.244313e-05
+Richardson Iteration 32: Residual = 3.395433e-05
+Richardson Iteration 33: Residual = 2.716330e-05
+Richardson Iteration 34: Residual = 2.173050e-05
+Richardson Iteration 35: Residual = 1.738428e-05
+Richardson Iteration 36: Residual = 1.390732e-05
+Richardson Iteration 37: Residual = 1.112577e-05
+Richardson Iteration 38: Residual = 8.900549e-06
+Richardson Iteration 39: Residual = 7.120383e-06
+Richardson Iteration 40: Residual = 5.696261e-06
+Richardson Iteration 41: Residual = 4.556973e-06
+Richardson Iteration 42: Residual = 3.645549e-06
+Richardson Iteration 43: Residual = 2.916416e-06
+Richardson Iteration 44: Residual = 2.333114e-06
+Richardson Iteration 45: Residual = 1.866476e-06
+Richardson Iteration 46: Residual = 1.493169e-06
+Richardson Iteration 47: Residual = 1.194526e-06
+Richardson Iteration 48: Residual = 9.556128e-07
+Richardson Iteration 49: Residual = 7.644841e-07
+Richardson Iteration 50: Residual = 6.115823e-07
+Richardson Iteration 51: Residual = 4.892619e-07
+Richardson Iteration 52: Residual = 3.914064e-07
+Richardson Iteration 53: Residual = 3.131226e-07
+Richardson Iteration 54: Residual = 2.504960e-07
+Richardson Iteration 55: Residual = 2.003952e-07
+Richardson Iteration 56: Residual = 1.603149e-07
+Richardson Iteration 57: Residual = 1.282509e-07
+Richardson Iteration 58: Residual = 1.025999e-07
+Richardson Iteration 59: Residual = 8.207923e-08
+Richardson Iteration 60: Residual = 6.566286e-08
+Richardson Iteration 61: Residual = 5.252986e-08
+Richardson Iteration 62: Residual = 4.202355e-08
+Richardson Iteration 63: Residual = 3.361857e-08
+Richardson Iteration 64: Residual = 2.689464e-08
+Richardson Iteration 65: Residual = 2.151554e-08
+Richardson Iteration 66: Residual = 1.721229e-08
+Richardson Iteration 67: Residual = 1.376972e-08
+Richardson Iteration 68: Residual = 1.101569e-08
+Richardson Iteration 69: Residual = 8.812480e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 69 cumulative iterations for an average of 69 iterations/RHS and with total CPU time of 26.5565 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 25
+The block size is         1
+The number of blocks is   20
+The current basis size is 5
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 25
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        1.833509e-06
+
+================================================================================
+
+Richardson Iteration 1: Residual = 2.930485e-01
+Richardson Iteration 2: Residual = 1.530170e-01
+Richardson Iteration 3: Residual = 1.053658e-01
+Richardson Iteration 4: Residual = 5.421980e-02
+Richardson Iteration 5: Residual = 3.361202e-02
+Richardson Iteration 6: Residual = 1.786465e-02
+Richardson Iteration 7: Residual = 1.195738e-02
+Richardson Iteration 8: Residual = 8.960500e-03
+Richardson Iteration 9: Residual = 6.622039e-03
+Richardson Iteration 10: Residual = 4.866564e-03
+Richardson Iteration 11: Residual = 3.562612e-03
+Richardson Iteration 12: Residual = 2.603244e-03
+Richardson Iteration 13: Residual = 1.900048e-03
+Richardson Iteration 14: Residual = 1.385993e-03
+Richardson Iteration 15: Residual = 1.010672e-03
+Richardson Iteration 16: Residual = 7.368563e-04
+Richardson Iteration 17: Residual = 5.371715e-04
+Richardson Iteration 18: Residual = 3.915810e-04
+Richardson Iteration 19: Residual = 2.988452e-04
+Richardson Iteration 20: Residual = 2.391362e-04
+Richardson Iteration 21: Residual = 1.913418e-04
+Richardson Iteration 22: Residual = 1.530916e-04
+Richardson Iteration 23: Residual = 1.224830e-04
+Richardson Iteration 24: Residual = 9.799160e-05
+Richardson Iteration 25: Residual = 7.839598e-05
+Richardson Iteration 26: Residual = 6.271813e-05
+Richardson Iteration 27: Residual = 5.017513e-05
+Richardson Iteration 28: Residual = 4.014035e-05
+Richardson Iteration 29: Residual = 3.211234e-05
+Richardson Iteration 30: Residual = 2.568984e-05
+Richardson Iteration 31: Residual = 2.055180e-05
+Richardson Iteration 32: Residual = 1.644136e-05
+Richardson Iteration 33: Residual = 1.315301e-05
+Richardson Iteration 34: Residual = 1.052234e-05
+Richardson Iteration 35: Residual = 8.417815e-06
+Richardson Iteration 36: Residual = 6.734203e-06
+Richardson Iteration 37: Residual = 5.387322e-06
+Richardson Iteration 38: Residual = 4.309824e-06
+Richardson Iteration 39: Residual = 3.447832e-06
+Richardson Iteration 40: Residual = 2.758244e-06
+Richardson Iteration 41: Residual = 2.206578e-06
+Richardson Iteration 42: Residual = 1.765248e-06
+Richardson Iteration 43: Residual = 1.412187e-06
+Richardson Iteration 44: Residual = 1.129741e-06
+Richardson Iteration 45: Residual = 9.037853e-07
+Richardson Iteration 46: Residual = 7.230224e-07
+Richardson Iteration 47: Residual = 5.784133e-07
+Richardson Iteration 48: Residual = 4.627269e-07
+Richardson Iteration 49: Residual = 3.701785e-07
+Richardson Iteration 50: Residual = 2.961404e-07
+Richardson Iteration 51: Residual = 2.369104e-07
+Richardson Iteration 52: Residual = 1.895268e-07
+Richardson Iteration 53: Residual = 1.516202e-07
+Richardson Iteration 54: Residual = 1.212952e-07
+Richardson Iteration 55: Residual = 9.703539e-08
+Richardson Iteration 56: Residual = 7.762769e-08
+Richardson Iteration 57: Residual = 6.210165e-08
+Richardson Iteration 58: Residual = 4.968092e-08
+Richardson Iteration 59: Residual = 3.974441e-08
+Richardson Iteration 60: Residual = 3.179528e-08
+Richardson Iteration 61: Residual = 2.543602e-08
+Richardson Iteration 62: Residual = 2.034865e-08
+Richardson Iteration 63: Residual = 1.627879e-08
+Richardson Iteration 64: Residual = 1.302292e-08
+Richardson Iteration 65: Residual = 1.041826e-08
+Richardson Iteration 66: Residual = 8.334537e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 66 cumulative iterations for an average of 66 iterations/RHS and with total CPU time of 25.7594 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 26
+The block size is         1
+The number of blocks is   20
+The current basis size is 6
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 26
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        2.367741e-06
+
+================================================================================
+
+Richardson Iteration 1: Residual = 3.576752e-01
+Richardson Iteration 2: Residual = 1.711603e-01
+Richardson Iteration 3: Residual = 1.060403e-01
+Richardson Iteration 4: Residual = 5.923231e-02
+Richardson Iteration 5: Residual = 3.143592e-02
+Richardson Iteration 6: Residual = 1.671527e-02
+Richardson Iteration 7: Residual = 8.776475e-03
+Richardson Iteration 8: Residual = 4.662762e-03
+Richardson Iteration 9: Residual = 2.464255e-03
+Richardson Iteration 10: Residual = 1.313913e-03
+Richardson Iteration 11: Residual = 6.990175e-04
+Richardson Iteration 12: Residual = 3.738042e-04
+Richardson Iteration 13: Residual = 1.997523e-04
+Richardson Iteration 14: Residual = 1.072904e-04
+Richardson Iteration 15: Residual = 7.173617e-05
+Richardson Iteration 16: Residual = 5.758934e-05
+Richardson Iteration 17: Residual = 4.619457e-05
+Richardson Iteration 18: Residual = 3.704225e-05
+Richardson Iteration 19: Residual = 2.968655e-05
+Richardson Iteration 20: Residual = 2.378222e-05
+Richardson Iteration 21: Residual = 1.904537e-05
+Richardson Iteration 22: Residual = 1.524795e-05
+Richardson Iteration 23: Residual = 1.220514e-05
+Richardson Iteration 24: Residual = 9.768030e-06
+Richardson Iteration 25: Residual = 7.816663e-06
+Richardson Iteration 26: Residual = 6.254599e-06
+Richardson Iteration 27: Residual = 5.004391e-06
+Richardson Iteration 28: Residual = 4.003908e-06
+Richardson Iteration 29: Residual = 3.203342e-06
+Richardson Iteration 30: Residual = 2.562790e-06
+Richardson Iteration 31: Residual = 2.050292e-06
+Richardson Iteration 32: Residual = 1.640264e-06
+Richardson Iteration 33: Residual = 1.312224e-06
+Richardson Iteration 34: Residual = 1.049785e-06
+Richardson Iteration 35: Residual = 8.398285e-07
+Richardson Iteration 36: Residual = 6.718616e-07
+Richardson Iteration 37: Residual = 5.374873e-07
+Richardson Iteration 38: Residual = 4.299877e-07
+Richardson Iteration 39: Residual = 3.439881e-07
+Richardson Iteration 40: Residual = 2.751887e-07
+Richardson Iteration 41: Residual = 2.201494e-07
+Richardson Iteration 42: Residual = 1.761182e-07
+Richardson Iteration 43: Residual = 1.408935e-07
+Richardson Iteration 44: Residual = 1.127139e-07
+Richardson Iteration 45: Residual = 9.017045e-08
+Richardson Iteration 46: Residual = 7.213579e-08
+Richardson Iteration 47: Residual = 5.770817e-08
+Richardson Iteration 48: Residual = 4.616617e-08
+Richardson Iteration 49: Residual = 3.693264e-08
+Richardson Iteration 50: Residual = 2.954588e-08
+Richardson Iteration 51: Residual = 2.363651e-08
+Richardson Iteration 52: Residual = 1.890906e-08
+Richardson Iteration 53: Residual = 1.512712e-08
+Richardson Iteration 54: Residual = 1.210160e-08
+Richardson Iteration 55: Residual = 9.681203e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 55 cumulative iterations for an average of 55 iterations/RHS and with total CPU time of 26.6023 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 27
+The block size is         1
+The number of blocks is   20
+The current basis size is 7
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 27
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        1.401911e-06
+
+================================================================================
+
+Richardson Iteration 1: Residual = 5.521157e-01
+Richardson Iteration 2: Residual = 2.452164e-01
+Richardson Iteration 3: Residual = 1.070122e-01
+Richardson Iteration 4: Residual = 6.220910e-02
+Richardson Iteration 5: Residual = 3.101514e-02
+Richardson Iteration 6: Residual = 2.243814e-02
+Richardson Iteration 7: Residual = 1.644254e-02
+Richardson Iteration 8: Residual = 1.221065e-02
+Richardson Iteration 9: Residual = 8.939969e-03
+Richardson Iteration 10: Residual = 6.554005e-03
+Richardson Iteration 11: Residual = 5.076525e-03
+Richardson Iteration 12: Residual = 4.069228e-03
+Richardson Iteration 13: Residual = 3.262774e-03
+Richardson Iteration 14: Residual = 2.613327e-03
+Richardson Iteration 15: Residual = 2.092767e-03
+Richardson Iteration 16: Residual = 1.675266e-03
+Richardson Iteration 17: Residual = 1.340843e-03
+Richardson Iteration 18: Residual = 1.073009e-03
+Richardson Iteration 19: Residual = 8.585959e-04
+Richardson Iteration 20: Residual = 6.869778e-04
+Richardson Iteration 21: Residual = 5.496373e-04
+Richardson Iteration 22: Residual = 4.397388e-04
+Richardson Iteration 23: Residual = 3.518061e-04
+Richardson Iteration 24: Residual = 2.814524e-04
+Richardson Iteration 25: Residual = 2.251655e-04
+Richardson Iteration 26: Residual = 1.801338e-04
+Richardson Iteration 27: Residual = 1.441075e-04
+Richardson Iteration 28: Residual = 1.152859e-04
+Richardson Iteration 29: Residual = 9.222848e-05
+Richardson Iteration 30: Residual = 7.378244e-05
+Richardson Iteration 31: Residual = 5.902562e-05
+Richardson Iteration 32: Residual = 4.722019e-05
+Richardson Iteration 33: Residual = 3.777589e-05
+Richardson Iteration 34: Residual = 3.022049e-05
+Richardson Iteration 35: Residual = 2.417621e-05
+Richardson Iteration 36: Residual = 1.934082e-05
+Richardson Iteration 37: Residual = 1.547253e-05
+Richardson Iteration 38: Residual = 1.237793e-05
+Richardson Iteration 39: Residual = 9.902264e-06
+Richardson Iteration 40: Residual = 7.921748e-06
+Richardson Iteration 41: Residual = 6.337348e-06
+Richardson Iteration 42: Residual = 5.069837e-06
+Richardson Iteration 43: Residual = 4.055837e-06
+Richardson Iteration 44: Residual = 3.244644e-06
+Richardson Iteration 45: Residual = 2.595694e-06
+Richardson Iteration 46: Residual = 2.076539e-06
+Richardson Iteration 47: Residual = 1.661217e-06
+Richardson Iteration 48: Residual = 1.328963e-06
+Richardson Iteration 49: Residual = 1.063162e-06
+Richardson Iteration 50: Residual = 8.505228e-07
+Richardson Iteration 51: Residual = 6.804127e-07
+Richardson Iteration 52: Residual = 5.443258e-07
+Richardson Iteration 53: Residual = 4.354571e-07
+Richardson Iteration 54: Residual = 3.483629e-07
+Richardson Iteration 55: Residual = 2.786881e-07
+Richardson Iteration 56: Residual = 2.229487e-07
+Richardson Iteration 57: Residual = 1.783575e-07
+Richardson Iteration 58: Residual = 1.426848e-07
+Richardson Iteration 59: Residual = 1.141469e-07
+Richardson Iteration 60: Residual = 9.131682e-08
+Richardson Iteration 61: Residual = 7.305287e-08
+Richardson Iteration 62: Residual = 5.844182e-08
+Richardson Iteration 63: Residual = 4.675308e-08
+Richardson Iteration 64: Residual = 3.740216e-08
+Richardson Iteration 65: Residual = 2.992149e-08
+Richardson Iteration 66: Residual = 2.393700e-08
+Richardson Iteration 67: Residual = 1.914945e-08
+Richardson Iteration 68: Residual = 1.531943e-08
+Richardson Iteration 69: Residual = 1.225545e-08
+Richardson Iteration 70: Residual = 9.804279e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 70 cumulative iterations for an average of 70 iterations/RHS and with total CPU time of 33.3875 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 28
+The block size is         1
+The number of blocks is   20
+The current basis size is 8
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 28
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        1.248061e-06
+
+================================================================================
+
+Richardson Iteration 1: Residual = 4.864528e-01
+Richardson Iteration 2: Residual = 2.318628e-01
+Richardson Iteration 3: Residual = 1.205789e-01
+Richardson Iteration 4: Residual = 5.856609e-02
+Richardson Iteration 5: Residual = 3.179336e-02
+Richardson Iteration 6: Residual = 1.625892e-02
+Richardson Iteration 7: Residual = 8.943818e-03
+Richardson Iteration 8: Residual = 6.501254e-03
+Richardson Iteration 9: Residual = 4.827578e-03
+Richardson Iteration 10: Residual = 3.552692e-03
+Richardson Iteration 11: Residual = 2.606682e-03
+Richardson Iteration 12: Residual = 1.907083e-03
+Richardson Iteration 13: Residual = 1.393519e-03
+Richardson Iteration 14: Residual = 1.017253e-03
+Richardson Iteration 15: Residual = 7.422109e-04
+Richardson Iteration 16: Residual = 5.727459e-04
+Richardson Iteration 17: Residual = 4.586208e-04
+Richardson Iteration 18: Residual = 3.671493e-04
+Richardson Iteration 19: Residual = 2.938585e-04
+Richardson Iteration 20: Residual = 2.351664e-04
+Richardson Iteration 21: Residual = 1.881771e-04
+Richardson Iteration 22: Residual = 1.505662e-04
+Richardson Iteration 23: Residual = 1.204664e-04
+Richardson Iteration 24: Residual = 9.638041e-05
+Richardson Iteration 25: Residual = 7.710820e-05
+Richardson Iteration 26: Residual = 6.168857e-05
+Richardson Iteration 27: Residual = 4.935185e-05
+Richardson Iteration 28: Residual = 3.948193e-05
+Richardson Iteration 29: Residual = 3.158572e-05
+Richardson Iteration 30: Residual = 2.526861e-05
+Richardson Iteration 31: Residual = 2.021486e-05
+Richardson Iteration 32: Residual = 1.617183e-05
+Richardson Iteration 33: Residual = 1.293740e-05
+Richardson Iteration 34: Residual = 1.034986e-05
+Richardson Iteration 35: Residual = 8.279831e-06
+Richardson Iteration 36: Residual = 6.623818e-06
+Richardson Iteration 37: Residual = 5.299015e-06
+Richardson Iteration 38: Residual = 4.239180e-06
+Richardson Iteration 39: Residual = 3.391318e-06
+Richardson Iteration 40: Residual = 2.713033e-06
+Richardson Iteration 41: Residual = 2.170409e-06
+Richardson Iteration 42: Residual = 1.736314e-06
+Richardson Iteration 43: Residual = 1.389040e-06
+Richardson Iteration 44: Residual = 1.111223e-06
+Richardson Iteration 45: Residual = 8.889712e-07
+Richardson Iteration 46: Residual = 7.111713e-07
+Richardson Iteration 47: Residual = 5.689324e-07
+Richardson Iteration 48: Residual = 4.551423e-07
+Richardson Iteration 49: Residual = 3.641109e-07
+Richardson Iteration 50: Residual = 2.912864e-07
+Richardson Iteration 51: Residual = 2.330272e-07
+Richardson Iteration 52: Residual = 1.864203e-07
+Richardson Iteration 53: Residual = 1.491350e-07
+Richardson Iteration 54: Residual = 1.193070e-07
+Richardson Iteration 55: Residual = 9.544487e-08
+Richardson Iteration 56: Residual = 7.635528e-08
+Richardson Iteration 57: Residual = 6.108373e-08
+Richardson Iteration 58: Residual = 4.886659e-08
+Richardson Iteration 59: Residual = 3.909296e-08
+Richardson Iteration 60: Residual = 3.127411e-08
+Richardson Iteration 61: Residual = 2.501909e-08
+Richardson Iteration 62: Residual = 2.001511e-08
+Richardson Iteration 63: Residual = 1.601196e-08
+Richardson Iteration 64: Residual = 1.280946e-08
+Richardson Iteration 65: Residual = 1.024749e-08
+Richardson Iteration 66: Residual = 8.197925e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 66 cumulative iterations for an average of 66 iterations/RHS and with total CPU time of 31.821 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 29
+The block size is         1
+The number of blocks is   20
+The current basis size is 9
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 29
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        1.590311e-06
+
+================================================================================
+
+Richardson Iteration 1: Residual = 6.750742e-01
+Richardson Iteration 2: Residual = 3.356969e-01
+Richardson Iteration 3: Residual = 1.671737e-01
+Richardson Iteration 4: Residual = 9.050610e-02
+Richardson Iteration 5: Residual = 4.614701e-02
+Richardson Iteration 6: Residual = 2.463578e-02
+Richardson Iteration 7: Residual = 1.291000e-02
+Richardson Iteration 8: Residual = 6.890301e-03
+Richardson Iteration 9: Residual = 3.662368e-03
+Richardson Iteration 10: Residual = 2.170130e-03
+Richardson Iteration 11: Residual = 1.738606e-03
+Richardson Iteration 12: Residual = 1.390911e-03
+Richardson Iteration 13: Residual = 1.112876e-03
+Richardson Iteration 14: Residual = 8.902580e-04
+Richardson Iteration 15: Residual = 7.121477e-04
+Richardson Iteration 16: Residual = 5.696650e-04
+Richardson Iteration 17: Residual = 4.556860e-04
+Richardson Iteration 18: Residual = 3.645162e-04
+Richardson Iteration 19: Residual = 2.915892e-04
+Richardson Iteration 20: Residual = 2.332553e-04
+Richardson Iteration 21: Residual = 1.865933e-04
+Richardson Iteration 22: Residual = 1.492675e-04
+Richardson Iteration 23: Residual = 1.194092e-04
+Richardson Iteration 24: Residual = 9.552427e-05
+Richardson Iteration 25: Residual = 7.641736e-05
+Richardson Iteration 26: Residual = 6.113252e-05
+Richardson Iteration 27: Residual = 4.890510e-05
+Richardson Iteration 28: Residual = 3.912345e-05
+Richardson Iteration 29: Residual = 3.129832e-05
+Richardson Iteration 30: Residual = 2.503834e-05
+Richardson Iteration 31: Residual = 2.003045e-05
+Richardson Iteration 32: Residual = 1.602419e-05
+Richardson Iteration 33: Residual = 1.281923e-05
+Richardson Iteration 34: Residual = 1.025529e-05
+Richardson Iteration 35: Residual = 8.204158e-06
+Richardson Iteration 36: Residual = 6.563269e-06
+Richardson Iteration 37: Residual = 5.250571e-06
+Richardson Iteration 38: Residual = 4.200421e-06
+Richardson Iteration 39: Residual = 3.360309e-06
+Richardson Iteration 40: Residual = 2.688225e-06
+Richardson Iteration 41: Residual = 2.150563e-06
+Richardson Iteration 42: Residual = 1.720436e-06
+Richardson Iteration 43: Residual = 1.376338e-06
+Richardson Iteration 44: Residual = 1.101061e-06
+Richardson Iteration 45: Residual = 8.808419e-07
+Richardson Iteration 46: Residual = 7.046678e-07
+Richardson Iteration 47: Residual = 5.637297e-07
+Richardson Iteration 48: Residual = 4.509801e-07
+Richardson Iteration 49: Residual = 3.607812e-07
+Richardson Iteration 50: Residual = 2.886226e-07
+Richardson Iteration 51: Residual = 2.308962e-07
+Richardson Iteration 52: Residual = 1.847155e-07
+Richardson Iteration 53: Residual = 1.477712e-07
+Richardson Iteration 54: Residual = 1.182160e-07
+Richardson Iteration 55: Residual = 9.457205e-08
+Richardson Iteration 56: Residual = 7.565703e-08
+Richardson Iteration 57: Residual = 6.052513e-08
+Richardson Iteration 58: Residual = 4.841972e-08
+Richardson Iteration 59: Residual = 3.873546e-08
+Richardson Iteration 60: Residual = 3.098812e-08
+Richardson Iteration 61: Residual = 2.479030e-08
+Richardson Iteration 62: Residual = 1.983208e-08
+Richardson Iteration 63: Residual = 1.586553e-08
+Richardson Iteration 64: Residual = 1.269232e-08
+Richardson Iteration 65: Residual = 1.015378e-08
+Richardson Iteration 66: Residual = 8.122957e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 66 cumulative iterations for an average of 66 iterations/RHS and with total CPU time of 31.2743 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 30
+The block size is         1
+The number of blocks is   20
+The current basis size is 10
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 30
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        1.369488e-06
+
+================================================================================
+
+Richardson Iteration 1: Residual = 6.377121e-01
+Richardson Iteration 2: Residual = 3.293135e-01
+Richardson Iteration 3: Residual = 1.800082e-01
+Richardson Iteration 4: Residual = 8.565477e-02
+Richardson Iteration 5: Residual = 5.041157e-02
+Richardson Iteration 6: Residual = 2.564502e-02
+Richardson Iteration 7: Residual = 1.443293e-02
+Richardson Iteration 8: Residual = 7.630700e-03
+Richardson Iteration 9: Residual = 4.188413e-03
+Richardson Iteration 10: Residual = 2.248909e-03
+Richardson Iteration 11: Residual = 1.556995e-03
+Richardson Iteration 12: Residual = 1.141761e-03
+Richardson Iteration 13: Residual = 8.346547e-04
+Richardson Iteration 14: Residual = 6.098608e-04
+Richardson Iteration 15: Residual = 4.451735e-04
+Richardson Iteration 16: Residual = 3.248456e-04
+Richardson Iteration 17: Residual = 2.369555e-04
+Richardson Iteration 18: Residual = 1.728124e-04
+Richardson Iteration 19: Residual = 1.260132e-04
+Richardson Iteration 20: Residual = 9.187884e-05
+Richardson Iteration 21: Residual = 6.698595e-05
+Richardson Iteration 22: Residual = 4.883498e-05
+Richardson Iteration 23: Residual = 3.560105e-05
+Richardson Iteration 24: Residual = 2.595279e-05
+Richardson Iteration 25: Residual = 1.891896e-05
+Richardson Iteration 26: Residual = 1.379130e-05
+Richardson Iteration 27: Residual = 1.005330e-05
+Richardson Iteration 28: Residual = 7.328407e-06
+Richardson Iteration 29: Residual = 5.342054e-06
+Richardson Iteration 30: Residual = 3.894084e-06
+Richardson Iteration 31: Residual = 2.838581e-06
+Richardson Iteration 32: Residual = 2.069172e-06
+Richardson Iteration 33: Residual = 1.508312e-06
+Richardson Iteration 34: Residual = 1.099475e-06
+Richardson Iteration 35: Residual = 8.014549e-07
+Richardson Iteration 36: Residual = 5.842149e-07
+Richardson Iteration 37: Residual = 4.258592e-07
+Richardson Iteration 38: Residual = 3.104269e-07
+Richardson Iteration 39: Residual = 2.262833e-07
+Richardson Iteration 40: Residual = 1.649475e-07
+Richardson Iteration 41: Residual = 1.202371e-07
+Richardson Iteration 42: Residual = 8.764592e-08
+Richardson Iteration 43: Residual = 6.412298e-08
+Richardson Iteration 44: Residual = 5.129794e-08
+Richardson Iteration 45: Residual = 4.103800e-08
+Richardson Iteration 46: Residual = 3.283013e-08
+Richardson Iteration 47: Residual = 2.626388e-08
+Richardson Iteration 48: Residual = 2.101093e-08
+Richardson Iteration 49: Residual = 1.680861e-08
+Richardson Iteration 50: Residual = 1.344678e-08
+Richardson Iteration 51: Residual = 1.075734e-08
+Richardson Iteration 52: Residual = 8.605799e-09
+MCLS solver "MCLS::FixedPointSolverManager<Epetra_Vector, Epetra_RowMatrix>" returned a solve status of "SOLVE_STATUS_CONVERGED" for 1RHSs using 52 cumulative iterations for an average of 52 iterations/RHS and with total CPU time of 18.273 sec.
+================================================================================
+
+                         BlockKrylovSchur Solver Status
+
+The solver is initialized.
+The number of iterations performed is 31
+The block size is         1
+The number of blocks is   20
+The current basis size is 11
+The number of auxiliary vectors is 0
+The number of operations Op*x   is 31
+
+CURRENT RITZ VALUES             
+              Ritz Value                 Ritz Residual
+--------------------------------------------------------------------------------
+   1.175850e+00 + i   0.000000e+00        1.008462e-06
+
+================================================================================
+
+>>> Preparing to do SILO output to 1 concurrent files.
+
+===================
+Final Timing Report
+===================
+
+                                 Routine   Max Fraction   Min Fraction
+======================================================================
+                         Mesh_generation     4.5830e-06     4.5830e-06
+                                  Output     1.3650e-05     1.3650e-05
+                                   Setup     7.8543e-01     7.8543e-01
+                               Transport     2.1456e-01     2.1456e-01
+                           XS_generation     1.1041e-02     1.1041e-02
+======================================================================
+
+Total execution time : 4.0701e+03 seconds.
