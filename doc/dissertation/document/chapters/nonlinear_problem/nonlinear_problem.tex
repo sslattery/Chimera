@@ -657,7 +657,13 @@ will quickly damp the higher order error modes on the scale of the
 computational grid used to solve the problem but will reduce lower
 order error modes at a considerably lower rate. In terms of Monte
 Carlo, this stagnation manifests itself in histories that simply do no
-terminate and therefore no solution is acquired.
+terminate and therefore no solution is acquired. For many of the
+problems presented here, it is likely that a more physics-based
+preconditioning strategy such as those presented in
+\cite{evans_development_2006,evans_enhanced_2007} will yield better
+results for more difficult problems. However, the explicit
+preconditioning strategy used here currently limits us to algebraic
+preconditioning.
 
 For every benchmark calculation, both FANM and Newton-Krylov were
 preconditioned with the same multigrid parameters such that the

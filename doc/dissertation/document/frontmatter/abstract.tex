@@ -1,7 +1,7 @@
 Predictive modeling and simulation is an important and developing
 component of modern nuclear reactor analysis. New high performance
 computing hardware and algorithms that leverage this hardware are
-required to help meet the goals and requirements of engineering
+needed to help meet the goals and requirements of engineering
 analysis. Current practices in neutron transport and fluid flow
 leverage methods based on subspace iterations to achieve good
 convergence properties and quality parallel scaling on large
@@ -26,10 +26,11 @@ First, solutions to the $SP_N$ discretization of the linear Boltzmann
 neutron transport equation are obtained using Monte Carlo Synthetic
 Acceleration with a difficult criticality calculation for a light
 water reactor fuel assembly used as the driving problem. It was
-discovered that basic Jacobi-based preconditioning was not sufficient
-to achieve convergence due to the dominating effect of the light water
-moderator and therefore a group of modern preconditioning strategies
-are researched. The new preconditioning techniques, however, create
+discovered that basic Jacobi-based preconditioning as used in previous
+work was not sufficient to achieve convergence due to the dominating
+effect of the light water moderator. To enable MCSA as a solution
+technique a group of modern preconditioning strategies are
+researched. The new preconditioning techniques, however, create
 unwanted growth in both memory consumption and computation time for
 these problems. Monte Carlo Synthetic Acceleration was verified to
 produce the correct solution for the fuel assembly criticality problem
@@ -75,7 +76,7 @@ this work by producing methods that in many cases were demonstrated to
 converge in fewer iterations than conventional methods and exhibit
 better parallel efficiencies at high levels of concurrency. All the
 components of this work are required to enable future simulation of
-nonlinear physics problems on the next generation of hardware. To
+nonlinear transport phenomena on the next generation of hardware. To
 enable high performance simulations with FANM, we require the MCSA
 techniques developed in the research on the neutron transport problem
 and in turn effectively leveraging MCSA on leadership-class hardware
