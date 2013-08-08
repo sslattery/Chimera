@@ -2065,15 +2065,18 @@ performance of the algorithm for serial computations will now be
 addressed. With the same set of solver parameters used for
 verification, MCSA will now be directly compared to the same
 production Krylov solvers in terms of both iterative performance and
-CPU timing for solutions to the fuel assembly problem.  This
-performance comparison is necessary in order to assess the feasibility
-of the method and identify areas that require further research and
-development.
+CPU timing for solutions to the fuel assembly problem. The iterative
+performance will also be compared to using a Richardson iteration
+preconditioned in the same way for all calculations in order to assess
+the acceleration provided by the residual Monte Carlo component of
+MCSA. This performance comparison is necessary in order to assess the
+feasibility of the method and identify areas that require further
+research and development.
 
 To compare iterative performance, the number of linear solver
 iterations required to converge each eigenvalue iteration was recorded
 and then averaged over all eigenvalue iterations for each
-solver. Figure~\ref{fig:spn_comparison_iterations} gives the average
+solver. Table~\ref{tab:spn_comparison_iterations} gives the average
 number of linear solver iterations required to converge a single
 eigenvalue iteration of the fuel assembly problem as a function of the
 number of energy groups. In general, the iterative performance of all
@@ -2087,7 +2090,9 @@ function of the number of energy groups in the problem (and therefore
 the problem size). Even more important, although BiCGStab produced the
 best iterative results, MCSA did perform better than GMRES in many
 cases with the Richardson iteration accelerated with Monte Carlo using
-the collision estimator performing best.
+the collision estimator performing best. When compared to the
+preconditioned Richardson iteration, the acceleration provided by MCSA
+is clear with 3-4 times fewer iterations required for convergence.
 
 For MCSA, we are linearly increasing the number of stochastic
 histories used to compute the correction at each iteration as the
@@ -2106,18 +2111,34 @@ memory restrictions arising from the explicit preconditioning strategy
 prevent larger energy groups to be analyzed using an appropriate
 preconditioner for the fuel assembly problem.
 
-\begin{figure}[t!]
+\begin{table}[h!]
   \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/solver_iters.pdf}
+    \begin{tabular}{lccc}\hline\hline
+      \multicolumn{1}{l}{Solver}&
+      \multicolumn{1}{c}{1 Group}&
+      \multicolumn{1}{c}{2 Groups}&
+      \multicolumn{1}{c}{4 Groups}\\
+      \hline
+      BiCGStab-ILUT & 11.6 & 11.6 & 12.4 \\ 
+      GMRES-ILUT & 18.1 & 17.9 & 18.9 \\
+      MCSA-ILUT-R-C & 14.6 & 15.4 & 17.6 \\
+      MCSA-ILUT-MR-C & 16.0 & 17.1 & 23.7 \\
+      MCSA-ILUT-R-EV & 18.3 & 19.4 & 16.8 \\
+      MCSA-ILUT-MR-EV & 19.6 & 22.4 & 17.5 \\
+      Richardson-ILUT & 60.9 & 60.4 & 63.4 \\
+      %%
+      \hline\hline
+    \end{tabular}
   \end{center}
-  \caption{\textbf{Average number of iterations required to converge
-      each eigenvalue iteration for the fuel assembly problem as a
-      function of energy groups.}
-    \textit{Table~\ref{tab:spn_solver_defs} gives the description for
-      each solver type presented in the legend with the Krylov solvers
-      represented in black and the MCSA solvers represented in red.}}
-  \label{fig:spn_comparison_iterations}
-\end{figure}
+  \caption{\textbf{Average number of linear solver iterations
+      iterations required to converge the fixed source $SP_N$ problem
+      at each eigenvalue iteration for the fuel assembly problem for
+      1, 2 and 4 energy groups.} \textit{Values are rounded to the
+      first decimal place. Table~\ref{tab:spn_solver_defs} gives the
+      description for each solver type presented and Richardson-ILUT
+      is a ILUT preconditioned Richardson iteration.}}
+  \label{tab:spn_comparison_iterations}
+\end{table}
 
 Although iterative performance for MCSA was comparable to that
 observed for production Krylov implementations using exactly the same
@@ -2140,24 +2161,25 @@ composite linear operator but rather a sequence of matrix vector
 multiplies to achieve the same preconditioning effect, they do use the
 explicitly extracted inverse of the preconditioning matrices which
 themselves are dense, leading to exceedingly slow computation times
-even in the fixed point iteration. For the production Krylov methods,
-the ILUT preconditioners are applied to a vector with two triangular
-solves, one for each triangular factor. Also, the original linear
-operator has $O(10)$ elements in each row of the system, an order of
-magnitude less than that used in the reduced domain composite
-operator. Second, the implementation presented here has not been
-optimized and it is likely that several components of the algorithm
-can be implemented in a more desirable time complexity. The
-production Krylov solvers presented here have enjoyed decades of
-professional development and optimization. However, it is most
-important to note here that the CPU timing data presented in
-Figure~\ref{fig:spn_comparison_time} shows that all methods have the
-same time complexity; their differences are merely the manifestation
-of a large time constant due to the effects of the explicit
-preconditioning scheme. For transport systems where this is not a
-problem, the literature explicitly shows that MCSA can be competitive
-with these production Krylov methods using CPU time as a measure
-\cite{evans_monte_2012}.
+even in the fixed point iteration. 
+
+For the production Krylov methods, the ILUT preconditioners are
+applied to a vector with two triangular solves, one for each
+triangular factor. Also, the original linear operator has $O(10)$
+elements in each row of the system, an order of magnitude less than
+that used in the reduced domain composite operator. Second, the
+implementation presented here has not been optimized and it is likely
+that several components of the algorithm can be implemented in a more
+desirable time complexity. The production Krylov solvers presented
+here have enjoyed decades of professional development and
+optimization. However, it is most important to note here that the CPU
+timing data presented in Figure~\ref{fig:spn_comparison_time} shows
+that all methods have the same time complexity; their differences are
+merely the manifestation of a large time constant due to the effects
+of the explicit preconditioning scheme. For transport systems where
+this is not a problem, the literature explicitly shows that MCSA can
+be competitive with these production Krylov methods using CPU time as
+a measure \cite{evans_monte_2012}.
 
 \begin{figure}[t!]
   \begin{center}
