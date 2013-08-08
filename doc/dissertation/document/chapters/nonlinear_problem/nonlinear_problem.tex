@@ -1453,13 +1453,19 @@ tolerances.
 
 Using the benchmarks from the verification, we now compare the
 performance of the FANM method against a conventional Newton-Krylov
-method. For each benchmark, we will analyze the iterative performance
-of both the nonlinear Newton solver and the linear solver used to
-compute the Newton correction vector at each step. Limiting the number
-of nonlinear iterations required for solution is critical for
-efficiency as nonlinear function evaluations, Jacobian generation, and
-preconditioner construction are typically required at every Newton
-iteration. In addition, timing results will also be discussed.
+(NK) method. For each benchmark, we will analyze the iterative
+performance of both the nonlinear Newton solver and the linear solver
+used to compute the Newton correction vector at each step. Limiting
+the number of nonlinear iterations required for solution is critical
+for efficiency as nonlinear function evaluations, Jacobian generation,
+and preconditioner construction are typically required at every Newton
+iteration. In addition, timing results will also be discussed. To
+quantify the acceleration provided by the residual Monte Carlo
+component of MCSA, each calculation was also performed using the same
+Newton method but with a plain preconditioned Richardson iteration as
+the linear solution technique to give a Newton-Richardson (NR)
+scheme. For all cases the Richardson iteration was preconditioned
+in the same way as GMRES and MCSA.
 
 \subsection{Thermal Convection Cavity Results}
 \label{subsec:thermal_convection_comparison}
@@ -1517,15 +1523,16 @@ iterations as the Newton-Krylov method.
 
 \begin{table}[h!]
   \begin{center}
-    \begin{tabular}{ccc}\hline\hline
+    \begin{tabular}{cccc}\hline\hline
       \multicolumn{1}{c}{Rayleigh Number}& 
-      \multicolumn{1}{c}{Newton-Krylov Iterations}&
-      \multicolumn{1}{c}{FANM Iterations}\\
+      \multicolumn{1}{c}{NK Iterations}&
+      \multicolumn{1}{c}{FANM Iterations}&
+      \multicolumn{1}{c}{NR Iterations}\\
       \hline
-      \sn{1}{3} & 5 & 5 \\
-      \sn{1}{4} & 7 & 7 \\
-      \sn{1}{5} & 9 & 10 \\
-      \sn{1}{6} & 11 & 11 \\
+      \sn{1}{3} & 5 & 5 & 5\\
+      \sn{1}{4} & 7 & 7 & 7\\
+      \sn{1}{5} & 9 & 10 & 9\\
+      \sn{1}{6} & 11 & 11 & 11\\
       %%
       \hline\hline
     \end{tabular}
@@ -1566,22 +1573,25 @@ iterations required by the Newton-Krylov scheme with the linear solver
 per nonlinear iteration given for this case in
 Figure~\ref{fig:ra1e6_linear_iters}. Even the \sn{1}{5} Rayleigh
 number case that required more Newton iterations required 5 fewer MCSA
-iterations to converge than GMRES iterations. If the performance of
+iterations to converge than GMRES iterations. In all cases, MCSA
+improved on the iterative performance of using only the Richardson
+iteration through the residual Monte Carlo acceleration. If the performance of
 the MCSA implementation used here were to be potentially optimized in
 the future, this improved iterative performance could also mean
 improved time to solution.
 
 \begin{table}[h!]
   \begin{center}
-    \begin{tabular}{ccc}\hline\hline
-      \multicolumn{1}{c}{Rayleigh Number}& 
+    \begin{tabular}{cccc}\hline\hline
+      \multicolumn{1}{c}{Rayleigh Number}&
       \multicolumn{1}{c}{GMRES Iterations}&
-      \multicolumn{1}{c}{MCSA Iterations}\\
+      \multicolumn{1}{c}{MCSA Iterations}&
+      \multicolumn{1}{c}{Richardson Iterations}\\
       \hline
-      \sn{1}{3} & 23 & 18 \\
-      \sn{1}{4} & 23 & 17 \\
-      \sn{1}{5} & 25 & 20 \\
-      \sn{1}{6} & 39 & 25 \\
+      \sn{1}{3} & 23 & 18 & 38 \\
+      \sn{1}{4} & 23 & 17 & 34 \\
+      \sn{1}{5} & 25 & 20 & 34 \\
+      \sn{1}{6} & 39 & 25 & 48  \\
       %%
       \hline\hline
     \end{tabular}
@@ -1600,9 +1610,9 @@ improved time to solution.
   \caption{\textbf{Thermal convection cavity linear solver iterations
       as a function of Newton iteration for the \sn{1}{6} Rayleigh
       number case.} \textit{MCSA shows better iterative performance
-      than GMRES at all but the second nonlinear iteration. The
-      forcing term was fixed at \sn{1}{-4} at all nonlinear
-      iterations.}}
+      than GMRES at all but the second nonlinear iteration and MCSA
+      always accelerated the Richardson iteration. The forcing term
+      was fixed at \sn{1}{-4} at all nonlinear iterations.}}
   \label{fig:ra1e6_linear_iters}
 \end{figure}
 
@@ -1676,15 +1686,16 @@ can improve the performance of both linear and nonlinear convergence.
 
 \begin{table}[h!]
   \begin{center}
-    \begin{tabular}{ccc}\hline\hline
+    \begin{tabular}{cccc}\hline\hline
       \multicolumn{1}{c}{Reynolds Number}& 
-      \multicolumn{1}{c}{Newton-Krylov Iterations}&
-      \multicolumn{1}{c}{FANM Iterations}\\
+      \multicolumn{1}{c}{NK Iterations}&
+      \multicolumn{1}{c}{FANM Iterations}&
+      \multicolumn{1}{c}{NR Iterations}\\
       \hline
-      100 & 6 & 6 \\
-      300 & 9 & 9 \\
-      500 & 11 & 11 \\
-      700 & 14 & 10 \\
+      100 & 6 & 6 & 7\\
+      300 & 9 & 9 & 9\\
+      500 & 11 & 11 & 11\\
+      700 & 14 & 10 & 12\\
       %%
       \hline\hline
     \end{tabular}
@@ -1719,7 +1730,12 @@ count 64\% of that observed for MCSA when looking at the 100 Reynolds
 number case. For the 700 Reynolds number case, fewer MCSA iterations
 were observed due to the fact that 4 fewer nonlinear iterations were
 performed. The average number of linear iterations per nonlinear
-iteration was still much larger for the FANM calculations.
+iteration was still much larger for the FANM calculations. In all
+cases, MCSA improved on the iterative performance of using only the
+Richardson iteration through the residual Monte Carlo acceleration
+even considering the cases with Reynolds numbers of 100 and 700 where
+an extra Newton-Richardson iteration was required to converge the
+nonlinear model.
 
 As an additional means of analysis for the linear solver iteration
 results, we will look at a case where MCSA performed poorly compared
@@ -1761,23 +1777,25 @@ iterations.
 
 \begin{table}[h!]
   \begin{center}
-    \begin{tabular}{ccc}\hline\hline
+    \begin{tabular}{cccc}\hline\hline
       \multicolumn{1}{c}{Reynolds Number}& 
       \multicolumn{1}{c}{GMRES Iterations}&
-      \multicolumn{1}{c}{MCSA Iterations}\\
+      \multicolumn{1}{c}{MCSA Iterations}&
+      \multicolumn{1}{c}{Richardson Iterations}\\
       \hline
-      100 & 27 & 42 \\
-      300 & 35 & 52 \\
-      500 & 41 & 56 \\
-      700 & 21 & 14 \\
+      100 & 27 & 42 & 151\\
+      300 & 35 & 52 & 133\\
+      500 & 41 & 56 & 154\\
+      700 & 21 & 14 & 32\\
       %%
       \hline\hline
     \end{tabular}
   \end{center}
-  \caption{\textbf{Lid driven cavity total sum of linear
-      iterations for all nonlinear iterations.} \textit{The results
-      presented here were obtained from the benchmark verification
-      calculations.}}
+  \caption{\textbf{Lid driven cavity total sum of linear iterations
+      for all nonlinear iterations.} \textit{The results presented
+      here were obtained from the benchmark verification
+      calculations. MCSA always accelerated the Richardson
+      iteration.}}
   \label{tab:driven_linear_iter_comparison}
 \end{table}
 
@@ -1832,19 +1850,22 @@ well in the linear solver iteration data given by
 Table~\ref{tab:step_linear_iter_comparison}. At the 3 lowest Reynolds
 numbers, FANM required significantly fewer linear solver iterations to
 converge the problem while the ill-conditioned case at a Reynolds
-number of 500 is observed to use many more MCSA iterations. 
+number of 500 is observed to use many more MCSA iterations. For
+Reynolds numbers of both 200 and 500, FANM also reduced the number of
+Newton steps need when compared to the Newton-Richardson scheme.
 
 \begin{table}[h!]
   \begin{center}
-    \begin{tabular}{ccc}\hline\hline
+    \begin{tabular}{cccc}\hline\hline
       \multicolumn{1}{c}{Reynolds Number}& 
-      \multicolumn{1}{c}{Newton-Krylov Iterations}&
-      \multicolumn{1}{c}{FANM Iterations}\\
+      \multicolumn{1}{c}{NK Iterations}&
+      \multicolumn{1}{c}{FANM Iterations}&
+      \multicolumn{1}{c}{NR Iterations}\\
       \hline
-      200 & 10 & 9 \\
-      300 & 15 & 14 \\
-      400 & 10 & 10 \\
-      500 & 19 & 20 \\
+      200 & 10 & 9 & 10\\
+      300 & 15 & 14 & 15\\
+      400 & 10 & 10 & 10\\
+      500 & 19 & 20 & 21\\
       %%
       \hline\hline
     \end{tabular}
@@ -1858,23 +1879,24 @@ number of 500 is observed to use many more MCSA iterations.
 
 \begin{table}[h!]
   \begin{center}
-    \begin{tabular}{ccc}\hline\hline
+    \begin{tabular}{cccc}\hline\hline
       \multicolumn{1}{c}{Reynolds Number}& 
       \multicolumn{1}{c}{GMRES Iterations}&
-      \multicolumn{1}{c}{MCSA Iterations}\\
+      \multicolumn{1}{c}{MCSA Iterations}&
+      \multicolumn{1}{c}{Richardson Iterations}\\
       \hline
-      200 & 24 & 13 \\
-      300 & 23 & 17 \\
-      400 & 18 & 12 \\
-      500 & 30 & 52 \\
+      200 & 24 & 13 & 21\\
+      300 & 23 & 17 & 21\\
+      400 & 18 & 12 & 14\\
+      500 & 30 & 52 & 98\\
       %%
       \hline\hline
     \end{tabular}
   \end{center}
-  \caption{\textbf{Backward facing step total sum of linear
-      iterations for all nonlinear iterations.} \textit{The results
-      presented here were obtained from the benchmark verification
-      calculations.}}
+  \caption{\textbf{Backward facing step total sum of linear iterations
+      for all nonlinear iterations.} \textit{The results presented
+      here were obtained from the benchmark verification
+      calculations.MCSA always accelerated the Richardson iteration.}}
   \label{tab:step_linear_iter_comparison}
 \end{table}
 
@@ -1898,6 +1920,18 @@ iterations to converge the nonlinear residual. However, at a Reynolds
 number of 500 FANM has larger forcing terms but requires many more
 MCSA iterations to converge the last 2 Newton steps. Therefore, these
 extra iterations in this case must come from ill-conditioning.
+
+We additionally see the effects of ill-conditioned Jacobians when
+looking at the acceleration provided by MCSA over using a
+preconditioned Richardson iteration. For the first 3 cases, the
+acceleration was not as significant as for the other benchmark
+problems. In this case, this means that the Richardson iteration and
+its acceleration by a stochastic realization of a Richardson iteration
+are not doing the bulk of the work in this problem. Rather, the
+algebraic multigrid preconditioning is performing more work at each
+iteration and therefore the acceleration is smaller. When the system
+becomes even more ill-conditioned in the 500 Reynolds number case
+the acceleration has more of an impact.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1980,7 +2014,6 @@ number case.
   \label{tab:step_speedup_comparison}
 \end{table}
 
-\clearpage
 
 \subsection{Overall Performance Comparison}
 \label{subsec:nonlinear_overall_comparison}
