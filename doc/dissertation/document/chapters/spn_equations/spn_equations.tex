@@ -422,7 +422,9 @@ diagonal character of these systems, although the blocks from
 Eq~(\ref{eq:A_block_matrix}) are readily apparent. Our first attempt
 at preconditioning this system will be to use the point Jacobi
 preconditioning from \S\ref{subsubsec:basic_mcsa_preconditioning} due
-to this diagonal form.
+to this diagonal form and the success achieved by applying it to MCSA
+solutions of the radiation diffusion equation as presented in
+\cite{evans_monte_2012}.
 
 \subsection{Point Jacobi Spectral Analysis Results}
 \label{subsec:spn_analysis_results}
@@ -673,15 +675,15 @@ of configurations. As a sophisticated problem of interest to push the
 limits of MCSA, a hot zero-power $17 \times 17$ pin assembly will be
 used with varying energy group structure and $SP_N$ discretization in
 a criticality calculation. A cross section along the vertical axis
-showing homogenized fuel pin materials and the associated grid is
-given by Figure~\ref{fig:problem3_radial_mat} while a cross section of
-the materials configuration along the horizontal axis is given by
-Figure~\ref{fig:problem3_axial_mat}. A detailed view of the assembly
-bottom is given in Figure~\ref{fig:problem3_end}. On the top and
-bottom of the assembly, vacuum conditions are used as well as on the
-top and right boundaries in
-Figure~\ref{fig:problem3_radial_mat}. Reflecting conditions are used
-on the left and bottom boundaries of
+showing homogenized fuel pin, control rod, and moderator materials and
+the associated grid is given by Figure~\ref{fig:problem3_radial_mat}
+while a cross section of the materials configuration along the
+horizontal axis is given by Figure~\ref{fig:problem3_axial_mat}. A
+detailed view of the assembly bottom is given in
+Figure~\ref{fig:problem3_end}. On the top and bottom of the assembly,
+vacuum conditions are used as well as on the top and right boundaries
+in Figure~\ref{fig:problem3_radial_mat}. Reflecting conditions are
+used on the left and bottom boundaries of
 Figure~\ref{fig:problem3_radial_mat}, effectively giving a
 representation of one quarter of the assembly. For the spatial
 discretization, each fuel pin (gray regions in
@@ -695,8 +697,9 @@ mesh with materials and cross sections homogenized over this region.
     \textit{Reflecting boundaries are used on the left and lower
       boundaries to create a complete $17 \times 17$ assembly
       geometry. Gray regions are homogenized fuel and red regions are
-      homogenized moderator. Each fuel pin is resolved by a $2 \times
-      2$ mesh.}}
+      homogenized control rods. The control rods were removed for
+      these problems. Each fuel pin is resolved by a $2 \times 2$
+      mesh.}}
   \label{fig:problem3_radial_mat}
 \end{figure}
 \begin{figure}[t!]
