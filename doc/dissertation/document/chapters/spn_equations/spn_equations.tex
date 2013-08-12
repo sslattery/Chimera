@@ -3,19 +3,17 @@
 
 In this chapter, we briefly derive the simplified $P_N$ ($SP_N$)
 equations, closely following the work of Evans
-\cite{evans_simplified_2013}\footnote{The $SP_N$ derivations in this
-  chapter and the associated appendices are heavily based on those
-  presented by Evans in \cite{evans_simplified_2013}}, in order to gain
-full understanding of the underlying system and its potential behavior
-in a Monte Carlo context. From the $P_N$ equations, we apply a set of
-approximations to yield the $SP_N$ equations for fixed source and
-criticality problems. Using the fully-formed linear operator for the
-transport problem, we explore solutions to the $SP_N$ equations with
-Monte Carlo Synthetic Acceleration using a challenging light water
-reactor fuel assembly criticality calculation as the driving
-problem. Several difficulties arise when applying MCSA to these
-problems that were not observed when investigating the simpler
-transport systems.
+\cite{evans_simplified_2013}, in order to gain full understanding of
+the underlying system and its potential behavior in a Monte Carlo
+context. From the $P_N$ equations, we apply a set of approximations to
+yield the $SP_N$ equations for fixed source and criticality
+problems. Using the fully-formed linear operator for the transport
+problem, we explore solutions to the $SP_N$ equations with Monte Carlo
+Synthetic Acceleration using a challenging light water reactor fuel
+assembly criticality calculation as the driving problem. Several
+difficulties arise when applying MCSA to these problems that were not
+observed when investigating the simple transport system in the
+previous chapter.
 
 For Jacobi-based preconditioners, convergence with MCSA is difficult
 if not impossible for ill-conditioned systems with this behavior
@@ -963,10 +961,14 @@ magnitude more computation time. This significant increase in
 computation time per history coupled with the significant increase in
 the number of histories required to converge is evidence that for
 problems with spectral radii above $\approx 0.97$, using MCSA to solve
-any problems of interest is entirely ineffective and not practical. We
-therefore require a more expansive set of preconditioning techniques
-to move the eigenvalue spectrum of the $SP_N$ problem into a regime in
-which MCSA is more applicable and in which performance is improved.
+any problems of interest is entirely ineffective and not practical. At
+iteration matrix spectral radii this large, using significant numbers
+of stochastic histories in the Monte Carlo solve are not enough to
+reduce the stochastic uncertainty in the correction, causing the MCSA
+sequence to diverge instead of accelerating convergence. We therefore
+require a more expansive set of preconditioning techniques to move the
+eigenvalue spectrum of the $SP_N$ problem into a regime in which MCSA
+is more applicable and in which performance is improved.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4.25in]{chapters/spn_equations/breakdown_time.pdf}
