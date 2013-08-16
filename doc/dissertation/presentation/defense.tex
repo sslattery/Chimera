@@ -64,6 +64,8 @@
   \item Application to Fluid Flow
     \bigskip
   \item Parallelization of MCSA
+    \bigskip
+  \item Summary
   \end{itemize}
 
 \end{frame}
@@ -130,8 +132,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
   \item Development of a nonlinear solver for discrete systems
     leveraging Monte Carlo Synthetic Acceleration
     \begin{itemize}
+    \item Monte Carlo is a more natural fit
     \item Application to fluid flow
-    \item Potential memory benefits
     \item Convergence of the linear model is of concern
     \end{itemize}
     \bigskip
@@ -157,6 +159,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
   \item Application to Fluid Flow
     \bigskip
   \item Parallelization of MCSA
+    \bigskip
+  \item Summary
   \end{itemize}
 
 \end{frame}
@@ -410,7 +414,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \begin{frame}{Monte Carlo Linear Solvers Library (MCLS)}
 
   \begin{itemize}
-  \item Preliminary development during January of 2013
+  \item Designed to be easily incorporated with production physics
+    codes
     \bigskip
   \item General asynchronous MSOD MCSA implementation
     \begin{itemize}
@@ -443,6 +448,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
   \item Application to Fluid Flow
     \bigskip
   \item Parallelization of MCSA
+    \bigskip
+  \item Summary
   \end{itemize}
 
 \end{frame}
@@ -716,11 +723,30 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 
     \begin{column}{0.5\textwidth}
 
-      \begin{figure}[htpb!]
+      {\tiny
+      \begin{table}[h!]
         \begin{center}
-          \includegraphics[width=1.9in]{solver_iters.pdf}
+          \begin{tabular}{lccc}\hline\hline
+            \multicolumn{1}{l}{Solver}&
+            \multicolumn{1}{c}{1 Group}&
+            \multicolumn{1}{c}{2 Groups}&
+            \multicolumn{1}{c}{4 Groups}\\
+            \hline
+            BiCGStab-ILUT & 11.6 & 11.6 & 12.4 \\ 
+            GMRES-ILUT & 18.1 & 17.9 & 18.9 \\
+            MCSA-ILUT-R-C & 14.6 & 15.4 & 17.6 \\
+            MCSA-ILUT-MR-C & 16.0 & 17.1 & 23.7 \\
+            MCSA-ILUT-R-EV & 18.3 & 19.4 & 16.8 \\
+            MCSA-ILUT-MR-EV & 19.6 & 22.4 & 17.5 \\
+            Richardson-ILUT & 60.9 & 60.4 & 63.4 \\
+            %%
+            \hline\hline
+          \end{tabular}
         \end{center}
-      \end{figure}
+        \caption{Average number of linear solver iterations per
+          eigenvalue iteration.}
+      \end{table}
+      }
 
       \begin{figure}[htpb!]
         \begin{center}
@@ -763,6 +789,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
   \item \textbf{Application to Fluid Flow}
     \bigskip
   \item Parallelization of MCSA
+    \bigskip
+  \item Summary
   \end{itemize}
 
 \end{frame}
@@ -952,25 +980,26 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 
   \begin{table}[h!]
     \begin{center}
-      \begin{tabular}{lcc}\hline\hline
+      \begin{tabular}{lccc}\hline\hline
         \multicolumn{1}{l}{Benchmark}& 
-        \multicolumn{1}{c}{Newton-Krylov}&
-        \multicolumn{1}{c}{FANM}\\
+        \multicolumn{1}{c}{NK}&
+        \multicolumn{1}{c}{FANM}&
+        \multicolumn{1}{c}{NR}\\
         \hline
-        Convection, Ra=\sn{1}{3} & 5 & 5 \\
-        Convection, Ra=\sn{1}{4} & 7 & 7 \\
-        Convection, Ra=\sn{1}{5} & 9 & 10 \\
-        Convection, Ra=\sn{1}{6} & 11 & 11 \\
+        Convection, Ra=\sn{1}{3} & 5 & 5 & 5\\
+        Convection, Ra=\sn{1}{4} & 7 & 7 & 7\\
+        Convection, Ra=\sn{1}{5} & 9 & 10 & 9\\
+        Convection, Ra=\sn{1}{6} & 11 & 11 & 11\\
         \hline
-        Lid Driven, Re=100 & 6 & 6 \\
-        Lid Driven, Re=300 & 9 & 9 \\
-        Lid Driven, Re=500 & 11 & 11 \\
-        Lid Driven, Re=700 & 14 & 10 \\
+        Lid Driven, Re=100 & 6 & 6 & 7\\
+        Lid Driven, Re=300 & 9 & 9 & 9\\
+        Lid Driven, Re=500 & 11 & 11 & 11\\
+        Lid Driven, Re=700 & 14 & 10 & 12\\
         \hline
-        Backward Step, Re=200 & 10 & 9 \\
-        Backward Step, Re=300 & 15 & 14 \\
-        Backward Step, Re=400 & 10 & 10 \\
-        Backward Step, Re=500 & 19 & 20 \\
+        Backward Step, Re=200 & 10 & 9 & 10\\
+        Backward Step, Re=300 & 15 & 14 & 15\\
+        Backward Step, Re=400 & 10 & 10 & 10\\
+        Backward Step, Re=500 & 19 & 20 & 21\\
         %%
         \hline\hline
       \end{tabular}`
@@ -990,25 +1019,26 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 
   \begin{table}[h!]
     \begin{center}
-      \begin{tabular}{lcc}\hline\hline
+      \begin{tabular}{lccc}\hline\hline
         \multicolumn{1}{l}{Benchmark}& 
-        \multicolumn{1}{c}{Newton-Krylov}&
-        \multicolumn{1}{c}{FANM}\\
+        \multicolumn{1}{c}{GMRES}&
+        \multicolumn{1}{c}{MCSA}&
+        \multicolumn{1}{c}{Richardson}\\
         \hline
-        Convection, Ra=\sn{1}{3} & 32 & 18 \\
-        Convection, Ra=\sn{1}{4} & 23 & 17 \\
-        Convection, Ra=\sn{1}{5} & 25 & 20 \\
-        Convection, Ra=\sn{1}{6} & 39 & 25 \\
+        Convection, Ra=\sn{1}{3} & 32 & 18 & 38\\
+        Convection, Ra=\sn{1}{4} & 23 & 17 & 34\\
+        Convection, Ra=\sn{1}{5} & 25 & 20 & 34\\
+        Convection, Ra=\sn{1}{6} & 39 & 25 & 48\\
         \hline
-        Lid Driven, Re=100 & 27 & 42 \\
-        Lid Driven, Re=300 & 35 & 52 \\
-        Lid Driven, Re=500 & 41 & 56 \\
-        Lid Driven, Re=700 & 21 & 14 \\
+        Lid Driven, Re=100 & 27 & 42 & 151\\
+        Lid Driven, Re=300 & 35 & 52 & 133\\
+        Lid Driven, Re=500 & 41 & 56 & 154\\
+        Lid Driven, Re=700 & 21 & 14 & 32\\
         \hline
-        Backward Step, Re=200 & 24 & 13 \\
-        Backward Step, Re=300 & 23 & 17 \\
-        Backward Step, Re=400 & 18 & 12 \\
-        Backward Step, Re=500 & 30 & 52 \\
+        Backward Step, Re=200 & 24 & 13 & 21\\
+        Backward Step, Re=300 & 23 & 17 & 21\\
+        Backward Step, Re=400 & 18 & 12 & 14\\
+        Backward Step, Re=500 & 30 & 52 & 98\\
         %%
         \hline\hline
       \end{tabular}
@@ -1069,6 +1099,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
   \item Application to Fluid Flow
     \bigskip
   \item \textbf{Parallelization of MCSA}
+    \bigskip
+  \item Summary
   \end{itemize}
 
 \end{frame}
@@ -1237,7 +1269,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Parallel Scaling}
+\begin{frame}{Leadership-Class Parallel Scaling Studies}
 
   \begin{itemize}
   \item Simple 2D neutron diffusion problem for control - spectral
@@ -1472,10 +1504,30 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
+\begin{frame}{Outline}
+
+  \begin{itemize}
+  \item Monte Carlo Synthetic Acceleration Methods
+    \bigskip
+  \item Application to Neutron Transport
+    \bigskip
+  \item Application to Fluid Flow
+    \bigskip
+  \item Parallelization of MCSA
+    \bigskip
+  \item \textbf{Summary}
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
 \begin{frame}{MCSA Application to Neutronics Summary}
 
   \small{
     \begin{itemize}
+    \item MCSA has been incorporated into the Exnihilo neutronics
+      production code base developed at Oak Ridge National Laboratory
+      \medskip
     \item MCSA can solve the asymmetric system generated by the $SP_N$
       equations
       \medskip
@@ -1486,9 +1538,6 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \item Advanced algebraic preconditioning strategies were applied to
       the $SP_N$ equations to obtain convergence with ILUT chosen for
       subsequent investigations
-      \medskip
-    \item MCSA was verified to produce the same flux distribution and
-      k-eigenvalue for the fuel assembly as production Krylov methods
       \medskip
     \item MCSA was observed to converge in fewer iterations per eigenvalue
       iteration than GMRES for the fuel assembly criticality problem and
@@ -1505,9 +1554,9 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \begin{itemize}
     \item Forward-Automated Newton-MCSA (FANM) has been developed
       \medskip
-    \item The FANM method has been verified to produce the same solutions
-      as a production Newton-Krylov method for three difficult benchmark
-      problems
+    \item The FANM method has been incorporated into the Drekar
+      multiphysics production code base developed at Sandia National
+      Laboratories
       \medskip
     \item The FANM method has better iterative performance than the
       Newton-Krylov method for convection dominated problems, converging
@@ -1531,8 +1580,9 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 
   \small{
     \begin{itemize}
-    \item The multiple-set overlapping-domain (MSOD) parallel algorithm
-      for particle transport has been adapted to parallelize MCSA
+    \item The multiple-set overlapping-domain (MSOD) parallel
+      algorithm for domain decomposed particle transport has been
+      adapted to parallelize MCSA
       \medskip
     \item MCSA scales favorably compared to production Krylov methods for
       both strong and weak scaling cases
@@ -1589,7 +1639,41 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Discussion}
+\begin{frame}{Publications}
+
+  \small{
+    \begin{enumerate}
+    \item S.R. Slattery, T.M. Evans, P.P.H. Wilson, \textbf{A
+      Multiple-Set Overlapping-Domain Decomposed Monte Carlo Synthetic
+      Acceleration Method for Linear Systems}, \textit{Joint
+      International Conference on Supercomputing in Nuclear
+      Applications and Monte Carlo 2013 (SNA+MC 2013), Paris, France,
+      October 27-31, 2013. Accepted for oral presentation.}
+      \medskip
+    \item T.M. Evans, S.W. Mosher, S.R. Slattery, S.P. Hamilton,
+      \textbf{A Monte Carlo Synthetic-Acceleration Method for Solving
+        the Thermal Radiation Diffusion Equation}, \textit{Journal of
+        Computational Physics, Submitted.}
+      \medskip
+    \item S.R. Slattery, T.M. Evans, P.P.H. Wilson, \textbf{A Spectral
+      Analysis of the Domain Decomposed Monte Carlo Method for Linear
+      Systems}, \textit{International Conference on Mathematics and
+      Computational Methods Applied to Nuclear Science \& Engineering
+      (M\&C 2013), American Nuclear Society, Sun Valley, ID, May 5-9,
+      2013.}
+    \end{enumerate}
+  }
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Thank You}
+
+  \begin{itemize}
+  \item Paul
+  \item Tom
+  \item Roger
+  \item CASL, ORNL, Sandia, OLCF
+\end{itemize}
 
 \end{frame}
 

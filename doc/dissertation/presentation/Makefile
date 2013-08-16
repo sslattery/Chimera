@@ -5,6 +5,10 @@ PDF    := dvipdf
 
 all: heat_eq_setup.pdf ddmc_example.pdf ddnu_example.pdf msod_example.pdf domain_to_domain.pdf binary_comm_tree.pdf msod_construction.pdf msod_tally.pdf
 	$(PDFTEX) defense.tex
+	$(PDFTEX) defense.tex
+
+tex:
+	$(PDFTEX) defense.tex
 
 heat_eq_setup.pdf: heat_eq_setup.fig
 	fig2dev -L pdftex -p heat_eq_setup.pdf -m 0.4 heat_eq_setup.fig heat_eq_setup.pdf
