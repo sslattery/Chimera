@@ -120,16 +120,16 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Research Outline}
   \begin{itemize}
-  \item Development of a linear solver for discrete systems leveraging
+  \item Development of a linear scheme for discrete systems leveraging
     Monte Carlo Synthetic Acceleration
     \medskip
     \begin{itemize}
     \item Application to neutron transport
-    \item Research is required to explore general solver development
+    \item Research is required to explore general MCSA development
     \item Performance is of concern
     \end{itemize}
     \bigskip
-  \item Development of a nonlinear solver for discrete systems
+  \item Development of a nonlinear scheme for discrete systems
     leveraging Monte Carlo Synthetic Acceleration
     \begin{itemize}
     \item Monte Carlo is a more natural fit
@@ -466,6 +466,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \label{eq:general_transport}
   \end{multline}
 
+  \smallskip
+
   \begin{multline}
     -\nabla \cdot \Bigg[\frac{n}{2n+1}\frac{1}{\Sigma_{n-1}} \nabla
       \Big(\frac{n-1}{2n-1} \phi_{n-2} + \frac{n}{2n-1}\phi_n \Big) \\+
@@ -476,10 +478,12 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \label{eq:spn_equations}
   \end{multline}
 
+  \smallskip
+
   \begin{equation}
     -\nabla \cdot \mathbb{D}_n \nabla \mathbb{U}_n + \sum_{m=1}^4
     \mathbb{A}_{nm} \mathbb{U}_m = \frac{1}{k} \sum_{m=1}^4
-    \mathbb{F}_{nm} \mathbb{U}_n\ \ \ \ \ \ \ n = 1,2,3,4\:.
+    \mathbb{F}_{nm} \mathbb{U}_m\ \ \ \ \ \ \ n = 1,2,3,4\:.
     \label{eq:spn_fission_matrix}
   \end{equation}
 
@@ -508,8 +512,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
   \begin{itemize}
   \item Swap in MCSA as the solver at each eigenvalue operation
     \medskip
-  \item Use Thyra/Stratimikos interfaces for plug and play - Thanks
-    Ross!
+  \item Use Thyra/Stratimikos interfaces for plug and play with $SP_N$
     \medskip
   \item Current Exnihilo implementation gives the full operator
   \end{itemize}
@@ -743,7 +746,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
             \hline\hline
           \end{tabular}
         \end{center}
-        \caption{Average number of linear solver iterations per
+        \caption{ Average number of linear solver iterations per
           eigenvalue iteration.}
       \end{table}
       }
@@ -768,7 +771,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
         \item Explicit preconditioning strategy destroys sparsity and
           elevates CPU times (Ifpack ILUT)
           \bigskip
-        \item Spectral radius and memory limitations combined to
+        \item Spectral radius and memory limitations combine to
           prevent solutions at finer discretizations
       \end{itemize}
 
@@ -816,7 +819,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \item Operator overloading for nonlinear residual differentiation
     \item Ideal for Monte Carlo
     \item Potential scaling improvements
-    \item Resiliency benefits
+    \item Potential resiliency benefits
     \end{itemize}
   \end{itemize}
 
@@ -966,9 +969,9 @@ decomposed Monte Carlo Synthetic Acceleration methods.
   \begin{itemize}
   \item Drekar is a production physics suite that leverages Newton
     methods with FAD
+  \bigskip
   \item MCLS incorporated into the Drekar nonlinear solver scheme
     using Thyra/Stratimikos to implement FANM
-  \item Thanks Roger!
   \end{itemize}
 
   {\small \sl Images source: www.casl.gov}
@@ -1059,7 +1062,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
   \begin{center}
     \begin{tabular}{lc}\hline\hline
       \multicolumn{1}{l}{Benchmark}& 
-      \multicolumn{1}{c}{Newton-Krylov Speedup}\\
+      \multicolumn{1}{c}{NK Speedup}\\
       \hline
       Convection, Ra=\sn{1}{3} & 338 \\
       Convection, Ra=\sn{1}{4} & 336 \\
