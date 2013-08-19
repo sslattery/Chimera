@@ -2,7 +2,7 @@
 \label{ch:introduction}
 In nearly all high-fidelity nuclear reactor simulations, linear and
 nonlinear transport problems are a primary focus of study. Neutronics,
-fluid flow, and heat transfer are among the predominate physics that
+fluid flow, and heat transfer are among the predominant physics that
 fall into this category and simulation technologies to solve these
 problems make up much of the analysis suite used for modern
 engineering calculations. Recent focus on multiple physics systems in
@@ -139,13 +139,14 @@ next.
 \label{subsec:spn_motiviation}
 The neutron transport problem is complicated. Solutions cover a large
 phase space and the problems of interest are often geometrically
-complex, very large, or both, requiring tremendous computational
-resources to generate an adequate solution. Modern deterministic
-methods for large scale problems are commonly variants on the discrete
-ordinates ($S_N$) method \cite{evans_denovo:_2010}. For fission
-reactor neutronics simulations, the $S_N$ method requires potentially
-trillions of unknown angular flux moments to be computed to achieve
-good accuracy for the responses of interest
+complex, contain large numbers of degrees of freedom, or both,
+requiring tremendous computational resources to generate an adequate
+solution. Modern high fidelity deterministic methods for large scale
+problems are commonly variants on the discrete ordinates ($S_N$)
+method \cite{evans_denovo:_2010}. For fission reactor neutronics
+simulations, the $S_N$ method requires potentially trillions of
+unknown angular flux moments to be computed to achieve good accuracy
+for the responses of interest
 \cite{slaybaugh_acceleration_2011}. Other forms of the transport
 problem, including the $P_N$ method, take on a simpler form than the
 more common $S_N$ methods but lack in accuracy when compared while
@@ -182,18 +183,10 @@ fuel problems and have been shown to provide accurate solutions
 \cite{brantley_simplified_2000}. With this mathematical literature to
 provide a solid numerical footing for the method, we look at its
 application to today's challenge problems in neutron transport for
-fission reactor analysis. The reduction in numerical complexity of
-current deterministic solution methods using the $S_N$ approximation
-could mean significant savings in both compute time and memory
-required. In addition, the characteristics of the solution to the
-transport problem for a steady state reactor core permit diffusion
-theory to be used; a staple of the nuclear industry since its
-inception. Therefore, if diffusion theory is applicable, then finer
-grained solutions that capture more of the physics contained in the
-transport equation should be possible with the $SP_N$ method. In doing
-so, we also expect from the literature to obtain computed responses on
-the order of accuracy we would expect from an appropriately
-discretized $S_N$ method at a fraction of the cost.
+fission reactor analysis. The reduction in numerical complexity
+compared to current deterministic solution methods using the $S_N$
+approximation could mean significant savings in both compute time and
+memory required.
 
 In order to leverage Monte Carlo Synthetic Acceleration as a solution
 technique for neutron transport problems, its current formulation
@@ -205,8 +198,10 @@ reactor-based systems \cite{evans_simplified_2013}. By fully forming
 these equations and formulating them as a linear algebra problem
 instead of using the explicit iterative methods of the past, we now
 have access to all of the modern advancements in computational linear
-algebra including Krylov solvers for asymmetric systems and algebraic
-preconditioning methods.
+algebra including the use of Krylov solvers for asymmetric systems
+without the need to implement the action of the physics operator on a
+vector and easy application of algebraic preconditioning methods for
+improved convergence properties and time to solution.
 
 This leads us to then research the applicability of Monte Carlo
 Synthetic Acceleration methods as a possible solution method for the
@@ -267,7 +262,7 @@ the context of fluid flow problems.
 \label{subsec:parallel_motivation}
 
 The computational resources required to solve the neutronics and fluid
-dynamics problems are tremendous. Recent work in modeling coupled
+dynamics problems can be tremendous. Recent work in modeling coupled
 fluid flow and solid material heat and mass transfer in a reactor
 subsystem, similar to the same components of the departure from
 nucleate boiling example, was performed as part of analysis of the

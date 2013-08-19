@@ -101,8 +101,8 @@ $\rho(\ve{A})$, defined by Saad \cite{saad_iterative_2003} as:
 \label{sec:mc_preliminaries}
 We begin our discussion of Monte Carlo methods by seeking a solution
 to Eq~(\ref{eq:linear_problem}). For a given linear operator $\ve{A}$,
-we can use diagonal splitting in a similar manner as the stationary
-method in Eq~(\ref{eq:linear_split_equation2}) to define the following
+we can use diagonal splitting similar to the stationary method in
+Eq~(\ref{eq:linear_split_equation2}) to define the following
 operator\footnote{It should be noted that non-diagonal splittings have
   been recently explored \cite{srinivasan_monte_2010} and have the
   potential to improve efficiency. However, it was observed in this
@@ -259,13 +259,14 @@ walk as the Neumann Ulam decomposition defined by
 Eqs~(\ref{eq:direct_probability}) and (\ref{eq:direct_weight}) will
 create a random walk weight in Eq~(\ref{eq:direct_permutation_weight})
 that approaches, but never reaches zero. We do this by noticing that
-the factors added to Eq~(\ref{eq:direct_permutation_weight}) will
-become diminishingly small due to their definition in
-Eq~(\ref{eq:direct_weight}) and therefore their contributions to the
-solution estimate will become negligible. Using this, we choose
-terminate a random walk sequence with a \textit{weight cutoff}, $W_c$,
-that is enforced when $W_m < W_c$ for a particular random walk
-permutation.
+if the problem is convergent, the factors added to
+Eq~(\ref{eq:direct_permutation_weight}) will make $W_m$ become
+diminishingly small due to their definition in
+Eq~(\ref{eq:direct_weight}) and therefore the contribution of the
+history to the solution estimate will become negligible. Using this,
+we choose terminate a random walk sequence with a \textit{weight
+  cutoff}, $W_c$, that is enforced when $W_m < W_c$ for a particular
+random walk permutation.
 
 \subsection{Forward Estimator Variance}
 \label{subsec:forward_variance}
@@ -282,10 +283,11 @@ Eq~(\ref{eq:direct_expectation_value}) gives:
   \sigma_i^2 = \sum_{\nu} P_{\nu} X_{i}(\nu)^2 - x_i^2\:,
   \label{eq:direct_variance_2}
 \end{equation}
-and applying Eq~(\ref{eq:direct_permutation_contribution}):
+and applying Eq~(\ref{eq:direct_permutation_contribution}) and
+expanding the square of the summation:
 \begin{equation}
-  \sigma_i^2 = \sum_{\nu} P_{\nu} \Big(\sum_{m=0}^k W_{m}^2 b_{i_m}^2
-  + 2 \sum_{\substack{ j=0 \\ m<j}}^k W_m W_j b_{i_m} b_{i_j} \Big)-
+  \sigma_i^2 = \sum_{\nu} P_{\nu} \Big(\sum_{m=0}^k \Big[ W_{m}^2 b_{i_m}^2
+  + 2 \sum_{j=0}^{m-1} W_m W_j b_{i_m} b_{i_j} \Big] \Big)-
   x_i^2\:.
   \label{eq:direct_variance_3}
 \end{equation}
