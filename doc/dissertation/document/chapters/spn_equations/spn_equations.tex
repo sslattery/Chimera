@@ -25,10 +25,10 @@ several additional issues are observed and alleviated to a certain
 extent by applying the reduced domain approximation. MCSA solutions
 for the fuel assembly problem are then verified by comparing the
 solutions against production Krylov solvers for problems with varying
-energy groups. Finally performance is analyzed through comparison with
-those same Krylov solvers in terms of both iterative performance and
-CPU timing using the same set of problems utilized for the
-verification.
+numbers of energy groups. Finally performance is analyzed through
+comparison with those same Krylov solvers in terms of both iterative
+performance and CPU timing using the same set of problems utilized for
+the verification.
 
 %%---------------------------------------------------------------------------%%
 \section{The Neutron Transport Equation}
@@ -317,8 +317,8 @@ scattering matrices:
   \label{eq:spn_fission_matrix}
 \end{equation}
 It should be noted here that with respect to a general MCSA scheme,
-the introduction of the fission in the system will only affect the
-source vector in the linear system. The linear operator, and therefore
+the introduction of fission in the system will only affect the source
+vector in the linear system. The linear operator, and therefore
 overall MCSA performance will be dictated by streaming and scattering
 as defined on the left-hand side.
 

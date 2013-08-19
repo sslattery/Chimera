@@ -213,7 +213,7 @@ Using these matrices, we can then form the expectation value of the
 forward solution. For a given random walk permutation $\nu$, we define
 the weight of that permutation on the $m^{th}$ step to be:
 \begin{equation}
-  W_{m} = w_{i_0,i_1} w_{i_1,i_2} \cdots w_{i_{m-1},i_m}\:,
+  W_{m} = W_0 w_{i_0,i_1} w_{i_1,i_2} \cdots w_{i_{m-1},i_m}\:,
   \label{eq:direct_permutation_weight}
 \end{equation}
 such that the weight of each transition event contributes to the total
@@ -229,11 +229,12 @@ which the random walk $\nu$ started is also the state, $i$, in which
 we are tallying. We then define the probability that a particular
 random walk permutation of $k$ events will occur:
 \begin{equation}
-  P_{\nu} = p_{i,i_1} p_{i_1,i_2} \cdots p_{i_{k-1},i_k}\:.
+  P_{\nu} = P_{i_0=i} p_{i,i_1} p_{i_1,i_2} \cdots p_{i_{k-1},i_k}\:,
   \label{eq:direct_permutation_probability}
 \end{equation}
-Finally, we define the expectation value of $X$ to be the collection
-of all random walk permutations and their probabilities:
+with $P_{i_0=i} = 1$ for the direct method. Finally, we define the
+expectation value of $X$ to be the collection of all random walk
+permutations and their probabilities:
 \begin{equation}
   E\{X_i\} = \sum_{\nu} P_{\nu} X_{i}(\nu)\:,
   \label{eq:direct_expectation_value}
@@ -295,11 +296,11 @@ We can distribute the random walk probability to yield an expanded
 form of the variance:
 \begin{equation}
   \sigma_i^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 b_{i_m}^2 + 2
-  \sum_{\nu} P_{\nu} \sum_{\substack{ j=0 \\ m<j}}^k W_m W_j b_{i_m}
+  \sum_{\nu} P_{\nu} \sum_{m=0}^k \sum_{j=0}^{m-1} W_m W_j b_{i_m}
   b_{i_j} - x_i^2\:.
   \label{eq:direct_variance_3_2}
 \end{equation}
-In particular, we will isolate the first summation of the variance by
+In particular, we will isolate the first term of the variance by
 expanding it:
 \begin{equation}
   \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 b_{i_m}^2 =
@@ -335,8 +336,8 @@ which is the general Neumann series for $\ve{G}$,
 where $\ve{T} = (\ve{I}-\ve{G})^{-1}$. We can then insert $T$ back
 into the variance formulation for a more concise definition:
 \begin{equation}
-  \sigma^2_i = (\ve{T}\ve{b}^2)_i + 2 \sum_{\nu} P_{\nu}
-  \sum_{\substack{ j=0 \\ m<j}}^k W_m W_j b_{i_m} b_{i_j} - x_i^2\:.
+  \sigma^2_i = (\ve{T}\ve{b}^2)_i + 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k
+  \sum_{j=0}^{m-1} W_m W_j b_{i_m} b_{i_j} - x_i^2\:.
   \label{eq:direct_variance_5}
 \end{equation}
 We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
@@ -494,12 +495,21 @@ a traditional forward method where the initial state $i_0$ of the
 random walk is determined by sampling the source vector $\ve{b}$ with
 probabilities:
 \begin{equation}
-  P_{i_0=i}(\nu) = \frac{|b_i|}{||\ve{b}||_1}\:.
+  P_{i_0=i}(\nu) = \frac{|b_i|}{||\ve{b}||_1}\:,
   \label{eq:adjoint_source_probability}
 \end{equation}
-The random walk starting weight will then be $W_0 = b_{i_0}$.  As a
-result of using the adjoint system, we modify our probabilities and
-weights using the \textit{adjoint Neumann-Ulam decomposition} of
+with a random walk starting weight of:
+\begin{equation}
+  W_0 = ||\ve{b}||_1 \frac{b_i}{|b_i|}\:,
+  \label{eq:adjoint_starting_weight}
+\end{equation}
+which gives the additional useful relation:
+\begin{equation}
+  b_{i_0} = W_0 P_{i_0=i}\:.
+  \label{eq:adjoint_source_definition}
+\end{equation}
+As a result of using the adjoint system, we modify our probabilities
+and weights using the \textit{adjoint Neumann-Ulam decomposition} of
 $\ve{H}$:
 \begin{equation}
   \ve{H}^{T} = \ve{P} \circ \ve{W}\:,
@@ -539,7 +549,7 @@ where the Kronecker delta indicates that the tally contributes only in
 the current state, $i_m$, of the random walk.  Note here that the
 estimator in Eq~(\ref{eq:adjoint_permutation_contribution}) does not
 have a dependency on the source state as in
-Eq~(\ref{eq:adjoint_permutation_contribution}), providing a remedy for
+Eq~(\ref{eq:direct_permutation_contribution}), providing a remedy for
 the situation in the direct method where we must start a random walk
 in each source state for every permutation if we want to compute a
 solution estimate for that state. In the adjoint method, we instead
@@ -550,8 +560,9 @@ all permutations is:
   E\{X_j\} = \sum_{\nu} P_{\nu} X_{j}(\nu)\:
   \label{eq:adjoint_expectation_value}
 \end{equation}
-which, if expanded in the same way as the direct method, directly
-recovers the exact solution:
+which, if expanded in the same way as the direct method and utilizing
+Eq~(\ref{eq:adjoint_source_definition}) to insert the source term,
+directly recovers the exact solution:
 \begin{equation}
   \begin{split}
     E\{X_j\} &=\sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
@@ -560,7 +571,7 @@ recovers the exact solution:
   \end{split}
   \label{eq:adjoint_expectation_expansion}
 \end{equation}
-therefore also providing an unbiased Monte Carlo estimate of the
+therefore, also providing an unbiased Monte Carlo estimate of the
 solution. Note that this expansion produces the effective sequence of
 matrix-vector multiplications with the $b_{i_0}$ component of the
 source vector which will be selected at random for each walk
@@ -570,12 +581,11 @@ Eq~(\ref{eq:adjoint_expectation_expansion}) only computes a single
 component of our desired solution vector when really what we desire is
 the entire solution vector. In an adjoint Monte Carlo simulation using
 this estimator, the $w_{ij}$ elements that are added into the tally
-for each state are only selected if the random walk currently resides
-in that state. Much like a mesh tally in a particle transport
+for each state are only selected if/when the random walk currently
+resides in that state. Much like a mesh tally in a particle transport
 simulation, we have $N$ simultaneous tallies for $\ve{A} \in
 \mathbb{R}^{N \times N}$ that will yield the entire solution
-vector. Based on their current state in the system, the random walks
-will contribute tally $j$ in this group.
+vector.
 
 Like the direct method, we also desire a criteria for random walk
 termination for problems where only an approximate solution is
@@ -594,19 +604,19 @@ contributions become increasingly small.
 We can compute the variance of the collision estimator in the same way
 as the direct estimator for each component in the solution where now:
 \begin{equation}
-  \sigma_j^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 \delta_{i_m,j} + 2
-  \sum_{\nu} P_{\nu} \sum_{\substack{ l=0 \\ m<l}}^k W_m W_l
+  \sigma_j^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 \delta_{i_m,j}
+  + 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k \sum_{l=0}^{m-1} W_m W_l
   \delta_{i_m,j} \delta_{i_l,j} - x_j^2\:.
   \label{eq:collision_variance_1}
 \end{equation}
 In this case, in the second summation $m \neq l$ for all states due to
-the form of the summation and therefore the delta functions,
-$\delta_{i_m,j}$ or $\delta_{i_l,j}$, will only be nonzero for random
-walks that are in the current solution state (when $i_m = i_l = j$)
-and other states visited do not contribute to the variance of the
-current state (when $i_m \neq i_l$). This is important as it shows a
-decoupling of the variance among the solution vector states, meaning
-that the variance in solution state $i$ does not depend on the
+the form of the summation and therefore the combination of delta
+functions, $\delta_{i_m,j}$ of $\delta_{i_l,j}$, will only be nonzero
+for random walks that are in the current solution state (when $i_m =
+i_l = j$) and other states visited do not contribute to the variance
+of the current state (when $i_m \neq i_l$). This is important as it
+shows a decoupling of the variance among the solution vector states,
+meaning that the variance in solution state $i$ does not depend on the
 variance in solution state $j$.
 
 Expanding the transition probabilities in the first sum again yields a
@@ -617,8 +627,8 @@ introduction of the Kronecker delta:
   \sigma_j^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
   \sum_{i_k}^{N} p_{i_k,i_{k-1}}\ldots p_{i_2,i_1} p_{i_1,i_0}
   w^2_{i_k,i_{k-1}}\ldots w^2_{i_2,i_1} w^2_{i_1,i_0}
-  b^2_{i_0}\delta_{i_k,j} + \\ 2 \sum_{\nu} P_{\nu} \sum_{\substack{
-      l=0 \\ m<l}}^k W_m W_l \delta_{i_m,j} \delta_{i_l,j} - x_j^2\:.
+  b^2_{i_0}\delta_{i_k,j} + \\ 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k
+  \sum_{l=0}^{m-1} W_m W_l \delta_{i_m,j} \delta_{i_l,j} - x_j^2\:.
   \label{eq:collision_variance_2}
 \end{multline}
 If we again define $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$, we
@@ -627,7 +637,7 @@ then have:
   \sigma^2_j = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
   \sum_{i_k}^{N}g_{i_{k},i_{k-1}} \ldots
   g_{i_2,i_1}g_{i_1,i_0}b_{i_0}\delta_{i_k,j} + \\ 2 \sum_{\nu}
-  P_{\nu} \sum_{\substack{ l=0 \\ m<l}}^k W_m W_l \delta_{i_m,j}
+  P_{\nu} \sum_{m=0}^k \sum_{l=0}^{m-1} W_m W_l \delta_{i_m,j}
   \delta_{i_l,j} - x_j^2\:,
 \label{eq:collision_variance_3}
 \end{multline}
@@ -663,8 +673,8 @@ directly to discrete Monte Carlo by forming the \textit{expected value
 where now the contribution of the iteration matrix is
 deterministically averaged at step $m$ over all potential states $j$
 that may be reached from the current state $i_m$. Via Okten, the
-estimator can be shown to be unbiased through a comparison to
-the expected value estimator. We can first rewrite the summation in
+estimator can be shown to be unbiased through a comparison to the
+collision estimator. We can first rewrite the summation in
 Eq~(\ref{eq:expected_value_estimator}):
 \begin{equation}
   X_{j}(\nu) = b_j + \sum_{m=0}^k \sum_{i=1}^N W_m
@@ -701,8 +711,8 @@ estimator variance is given as:
 \begin{multline}
   \sigma_j^2 = \sum_{\nu} P_{\nu} b_j^2 + 2 \sum_{\nu} P_{\nu} b_j
   \sum_{m=0}^k W_{m} h_{j,i_m} +\\ \sum_{\nu} P_{\nu} \sum_{m=0}^k
-  W_{m}^2 h_{j,i_m}^2 + 2 \sum_{\nu} P_{\nu} \sum_{\substack{ l=0
-      \\ m<l}}^k W_m W_l h_{j,i_m} h_{j,i_l} - x_j^2\:.
+  W_{m}^2 h_{j,i_m}^2 + 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k
+  \sum_{l=0}^{m-1} W_m W_l h_{j,i_m} h_{j,i_l} - x_j^2\:.
   \label{eq:expected_value_variance_1}
 \end{multline}
 As the delta functions are no longer present, the final summation in
@@ -734,7 +744,7 @@ method. Figure~\ref{fig:adjoint_evolution} gives these results.
       10,000,000 histories per state.}}
   \label{fig:adjoint_evolution}
 \end{figure}
-As the number of histories used per state is increased, the
+As the number of histories used per state (or DOF) is increased, the
 statistical variance of the solutions is decreased as more tally
 contributions are made. At 10,000,000 histories per state, enough
 information has been tallied to generate a reasonable estimate for the
@@ -794,7 +804,7 @@ Carlo solution method that was not prohibited severely by the quality
 of the initial guess for the system \cite{evans_monte_2009} and later
 applied it more rigorously as a solution mechanism for the radiation
 diffusion equation \cite{evans_monte_2012}. With their new methods,
-they achieved identical numerical results as conventional Krylov
+they achieved numerical results identical to conventional Krylov
 solvers as well as comparable performance in both number of iterations
 and CPU time. Their approach was instead to use residual Monte Carlo
 as a synthetic acceleration for a stationary method. To derive this
@@ -1120,9 +1130,9 @@ the system. Solver parameters were set to a weight cutoff of
 \sn{1}{-4} for the stochastic linear solver and a convergence
 tolerance of \sn{1}{-8} for the MCSA iterative solver.
 Figure~\ref{fig:poisson_cpu_time} gives the CPU time needed for each
-case to converge in seconds and Figure~\ref{fig:poisson_iterations}
+case to converge in seconds, and Figure~\ref{fig:poisson_iterations}
 gives the number of iterations needed for each case to converge to the
-specified tolerance as a function of the problem size. All
+specified tolerance, both as a function of the problem size. All
 computations presented in this section and the remaining sections of
 this chapter were completed on a 3.0 GHz Intel Core 2 Quad Q9650 CPU
 machine with 16 GB 1067 MHz DDR3 memory.
@@ -1150,30 +1160,33 @@ machine with 16 GB 1067 MHz DDR3 memory.
 We see clearly in Figure~\ref{fig:poisson_cpu_time} that the using the
 adjoint solver with MCSA results in a speedup over the direct solver
 while the number of iterations required to converge is also reduced as
-shown in Figure~\ref{fig:poisson_iterations}. We expect this for several
-reasons. First, with an equivalent number of histories specified for
-both solvers per MCSA iteration and a system of size $N \times N$, the
-direct solver will compute a single random walk for each state in the
-system per iteration to acquire a solution in that state, regardless
-of the size of the residual in that state. This is necessary in the
-direct method to ensure a contribution from each state as the random
-walk sequence will only contribute to the starting state. For the
-adjoint method, a total of $N \times N$ random walk events will have
-their starting state determined by sampling the residual
-vector. Because the random walk sequence contributes to the state in
-which it currently resides, sampling the residual vector as the Monte
-Carlo source gives a higher density of random walk events in regions
-with a high residual, thus giving a more accurate correction in that
-region due to reduced statistical error. From an iteration
-perspective, Figure~\ref{fig:poisson_iterations} shows that using the
-direct method yields a roughly unchanging number of iterations
-required to converge as the problem size increases. Again, if we
-desire a correction value for all states in the problem, then we must
-start a random walk in each state in the system which does not reduce
-the number of iterations need as the problem size grows. Conversely,
-as the problem size grows in the adjoint method, the additional
-stochastic histories that will be computed are concentrated in regions
-with a large residual, further reducing the stochastic error in the
+shown in Figure~\ref{fig:poisson_iterations}. We expect this for
+several reasons. First, with an equivalent number of histories
+specified for both solvers per MCSA iteration and a system of size $N
+\times N$, the direct solver will compute a single random walk for
+each state in the system per iteration to acquire a solution in that
+state. This is necessary in the direct method to ensure a contribution
+from each state as the random walk sequence will only contribute to
+the starting state. For the adjoint method, a total of $N \times N$
+random walk events will have their starting state determined by
+sampling the residual vector. Because the random walk sequence
+contributes to the state in which it currently resides, sampling the
+residual vector as the Monte Carlo source gives a higher density of
+random walk events in regions with a high residual, thus giving a more
+accurate correction in that region due to reduced statistical
+error. From an iteration perspective,
+Figure~\ref{fig:poisson_iterations} shows that using the direct method
+yields a roughly unchanging number of iterations required to converge
+as the problem size increases. Again, if we desire a correction value
+for all states in the problem, then we must start a random walk in
+each state in the system without taking into account the structure of
+the residual vector. Because of this, as the problem size grows adding
+histories is ineffective as many are added in states where the error
+is smaller than in other parts of the problem, ultimately not reducing
+the number of iterations needed to converge. Conversely, as the
+problem size grows in the adjoint method, the additional stochastic
+histories that will be computed are concentrated in regions with a
+large residual, further reducing the stochastic error in the
 correction in those regions and subsequently reducing the required
 number of iterations to converge.
 
@@ -1377,16 +1390,16 @@ fixed at 40,000 and the weight cutoff varied from \sn{5}{-1} down to
 by Figure~\ref{fig:estimator_wc_iters} is effectively invariant to the
 weight cutoff, only seeing detrimental effects on the number of
 iterations at a very large weight cutoff. This suggests that a fairly
-large weight cutoff can be used in practice with both estimators and
-that the preliminary components of the random walk are more important
-to MCSA convergence than those that occur later and with lower weight
-contributions. To further motivate using a larger weight cutoff,
-Figure~\ref{fig:estimator_wc_time} gives the CPU time need to converge
-as a function of weight cutoff. As expected, lowering the weight
-cutoff lengthens the random walk lengths and increases CPU time at no
-gain of iterative performance. In general, these results suggest using
-the expected value estimator over the collision estimator with MCSA as
-well as using a larger weight cutoff.
+large weight cutoff can be used in practice with both adjoint
+estimators and that the preliminary components of the random walk are
+more important to MCSA convergence than those that occur later and
+with lower weight contributions. To further motivate using a larger
+weight cutoff, Figure~\ref{fig:estimator_wc_time} gives the CPU time
+need to converge as a function of weight cutoff. As expected, lowering
+the weight cutoff lengthens the random walk lengths and increases CPU
+time at no gain of iterative performance. In general, these results
+suggest using the expected value estimator over the collision
+estimator with MCSA as well as using a larger weight cutoff.
 
 \begin{figure}[t!]
   \centering
@@ -1419,15 +1432,15 @@ well as using a larger weight cutoff.
 \label{sec:variance_reduction}
 Variance reduction is a mechanism by which the probabilities and
 weights of the Monte Carlo problem are modified to improve the
-performance of a given estimator. In many cases, such modifications
-will introduce bias into the system. However, using Monte Carlo within
-an MCSA iterative scheme provides a potential buffer for the solution
-from this bias as the correction generated by the Monte Carlo solve
-will contain large statistical error even without variance
-reduction. For this work, any method that alters the weights and
-probabilities of the Monte Carlo method with the aim of improving
-either iterative performance or time to convergence will be defined as
-a variance reduction scheme.
+performance of a given estimator. In the context of improving MCSA
+results, such modifications may potentially introduce bias into the
+system. However, using Monte Carlo within an MCSA iterative scheme
+provides a potential buffer for the solution from this bias as the
+correction generated by the Monte Carlo solve will contain large
+statistical error even without variance reduction. For this work, any
+method that alters the weights and probabilities of the Monte Carlo
+method with the aim of improving either iterative performance or time
+to convergence will be defined as a variance reduction scheme.
 
 \subsection{Artificial Absorption}
 \label{subsec:artificial_absorption}
@@ -1584,8 +1597,8 @@ observations and findings.
   construction of the composite linear operator
 \item The adjoint Neumann-Ulam method performs better when used with
   MCSA compared to the forward method
-\item MCSA has superior performance to Halton's residual Monte Carlo
-  method
+\item MCSA has superior performance when compared to Halton's residual
+  Monte Carlo method
 \item The Richardson iteration in MCSA behaves as a smoother for the
   stochastic Monte Carlo error
 \item MCSA iterative performance when used with the expected value
