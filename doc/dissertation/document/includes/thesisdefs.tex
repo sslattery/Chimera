@@ -48,6 +48,15 @@
 \gdef\@doctype{A dissertation}   %Default is dissertation
 
 \gdef\@department{(Engineering Physics)} % Default is Electical Engineering
+\gdef\@defensedate{09/09/2013}
+\gdef\@committee{
+\hspace*{1cm}Thomas M. Evans, Distinguished R\&D Staff Member, Oak Ridge National Laboratory\\
+\hspace*{1cm}Gregory A. Moses, Professor, Nuclear Engineering and Engineering Physics\\
+\hspace*{1cm}Christopher J. Rutland, Professor, Mechanical Engineering\\
+\hspace*{1cm}Carl R Sovinec, Professor, Nuclear Engineering and Engineering Physics\\
+\hspace*{1cm}Paul P.H. Wilson, Professor, Nuclear Engineering and Engineering Physics
+%<+Name+>, <+Title+>, <+Department+>\\
+} 
 
 \renewcommand{\maketitle}{%
   \begin{titlepage}
@@ -68,10 +77,14 @@
       the requirements for the degree of\\[\@thesistitlebigskip]
       \@degree \\[\@thesistitlemedskip]
       \@department \\[\@thesistitlebigskip]
-      at the \\[\@thesistitlebigskip]
-      UNIVERSITY OF WISCONSIN--MADISON\\[\@thesistitlebigskip]
+      at the \\[\@thesistitlemedskip]
+      UNIVERSITY OF WISCONSIN--MADISON\\[\@thesistitlemedskip]
       \@date
     \end{center}
+    \bigskip
+    %% Date of final oral examination: \@defensedate \\[\@thesistitlemedskip]
+    %% The dissertation is approved by the following members of the Final Oral Committee:\\
+    %% \@committee
   \end{titlepage}
   \setcounter{footnote}{0}
   \setcounter{page}{1} %title page is NOT counted
