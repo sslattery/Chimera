@@ -161,7 +161,7 @@ equations with general multidimensional gradient operators:
   0,2,4,\cdots,N\:,
   \label{eq:spn_equations}
 \end{multline}
-yielding a multidimensional set of $(N+1)/1$ angular coupled equations
+yielding a multidimensional set of $(N+1)/2$ angular coupled equations
 defined as the $SP_N$ equations. As with the $P_N$ equations, we
 provide closure to this set of equations with $\phi_{N+1} = 0$. As a
 concrete example, we will consider the $SP_7$ equations:
@@ -307,9 +307,10 @@ Appendix~\ref{chap:mg_spn_equations}:
   \mathbf{\Phi_n} \delta_{n0} \ \ \ \ \ \ \ \ \ n = 0,2,4,\cdots,N\:.
   \label{eq:multigroup_spn_eigenvalue}
 \end{multline}
-with the fission matrix $\mathbf{F}$ given by
-\cite{evans_simplified_2013}. We again apply the change of variables to
-yield the set of multigroup pseudo-moments $\mathbb{U}_n$ where now
+with $\mathbf{\Phi_n}$ the vector of multigroup flux moments and the
+fission matrix, $\mathbf{F}$, given by
+\cite{evans_simplified_2013}. We again apply the change of variables
+to yield the set of multigroup pseudo-moments $\mathbb{U}_n$ where now
 the application of the fission matrix to the moment vectors will be
 expanded into a set of block matrices in identical fashion to the
 scattering matrices:
@@ -425,14 +426,14 @@ Eq~(\ref{eq:A_block_matrix}) are readily apparent. Our first attempt
 at preconditioning this system will be to use the point Jacobi
 preconditioning from \S\ref{subsubsec:basic_mcsa_preconditioning} due
 to this diagonal form and the success achieved by applying it to MCSA
-solutions of the radiation diffusion equation as presented in
+solutions of the thermal radiation diffusion equation as presented in
 \cite{evans_monte_2012}.
 
 \subsection{Point Jacobi Spectral Analysis Results}
 \label{subsec:spn_analysis_results}
 Spectral radius computations were performed for the cases described
-above for the point Jacobi preconditioned iteration matrix $\ve{H} =
-\ve{I}-\ve{M}^{-1}\ve{A}$ with $\ve{M} =
+above for the point Jacobi preconditioned iteration matrix, $\ve{H} =
+\ve{I}-\ve{M}^{-1}\ve{A}$, with $\ve{M} =
 diag(\ve{A})$. Table~\ref{tab:group1pj} gives the results for the
 1-group case, Table~\ref{tab:group10dspj} for the 10-group case with
 full downscatter only and Table~\ref{tab:group10uspj} for the 10-group
@@ -527,14 +528,15 @@ arbitrary energy group structures. As another means of achieving this,
 we look back to the sparsity plots we generated in
 Figures~\ref{fig:group1}, \ref{fig:group10ds} and \ref{fig:group10us}
 as well as the multigroup $SP_N$ equations. Initially, the diagonal
-character of the system led us to try point Jacobi preconditioning
-with only marginal results. From the sparsity plots we note the block
-structure that ultimately arises from the multigroup scattering
-matrices and their insertion into Eq~(\ref{eq:A_block_matrix}). When
-full upscatter and downscatter are used the resulting blocks are
-completely dense while only downscatter gives a lower triangular
-scattering matrix and the block structure shown in
-Figure~\ref{fig:group10ds}.
+character of the system and previous success with the thermal
+radiuation difussion equation led us to try point Jacobi
+preconditioning with only marginal results. From the sparsity plots we
+note the block structure that ultimately arises from the multigroup
+scattering matrices and their insertion into
+Eq~(\ref{eq:A_block_matrix}). When full upscatter and downscatter are
+used the resulting blocks are completely dense while only downscatter
+gives a lower triangular scattering matrix and the block structure
+shown in Figure~\ref{fig:group10ds}.
 
 Based on this both block and diagonally dominant structure for
 matrices formed by the general multigroup $SP_N$ equations, we instead
@@ -559,11 +561,8 @@ $N_g\times(N+1)/2$.
       preconditioner is trivial and decoupled by block.}}
   \label{fig:block_jacobi_ex}
 \end{figure}
-The inversion of this preconditioner is trivial as shown on the right
-side of Figure~\ref{fig:block_jacobi_ex}. Each block can be inverted
-individually and combined to form the inverse. In addition, in the
-limit of a block size of one, the block Jacobi method reduces to the
-point Jacobi method. 
+In addition, in the limit of a block size of one, the block Jacobi
+method reduces to the point Jacobi method.
 
 For high performance implementations this has several attractive
 properties. First, the blocks in the matrix come from the energy/angle
@@ -572,9 +571,10 @@ Eq~(\ref{eq:A_block_matrix}). Each block on the diagonal is bound to a
 mesh element in the system (note there are 8 blocks on the diagonal in
 each of the sparsity patterns with a mesh of $2 \times 2 \times 2$)
 and therefore we expect the matrix elements forming the block to be
-entirely local. Second, these blocks are typically dense and nearly
-lower triangular for many transport problems meaning that established
-dense matrix methods can be used for fast inversion.
+entirely local in domain decomposed calculations. Second, these blocks
+are typically dense and nearly lower triangular for many transport
+problems meaning that established dense matrix methods can be used for
+fast inversion.
 
 \subsection{Block Jacobi Spectral Analysis Results}
 \label{subsec:spn_analysis_results}
@@ -659,13 +659,13 @@ cases.
 \end{table}
 
 From the tabulated block Jacobi data it is clear that this is a viable
-preconditioning choice for all $SP_N$ problems in term of Monte Carlo
+preconditioning choice for all $SP_N$ problems in terms of Monte Carlo
 solution methods. All cases were observed to have a spectral radius
 below unity and often significantly smaller than that, greatly
 improving convergence rates over the point Jacobi preconditioned
 problem. Based on these results, the block Jacobi method should be the
 first preconditioning strategy applied to more complicated problems
-representative of physical systems.
+representative of physical nuclear systems.
 
 %%---------------------------------------------------------------------------%%
 \section{Fuel Assembly Criticality Calculations}
@@ -802,8 +802,8 @@ computation\footnote{The operator will change if, for example, physics
   used to assemble $\mathbf{M}$. The calculations presented here will
   consist of a single eigenvalue calculation with a static
   $\mathbf{M}$.} while the addition of fission to the system will only
-modify the source of neutrons and the multiplication factor while not
-affecting Monte Carlo transport.
+modify the source of neutrons and the multiplication factor at every
+eigenvalue iteration while not affecting Monte Carlo transport.
  
 \subsection{Preliminary Jacobi Preconditioned Calculations}
 \label{subsec:jacobi_prec_assembly_calc}
@@ -834,9 +834,10 @@ computations performed, these results are not in line with
 expectations for this problem. Additional computations performed with
 \sn{1}{6} histories per iteration exhibited the same divergent
 behavior at a significant computational cost and compute time. Even if
-the problem may be ill-conditioned, we do expect convergence of
-MCSA. To investigate further, a block Jacobi preconditioned Richardson
-iteration was used to solve the same
+the problem may be ill-conditioned, we do expect convergence of MCSA
+given that the spectral radius requirement was met. To investigate
+further, a block Jacobi preconditioned Richardson iteration was used
+to solve the same
 problem. Figure~\ref{fig:block_jacobi_res_richardson} gives the
 residual infinity norm as a function of iteration for the Richardson
 linear solve in the first eigenvalue iteration.
@@ -851,7 +852,7 @@ linear solve in the first eigenvalue iteration.
       iteration matrix.}}
   \label{fig:block_jacobi_res_richardson}
 \end{figure}
-Poor converge is observed for the Richardson iteration, however,
+Poor convergence is observed for the Richardson iteration, however,
 convergence is achieved meaning that the preliminary eigenvalue
 criteria needed to satisfy MCSA convergence has also been met. The
 number of iterations required for the Richardson iteration to converge
@@ -1146,7 +1147,7 @@ along with the potential latency overhead. Given these two objectives,
 the following metric is proposed:
 \begin{equation}
   \text{Quality Metric} = (\text{\# iterations}) \times (\text{maximum
-    \# of non-zero values})\:,
+    \# non-zero values})\:,
 \end{equation}
 where the highest quality preconditioning is one that minimizes this
 metric. For the ILUT preconditioned data provided,
@@ -1228,13 +1229,12 @@ convergence sensitivity to SPAINV parameters, the number of levels in
 the sparsity pattern and threshold were parametrically varied with the
 number of iterations to converge a single eigenvalue iteration for the
 fuel assembly problem recorded along with the maximum number of
-non-zero entries observed in all matrix rows for the left/right
-preconditioned composite linear operator. For each calculation, the
-number of iterations required to converge reported was for a single
-eigenvalue iteration with \sn{3}{4} histories at each MCSA iteration
-to compute the Monte Carlo correction using the adjoint collision
-estimator. All SPAINV calculations reported here were performed on a
-single CPU.
+non-zero entries observed in all matrix rows for the preconditioned
+composite linear operator. For each calculation, the number of
+iterations required to converge reported was for a single eigenvalue
+iteration with \sn{3}{4} histories at each MCSA iteration to compute
+the Monte Carlo correction using the adjoint collision estimator. All
+SPAINV calculations reported here were performed on a single CPU.
 
 Figure~\ref{fig:spainv_iterations} gives the number of MCSA iterations
 needed to converge the fuel assembly problem and
@@ -1443,12 +1443,12 @@ SPAINV-ILUT with ILUT parameters of a fill level of 4.0 and a drop
 tolerance of \sn{1}{-5} and SPAINV parameters of a sparsity level of 1
 and a threshold of 1.0. The reduced domain threshold was set to
 \sn{1}{-10} in order to eliminate any exceedingly small values from
-the matrix (generally this is simply removing non-zero elements within
-the floating point tolerance of zero). The reduced domain fill level
-was then varied, starting with the largest non-zero entries per row
-value observed for each of the preconditioning types in order to
-assess its effects relative to the case where no reduced domain
-approximation was applied.
+the matrix (often this is simply removing non-zero elements within the
+floating point tolerance of zero). The reduced domain fill level was
+then varied, starting with the largest non-zero entries per row value
+observed for each of the preconditioning types in order to assess its
+effects relative to the case where no reduced domain approximation was
+applied.
 
 Figure~\ref{fig:rda_iterations} gives the number of iterations
 required to converge for each preconditioner type as a function of
@@ -1469,10 +1469,10 @@ for the ILUT only calculations was set to 4 for this case while the
 SPAINV-ILUT preconditioner used an ILUT level of fill of 5 and
 therefore the marginally better performance is more likely a result of
 this addition of fill rather than the extra SPAINV
-preconditioning. Looking at the quality metric data, we see a nice
-power-law reduction in the quality metric as a function of the reduced
-domain fill level, achieving 2 orders of magnitude reduction in the
-quality metric for the ILUT-based preconditioning methods.
+preconditioning. Looking at the quality metric data, we see a
+reduction in the quality metric as a function of the reduced domain
+fill level, achieving 2 orders of magnitude reduction in the quality
+metric for the ILUT-based preconditioning methods.
 
 Although applying the reduced domain approximation results in a
 successful recovery of sparsity for the Monte Carlo problem while
@@ -1516,31 +1516,30 @@ important components of the preconditioned MCSA algorithm.
 
 \subsection{MCSA Relaxation Parameters}
 \label{subsec:spn_mcsa_relaxation}
-As another means of preconditioning (or variance reduction), the
-Richardson iteration upon which the Neumann-Ulam method is built may
-be implemented with a scalar relaxation parameter that can be adjusted
-to improve convergence:
+As another means of preconditioning (or variance reduction) to meet
+the goal of improving iterative performance, the Richardson iteration
+upon which the Neumann-Ulam method is built may be implemented with an
+adjustable scalar relaxation parameter:
 \begin{equation}
   \mathbf{x} = \mathbf{x} + \omega \mathbf{r}\:,
   \label{eq:richardson_relaxation}
 \end{equation}
 where $\omega$ is the relaxation parameter. This is very similar to
-point Jacobi preconditioning where the system is being scaled on the
-left by a constant value in all rows. Analogously, these relaxation
-parameter techniques can be applied to Monte Carlo to improve
-convergence as demonstrated by Dimov \cite{dimov_new_1998}. In this
-case, building an iteration matrix from
+point Jacobi preconditioning where the system is now being scaled on
+the left by a constant value in all rows. Analogously, these
+relaxation parameter techniques can be applied to Monte Carlo to
+improve convergence as demonstrated by Dimov \cite{dimov_new_1998}. In
+this case, building an iteration matrix from
 Eq~(\ref{eq:richardson_relaxation}) gives:
 \begin{equation}
   \mathbf{H} = \mathbf{I} - \omega \mathbf{A}\:,
   \label{eq:relaxed_iteration_matrix}
 \end{equation}
 with the probabilities and weights for the Monte Carlo procedure
-appropriately scaled. By inspection, such a scaling is a simple form
-of preconditioning on the left where all rows in the system are scaled
-by the same scalar parameter. For MCSA, we can stage this scheme with
-two separate relaxation parameters; one for the outer Richardson
-iteration and one for the inner Monte Carlo solve:
+appropriately scaled via a modified Neumann-Ulam decomposition. For
+MCSA, we can stage this scheme with two separate relaxation
+parameters; one for the outer Richardson iteration and one for the
+inner Monte Carlo solve:
 \begin{subequations}
   \begin{gather}
     \ve{x}^{k+1/2} = \ve{x}^k + \omega_R \ve{r}^k\:,\\ \ve{r}^{k+1/2}
@@ -1626,17 +1625,17 @@ although they did not necessarily have the best iterative performance.
 
 \clearpage
 
-\subsection{Monte Carlo Estimator Comparison}
+\subsection{MCSA Estimator and Fixed Point Iteration Analysis}
 \label{subsec:spn_estimator_comparison}
-With convergence obtained for the fuel assembly problem, the advanced
-preconditioners will next be studied with both the collision and
+With convergence obtained for the fuel assembly problem, the iterative
+performance of MCSA will next be studied with both the collision and
 expected value estimators using the best preconditioning and
 relaxation parameter combinations found by the previous
 analysis. Additionally, both the Richardson-based MCSA iteration given
-by Eq~(\ref{eq:mcsa}) and the minimal residual-based MCSA iteration given by
-Eq~(\ref{eq:mcsa_min_res}) will be used. Although the expected value
-estimator achieved the best iterative performance in the previous
-comparison and analysis for the simple Poisson problem in
+by Eq~(\ref{eq:mcsa}) and the minimal residual-based MCSA iteration
+given by Eq~(\ref{eq:mcsa_min_res}) will be used. Although the
+expected value estimator achieved the best iterative performance in
+the previous comparison and analysis for the simple Poisson problem in
 \S~\ref{sec:parameter_estimator_analysis}, it is possible that the
 collision estimator may perform better from a timing perspective due
 to the sparsity lost by explicit preconditioning. The deterministic
@@ -1676,30 +1675,25 @@ in \S~\ref{sec:parameter_estimator_analysis}, the results here are
 largely the same with Figure~\ref{fig:spn_estimator_iters} and
 Figure~\ref{fig:estimator_nh_iters} having identical qualitative
 behavior. Using the expected value estimator with both fixed point
-iterations creates a relative insensitivity to the number of histories
-used to compute the correction. Marginally better iterative and timing
-performance was observed for the expected value estimator when using
-the Richardson iteration. Better timing performance is expected as
-computing the extrapolation parameter in the minimal residual
-iteration requires several additional parallel operations. However, we
-expect that because the minimal residual iteration will converge
-faster on its own when compared to the Richardson iteration that
-better iterative performance will be observed when it is accelerated
-with MCSA. The fact that this was not observed signals that an MCSA
-scheme leveraging the expected value estimator is also effectively
-insensitive to the fixed point iteration used. For the collision
-estimator, the minimal residual iteration permits fewer stochastic
-histories to be used with each MCSA iteration while still maintaining
-good iterative performance. With respect to CPU time, there is a more
-pronounced effect due to the larger density of states created by the
-explicit ILUT preconditioning. Using a reduced domain fill level of
-100 creates a situation where the expected value estimator is
-significantly more expensive per history to compute that the collision
-estimator due to the coupling of states.
+iterations again creates a relative insensitivity to the number of
+histories used to compute the correction. Marginally better iterative
+and timing performance was observed for the expected value estimator
+when using the Richardson iteration. Better timing performance is
+expected as computing the extrapolation parameter in the minimal
+residual iteration requires several additional parallel
+operations. Compared to the collision estimator, the minimal residual
+iteration permits fewer stochastic histories to be used with each MCSA
+iteration while still maintaining good iterative performance. With
+respect to CPU time, there is a more pronounced effect due to the
+larger density of states created by the explicit ILUT
+preconditioning. Using a reduced domain fill level of 100 creates a
+situation where the expected value estimator is significantly more
+expensive per history to compute that the collision estimator due to
+the coupling of states.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6in]{chapters/spn_equations/estimator_iters.pdf}
+    \includegraphics[width=5in]{chapters/spn_equations/estimator_iters.pdf}
   \end{center}
   \caption{\textbf{MCSA iterations required to converge the fuel
       assembly problem to a tolerance of \sn{1}{-8}.} \textit{Both the
@@ -1713,7 +1707,7 @@ estimator due to the coupling of states.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6in]{chapters/spn_equations/estimator_time.pdf}
+    \includegraphics[width=5in]{chapters/spn_equations/estimator_time.pdf}
   \end{center}
   \caption{\textbf{Total CPU time in seconds required to converge the
       fuel assembly problem to a tolerance of \sn{1}{-8}.}
@@ -1734,9 +1728,9 @@ of the residual vector is presented at every MCSA iteration for both
 estimators and both fixed point iterations in
 Figure~\ref{fig:spn_estimator_convergence} as an additional means of
 comparison. At this number of histories, all MCSA combinations
-converge the fuel assembly problem monotonically at and approximately
-the same rate, giving little reason to choose one over the other. The
-end result is that both estimators provide a viable method for getting
+converge the fuel assembly problem monotonically at approximately the
+same rate, giving little reason to choose one over the other. The end
+result is that both estimators provide a viable method for getting
 good MCSA iterative performance with comparable timing
 performance. For the collision estimator, using around 20,000
 stochastic histories at every iteration gave the best iterative
@@ -1749,7 +1743,7 @@ all have similar minimum CPU times over the range of values tested.
 
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=6in]{chapters/spn_equations/estimator_convergence.pdf}
+    \includegraphics[width=5in]{chapters/spn_equations/estimator_convergence.pdf}
   \end{center}
   \caption{\textbf{Residual infinity norm as a function of MCSA
       iteration with 1,000 stochastic histories per iteration.}
@@ -1774,26 +1768,35 @@ these preconditioning techniques, a set a varying MCSA parameters were
 analyzed to find those that yielded the best performance for this
 particular problem. In addition, several steps were taken to mitigate
 the dense composite linear operators that arise when performing
-explicit MCSA preconditioning in order to achieve convergence. Using
-these results, we compare MCSA directly to conventional linear solvers
-that would be typically used to solve the $SP_N$ form of the transport
-equation as presented here. In particular, we will use a pair of
-production Krylov solvers with which we will compare direct numerical
-results in order to verify MCSA solutions in this section.
+explicit MCSA preconditioning necessary for achieve convergence. Using
+these results, we know compare MCSA directly to conventional linear
+solvers that would be typically used to solve the $SP_N$ form of the
+transport equation as presented here. In particular, we will use a
+pair of production Krylov solvers with which we will compare direct
+numerical results in order to verify MCSA solutions in this section.
 
 In order to verify the correctness of the MCSA method and
 implementation used for this work, MCSA solutions to the fuel assembly
 problem with 1, 2, and 4 energy groups using $SP_1$ discretization
-will be directly compared over all group and cell fluxes computed by
-converging the criticality problem using both BiCGStab and GMRES
-production implementations from the Trilinos scientific computing
-library Aztec \cite{heroux_overview_2005}. In addition to comparing
-the cell and group fluxes, the number of eigenvalue iterations
-required to converge the problem along with the eigenvalue itself will
-be compared as a means of verification. If all values computed using
-MCSA agree with the results from the production Krylov solvers within
-the solution tolerance, then the MCSA solutions will be deemed correct
-for these problems.
+will be directly compared point-wise over all group and cell fluxes
+computed by converging the criticality problem using both BiCGStab and
+GMRES production implementations from the Trilinos scientific
+computing library Aztec \cite{heroux_overview_2005}. In addition to
+comparing the cell and group fluxes, the number of eigenvalue
+iterations required to converge the problem along with the eigenvalue
+itself will be compared as a means of verification. For the flux
+values, we look to the 2-norm of the absolute difference between the
+reference case and the comparison case in each energy group:
+\begin{equation}
+  || \ve{\Phi}_{ref}^g - \ve{\Phi}^g ||_2 < \epsilon_k\:,
+  \label{eq:norm_comparison}
+\end{equation}
+such that this norm is less than the eigensolver tolerance,
+$\epsilon_k$. For this work, the BiCGStab results will be taken as the
+reference case. If the MCSA flux results satisfy
+Eq~(\ref{eq:norm_comparison}), they will be deemed correct for the
+purposes of this work. For the eigenvalues, we will look for the same
+agreement within the tolerance of the eigensolver.
 
 For the verification calculations, all solvers will be preconditioned
 with ILUT using a drop tolerance of \sn{1}{-5} and a fill level of
@@ -1865,12 +1868,13 @@ group 0).
 
 For every combination of energy group structure and solver, the
 eigenvalue problem was converged with an eigensolver tolerance of
-\sn{1}{-6} and a linear solver tolerance of \sn{1}{-8} in a serial
-calculation. Table~\ref{tab:serial_ev_results} gives the eigenvalue
-computed by each solver for each problem as well as the number of
-eigenvalue iterations required to converge. For every problem, each
-solver converged to the same eigenvalue within the tolerance of the
-eigensolver in the same number of eigenvalue iterations.
+$\epsilon_k = \sn{1}{-6}$ and a linear solver tolerance of \sn{1}{-8}
+in a serial calculation. Table~\ref{tab:serial_ev_results} gives the
+eigenvalue computed by each solver for each problem as well as the
+number of eigenvalue iterations required to converge. For every
+problem, each solver converged to the same eigenvalue up to the number
+of digits reported by the eigensolver eigensolver in the same number
+of eigenvalue iterations.
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{lccc}\hline\hline
@@ -1914,78 +1918,42 @@ eigensolver in the same number of eigenvalue iterations.
   \label{tab:serial_ev_results}
 \end{table}
 
-For each converged eigenvalue calculation, the scalar flux in each
-energy group was compared over the entire spatial domain with the
-BiCGStab-ILUT solution used as the reference to compute an relative
-difference of the flux in each mesh cell. For the 1 group
-calculations, these relative differences are plotted spatially along
-the center-line of the fuel assembly in
-Figure~\ref{fig:serial_1_group_diff}. Interestingly, except for the
-MCSA-ILUT-MR-C calculation, all other 1-group calculations including
-GMRES had a maximum global flux difference of \sn{9.313}{-10} even
-though different spatial results were observed for all cases. For the
-MCSA-ILUT-MR-C calculation, a slightly larger maximum relative
-difference of \sn{2.205}{-9} was observed for reasons that remain
-unexplained. All 1-group calculations have a minimum observed relative
-difference of 0 with respect to the BiCGStab calculation.
-
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=6in]{chapters/spn_equations/serial_1_group.pdf}
-  \end{center}
-  \caption{\textbf{Relative difference of the group 0 scalar flux
-      between the Aztec BiCGStab calculations, Aztec GMRES, Richardson
-      iteration, and the MCSA variations for the 1-group fuel assembly
-      criticality calculation.} \textit{Left to right: GMRES-ILUT,
-      MCSA-ILUT-R-C, MCSA-ILUT-MR-C, MCSA-ILUT-R-EV,
-      MCSA-ILUT-MR-EV. The fluxes are plotted on a plane intersecting
-      the center-line of the assembly. Table~\ref{tab:spn_solver_defs}
-      gives the description for each solver type presented.}}
-  \label{fig:serial_1_group_diff}
-\end{figure}
-
 Table~\ref{tab:serial_differences_g1},
 Table~\ref{tab:serial_differences_g2}, and
-Table~\ref{tab:serial_differences_g4} give the maximum and minimum
-relative differences of the cell scalar fluxes for all calculations
-and all energy groups using the BiCGStab calculation as the
-reference. All comparisons were performed within a group such that the
+Table~\ref{tab:serial_differences_g4} give the 2-norms of the cell
+scalar fluxes difference vectors for all calculations and all energy
+groups. All comparisons were performed within a group such that the
 differences for the MCSA-ILUT-R-C results in group 3 for the 4-group
 calculation were computed with the BiCGStab-ILUT solution in group 3
 for the 4-group calculation as a reference. For all group flux results
 given in the table, the maximum differences for all cases was less
 than the linear solver tolerance used to converge the flux at each
 eigenvalue iteration meaning that all values over the entire energy
-and spatial domain are within these limits. In addition, the minimum
-relative difference for all calculations was observed to be zero,
-meaning that at least one mesh cell in all calculations for all energy
-groups the scalar flux values computed by all solvers were
-identical. Based on the flux results and the eigenvalue results
-presented here, the MCSA results should be deemed correct for the fuel
-assembly problem for serial calculations with multiple energy groups.
+and spatial domain are within these limits. Based on the flux results
+and the eigenvalue results presented here, the MCSA results should be
+deemed correct for the fuel assembly problem for serial calculations
+with multiple energy groups.
 
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{lccc}\hline\hline
       \multicolumn{1}{c}{\textbf{Solver}} & 
       \multicolumn{1}{c}{\textbf{Group}} &
-      \multicolumn{1}{c}{\textbf{Minimum Difference}} &
-      \multicolumn{1}{c}{\textbf{Maximum Difference}} \\
+      \multicolumn{1}{c}{\textbf{$|| \ve{\Phi}_{ref}^g - \ve{\Phi}^g ||_2$}} \\
       \hline
-      GMRES-ILUT & 0 & 0.0 & \sn{4.562}{-6} \\
-      MCSA-ILUT-R-C & 0 & 0.0 & \sn{2.099}{-5} \\
-      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{4.812}{-5} \\
-      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{2.371}{-5} \\
-      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{3.605}{-5} \\
-      Richardson-ILUT & 0 & 0.0 & \sn{1.531}{-5} \\
+      GMRES-ILUT & 0 & \sn{4.562}{-6} \\
+      MCSA-ILUT-R-C & 0 & \sn{2.099}{-5} \\
+      MCSA-ILUT-MR-C & 0 & \sn{4.812}{-5} \\
+      MCSA-ILUT-R-EV & 0 & \sn{2.371}{-5} \\
+      MCSA-ILUT-MR-EV & 0 & \sn{3.605}{-5} \\
+      Richardson-ILUT & 0 & \sn{1.531}{-5} \\
       \hline\hline
     \end{tabular}
   \end{center}
   \caption{\textbf{Serial scalar flux verification results for the
-      1-group fuel assembly problem.} \textit{The maximum and minimum
-      relative differences over the entire spatial domain are
-      presented with BiCGStab used as the reference. Each calculation
-      was converged with the same eigensolver and linear solver
+      1-group fuel assembly problem.} \textit{BiCGStab is used as the
+      reference. Each calculation was converged with the same
+      eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
       description for each solver type presented.}}
   \label{tab:serial_differences_g1}
@@ -1996,30 +1964,28 @@ assembly problem for serial calculations with multiple energy groups.
     \begin{tabular}{lccc}\hline\hline
       \multicolumn{1}{c}{\textbf{Solver}} & 
       \multicolumn{1}{c}{\textbf{Group}} &
-      \multicolumn{1}{c}{\textbf{Minimum Difference}} &
-      \multicolumn{1}{c}{\textbf{Maximum Difference}} \\
+      \multicolumn{1}{c}{\textbf{$|| \ve{\Phi}_{ref}^g - \ve{\Phi}^g ||_2$}} \\
       \hline
-      GMRES-ILUT & 0 & 0.0 & \sn{7.590}{-6} \\
-      MCSA-ILUT-R-C & 0 & 0.0 & \sn{5.308}{-6} \\
-      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{6.387}{-5} \\
-      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{4.197}{-5} \\
-      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{2.736}{-5} \\
-      Richardson-ILUT & 0 & 0.0 & \sn{3.976}{-6} \\
+      GMRES-ILUT & 0 & \sn{7.590}{-6} \\
+      MCSA-ILUT-R-C & 0 & \sn{5.308}{-6} \\
+      MCSA-ILUT-MR-C & 0 & \sn{6.387}{-5} \\
+      MCSA-ILUT-R-EV & 0 & \sn{4.197}{-5} \\
+      MCSA-ILUT-MR-EV & 0 & \sn{2.736}{-5} \\
+      Richardson-ILUT & 0 & \sn{3.976}{-6} \\
       \hline
-      GMRES-ILUT & 1 & 0.0 & \sn{7.579}{-6} \\
-      MCSA-ILUT-R-C & 1 & 0.0 & \sn{1.645}{-5} \\
-      MCSA-ILUT-MR-C & 1 & 0.0 & \sn{2.634}{-4} \\
-      MCSA-ILUT-R-EV & 1 & 0.0 & \sn{1.797}{-4} \\
-      MCSA-ILUT-MR-EV & 1 & 0.0 & \sn{1.556}{-4} \\
-      Richardson-ILUT & 1 & 0.0 & \sn{4.031}{-6} \\
+      GMRES-ILUT & 1 & \sn{7.579}{-6} \\
+      MCSA-ILUT-R-C & 1 & \sn{1.645}{-5} \\
+      MCSA-ILUT-MR-C & 1 & \sn{2.634}{-4} \\
+      MCSA-ILUT-R-EV & 1 & \sn{1.797}{-4} \\
+      MCSA-ILUT-MR-EV & 1 & \sn{1.556}{-4} \\
+      Richardson-ILUT & 1 & \sn{4.031}{-6} \\
       \hline\hline
     \end{tabular}
   \end{center}
   \caption{\textbf{Serial scalar flux verification results for the
-      2-group fuel assembly problem.} \textit{The maximum and minimum
-      relative differences over the entire spatial domain are
-      presented with BiCGStab used as the reference. Each calculation
-      was converged with the same eigensolver and linear solver
+      2-group fuel assembly problem.} \textit{BiCGStab is used as the
+      reference. Each calculation was converged with the same
+      eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
       description for each solver type presented.}}
   \label{tab:serial_differences_g2}
@@ -2030,44 +1996,42 @@ assembly problem for serial calculations with multiple energy groups.
     \begin{tabular}{lccc}\hline\hline
       \multicolumn{1}{c}{\textbf{Solver}} & 
       \multicolumn{1}{c}{\textbf{Group}} &
-      \multicolumn{1}{c}{\textbf{Minimum Difference}} &
-      \multicolumn{1}{c}{\textbf{Maximum Difference}} \\
+      \multicolumn{1}{c}{\textbf{$|| \ve{\Phi}_{ref}^g - \ve{\Phi}^g ||_2$}} \\
       \hline
-      GMRES-ILUT & 0 & 0.0 & \sn{2.376}{-5} \\
-      MCSA-ILUT-R-C & 0 & 0.0 & \sn{2.639}{-5} \\
-      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{3.958}{-5} \\
-      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{2.749}{-5} \\
-      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{2.969}{-5} \\
-      Richardson-ILUT & 0 & 0.0 & \sn{2.189}{-5} \\
+      GMRES-ILUT & 0 & \sn{2.376}{-5} \\
+      MCSA-ILUT-R-C & 0 & \sn{2.639}{-5} \\
+      MCSA-ILUT-MR-C & 0 & \sn{3.958}{-5} \\
+      MCSA-ILUT-R-EV & 0 & \sn{2.749}{-5} \\
+      MCSA-ILUT-MR-EV & 0 & \sn{2.969}{-5} \\
+      Richardson-ILUT & 0 & \sn{2.189}{-5} \\
       \hline
-      GMRES-ILUT & 0 & 0.0 & \sn{2.271}{-5} \\
-      MCSA-ILUT-R-C & 0 & 0.0 & \sn{3.702}{-5} \\
-      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{3.803}{-5} \\
-      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{4.142}{-5} \\
-      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{2.723}{-5} \\
-      Richardson-ILUT & 0 & 0.0 & \sn{2.137}{-5} \\
+      GMRES-ILUT & 1 & \sn{2.271}{-5} \\
+      MCSA-ILUT-R-C & 1 & \sn{3.702}{-5} \\
+      MCSA-ILUT-MR-C & 1 & \sn{3.803}{-5} \\
+      MCSA-ILUT-R-EV & 1 & \sn{4.142}{-5} \\
+      MCSA-ILUT-MR-EV & 1 & \sn{2.723}{-5} \\
+      Richardson-ILUT & 1 & \sn{2.137}{-5} \\
       \hline
-      GMRES-ILUT & 0 & 0.0 & \sn{2.310}{-5} \\
-      MCSA-ILUT-R-C & 0 & 0.0 & \sn{2.490}{-5} \\
-      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{2.214}{-5} \\
-      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{4.456}{-5} \\
-      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{3.366}{-5} \\
-      Richardson-ILUT & 0 & 0.0 & \sn{2.143}{-5} \\
+      GMRES-ILUT & 2 & \sn{2.310}{-5} \\
+      MCSA-ILUT-R-C & 2 & \sn{2.490}{-5} \\
+      MCSA-ILUT-MR-C & 2 & \sn{2.214}{-5} \\
+      MCSA-ILUT-R-EV & 2 & \sn{4.456}{-5} \\
+      MCSA-ILUT-MR-EV & 2 & \sn{3.366}{-5} \\
+      Richardson-ILUT & 2 & \sn{2.143}{-5} \\
       \hline
-      GMRES-ILUT & 0 & 0.0 & \sn{2.335}{-5} \\
-      MCSA-ILUT-R-C & 0 & 0.0 & \sn{3.045}{-5} \\
-      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{2.696}{-5} \\
-      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{1.946}{-4} \\
-      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{3.295}{-5} \\
-      Richardson-ILUT & 0 & 0.0 & \sn{2.161}{-5} \\
+      GMRES-ILUT & 3 & \sn{2.335}{-5} \\
+      MCSA-ILUT-R-C & 3 & \sn{3.045}{-5} \\
+      MCSA-ILUT-MR-C & 3 & \sn{2.696}{-5} \\
+      MCSA-ILUT-R-EV & 3 & \sn{1.946}{-4} \\
+      MCSA-ILUT-MR-EV & 3 & \sn{3.295}{-5} \\
+      Richardson-ILUT & 3 & \sn{2.161}{-5} \\
       \hline\hline
     \end{tabular}
   \end{center}
   \caption{\textbf{Serial scalar flux verification results for the
-      4-group fuel assembly problem.} \textit{The maximum and minimum
-      relative differences over the entire spatial domain are
-      presented with BiCGStab used as the reference. Each calculation
-      was converged with the same eigensolver and linear solver
+      4-group fuel assembly problem.} \textit{BiCGStab is used as the
+      reference. Each calculation was converged with the same
+      eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
       description for each solver type presented.}}
   \label{tab:serial_differences_g4}
@@ -2128,8 +2092,8 @@ the iterative performance of the solver. For larger numbers of energy
 groups (and therefore DOFs) this may be an issue and this number may
 need to be increased to maintain iterative performance. Currently,
 memory restrictions arising from the explicit preconditioning strategy
-prevent larger energy groups to be analyzed using an appropriate
-preconditioner for the fuel assembly problem.
+prevent larger numbers of energy groups to be analyzed using an
+appropriate preconditioner for the fuel assembly problem.
 
 \begin{table}[h!]
   \begin{center}
