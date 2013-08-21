@@ -6,7 +6,7 @@
       <Parameter name="Tolerance" type="double" value="1e-8"/>
       <ParameterList name="AztecOO Settings">
         <Parameter name="Aztec Solver" type="string" value="GMRES"/>
-        <Parameter name="Convergence Test" type="string" value="rhs"/>
+        <Parameter name="Convergence Test" type="string" value="r0"/>
       </ParameterList>
     </ParameterList>
   </ParameterList>

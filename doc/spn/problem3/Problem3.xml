@@ -185,7 +185,7 @@
       </ParameterList>
       <ParameterList name="operator_db">
         <Parameter name="max_itr" type="int" value="20000"/>
-        <Parameter name="linear_solver_xml_file" type="string" value="mcls.xml"/>
+        <Parameter name="linear_solver_xml_file" type="string" value="aztec_ilut.xml"/>
       </ParameterList>
     </ParameterList>
     <Parameter name="num_groups" type="int" value="1"/>
