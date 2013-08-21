@@ -1835,6 +1835,7 @@ group 0).
                      & fixed point iteration and expected value estimator \\
       MCSA-ILUT-MR-EV & MCSA preconditioned with ILUT using minimal residual \\
                       & fixed point iteration and expected value estimator \\
+      Richardson-ILUT & Richardson iteration preconditioned with ILUT \\
       %%
       \hline\hline
     \end{tabular}
@@ -1884,6 +1885,7 @@ eigensolver in the same number of eigenvalue iterations.
       MCSA-ILUT-MR-C & 1 & 25 & 1.105987 \\
       MCSA-ILUT-R-EV & 1 & 25 & 1.105987 \\
       MCSA-ILUT-MR-EV & 1 & 25 & 1.105987 \\
+      Richardson-ILUT & 1 & 25 & 1.105987 \\
       \hline
       BiCGStab-ILUT & 2 & 35 & 1.155239 \\
       GMRES-ILUT & 2 & 35 & 1.155239 \\
@@ -1891,6 +1893,7 @@ eigensolver in the same number of eigenvalue iterations.
       MCSA-ILUT-MR-C & 2 & 35 & 1.155239 \\
       MCSA-ILUT-R-EV & 2 & 35 & 1.155239 \\
       MCSA-ILUT-MR-EV & 2 & 35 & 1.155239 \\
+      Richardson-ILUT & 2 & 35 & 1.155239 \\
       \hline
       BiCGStab-ILUT & 4 & 31 & 1.175850 \\
       GMRES-ILUT & 4 & 31 & 1.175850 \\
@@ -1898,6 +1901,7 @@ eigensolver in the same number of eigenvalue iterations.
       MCSA-ILUT-MR-C & 4 & 31 & 1.175850 \\
       MCSA-ILUT-R-EV & 4 & 31 & 1.175850 \\
       MCSA-ILUT-MR-EV & 4 & 31 & 1.175850 \\
+      Richardson-ILUT & 4 & 31 & 1.175850 \\
       %%
       \hline\hline
     \end{tabular}
@@ -1912,38 +1916,38 @@ eigensolver in the same number of eigenvalue iterations.
 
 For each converged eigenvalue calculation, the scalar flux in each
 energy group was compared over the entire spatial domain with the
-BiCGStab-ILUT solution used as the reference to compute an absolute
+BiCGStab-ILUT solution used as the reference to compute an relative
 difference of the flux in each mesh cell. For the 1 group
-calculations, these absolute differences are plotted spatially along
+calculations, these relative differences are plotted spatially along
 the center-line of the fuel assembly in
 Figure~\ref{fig:serial_1_group_diff}. Interestingly, except for the
 MCSA-ILUT-MR-C calculation, all other 1-group calculations including
 GMRES had a maximum global flux difference of \sn{9.313}{-10} even
 though different spatial results were observed for all cases. For the
-MCSA-ILUT-MR-C calculation, a slightly larger maximum error of
-\sn{2.205}{-9} was observed for reasons that remain unexplained. All
-1-group calculations have a minimum observed absolute difference of 0
-with respect to the BiCGStab calculation.
+MCSA-ILUT-MR-C calculation, a slightly larger maximum relative
+difference of \sn{2.205}{-9} was observed for reasons that remain
+unexplained. All 1-group calculations have a minimum observed relative
+difference of 0 with respect to the BiCGStab calculation.
 
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/spn_equations/serial_1_group.pdf}
   \end{center}
-  \caption{\textbf{Absolute difference of the group 0 scalar flux
-      between the Aztec BiCGStab calculations and Aztec GMRES and the
-      MCSA variations for the 1-group fuel assembly criticality
-      calculation.} \textit{Left to right: GMRES-ILUT, MCSA-ILUT-R-C,
-      MCSA-ILUT-MR-C, MCSA-ILUT-R-EV, MCSA-ILUT-MR-EV. The fluxes are
-      plotted on a plane intersecting the center-line of the
-      assembly. Table~\ref{tab:spn_solver_defs} gives the description
-      for each solver type presented.}}
+  \caption{\textbf{Relative difference of the group 0 scalar flux
+      between the Aztec BiCGStab calculations, Aztec GMRES, Richardson
+      iteration, and the MCSA variations for the 1-group fuel assembly
+      criticality calculation.} \textit{Left to right: GMRES-ILUT,
+      MCSA-ILUT-R-C, MCSA-ILUT-MR-C, MCSA-ILUT-R-EV,
+      MCSA-ILUT-MR-EV. The fluxes are plotted on a plane intersecting
+      the center-line of the assembly. Table~\ref{tab:spn_solver_defs}
+      gives the description for each solver type presented.}}
   \label{fig:serial_1_group_diff}
 \end{figure}
 
 Table~\ref{tab:serial_differences_g1},
 Table~\ref{tab:serial_differences_g2}, and
 Table~\ref{tab:serial_differences_g4} give the maximum and minimum
-absolute differences of the cell scalar fluxes for all calculations
+relative differences of the cell scalar fluxes for all calculations
 and all energy groups using the BiCGStab calculation as the
 reference. All comparisons were performed within a group such that the
 differences for the MCSA-ILUT-R-C results in group 3 for the 4-group
@@ -1953,12 +1957,12 @@ given in the table, the maximum differences for all cases was less
 than the linear solver tolerance used to converge the flux at each
 eigenvalue iteration meaning that all values over the entire energy
 and spatial domain are within these limits. In addition, the minimum
-error for all calculations was observed to be zero, meaning that at
-least one mesh cell in all calculations for all energy groups the
-scalar flux values computed by all solvers were identical. Based on
-the flux results and the eigenvalue results presented here, the MCSA
-results should be deemed correct for the fuel assembly problem for
-serial calculations with multiple energy groups.
+relative difference for all calculations was observed to be zero,
+meaning that at least one mesh cell in all calculations for all energy
+groups the scalar flux values computed by all solvers were
+identical. Based on the flux results and the eigenvalue results
+presented here, the MCSA results should be deemed correct for the fuel
+assembly problem for serial calculations with multiple energy groups.
 
 \begin{table}[h!]
   \begin{center}
@@ -1968,17 +1972,18 @@ serial calculations with multiple energy groups.
       \multicolumn{1}{c}{\textbf{Minimum Difference}} &
       \multicolumn{1}{c}{\textbf{Maximum Difference}} \\
       \hline
-      GMRES-ILUT & 0 & 0.0 & \sn{9.313}{-10} \\
-      MCSA-ILUT-R-C & 0 & 0.0 & \sn{9.313}{-10} \\
-      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{2.205}{-9} \\
-      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{9.313}{-10} \\
-      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{9.313}{-10} \\
+      GMRES-ILUT & 0 & 0.0 & \sn{4.562}{-6} \\
+      MCSA-ILUT-R-C & 0 & 0.0 & \sn{2.099}{-5} \\
+      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{4.812}{-5} \\
+      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{2.371}{-5} \\
+      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{3.605}{-5} \\
+      Richardson-ILUT & 0 & 0.0 & \sn{1.531}{-5} \\
       \hline\hline
     \end{tabular}
   \end{center}
   \caption{\textbf{Serial scalar flux verification results for the
       1-group fuel assembly problem.} \textit{The maximum and minimum
-      absolute differences over the entire spatial domain are
+      relative differences over the entire spatial domain are
       presented with BiCGStab used as the reference. Each calculation
       was converged with the same eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
@@ -1994,23 +1999,25 @@ serial calculations with multiple energy groups.
       \multicolumn{1}{c}{\textbf{Minimum Difference}} &
       \multicolumn{1}{c}{\textbf{Maximum Difference}} \\
       \hline
-      GMRES-ILUT & 0 & 0.0 & \sn{2.794}{-9} \\
-      MCSA-ILUT-R-C & 0 & 0.0 & \sn{9.313}{-10} \\
-      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{9.313}{-10} \\
-      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{9.313}{-10} \\
-      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{9.313}{-10} \\
+      GMRES-ILUT & 0 & 0.0 & \sn{7.590}{-6} \\
+      MCSA-ILUT-R-C & 0 & 0.0 & \sn{5.308}{-6} \\
+      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{6.387}{-5} \\
+      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{4.197}{-5} \\
+      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{2.736}{-5} \\
+      Richardson-ILUT & 0 & 0.0 & \sn{3.976}{-6} \\
       \hline
-      GMRES-ILUT & 1 & 0.0 & \sn{4.657}{-10} \\
-      MCSA-ILUT-R-C & 1 & 0.0 & \sn{1.364}{-10} \\
-      MCSA-ILUT-MR-C & 1 & 0.0 & \sn{1.261}{-9} \\
-      MCSA-ILUT-R-EV & 1 & 0.0 & \sn{2.474}{-10} \\
-      MCSA-ILUT-MR-EV & 1 & 0.0 & \sn{5.857}{-10} \\
+      GMRES-ILUT & 1 & 0.0 & \sn{7.579}{-6} \\
+      MCSA-ILUT-R-C & 1 & 0.0 & \sn{1.645}{-5} \\
+      MCSA-ILUT-MR-C & 1 & 0.0 & \sn{2.634}{-4} \\
+      MCSA-ILUT-R-EV & 1 & 0.0 & \sn{1.797}{-4} \\
+      MCSA-ILUT-MR-EV & 1 & 0.0 & \sn{1.556}{-4} \\
+      Richardson-ILUT & 1 & 0.0 & \sn{4.031}{-6} \\
       \hline\hline
     \end{tabular}
   \end{center}
   \caption{\textbf{Serial scalar flux verification results for the
       2-group fuel assembly problem.} \textit{The maximum and minimum
-      absolute differences over the entire spatial domain are
+      relative differences over the entire spatial domain are
       presented with BiCGStab used as the reference. Each calculation
       was converged with the same eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
@@ -2026,35 +2033,39 @@ serial calculations with multiple energy groups.
       \multicolumn{1}{c}{\textbf{Minimum Difference}} &
       \multicolumn{1}{c}{\textbf{Maximum Difference}} \\
       \hline
-      GMRES-ILUT & 0 & 0.0 & \sn{9.313}{-10} \\
-      MCSA-ILUT-R-C & 0 & 0.0 & \sn{1.397}{-9} \\
-      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{1.870}{-9} \\
-      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{1.397}{-9} \\
-      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{1.869}{-9} \\
+      GMRES-ILUT & 0 & 0.0 & \sn{2.376}{-5} \\
+      MCSA-ILUT-R-C & 0 & 0.0 & \sn{2.639}{-5} \\
+      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{3.958}{-5} \\
+      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{2.749}{-5} \\
+      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{2.969}{-5} \\
+      Richardson-ILUT & 0 & 0.0 & \sn{2.189}{-5} \\
       \hline
-      GMRES-ILUT & 1 & 0.0 & \sn{5.821}{-11} \\
-      MCSA-ILUT-R-C & 1 & 0.0 & \sn{1.164}{-10} \\
-      MCSA-ILUT-MR-C & 1 & 0.0 & \sn{1.164}{-10} \\
-      MCSA-ILUT-R-EV & 1 & 0.0 & \sn{1.164}{-10} \\
-      MCSA-ILUT-MR-EV & 1 & 0.0 & \sn{1.164}{-10} \\
+      GMRES-ILUT & 0 & 0.0 & \sn{2.271}{-5} \\
+      MCSA-ILUT-R-C & 0 & 0.0 & \sn{3.702}{-5} \\
+      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{3.803}{-5} \\
+      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{4.142}{-5} \\
+      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{2.723}{-5} \\
+      Richardson-ILUT & 0 & 0.0 & \sn{2.137}{-5} \\
       \hline
-      GMRES-ILUT & 2 & 0.0 & \sn{1.164}{-10} \\
-      MCSA-ILUT-R-C & 2 & 0.0 & \sn{2.328}{-10} \\
-      MCSA-ILUT-MR-C & 2 & 0.0 & \sn{2.328}{-10} \\
-      MCSA-ILUT-R-EV & 2 & 0.0 & \sn{2.328}{-10} \\
-      MCSA-ILUT-MR-EV & 2 & 0.0 & \sn{2.328}{-10} \\
+      GMRES-ILUT & 0 & 0.0 & \sn{2.310}{-5} \\
+      MCSA-ILUT-R-C & 0 & 0.0 & \sn{2.490}{-5} \\
+      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{2.214}{-5} \\
+      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{4.456}{-5} \\
+      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{3.366}{-5} \\
+      Richardson-ILUT & 0 & 0.0 & \sn{2.143}{-5} \\
       \hline
-      GMRES-ILUT & 3 & 0.0 & \sn{1.164}{-10} \\
-      MCSA-ILUT-R-C & 3 & 0.0 & \sn{1.746}{-10} \\
-      MCSA-ILUT-MR-C & 3 & 0.0 & \sn{2.256}{-9} \\
-      MCSA-ILUT-R-EV & 3 & 0.0 & \sn{2.801}{-10} \\
-      MCSA-ILUT-MR-EV & 3 & 0.0 & \sn{2.256}{-10} \\
+      GMRES-ILUT & 0 & 0.0 & \sn{2.335}{-5} \\
+      MCSA-ILUT-R-C & 0 & 0.0 & \sn{3.045}{-5} \\
+      MCSA-ILUT-MR-C & 0 & 0.0 & \sn{2.696}{-5} \\
+      MCSA-ILUT-R-EV & 0 & 0.0 & \sn{1.946}{-4} \\
+      MCSA-ILUT-MR-EV & 0 & 0.0 & \sn{3.295}{-5} \\
+      Richardson-ILUT & 0 & 0.0 & \sn{2.161}{-5} \\
       \hline\hline
     \end{tabular}
   \end{center}
   \caption{\textbf{Serial scalar flux verification results for the
       4-group fuel assembly problem.} \textit{The maximum and minimum
-      absolute differences over the entire spatial domain are
+      relative differences over the entire spatial domain are
       presented with BiCGStab used as the reference. Each calculation
       was converged with the same eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
@@ -2144,8 +2155,7 @@ preconditioner for the fuel assembly problem.
       at each eigenvalue iteration for the fuel assembly problem for
       1, 2 and 4 energy groups.} \textit{Values are rounded to the
       first decimal place. Table~\ref{tab:spn_solver_defs} gives the
-      description for each solver type presented and Richardson-ILUT
-      is a ILUT preconditioned Richardson iteration.}}
+      description for each solver type presented.}}
   \label{tab:spn_comparison_iterations}
 \end{table}
 
