@@ -5,11 +5,11 @@
 In this chapter the fundamentals of Newton's method will be presented
 along with a brief discussion of inexact Newton methods. Newton-Krylov
 methods, a variant of inexact Newton methods, will be outlined
-including two techniques for numerically representing the Jacobian
-commonly used in today's applications. Following this, a new algorithm
-utilizing Monte Carlo Synthetic Acceleration will be presented and
-implementation details will be discussed. Using the new algorithm and
-a production fluid physics code, a group of challenging nonlinear
+including an automatic technique for generating the Jacobian commonly
+used in today's applications. Following this, a new nonlinear solution
+algorithm utilizing Monte Carlo Synthetic Acceleration will be
+presented and implementation details will be discussed. Using the new
+algorithm and a production fluid physics code, a group of challenging
 benchmark problems for the Navier-Stokes equations will be used to
 verify the correctness of the method relative to solutions obtained
 using conventional methods in various flow regimes and
@@ -91,15 +91,6 @@ nonlinear residual. Commonly, the following criteria is used:
   \label{eq:newton_stopping_criteria}
 \end{equation}
 where $\epsilon$ is a user defined tolerance parameter. 
-
-Newton's method is \textit{consistent} in that all components of the
-nonlinear functions that describe the physics we are modeling are
-updated simultaneously in the iteration sequence with respect to one
-another. This is in comparison to \textit{inconsistent} strategies,
-such as a pressure correction strategy for solving the Navier-Stokes
-equations \cite{pletcher_computational_1997}, where the components of
-$\ve{u}$ are updated in a staggered fashion depending on the
-particular equations that they are associated with.
 
 \subsection{Inexact Newton Methods}
 \label{subsec:inexact_newton_methods}
@@ -188,51 +179,6 @@ procedure, resulting in memory savings due to the shorter Lanzcos
 recurrence relation. Based on their numerical analysis, they observed
 GMRES to be the most robust for any given nonlinear problem and
 therefore used it for subsequent work in this area.
-
-\subsection{Jacobian-Free Approximation}
-\label{subsec:jacobian_free_approximation}
-In many cases, the Jacobian is difficult to form from the difference
-equations and costly to evaluate for large equation sets. For simple
-nonlinear cases such as the Navier-Stokes equations, the derivatives
-can be computed and coded, but due to the complexity of those
-derivatives and the resulting difference equations this task can be
-tedious, error prone, and must be repeated for every equation
-set. Furthermore, in their 1995 work, Knoll and McHugh also noted that
-a dominating part of their computation time was the evaluation of the
-difference equations for building the Jacobian
-\cite{knoll_newton-krylov_1995}. By recognizing that Krylov methods
-only need the action of the operator on a vector instead of the
-operator itself, the Jacobian can instead be approximated through
-various numerical methods including a difference-based Jacobian-free
-formulation.
-
-Jacobian-Free methods, and in particular \textit{Jacobian-Free
-  Newton-Krylov} (JFNK) methods \cite{knoll_jacobian-free_2004}, rely
-on forming the action of the Jacobian on a vector as required by the
-Krylov solver through a forward difference scheme. In this case, the
-action of the Jacobian on some vector $\ve{v}$ is given as:
-\begin{equation}
-  \ve{J}(\ve{u})\ve{v} = \frac{\ve{F}(\ve{u} + \epsilon \ve{v}) -
-    \ve{F}(\ve{u})}{\epsilon}\:,
-  \label{eq:jacobian_free_product}
-\end{equation}
-where $\epsilon$ is a small number typically on the order of machine
-precision. Kelley \cite{kelley_iterative_1995} points out a potential
-downfall of this formulation in that if the discretization error in
-$\ve{F}(\ve{u})$ is on the order of the perturbation parameter
-$\epsilon$, then the finite difference error from
-Eq~(\ref{eq:jacobian_free_product}) pollutes the solution. 
-
-In addition, Knoll and McHugh noted that for preconditioning purposes,
-part of the Jacobian must still explicitly be formed periodically and
-that linear solver robustness issues were magnified by the matrix-free
-approach due to the first-order approximation. This formation
-frequency coupled with the numerous evaluations of the Jacobian
-approximation create a situation where after so many nonlinear
-iterations, it becomes cheaper to instead fully form the Jacobian. For
-simple equation sets, this may only take 5-10 Newton iterations to
-reach this point while over 30 may be required for larger equations
-sets and therefore larger Jacobians.
 
 \subsection{Automatic Differentiation for Jacobian Generation}
 \label{subsec:automatic_differentiation}
