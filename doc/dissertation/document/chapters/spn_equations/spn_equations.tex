@@ -1785,18 +1785,17 @@ computing library Aztec \cite{heroux_overview_2005}. In addition to
 comparing the cell and group fluxes, the number of eigenvalue
 iterations required to converge the problem along with the eigenvalue
 itself will be compared as a means of verification. For the flux
-values, we look to the 2-norm of the absolute difference between the
-reference case and the comparison case in each energy group:
+values, we look to the 2-norm and infinity norm of the relative
+difference vector between the reference case and the comparison case
+in each energy group:
 \begin{equation}
-  || \ve{\Phi}_{ref}^g - \ve{\Phi}^g ||_2 < \epsilon_k\:,
-  \label{eq:norm_comparison}
+  \text{Relative Difference} = \frac{\ve{\Phi}_{ref}^g -
+    \ve{\Phi}^g}{\ve{\Phi}_{ref}^g}\:,
+  \label{eq:relative_difference_vector}
 \end{equation}
-such that this norm is less than the eigensolver tolerance,
-$\epsilon_k$. For this work, the BiCGStab results will be taken as the
-reference case. If the MCSA flux results satisfy
-Eq~(\ref{eq:norm_comparison}), they will be deemed correct for the
-purposes of this work. For the eigenvalues, we will look for the same
-agreement within the tolerance of the eigensolver.
+where the addition and subtraction operations are performed
+element-wise to construct the vector. For this work, the BiCGStab
+results will be taken as the reference case.
 
 For the verification calculations, all solvers will be preconditioned
 with ILUT using a drop tolerance of \sn{1}{-5} and a fill level of
@@ -1868,13 +1867,13 @@ group 0).
 
 For every combination of energy group structure and solver, the
 eigenvalue problem was converged with an eigensolver tolerance of
-$\epsilon_k = \sn{1}{-6}$ and a linear solver tolerance of \sn{1}{-8}
-in a serial calculation. Table~\ref{tab:serial_ev_results} gives the
-eigenvalue computed by each solver for each problem as well as the
-number of eigenvalue iterations required to converge. For every
-problem, each solver converged to the same eigenvalue up to the number
-of digits reported by the eigensolver eigensolver in the same number
-of eigenvalue iterations.
+\sn{1}{-6} and a linear solver tolerance of \sn{1}{-8} in a serial
+calculation. Table~\ref{tab:serial_ev_results} gives the eigenvalue
+computed by each solver for each problem as well as the number of
+eigenvalue iterations required to converge. For every problem, each
+solver converged to the same eigenvalue up to the number of digits
+reported by the eigensolver eigensolver in the same number of
+eigenvalue iterations.
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{lccc}\hline\hline
@@ -1920,40 +1919,43 @@ of eigenvalue iterations.
 
 Table~\ref{tab:serial_differences_g1},
 Table~\ref{tab:serial_differences_g2}, and
-Table~\ref{tab:serial_differences_g4} give the 2-norms of the cell
-scalar fluxes difference vectors for all calculations and all energy
-groups. All comparisons were performed within a group such that the
-differences for the MCSA-ILUT-R-C results in group 3 for the 4-group
-calculation were computed with the BiCGStab-ILUT solution in group 3
-for the 4-group calculation as a reference. For all group flux results
-given in the table, the maximum differences for all cases was less
-than the linear solver tolerance used to converge the flux at each
-eigenvalue iteration meaning that all values over the entire energy
-and spatial domain are within these limits. Based on the flux results
-and the eigenvalue results presented here, the MCSA results should be
-deemed correct for the fuel assembly problem for serial calculations
-with multiple energy groups.
+Table~\ref{tab:serial_differences_g4} give the infinity norms and
+2-norms of the flux relative difference vectors given by
+Eq~(\ref{eq:relative_difference_vector}) for all calculations and all
+energy groups. In general, we see good agreement in the two norm
+between the MCSA variants and the GMRES calculation, meaning that the
+have approximately the same variation from the BiCGStab
+calculation. We do note larger infinity norm values of this vector for
+some of the MCSA variants (i.e. group 1 in the 2-group calculation),
+however this large maximum value was not a global phenomenon with good
+agreement in the 2-norm for the calculations. Based on the good
+agreement between MCSA and GMRES for the relative difference of the
+flux and the eigenvalue results presented here, the MCSA results
+should be deemed correct for the fuel assembly problem for serial
+calculations with multiple energy groups.
 
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{lccc}\hline\hline
       \multicolumn{1}{c}{\textbf{Solver}} & 
       \multicolumn{1}{c}{\textbf{Group}} &
-      \multicolumn{1}{c}{\textbf{$|| \ve{\Phi}_{ref}^g - \ve{\Phi}^g ||_2$}} \\
+      \multicolumn{1}{c}{\textbf{$|| \cdot ||_{inf}$}} &
+      \multicolumn{1}{c}{\textbf{$|| \cdot ||_2$}} \\
       \hline
-      GMRES-ILUT & 0 & \sn{4.562}{-6} \\
-      MCSA-ILUT-R-C & 0 & \sn{2.099}{-5} \\
-      MCSA-ILUT-MR-C & 0 & \sn{4.812}{-5} \\
-      MCSA-ILUT-R-EV & 0 & \sn{2.371}{-5} \\
-      MCSA-ILUT-MR-EV & 0 & \sn{3.605}{-5} \\
-      Richardson-ILUT & 0 & \sn{1.531}{-5} \\
+      GMRES-ILUT & 0 & \sn{4.562}{-6} & \sn{6.746}{-5} \\
+      MCSA-ILUT-R-C & 0 & \sn{2.099}{-5} & \sn{2.541}{-4} \\
+      MCSA-ILUT-MR-C & 0 & \sn{4.812}{-5} & \sn{4.672}{-4} \\
+      MCSA-ILUT-R-EV & 0 & \sn{2.371}{-5} & \sn{2.740}{-4} \\
+      MCSA-ILUT-MR-EV & 0 & \sn{3.605}{-5} & \sn{2.554}{-4} \\
+      Richardson-ILUT & 0 & \sn{1.531}{-5} & \sn{2.771}{-4} \\
       \hline\hline
     \end{tabular}
   \end{center}
   \caption{\textbf{Serial scalar flux verification results for the
-      1-group fuel assembly problem.} \textit{BiCGStab is used as the
-      reference. Each calculation was converged with the same
-      eigensolver and linear solver
+      1-group fuel assembly problem.} \textit{The infinity norm and
+      2-norm of the relative flux vector in each group is given with
+      BiCGStab is used as the reference. Each calculation was
+      converged with the same eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
       description for each solver type presented.}}
   \label{tab:serial_differences_g1}
@@ -1964,28 +1966,30 @@ with multiple energy groups.
     \begin{tabular}{lccc}\hline\hline
       \multicolumn{1}{c}{\textbf{Solver}} & 
       \multicolumn{1}{c}{\textbf{Group}} &
-      \multicolumn{1}{c}{\textbf{$|| \ve{\Phi}_{ref}^g - \ve{\Phi}^g ||_2$}} \\
+      \multicolumn{1}{c}{\textbf{$|| \cdot ||_{inf}$}} &
+      \multicolumn{1}{c}{\textbf{$|| \cdot ||_2$}} \\
       \hline
-      GMRES-ILUT & 0 & \sn{7.590}{-6} \\
-      MCSA-ILUT-R-C & 0 & \sn{5.308}{-6} \\
-      MCSA-ILUT-MR-C & 0 & \sn{6.387}{-5} \\
-      MCSA-ILUT-R-EV & 0 & \sn{4.197}{-5} \\
-      MCSA-ILUT-MR-EV & 0 & \sn{2.736}{-5} \\
-      Richardson-ILUT & 0 & \sn{3.976}{-6} \\
+      GMRES-ILUT & 0 & \sn{7.590}{-6} & \sn{1.234}{-4} \\
+      MCSA-ILUT-R-C & 0 & \sn{5.308}{-6} & \sn{1.066}{-4} \\
+      MCSA-ILUT-MR-C & 0 & \sn{6.388}{-5} & \sn{2.233}{-4} \\
+      MCSA-ILUT-R-EV & 0 & \sn{4.197}{-5} & \sn{2.168}{-4} \\
+      MCSA-ILUT-MR-EV & 0 & \sn{2.736}{-5} & \sn{8.160}{-5} \\
+      Richardson-ILUT & 0 & \sn{3.976}{-6} & \sn{7.059}{-5} \\
       \hline
-      GMRES-ILUT & 1 & \sn{7.579}{-6} \\
-      MCSA-ILUT-R-C & 1 & \sn{1.645}{-5} \\
-      MCSA-ILUT-MR-C & 1 & \sn{2.634}{-4} \\
-      MCSA-ILUT-R-EV & 1 & \sn{1.797}{-4} \\
-      MCSA-ILUT-MR-EV & 1 & \sn{1.556}{-4} \\
-      Richardson-ILUT & 1 & \sn{4.031}{-6} \\
+      GMRES-ILUT & 1 & \sn{7.579}{-6} & \sn{1.246}{-4} \\
+      MCSA-ILUT-R-C & 1 & \sn{1.645}{-5} & \sn{1.210}{-4} \\
+      MCSA-ILUT-MR-C & 1 & \sn{6.635}{-4} & \sn{9.435}{-4} \\
+      MCSA-ILUT-R-EV & 1 & \sn{1.797}{-4} & \sn{2.983}{-4} \\
+      MCSA-ILUT-MR-EV & 1 & \sn{1.556}{-4} & \sn{2.055}{-4} \\
+      Richardson-ILUT & 1 & \sn{4.031}{-6} & \sn{7.110}{-5} \\
       \hline\hline
     \end{tabular}
   \end{center}
   \caption{\textbf{Serial scalar flux verification results for the
-      2-group fuel assembly problem.} \textit{BiCGStab is used as the
-      reference. Each calculation was converged with the same
-      eigensolver and linear solver
+      2-group fuel assembly problem.} \textit{The infinity norm and
+      2-norm of the relative flux vector in each group is given with
+      BiCGStab is used as the reference. Each calculation was
+      converged with the same eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
       description for each solver type presented.}}
   \label{tab:serial_differences_g2}
@@ -1996,42 +2000,44 @@ with multiple energy groups.
     \begin{tabular}{lccc}\hline\hline
       \multicolumn{1}{c}{\textbf{Solver}} & 
       \multicolumn{1}{c}{\textbf{Group}} &
-      \multicolumn{1}{c}{\textbf{$|| \ve{\Phi}_{ref}^g - \ve{\Phi}^g ||_2$}} \\
+      \multicolumn{1}{c}{\textbf{$|| \cdot ||_{inf}$}} &
+      \multicolumn{1}{c}{\textbf{$|| \cdot ||_2$}} \\
       \hline
-      GMRES-ILUT & 0 & \sn{2.376}{-5} \\
-      MCSA-ILUT-R-C & 0 & \sn{2.639}{-5} \\
-      MCSA-ILUT-MR-C & 0 & \sn{3.958}{-5} \\
-      MCSA-ILUT-R-EV & 0 & \sn{2.749}{-5} \\
-      MCSA-ILUT-MR-EV & 0 & \sn{2.969}{-5} \\
-      Richardson-ILUT & 0 & \sn{2.189}{-5} \\
+      GMRES-ILUT & 0 & \sn{2.376}{-5} & \sn{4.043}{-4} \\
+      MCSA-ILUT-R-C & 0 & \sn{2.639}{-5} & \sn{3.950}{-4} \\
+      MCSA-ILUT-MR-C & 0 & \sn{3.958}{-5} & \sn{4.635}{-4} \\
+      MCSA-ILUT-R-EV & 0 & \sn{2.749}{-5} & \sn{3.975}{-4} \\
+      MCSA-ILUT-MR-EV & 0 & \sn{2.969}{-5} & \sn{4.054}{-4} \\
+      Richardson-ILUT & 0 & \sn{2.189}{-5} & \sn{3.791}{-4} \\
       \hline
-      GMRES-ILUT & 1 & \sn{2.271}{-5} \\
-      MCSA-ILUT-R-C & 1 & \sn{3.702}{-5} \\
-      MCSA-ILUT-MR-C & 1 & \sn{3.803}{-5} \\
-      MCSA-ILUT-R-EV & 1 & \sn{4.142}{-5} \\
-      MCSA-ILUT-MR-EV & 1 & \sn{2.723}{-5} \\
-      Richardson-ILUT & 1 & \sn{2.137}{-5} \\
+      GMRES-ILUT & 1 & \sn{2.271}{-5} & \sn{3.952}{-4} \\
+      MCSA-ILUT-R-C & 1 & \sn{3.701}{-5} & \sn{3.933}{-4} \\
+      MCSA-ILUT-MR-C & 1 & \sn{3.803}{-5} & \sn{3.933}{-4} \\
+      MCSA-ILUT-R-EV & 1 & \sn{4.142}{-5} & \sn{4.011}{-4} \\
+      MCSA-ILUT-MR-EV & 1 & \sn{2.723}{-5} & \sn{4.030}{-4} \\
+      Richardson-ILUT & 1 & \sn{2.137}{-5} & \sn{3.768}{-4} \\
       \hline
-      GMRES-ILUT & 2 & \sn{2.310}{-5} \\
-      MCSA-ILUT-R-C & 2 & \sn{2.490}{-5} \\
-      MCSA-ILUT-MR-C & 2 & \sn{2.214}{-5} \\
-      MCSA-ILUT-R-EV & 2 & \sn{4.456}{-5} \\
-      MCSA-ILUT-MR-EV & 2 & \sn{3.366}{-5} \\
-      Richardson-ILUT & 2 & \sn{2.143}{-5} \\
+      GMRES-ILUT & 2 & \sn{2.310}{-5} & \sn{4.021}{-4} \\
+      MCSA-ILUT-R-C & 2 & \sn{2.490}{-5} & \sn{3.956}{-4} \\
+      MCSA-ILUT-MR-C & 2 & \sn{2.214}{-5} & \sn{3.608}{-4} \\
+      MCSA-ILUT-R-EV & 2 & \sn{4.456}{-5} & \sn{3.833}{-4} \\
+      MCSA-ILUT-MR-EV & 2 & \sn{3.366}{-5} & \sn{3.797}{-4} \\
+      Richardson-ILUT & 2 & \sn{2.143}{-5} & \sn{3.767}{-4} \\
       \hline
-      GMRES-ILUT & 3 & \sn{2.335}{-5} \\
-      MCSA-ILUT-R-C & 3 & \sn{3.045}{-5} \\
-      MCSA-ILUT-MR-C & 3 & \sn{2.696}{-5} \\
-      MCSA-ILUT-R-EV & 3 & \sn{1.946}{-4} \\
-      MCSA-ILUT-MR-EV & 3 & \sn{3.295}{-5} \\
-      Richardson-ILUT & 3 & \sn{2.161}{-5} \\
+      GMRES-ILUT & 3 & \sn{2.335}{-5} & \sn{4.029}{-4} \\
+      MCSA-ILUT-R-C & 3 & \sn{3.045}{-5} & \sn{3.963}{-4} \\
+      MCSA-ILUT-MR-C & 3 & \sn{2.696}{-5} & \sn{3.606}{-4} \\
+      MCSA-ILUT-R-EV & 3 & \sn{1.947}{-5} & \sn{4.283}{-4} \\
+      MCSA-ILUT-MR-EV & 3 & \sn{3.295}{-5} & \sn{3.837}{-4} \\
+      Richardson-ILUT & 3 & \sn{2.161}{-5} & \sn{3.772}{-4} \\
       \hline\hline
     \end{tabular}
   \end{center}
   \caption{\textbf{Serial scalar flux verification results for the
-      4-group fuel assembly problem.} \textit{BiCGStab is used as the
-      reference. Each calculation was converged with the same
-      eigensolver and linear solver
+      4-group fuel assembly problem.} \textit{The infinity norm and
+      2-norm of the relative flux vector in each group is given with
+      BiCGStab is used as the reference. Each calculation was
+      converged with the same eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
       description for each solver type presented.}}
   \label{tab:serial_differences_g4}
