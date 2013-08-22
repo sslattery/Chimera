@@ -427,10 +427,9 @@ Eq~(\ref{eq:A_block_matrix}) are readily apparent.
 Based on this both block and diagonally dominant structure for
 matrices formed by the general multigroup $SP_N$ equations, we choose
 \textit{block Jacobi} preconditioning as a left preconditioner for the
-system. Like point Jacobi preconditioning, block Jacobi
-preconditioning extracts the diagonal elements of the matrix as the
-preconditioner where now the elements extracted are the blocks on the
-diagonal as shown on the left side of
+system. Block Jacobi preconditioning extracts the diagonal elements of
+the matrix as the preconditioner where now the elements extracted are
+the blocks on the diagonal as shown on the left side of
 Figure~\ref{fig:block_jacobi_ex}. Shown on the right side of
 Figure~\ref{fig:block_jacobi_ex}, inversion of the preconditioner is
 trivial with each diagonal block inverted separately. For the $SP_N$
@@ -447,8 +446,6 @@ $N_g\times(N+1)/2$.
       preconditioner is trivial and decoupled by block.}}
   \label{fig:block_jacobi_ex}
 \end{figure}
-In addition, in the limit of a block size of one, the block Jacobi
-method reduces to the point Jacobi method.
 
 For high performance implementations this has several attractive
 properties. First, the blocks in the matrix come from the energy/angle
@@ -463,13 +460,12 @@ problems meaning that established dense matrix methods can be used for
 fast inversion.
 
 Spectral radius computations for the block Jacobi preconditioned
-iteration matrix were performed for the same problems as the point
-Jacobi preconditioned case. Table~\ref{tab:group1bj} gives the results
-for the 1-group case, Table~\ref{tab:group10dsbj} for the 10-group
-case with full downscatter only and Table~\ref{tab:group10usbj} for
-the 10-group case with full downscatter and full upscatter. A block
-size of $N_g\times(N+1)/2$ was used for the preconditioner in all
-cases.
+iteration matrix were performed with Table~\ref{tab:group1bj} giving
+the results for the 1-group case, Table~\ref{tab:group10dsbj} for the
+10-group case with full downscatter only and
+Table~\ref{tab:group10usbj} for the 10-group case with full
+downscatter and full upscatter. A block size of $N_g\times(N+1)/2$ was
+used for the preconditioner in all cases.
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{cccccc}\hline\hline
@@ -678,23 +674,18 @@ significantly more difficult problem manifesting itself in an
 iteration matrix with a larger spectral radius. When using MCSA, the
 linear operator applied to $\mathbf{\Phi}^{n+1}$ at each eigenvalue
 iteration will dictate convergence and remain unchanged throughout the
-computation\footnote{The operator will change if, for example, physics
-  feedback through temperature or potentially burnup is
-  considered. These additional physics will modify the cross sections
-  used to assemble $\mathbf{M}$. The calculations presented here will
-  consist of a single eigenvalue calculation with a static
-  $\mathbf{M}$.} while the addition of fission to the system will only
-modify the source of neutrons and the multiplication factor at every
-eigenvalue iteration while not affecting Monte Carlo transport.
+eigenvalue computation while the addition of fission to the system
+will only modify the source of neutrons and the multiplication factor
+at every eigenvalue iteration while not affecting Monte Carlo
+transport.
  
 \subsection{Preliminary Jacobi Preconditioned Calculations}
 \label{subsec:jacobi_prec_assembly_calc}
-Based on the success of block Jacobi preconditioning with the test
-problem used for the spectral radius parameter study, we use it first
-to solve the $17 \times 17$ fuel assembly problem. A single energy
-group problem was first solved with $SP_1$ discretization, effectively
-giving the one-speed neutron diffusion system for the fuel assembly
-resulting in 20,088 degrees of freedom in the
+We first use block Jacobi preconditioning to solve the $17 \times 17$
+fuel assembly problem. A single energy group problem was first
+computed with $SP_1$ discretization, effectively giving the one-speed
+neutron diffusion system for the fuel assembly resulting in 20,088
+degrees of freedom in the
 problem. Figure~\ref{fig:block_jacobi_res_mcsa} gives the residual
 infinity norm as a function of iteration for the MCSA linear solve in
 the first eigenvalue iteration using 25,000 stochastic histories at
@@ -760,13 +751,11 @@ solution.
 
 \subsection{MCSA Breakdown}
 \label{subsec:mcsa_break_down}
-For the fuel assembly problem, the initial block Jacobi
-preconditioned\footnote{For 1-group $SP_1$ problems the block size is
-  1, giving a point Jacobi preconditioner.}  calculations used a
-one-speed $SP_1$ discretization, effectively giving a diffusion
-system. To study the breakdown of MCSA at iteration matrix spectral
-radii near one, we will use the simpler homogeneous 2-dimensional
-one-speed neutron diffusion system presented in
+For the fuel assembly problem, the initial block Jacobi preconditioned
+calculations used a one-speed $SP_1$ discretization, effectively
+giving a diffusion system. To study the breakdown of MCSA at iteration
+matrix spectral radii near one, we will use the simpler homogeneous
+2-dimensional one-speed neutron diffusion system presented in
 Appendix~\ref{chap:diffusion_problem} to isolate this behavior. In
 this system, we can vary the cross sections while maintaining a fixed
 grid in order to achieve varying spectral radii. For these studies, we
@@ -880,16 +869,20 @@ rapidly and the resulting poor performance is compounded by those
 histories being increasingly expensive to compute. To overcome this
 difficulty, advanced preconditioning strategies for the $SP_N$ problem
 are required beyond simple Jacobi methods that can reduce the spectral
-radius into a region of better MCSA performance. Several modern
-algebraic preconditioning strategies will be presented here and used
-within the explicit preconditioning framework given by
-Eq~(\ref{eq:left_right_mcsa}). Data showing their effects on MCSA
-solutions of the fuel assembly criticality problem will be presented.
+radius into a region of better MCSA performance. Two modern algebraic
+preconditioning strategies, ILUT and SPAINV, will be presented here
+and used within the explicit preconditioning framework given by
+Eq~(\ref{eq:left_right_mcsa}). Data
+showing their effects on MCSA solutions of the fuel assembly
+criticality problem will be presented.
 
 \subsection{ILUT Preconditioning}
 \label{subsec:spn_ilut_preconditioning}
-Incomplete lower-upper (ILU) factorizations of the linear operator can
-be used a simple mechanism to form an approximate inverse of a
+ILUT preconditioning is chosen due to its applicability to problems
+that have a dominating elliptic compoenent such as the fuel assembly
+problem and because it is easily formulated algebraicly. Incomplete
+lower-upper (ILU) factorizations of the linear operator can be used a
+simple mechanism to form an approximate inverse of a
 preconditioner. To build the factorization, the sparse upper and lower
 triangular factors, $\mathbf{L}$ and $\mathbf{U}$, are computed such
 that the residual matrix formed by the factorization
@@ -1063,19 +1056,22 @@ $\mathbf{b} \in \mathbb{R}^{N}$ where $||\mathbf{b}||_1 \neq 0$.
 
 \subsection{Sparse Approximate Inverse Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
-Explicit formation of the preconditioner inverse is a requirement of
-the current MCSA preconditioning strategy. As a result, although ILUT
-preconditioning provided excellent iterative performance, a
-significant time penalty is paid to extract the inverse of the
-triangular factors through $N$ triangular solves. In addition, this
-explicit inversion yielded a composite linear operator that was dense,
-requiring modification of the system in order to achieve better
-scalability and Monte Carlo performance. Sparse approximate inverse
-(SPAINV) preconditioning is a technique that may potentially alleviate
-both of these constraints at the cost of reduced iterative
-performance. The method produces a sparse approximation of the inverse
-matrix directly by minimizing the Frobenius norm of the residual
-matrix \cite{saad_iterative_2003}:
+SPAINV is chosen because it the true inverse of the preconditioner is
+byproduct of the algorithm and the algorithm seeks to maintain the
+sparsity of the inverse preconditioner, potentially alleviating some
+of the issues observed with ILUT. Explicit formation of the
+preconditioner inverse is a requirement of the current MCSA
+preconditioning strategy. As a result, although ILUT preconditioning
+provided excellent iterative performance, a significant time penalty
+is paid to extract the inverse of the triangular factors through $N$
+triangular solves. In addition, this explicit inversion yielded a
+composite linear operator that was dense, requiring modification of
+the system in order to achieve better scalability and Monte Carlo
+performance. Sparse approximate inverse (SPAINV) preconditioning is a
+technique that may potentially alleviate both of these constraints at
+the cost of reduced iterative performance. The method produces a
+sparse approximation of the inverse matrix directly by minimizing the
+Frobenius norm of the residual matrix \cite{saad_iterative_2003}:
 \begin{equation}
   || \mathbf{I} - \mathbf{A} \mathbf{M} ||^2_F =
   \sum_{j=1}^N ||\mathbf{e}_j - \mathbf{A} \mathbf{m}_j||^2_2 \:,
@@ -1183,118 +1179,6 @@ the preconditioner grows in size.
       for a different SPAINV level pattern. Levels of 3, 4, 5, 6, and
       7 were used.}}
   \label{fig:spainv_quality}
-\end{figure}
-
-\clearpage
-
-\subsection{SPAINV Improved ILUT Preconditioning}
-\label{subsec:spn_spainv_preconditioning}
-As a means to improve convergence over using only SPAINV
-preconditioning, ILUT preconditioning may be modified through an
-additional application of SPAINV
-(SPAINV-ILUT)\cite{saad_iterative_2003}. For the ILUT preconditioning
-case we have the following linear problem to solve for the substituted
-variable:
-\begin{equation}
-  \mathbf{L}^{-1} \mathbf{A} \mathbf{U}^{-1} \mathbf{u} =
-  \mathbf{L}^{-1} \mathbf{b}\:.
-  \label{eq:ilut_standalone}
-\end{equation}
-We then apply SPAINV and minimize the following problem, this time on
-the left:
-\begin{equation}
-  || \mathbf{I} - \mathbf{M} \mathbf{L}^{-1} \mathbf{A}
-  \mathbf{U}^{-1} ||^2_F\:,
-  \label{eq:ilut_minimize}
-\end{equation}
-giving a new preconditioned system:
-\begin{equation}
-  \mathbf{M} \mathbf{L}^{-1} \mathbf{A} \mathbf{U}^{-1} \mathbf{u} =
-  \mathbf{M} \mathbf{L}^{-1} \mathbf{b}\:.
-  \label{eq:ilut_spainv}
-\end{equation}
-Doing this permits a smaller fill level to be used with ILUT and a
-lower-order sparsity pattern to be used with SPAINV, giving marginally
-more sparsity in the resulting composite linear operator while
-maintaining good iterative performance.
-
-MCSA preconditioned with SPAINV-ILUT was also used to solve the same
-fuel assembly problem as with the other preconditioners for the same
-1-group $SP_1$ discretization. To study convergence sensitivity to
-SPAINV-ILUT parameters, the ILUT drop tolerance and ILUT fill level
-were parametrically varied with the number of iterations to converge a
-single eigenvalue iteration for the fuel assembly problem recorded
-along with the maximum number of non-zero entries observed in all
-matrix rows for the left/right preconditioned composite linear
-operator. SPAINV parameters for the data presented here were fixed as
-it was found that the preconditioning quality was largely insensitive
-to their variation. In addition, the fact that SPAINV is being used to
-preconditioned a problem already preconditioned with ILUT means that
-the input matrix sparsity pattern is already somewhat dense and large
-SPAINV levels would result in an even denser system. Therefore, a
-smaller SPAINV sparsity pattern level will be used for this
-preconditioning. For each calculation, the number of iterations
-required to converge reported was for a single eigenvalue iteration.
-Again, \sn{3}{4} histories are used at each MCSA iteration to compute
-the Monte Carlo correction using the adjoint collision estimator. All
-SPAINV-ILUT calculations reported here were performed on a single CPU.
-
-Figure~\ref{fig:spainv_ilut_iterations} gives the number of iterations
-required to converge as a function of ILUT drop tolerance for ILUT
-fill levels of 1.5, 2.0, 3.0, 4.0 and 5.0 with a fixed SPAINV
-threshold of 1.0 and sparsity level of 1. SPAINV threshold values
-higher than 1.0 resulted in a loss of convergence and lower values did
-not significantly affect performance. Larger sparsity levels resulted
-in a composite operator that was too dense and a prohibitive amount of
-CPU time required to compute the preconditioner. At smaller levels of
-fill, the benefits of using an additional step of SPAINV
-preconditioning are readily observed with the number of iterations
-required to converge cut in half for large drop tolerances. For
-smaller drop tolerances and higher ILUT levels of fill, the additional
-step of SPAINV preconditioning offers marginal improvement to
-iterative performance. As shown in Figure~\ref{fig:spainv_ilut_size},
-because ILUT is used in the preconditioning sequence, sparsity is
-again lost with only marginally improved non-zero entry numbers due to
-the application of the SPAINV threshold. As a result, the quality
-metrics given by Figure~\ref{fig:spainv_ilut_quality} are only
-marginally better than those observed for ILUT preconditioning and
-much larger than the SPAINV quality metric values.
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/psilut_iterations.pdf}
-  \end{center}
-  \caption{\textbf{Number of MCSA iterations required to converge a
-      single eigenvalue iteration for the fuel assembly problem with
-      SPAINV-ILUT preconditioning as a function of ILUT drop
-      tolerance.} \textit{Each colored curve represents the row size
-      for a different ILUT fill level. Fill levels of 1.5, 2.0, 3.0,
-      4.0, and 5.0 were used.}}
-  \label{fig:spainv_ilut_iterations}
-\end{figure}
-
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/psilut_size.pdf}
-  \end{center}
-  \caption{\textbf{Maximum number of non-zero entries observed for all
-      rows in the composite linear operator for the fuel assembly
-      problem with SPAINV-ILUT preconditioning given as a function of
-      ILUT drop tolerance.} \textit{Each colored curve represents the
-      row size for a different ILUT fill level. Fill levels of 1.5,
-      2.0, 3.0, 4.0 and 5.0 were used.}}
- \label{fig:spainv_ilut_size}
-\end{figure}
-
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/psilut_quality.pdf}
-  \end{center}
-  \caption{\textbf{SPAINV-ILUT preconditioning quality metric for the
-      fuel assembly problem given as a function of ILUT drop
-      tolerance.} \textit{Each colored curve represents the row size
-      for a different ILUT fill level. Fill levels of 1.5, 2.0, 3.0,
-      4.0 and 5.0 were used.}}
-  \label{fig:spainv_ilut_quality}
 \end{figure}
 
 \clearpage
