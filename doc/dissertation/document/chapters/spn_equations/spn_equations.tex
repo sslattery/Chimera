@@ -1,13 +1,12 @@
 \chapter{Monte Carlo Synthetic Acceleration\\ Methods for the $SP_N$ Equations}
 \label{ch:spn_equations}
 
-In this chapter, we briefly derive the simplified $P_N$ ($SP_N$)
-equations, closely following the work of Evans
+In this chapter, we state the neutron transport equation and briefly
+derive the simplified $P_N$ ($SP_N$) equations in both a fixed source
+and eigenvalue form, closely following the work of Evans
 \cite{evans_simplified_2013}, in order to gain full understanding of
 the underlying system and its potential behavior in a Monte Carlo
-context. From the $P_N$ equations, we apply a set of approximations to
-yield the $SP_N$ equations for fixed source and criticality
-problems. Using the fully-formed linear operator for the transport
+context. Using the fully-formed linear operator for the transport
 problem, we explore solutions to the $SP_N$ equations with Monte Carlo
 Synthetic Acceleration using a challenging light water reactor fuel
 assembly criticality calculation as the driving problem. Several
@@ -19,16 +18,15 @@ For Jacobi-based preconditioners, convergence with MCSA is difficult
 if not impossible for ill-conditioned systems with this behavior
 demonstrated using a simple neutron diffusion problem. In order to
 effectively solve the $SP_N$ equations for the fuel assembly problem,
-a suite of preconditioners along with a relaxation scheme is developed
-and studied within the context of MCSA. Using these preconditioners,
-several additional issues are observed and alleviated to a certain
-extent by developing and applying the reduced domain
-approximation. MCSA solutions for the fuel assembly problem are then
-verified by comparing the solutions against production Krylov solvers
-for problems with varying numbers of energy groups. Finally
-performance is analyzed through comparison with those same Krylov
-solvers in terms of both iterative performance and CPU timing using
-the same set of problems utilized for the verification.
+a suite of preconditioners is developed and studied within the context
+of MCSA. Using these preconditioners, several additional issues are
+observed and alleviated to a certain extent by developing and applying
+the reduced domain approximation. MCSA solutions for the fuel assembly
+problem are then verified by comparing the solutions against
+production Krylov solvers for problems with varying numbers of energy
+groups. Finally performance is analyzed through comparison with those
+same Krylov solvers in terms of both iterative performance and CPU
+timing using the same set of problems utilized for the verification.
 
 %%---------------------------------------------------------------------------%%
 \section{The Neutron Transport Equation}
@@ -1152,20 +1150,6 @@ see a reduction in the quality metric as a function of the reduced
 domain fill level, achieving 2 orders of magnitude reduction in the
 quality metric for the ILUT preconditioning.
 
-Although applying the reduced domain approximation results in a
-successful recovery of sparsity for the Monte Carlo problem while
-maintaining good convergence properties with ILUT, there is still an
-issue of forming the composite operator before applying the
-approximation and potentially generating the transpose of this
-operator in the case of the adjoint Monte Carlo method. Because of
-this, memory and scaling issues may still be observed when building
-the probability and weight matrices for the Monte Carlo problem. In
-addition, the expensive extraction of the inverse of the
-preconditioning operators for the explicit scheme creates a
-significant cost in overall performance. Future work in this area
-should be considerate of these important components of the
-preconditioned MCSA algorithm.
-
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4.25in]{chapters/spn_equations/rda_iterations.pdf}
@@ -1191,10 +1175,22 @@ preconditioned MCSA algorithm.
   \label{fig:rda_quality}
 \end{figure}
 
-\clearpage
+Although applying the reduced domain approximation results in a
+successful recovery of sparsity for the Monte Carlo problem while
+maintaining good convergence properties with ILUT, there is still an
+issue of forming the composite operator before applying the
+approximation and potentially generating the transpose of this
+operator in the case of the adjoint Monte Carlo method. Because of
+this, memory and scaling issues may still be observed when building
+the probability and weight matrices for the Monte Carlo problem. In
+addition, the expensive extraction of the inverse of the
+preconditioning operators for the explicit scheme creates a
+significant cost in overall performance. Future work in this area
+should be considerate of these important components of the
+preconditioned MCSA algorithm.
 
 %%---------------------------------------------------------------------------%%
-\section{MCSA Verification\ }
+\section{MCSA Verification}
 \label{sec:spn_mcsa_verification}
 Through the numerical studies presented in this chapter, we have
 developed a set of preconditioning techniques that permit MCSA to be
@@ -1472,7 +1468,7 @@ groups.
 \clearpage 
 
 %%---------------------------------------------------------------------------%%
-\section{MCSA Performance Comparison to Conventional Methods\ }
+\section{MCSA Performance Comparison to Conventional Methods}
 \label{sec:spn_comparison}
 With the same set of solver parameters used for verification
 calculation, MCSA will now be compared to the same Krylov solvers in
@@ -1643,7 +1639,7 @@ will be required to improve upon the explicit preconditioning scheme
 presented here.
 
 %%---------------------------------------------------------------------------%%
-\section{Summary\ }
+\section{Summary}
 \label{sec:mc_summary}
 
 In this chapter, the Monte Carlo Synthetic Acceleration method has
@@ -1670,8 +1666,6 @@ observations and findings.
   the $SP_N$ equations to obtain convergence with ILUT chosen for
   subsequent investigations
 \item The reduced domain approximation was introduced to mitigate the
-  consequences of composite linear operator generation
-\item The reduced domain approximation was required to mitigate the
   memory and performance constraints of the explicit preconditioning
   strategy although both remain significant obstacles
 \item MCSA relaxation parameters were developed and observed to
