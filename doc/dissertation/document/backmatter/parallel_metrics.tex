@@ -1,0 +1,125 @@
+%%---------------------------------------------------------------------------%%
+\chapter{Parallel Performance Metrics }
+\label{chap:parallel_metrics}
+
+How effectively the presented algorithms parallelize MCSA will be
+determined by several performance measures. For this work, these
+measures will come directly from Keyes' primer on the scalability of
+domain decomposed methods and specifically his discussion on how to
+measure their parallel performance \cite{keyes_how_1999}. All of
+these metrics are derived from two measured quantities: the number of
+iterations required for convergence and the total wall time required
+for convergence. Each of these quantities are then measured in varying
+parameter studies by changing the number of processes in a simulation
+and by varying the local or global problem size. Using the notation of
+Keyes, we will define \textit{parallel efficiency} as $\eta(N,P)$
+where the efficiency is a function of the global problem size, $N$,
+and the number of processes in the calculation, $P$. There are several
+types of efficiencies that will be useful in our analysis of
+scalability with different definitions depending on the type of
+parametric scaling study performed. For all efficiencies, a value of
+100\% is considered perfect while a value of 0\% signals the worst
+possible performance. Often, as was observed in this work, it is the
+case that efficiencies above 100\% are computed in certain scaling
+studies. For the data presented in the following sections, an
+explanation of each observed case of super-unitary efficiencies will
+be provided.
+
+Of primary interest to the nuclear engineer is the \textit{strong
+  scaling} performance of an algorithm
+\cite{siegel_analysis_2012}. In this type of scaling study, the
+global problem size is fixed and the local problem size changes with
+the number of processes in the calculation. In this case, as $P$
+increases, $N$ is fixed, thus reducing the local problem size and
+performance by having a larger ratio of communication to computational
+work. This type of scaling is important because typically the global
+problem size is fixed due to the problem of interest. Consider the
+desire for a high fidelity neutronics simulation of the entire core of
+a nuclear reactor. In this case, the global problem is known from the
+geometry definition including the number of fuel assemblies and the
+geometry of those assemblies all the way down to the resolution of the
+space, angle, and energy discretizations required in order to capture
+physical phenomena of interest. Because the global problem size is
+known a priori, strong scaling is an important measure of how useful a
+solution technique is when larger and larger values of $P$ are used to
+solve the problem. Ideally, the time to solution for the the problem
+will decrease linearly as a function of $P$, permitting a faster time
+to solution using the maximum available resources and thus making sure
+all $P$ are positively affecting the runtime of the problem.
+
+For strong scaling, the objective is to then decrease the runtime of a
+fixed size global problem as a linear function of $P$. Based on this,
+we can define the strong scaling \textit{absolute efficiency} as:
+\begin{equation}
+  \eta_{strong}(N,P) = \frac{1}{P} \frac{T(N,1)}{T(N,P)}\:,
+  \label{eq:strong_scaling_absolute}
+\end{equation}
+where $T(N,P)$ is the wall time for a computation of global size $N$
+using $P$ processes. Note here that this particular definition is
+measured with respect to a serial computation. On leadership class
+machines, it is often the case that a problem size large enough to
+effectively execute on $O(10,000)$ cores or larger is significantly
+larger than any problem that may be solved by a single core due to
+memory restrictions. Therefore, we consider absolute scaling for a
+base case where $Q$ processes are used instead of a serial
+computation:
+\begin{equation}
+  \eta_{strong}(N,P|Q) = \frac{Q}{P} \frac{T(N,Q)}{T(N,P)}\:.
+  \label{eq:strong_scaling_absolute_ref}
+\end{equation}
+The absolute efficiency measure presented here only considers the
+total time to solution. Often, that total time to solution may be
+changing for an iterative method due to the fact that the number of
+iterations required to converge may be changing as a function of
+$P$. This will often happen in cases where modifying $N$ changes the
+spectral character of the problem, often making it stiffer and
+therefore more difficult to solve when $N$ increases. Therefore we
+also consider \textit{algorithmic efficiency} from Keyes' work which
+considers this potential change in iteration count:
+\begin{equation}
+  \eta_{alg}(N,P|Q) = \frac{I(N,Q)}{I(N,P)}\:,
+  \label{eq:algorithmic_efficiency}
+\end{equation}
+where $I(N,P)$ is the number of iterations required to converge a
+problem of global size $N$ computed using $P$ processes. We can then
+adjust the absolute efficiency using this new algorithmic efficiency
+in order to compute the parallel scalability of a single iteration
+such that algorithmic effects may be neglected. We define the
+\textit{implementation efficiency} as:
+\begin{equation}
+  \eta_{impl}(N,P|Q) = \frac{\eta}{\eta_{alg}}\:,
+  \label{eq:implementation_efficiency}
+\end{equation}
+using the absolute efficiency in the numerator, giving an effective
+measure of scalability of a single iteration of the algorithm.
+
+In addition to strong scaling, in certain cases it is useful to
+consider the \textit{weak scaling} of an iterative method. In this
+case, the ratio $N/P$ is fixed such that the local problem size
+remains the same for all values of $P$. In this case, the objective is
+to maintain a constant wall time while both $N$ and $P$ grow as a
+fixed ratio. In this case, we define the absolute efficiency as:
+\begin{equation}
+  \eta_{weak}(M|N,P|Q) = \frac{T(M,Q)}{T(N,P)}\:,
+  \label{eq:weak_scaling_absolute}
+\end{equation}
+subject to the constraint $M/Q = N/P$. The scaling is perfect if the
+runtime is static for all $P$ when $N/P$ is fixed. 
+
+Often, weak scaling is of interest to the nuclear engineer due to the
+fact that the computational resources available are fixed and may not
+be able to contain the entire global problem of interest. In this
+case, an algorithm with good weak scaling performance permits all of
+the computational resources available to be used effectively to allow
+for the highest fidelity problem possible to be solved. In addition,
+for the resources available, the memory to processor ratio on a
+distributed machine is often fixed, giving an exercise in fixed $N/P$
+to solve the highest fidelity problem possible. Therefore, good weak
+scaling should not be viewed as an enhancement of time to solution for
+the engineer but rather permitting a higher fidelity problem to be
+solved within a given time constraint. For problems where increasing
+fidelity increases the stiffness of the system, there is often a
+trade-off between the absolute efficiencies computed for a given
+method and the degrading algorithmic efficiencies that arise when
+increasing the fidelity. Both time and hardware constraints should be
+considered when preparing a parallel calculation.
