@@ -240,8 +240,7 @@ source has now been distributed through the system:
 \end{equation}
 and $\mathbf{A}$ a matrix of angular scattering terms:
 % NOTE: I copied the following matrix directly out of Tom's tech note
-% on the SPn equations which I am effectively following here because I
-% was feeling lazy. I have verified its correctness.
+% on the SPn equations.
 \begin{equation}
   \mathbf{A} = 
   {\tiny \begin{bmatrix}
@@ -337,9 +336,10 @@ radius of the iteration matrix formed by the $SP_N$ equations while
 parametrically varying the $SP_N$ order, the $P_N$ order, the number
 of energy groups, and upscattering/downscattering between energy
 groups for Jacobi preconditioned problems to ensure that this type of
-preconditioning will be applicable. For each problem in the parameter
-study, the values given in Table~\ref{tab:spn_fixed_parameters} were
-fixed for each spatial location and energy group.
+preconditioning will be applicable to the fuel assembly problem. For
+each problem in the parameter study, the values given in
+Table~\ref{tab:spn_fixed_parameters} were fixed for each spatial
+location and energy group.
 
 \begin{table}[h!]
   \begin{center}
@@ -878,14 +878,14 @@ criticality problem will be presented.
 
 \subsection{ILUT Preconditioning}
 \label{subsec:spn_ilut_preconditioning}
-ILUT preconditioning is chosen due to its applicability to problems
-that have a dominating elliptic compoenent such as the fuel assembly
-problem and because it is easily formulated algebraicly. Incomplete
-lower-upper (ILU) factorizations of the linear operator can be used a
-simple mechanism to form an approximate inverse of a
-preconditioner. To build the factorization, the sparse upper and lower
-triangular factors, $\mathbf{L}$ and $\mathbf{U}$, are computed such
-that the residual matrix formed by the factorization
+ILUT preconditioning is chosen first due to its applicability to
+problems that have a dominating elliptic component such as the fuel
+assembly problem or other problems with a high scattering to
+absorption ratio. Incomplete lower-upper (ILU) factorizations of the
+linear operator can be used a simple mechanism to form an approximate
+inverse of a preconditioner. To build the factorization, the sparse
+upper and lower triangular factors, $\mathbf{L}$ and $\mathbf{U}$, are
+computed such that the residual matrix formed by the factorization
 \cite{saad_iterative_2003}:
 \begin{equation}
   \mathbf{R} = \mathbf{L} \mathbf{U} - \mathbf{A} \:,
@@ -1056,21 +1056,24 @@ $\mathbf{b} \in \mathbb{R}^{N}$ where $||\mathbf{b}||_1 \neq 0$.
 
 \subsection{Sparse Approximate Inverse Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
-SPAINV is chosen because it the true inverse of the preconditioner is
-byproduct of the algorithm and the algorithm seeks to maintain the
-sparsity of the inverse preconditioner, potentially alleviating some
-of the issues observed with ILUT. Explicit formation of the
-preconditioner inverse is a requirement of the current MCSA
-preconditioning strategy. As a result, although ILUT preconditioning
-provided excellent iterative performance, a significant time penalty
-is paid to extract the inverse of the triangular factors through $N$
-triangular solves. In addition, this explicit inversion yielded a
-composite linear operator that was dense, requiring modification of
-the system in order to achieve better scalability and Monte Carlo
-performance. Sparse approximate inverse (SPAINV) preconditioning is a
-technique that may potentially alleviate both of these constraints at
-the cost of reduced iterative performance. The method produces a
-sparse approximation of the inverse matrix directly by minimizing the
+SPAINV is chosen next because it the true inverse of the
+preconditioner is product of the algorithm, avoiding the need for many
+inverse matrix applications. In addition, the algorithm seeks to
+maintain the sparsity of the inverse preconditioner, potentially
+alleviating some of the dense operator issues observed with
+ILUT. Explicit formation of the preconditioner inverse is a
+requirement of the current MCSA preconditioning strategy. As a result,
+although ILUT preconditioning provided excellent iterative
+performance, a significant time penalty is paid to extract the inverse
+of the triangular factors through $N$ triangular solves. In addition,
+this explicit inversion yielded a composite linear operator that was
+dense, requiring modification of the system in order to achieve better
+scalability and Monte Carlo performance. 
+
+Sparse approximate inverse (SPAINV) preconditioning is a technique
+that may potentially alleviate both of these constraints at the cost
+of reduced iterative performance. The method produces a sparse
+approximation of the inverse matrix directly by minimizing the
 Frobenius norm of the residual matrix \cite{saad_iterative_2003}:
 \begin{equation}
   || \mathbf{I} - \mathbf{A} \mathbf{M} ||^2_F =
@@ -1185,33 +1188,31 @@ the preconditioner grows in size.
 
 \subsection{Applying the Reduced Domain Approximation}
 \label{subsec:spn_prec_rda}
-For each preconditioning technique presented convergence was achieved
-for the single fuel assembly problem. However, a primary concern is
-the number of non-zero states in each row of the system generated by
-the explicit preconditioning strategy. In many cases, orders of
-magnitude more matrix elements were generated resulting in poor
-scalability for domain decomposed algorithms and overall performance
-issues for Monte Carlo. As outlined in
-\S~\ref{subsec:reduced_domain_approximation}, the reduced domain
-approximation may be used as a mechanism to potentially alleviate this
-problem by filtering elements of the composite matrix in each row that
-fall below a certain threshold value or by maintaining the largest $N$
-elements in each row where $N$ is a designated fill level.
+Although ILUT and SPAINV preconditioning permitted MCSA solutions for
+the fuel assembly problem, a primary concern is the number of non-zero
+states in each row of the system generated by the explicit
+preconditioning strategy. In many cases, orders of magnitude more
+matrix elements were generated resulting in poor scalability for
+domain decomposed algorithms and overall performance issues for Monte
+Carlo. As outlined in \S~\ref{subsec:reduced_domain_approximation},
+the reduced domain approximation may be used as a mechanism to
+potentially alleviate this problem by filtering elements of the
+composite matrix in each row that fall below a certain threshold value
+or by maintaining the largest $N$ elements in each row where $N$ is a
+designated fill level. In this section, we will apply the reduced
+domain approximation to both ILUT and SPAINV preconditioned system to
+reduce the density of the composite linear operator to more manageable
+levels and study the resulting iterative performance.
 
-For the ILUT, SPAINV, and SPAINV-ILUT preconditioning strategies the
-reduced domain approximation will be applied to reduce the density of
-the composite linear operator to more manageable levels. For each
-preconditioner, the parameters that achieved the best quality metric
-results from the previous analysis were used. These correspond to ILUT
-parameters of a fill level of 5.0 and a drop tolerance of \sn{1}{-5},
-SPAINV parameters of a sparsity level of 4 and a threshold of 0.1 and
-SPAINV-ILUT with ILUT parameters of a fill level of 4.0 and a drop
-tolerance of \sn{1}{-5} and SPAINV parameters of a sparsity level of 1
-and a threshold of 1.0. The reduced domain threshold was set to
-\sn{1}{-10} in order to eliminate any exceedingly small values from
-the matrix (often this is simply removing non-zero elements within the
-floating point tolerance of zero). The reduced domain fill level was
-then varied, starting with the largest non-zero entries per row value
+For each preconditioner, the parameters that achieved the best quality
+metric results from the previous analysis were used. These correspond
+to ILUT parameters of a fill level of 5.0 and a drop tolerance of
+\sn{1}{-5} and SPAINV parameters of a sparsity level of 4 and a
+threshold of 0.1. The reduced domain threshold was set to \sn{1}{-10}
+in order to eliminate any exceedingly small values from the matrix
+(often this is simply removing non-zero elements within the floating
+point tolerance of zero). The reduced domain fill level was then
+varied, starting with the largest non-zero entries per row value
 observed for each of the preconditioning types in order to assess its
 effects relative to the case where no reduced domain approximation was
 applied.
@@ -1228,17 +1229,10 @@ $O(100)$ non-zero entries per row without any approximation
 applied. For the ILUT-based methods, performance was significantly
 better with convergence achieved in less than 40 MCSA iterations with
 only 10 non-zero entries in each row (vs. 7 non-zero entries for the
-case with no preconditioning). SPAINV-ILUT iterative performance was
-marginally better than ILUT alone for all reduced domain fill
-levels. However, it should be noted that the ILUT level of fill used
-for the ILUT only calculations was set to 4 for this case while the
-SPAINV-ILUT preconditioner used an ILUT level of fill of 5 and
-therefore the marginally better performance is more likely a result of
-this addition of fill rather than the extra SPAINV
-preconditioning. Looking at the quality metric data, we see a
-reduction in the quality metric as a function of the reduced domain
-fill level, achieving 2 orders of magnitude reduction in the quality
-metric for the ILUT-based preconditioning methods.
+case with no preconditioning). Looking at the quality metric data, we
+see a reduction in the quality metric as a function of the reduced
+domain fill level, achieving 2 orders of magnitude reduction in the
+quality metric for the ILUT preconditioning.
 
 Although applying the reduced domain approximation results in a
 successful recovery of sparsity for the Monte Carlo problem while
@@ -1344,18 +1338,20 @@ counter-intuitive, the fact that the correction computed by the Monte
 Carlo solver has a stochastic error associated with it means that by
 using a Neumann relaxation parameter less than 1, the correction and
 its error are effectively dampened to improve iterative
-performance. Considering the CPU time required to converge a single
-eigenvalue iteration, similar results are also observed for the
-relaxation parameters as given by Figure~\ref{fig:relax_time}. For the
-base cases given by the plots on the left, it was found the a
-Richardson relaxation parameter of 1.1 and a Neumann relaxation
-parameter of 0.7 provided the fastest CPU time for convergence. Fixing
-each parameter at these new values, the calculations were repeated as
-shown for the plots on the right hand sides of both
-Figures~\ref{fig:relax_iters} and \ref{fig:relax_time}. For each
-repeated timing calculation, it was found that the same combination of
-relaxation parameters found in the base cases performed the best
-although they did not necessarily have the best iterative performance.
+performance. 
+
+Considering the CPU time required to converge a single eigenvalue
+iteration, similar results are also observed for the relaxation
+parameters as given by Figure~\ref{fig:relax_time}. For the base cases
+given by the plots on the left, it was found the a Richardson
+relaxation parameter of 1.1 and a Neumann relaxation parameter of 0.7
+provided the fastest CPU time for convergence. Fixing each parameter
+at these new values, the calculations were repeated as shown for the
+plots on the right hand sides of both Figures~\ref{fig:relax_iters}
+and \ref{fig:relax_time}. For each repeated timing calculation, it was
+found that the same combination of relaxation parameters found in the
+base cases performed the best although they did not necessarily have
+the best iterative performance.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1393,22 +1389,20 @@ although they did not necessarily have the best iterative performance.
 
 \subsection{MCSA Estimator and Fixed Point Iteration Analysis}
 \label{subsec:spn_estimator_comparison}
-With convergence obtained for the fuel assembly problem, the iterative
-performance of MCSA will next be studied with both the collision and
-expected value estimators using the best preconditioning and
-relaxation parameter combinations found by the previous
+The iterative performance of MCSA will next be studied with both the
+collision and expected value estimators using the best preconditioning
+and relaxation parameter combinations found by the previous
 analysis. Additionally, both the Richardson-based MCSA iteration given
 by Eq~(\ref{eq:mcsa}) and the minimal residual-based MCSA iteration
 given by Eq~(\ref{eq:mcsa_min_res}) will be used. Although the
 expected value estimator achieved the best iterative performance in
 the previous comparison and analysis for the simple Poisson problem in
 \S~\ref{sec:parameter_estimator_analysis}, it is possible that the
-collision estimator may perform better from a timing perspective due
-to the sparsity lost by explicit preconditioning. The deterministic
-component of the expected value estimator that couples the current
-state to other local states through the iteration matrix stencil
-requires application of the estimator to potentially several orders of
-magnitude more states at every transition event.
+collision estimator may perform better from a timing perspective. The
+deterministic component of the expected value estimator that couples
+the current state to other local states through the iteration matrix
+stencil requires application of the estimator to potentially several
+orders of magnitude more states at every transition event.
 
 For this study, the fuel assembly problem with a 1-group $SP_1$
 discretization was solved using MCSA with the adjoint Monte Carlo
@@ -1447,15 +1441,25 @@ and timing performance was observed for the expected value estimator
 when using the Richardson iteration. Better timing performance is
 expected as computing the extrapolation parameter in the minimal
 residual iteration requires several additional parallel
-operations. Compared to the collision estimator, the minimal residual
-iteration permits fewer stochastic histories to be used with each MCSA
-iteration while still maintaining good iterative performance. With
-respect to CPU time, there is a more pronounced effect due to the
-larger density of states created by the explicit ILUT
-preconditioning. Using a reduced domain fill level of 100 creates a
-situation where the expected value estimator is significantly more
-expensive per history to compute that the collision estimator due to
-the coupling of states.
+operations. 
+
+Compared to the collision estimator, the minimal residual iteration
+permits fewer stochastic histories to be used with each MCSA iteration
+while still maintaining good iterative performance. With respect to
+CPU time, there is a more pronounced effect due to the larger density
+of states created by the explicit ILUT preconditioning. Using a
+reduced domain fill level of 100 creates a situation where the
+expected value estimator is significantly more expensive per history
+to compute that the collision estimator due to the coupling of states.
+For the collision estimator, using around 20,000 stochastic histories
+at every iteration gave the best iterative performance while 500
+histories per iteration gave the best iterative performance when using
+the expected value estimator. For purely serial computational
+performance, there is not a distinguishing feature for the fuel
+assembly problem presented that would cause one to choose one of the
+estimators and fixed point iterations over the other.
+
+
 
 \begin{figure}[t!]
   \begin{center}
@@ -1485,42 +1489,6 @@ the coupling of states.
   \label{fig:spn_estimator_time}
 \end{figure}
 
-From both Figure~\ref{fig:spn_estimator_iters} and
-Figure~\ref{fig:spn_estimator_time} we see that both estimators and
-fixed point iterations have comparable iterative and timing
-performance when 1,000 histories are used at each MCSA
-iteration. Using 1,000 histories per MCSA iteration, the infinity norm
-of the residual vector is presented at every MCSA iteration for both
-estimators and both fixed point iterations in
-Figure~\ref{fig:spn_estimator_convergence} as an additional means of
-comparison. At this number of histories, all MCSA combinations
-converge the fuel assembly problem monotonically at approximately the
-same rate, giving little reason to choose one over the other. The end
-result is that both estimators provide a viable method for getting
-good MCSA iterative performance with comparable timing
-performance. For the collision estimator, using around 20,000
-stochastic histories at every iteration gave the best iterative
-performance while 500 histories per iteration gave the best iterative
-performance when using the expected value estimator. For purely serial
-computational performance, there is not a distinguishing feature for
-the fuel assembly problem presented that would cause one to choose one
-of the estimators and fixed point iterations over the other as they
-all have similar minimum CPU times over the range of values tested.
-
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=5in]{chapters/spn_equations/estimator_convergence.pdf}
-  \end{center}
-  \caption{\textbf{Residual infinity norm as a function of MCSA
-      iteration with 1,000 stochastic histories per iteration.}
-    \textit{Both the collision and expected value estimators were used
-      with the adjoint Monte Carlo solver to compute the correction at
-      each iteration. Each estimator was used with the Richardson and
-      minimal residual fixed point iterations within an MCSA
-      iteration.}}
-  \label{fig:spn_estimator_convergence}
-\end{figure}
-
 \clearpage
 
 %%---------------------------------------------------------------------------%%
@@ -1535,11 +1503,9 @@ analyzed to find those that yielded the best performance for this
 particular problem. In addition, several steps were taken to mitigate
 the dense composite linear operators that arise when performing
 explicit MCSA preconditioning necessary for achieve convergence. Using
-these results, we know compare MCSA directly to conventional linear
-solvers that would be typically used to solve the $SP_N$ form of the
-transport equation as presented here. In particular, we will use a
-pair of Krylov solvers with which we will compare numerical results to
-verify MCSA solutions the implementation used for this work.
+these results, we now compare MCSA to conventional Krylov solvers that
+would be typically used to solve the $SP_N$ form of the transport
+equation as presented here.
 
 MCSA solutions to the fuel assembly problem with 1, 2, and 4 energy
 groups using $SP_1$ discretization will computed using both BiCGStab
@@ -1684,17 +1650,18 @@ Table~\ref{tab:serial_differences_g2}, and
 Table~\ref{tab:serial_differences_g4} give the infinity norms and
 2-norms of the flux relative difference vectors given by
 Eq~(\ref{eq:relative_difference_vector}) for all calculations and all
-energy groups. In general, we see good agreement in the two norm
-between the MCSA variants and the GMRES calculation, meaning that they
-have approximately the same variation from the BiCGStab
-calculation. We do note larger infinity norm values of this vector for
-some of the MCSA variants (i.e. group 1 in the 2-group calculation),
-however this large maximum value was not a global phenomenon with good
-agreement in the 2-norm for the calculations. Based on the good
-agreement between MCSA and GMRES for the relative difference of the
-group fluxes and the eigenvalue results presented here, the MCSA
-implementation should be deemed correct for the fuel assembly problem
-for serial calculations with multiple energy groups.
+energy groups. In general, we see good agreement in the 2-norm between
+the MCSA variants and the GMRES calculation, meaning that they have
+approximately the same variation from the BiCGStab calculation. We do
+note larger infinity norm values of this vector for some of the MCSA
+variants relative to the GMRES results (i.e. group 1 in the 2-group
+calculation), however, this large maximum value is apparently a local
+phenomenon with good agreement in the 2-norm for the
+calculations. Based on the good agreement between MCSA and GMRES for
+the relative difference of the group fluxes and the eigenvalue results
+presented here, the MCSA implementation should be deemed correct for
+the fuel assembly problem for serial calculations with multiple energy
+groups.
 
 \begin{table}[h!]
   \begin{center}
@@ -1810,26 +1777,23 @@ for serial calculations with multiple energy groups.
 %%---------------------------------------------------------------------------%%
 \section{MCSA Performance Comparison to Conventional Methods\ }
 \label{sec:spn_comparison}
-In the previous section, numerical results using MCSA for the fuel
-assembly calculation were directly compared with production Krylov
-methods in order to verify their correctness. Deemed correct,
-performance of the algorithm for serial computations will now be
-addressed. With the same set of solver parameters used for
-verification caluclation, MCSA will now be compared to the same Krylov
-solvers in terms of both iterative performance and CPU timing. A
-Richardson iteration solution will also be used in order to assess the
+With the same set of solver parameters used for verification
+caluclation, MCSA will now be compared to the same Krylov solvers in
+terms of both iterative performance and CPU timing. A Richardson
+iteration solution will also be used in order to assess the
 acceleration provided by the residual Monte Carlo component of MCSA.
-
 To compare iterative performance, the number of linear solver
 iterations required to converge each eigenvalue iteration was recorded
 and then averaged over all eigenvalue iterations for each
-solver. Table~\ref{tab:spn_comparison_iterations} gives the average
-number of linear solver iterations required to converge a single
-eigenvalue iteration of the fuel assembly problem as a function of the
-number of energy groups. In general, the iterative performance of all
-the solvers tested aside from the Richardson iteration is comparable
-with BiCGStab performing the best. We expect this because not only are
-the multigroup $SP_N$ equations positive-definite, but they are also
+solver. 
+
+Table~\ref{tab:spn_comparison_iterations} gives the average number of
+linear solver iterations required to converge a single eigenvalue
+iteration of the fuel assembly problem as a function of the number of
+energy groups. In general, the iterative performance of all the
+solvers tested aside from the Richardson iteration is comparable with
+BiCGStab performing the best. We expect this because not only are the
+multigroup $SP_N$ equations positive-definite, but they are also
 block-symmetric and therefore we expect the conjugate gradient-based
 methods to perform well due to the structure of the projection
 scheme. It important to note that the iterative performance of each
@@ -2016,8 +1980,9 @@ observations and findings.
 \item MCSA relaxation parameters were developed and observed to
   enhance the time to solution for the fuel assembly criticality
   problem
-\item MCSA was verified to produce the same flux distribution and
-  k-eigenvalue for the fuel assembly as production Krylov methods
+\item MCSA was verified to produce the same k-eigenvalue for the fuel
+  assembly as production Krylov methods and gave good relative flux
+  agreement
 \item MCSA was observed to converge in fewer iterations per eigenvalue
   iteration than GMRES for the fuel assembly criticality problem and
   more than Bi-CGStab using the same preconditioning
