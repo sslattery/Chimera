@@ -99,7 +99,7 @@ centered about the origin that encapsulates the entire eigenvalue
 spectrum of the operator.
 
 %%---------------------------------------------------------------------------%%
-\section{Neumann-Ulam Method}
+\section{Neumann-Ulam Methods}
 \label{sec:mc_preliminaries}
 We begin our discussion of Monte Carlo methods by seeking a solution
 to Eq~(\ref{eq:linear_problem}). For a given linear operator $\ve{A}$,
@@ -176,10 +176,9 @@ decomposition while the adjoint method will use the adjoint linear
 operator ($\ve{A}^T$ for real-valued systems) to form the
 decomposition.
 
-%%---------------------------------------------------------------------------%%
-\section{Direct Monte Carlo Method}
+\subsection{Forward Neumann-Ulam Method}
 \label{sec:direct_mc}
-In the context of matrix inversion, a direct (forward) method
+In the context of matrix inversion, a forward (direct) method
 resembles an adjoint Monte Carlo method in the reactor physics
 community where the solution state is sampled and the source terms
 that contribute to it are assembled. To achieve this, we build the
@@ -271,7 +270,7 @@ we choose terminate a random walk sequence with a \textit{weight
   cutoff}, $W_c$, that is enforced when $W_m < W_c$ for a particular
 random walk permutation.
 
-\subsection{Forward Estimator Variance}
+\subsubsection{Forward Estimator Variance}
 \label{subsec:forward_variance}
 We can compute the variance of the forward estimator through traditional
 methods by defining the variance, $\sigma_i$, for each component in
@@ -372,9 +371,9 @@ to alleviate this and therefore restrict $\ve{H}$ due to
 Eq~(\ref{eq:variance_norm_inequality}) with $\rho(\ve{H}) < 1$ so that
 our expectation values for the solution may have a finite variance.
 
-\subsection{Direct Method: Evolution of a Solution}
+\subsubsection{Forward Method: Evolution of a Solution}
 \label{subsec:direct_evolution}
-As a means of visually demonstrating the direct Monte Carlo method,
+As a means of visually demonstrating the forward Monte Carlo method,
 consider a 2-dimensional thermal diffusion problem with sources on the
 left and right hand sides of the domain and a uniform source
 throughout the domain of 1/5 the strength of the boundary sources as
@@ -414,8 +413,7 @@ grid point in the domain, the solution is resolved in a certain sense,
 analogous to the convergence of a traditional iterative method.
 \clearpage
 
-%%---------------------------------------------------------------------------%%
-\section{Adjoint Monte Carlo Method}
+\subsection{Adjoint Neumann-Ulam Method}
 \label{sec:adjoint_mc}
 Often a more useful form, an alternative to forward Monte Carlo matrix
 inversion is the adjoint method. We begin by defining the linear
@@ -601,7 +599,7 @@ where $W_c$ is defined as in the direct method. The adjoint random
 walk will then be terminated after $m$ steps if $W_m < W_f$ as tally
 contributions become increasingly small.
 
-\subsection{Collision Estimator Variance}
+\subsubsection{Collision Estimator Variance}
 \label{subsec:forward_variance}
 We can compute the variance of the collision estimator in the same way
 as the direct estimator for each component in the solution where now:
@@ -657,7 +655,7 @@ collision estimator is bound by the same restrictions on
 $\rho(\ve{G})$ and $\rho(\ve{H})$ to ensure that the variance is
 finite.
 
-\subsection{Expected Value Estimator}
+\subsubsection{Expected Value Estimator}
 \label{subsec:expected_value_estimator}
 In addition to the collision estimator, an additional estimator is
 available due to the work of Okten \cite{okten_solving_2005} that
@@ -725,7 +723,7 @@ to a group of other states as defined by the sparsity pattern of the
 iteration matrix. This coupling of variances is expected due to the
 deterministic averaging used to generate the expected value estimator.
 
-\subsection{Adjoint Method: Evolution of a Solution}
+\subsubsection{Adjoint Method: Evolution of a Solution}
 \label{subsec:adjoint_evolution}
 As a means of visually demonstrating the adjoint Monte Carlo method,
 again consider the 2-dimensional thermal diffusion problem with
@@ -1230,8 +1228,6 @@ Monte Carlo calculation.
   \label{fig:poisson_convergence}
 \end{figure}
 
-\clearpage
-
 %%---------------------------------------------------------------------------%%
 \section{MCSA Comparison to Sequential Monte Carlo}
 \label{subsec:sequential_comparison}
@@ -1249,8 +1245,10 @@ each iteration had to be doubled to $2 \times N \times N$ in order to
 ensure convergence in Sequential Monte Carlo Method. For the majority
 of the problems in the previous section, the Sequential method used
 with $N \times N$ histories would not
-converge. Figure~\ref{fig:seq_cpu_time} gives the CPU time results for
-this comparison as a function of problem size while
+converge. 
+
+Figure~\ref{fig:seq_cpu_time} gives the CPU time results for this
+comparison as a function of problem size while
 Figure~\ref{fig:seq_iterations} gives the number of iterations to
 converge as a function of problem size with a convergence tolerance of
 \sn{1}{-8}. In both cases, using the Monte Carlo solver as a synthetic

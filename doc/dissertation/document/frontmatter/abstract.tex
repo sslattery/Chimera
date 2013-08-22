@@ -30,15 +30,15 @@ as the driving problem. It was discovered that basic Jacobi-based
 preconditioning as used in previous work was not sufficient to achieve
 convergence due to the dominating effect of the light water
 moderator. To enable MCSA as a solution technique a group of modern
-preconditioning strategies are researched. The new preconditioning
-techniques, however, create unwanted growth in both memory consumption
-and computation time for these problems. MCSA was verified to produce
-the correct solution for the fuel assembly criticality problem when
-compared to conventional Krylov methods and demonstrated improved
+preconditioning strategies are researched. MCSA was verified to
+produce the correct solution for the fuel assembly criticality problem
+when compared to conventional Krylov methods and demonstrated improved
 iterative performance over GMRES by converging in fewer iterations
-when using the same preconditioning.
+when using the same preconditioning. The new preconditioning
+techniques, however, create unwanted growth in both memory consumption
+and computation time for these problems.
 
-Second, solutions to the compressibleNavier-Stokes equations were
+Second, solutions to the compressible Navier-Stokes equations were
 obtained by developing the Forward-Automated Newton-MCSA (FANM) method
 for nonlinear systems based on Newton's method. Three difficult fluid
 benchmark problems in both convective and driven flow regimes were
