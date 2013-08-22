@@ -328,20 +328,19 @@ be dictated by streaming and scattering as defined on the left-hand
 side.
 
 %%---------------------------------------------------------------------------%%
-\section{Spectral Analysis of the $SP_N$ Equations}
+\section{Basic Preconditioning for the $SP_N$ Equations}
 \label{sec:spn_spectral_analysis}
-Before we can move on to solving the $SP_N$ equations with both
-conventional and Monte Carlo methods, we must first understand their
-spectral character to ensure that MCSA will be applicable. As
-presented in Chapter~\ref{ch:stochastic_methods}, the spectral radius
-of the iteration matrix must be less than unity to ensure
-convergence. Therefore, we will compute the spectral radius of the
-iteration matrix formed by the $SP_N$ equations while parametrically
-varying the $SP_N$ order, the $P_N$ order, the number of energy
-groups, and upscattering/downscattering between energy groups. For
-each problem in the parameter study, the values given in
-Table~\ref{tab:spn_fixed_parameters} were fixed for each spatial
-location and energy group.
+Previous work in applying MCSA to the thermal radiation diffusion
+equations had success in using Jacobi preconditioning
+\cite{evans_monte_2012}. In this section, we will compute the spectral
+radius of the iteration matrix formed by the $SP_N$ equations while
+parametrically varying the $SP_N$ order, the $P_N$ order, the number
+of energy groups, and upscattering/downscattering between energy
+groups for Jacobi preconditioned problems to ensure that this type of
+preconditioning will be applicable. For each problem in the parameter
+study, the values given in Table~\ref{tab:spn_fixed_parameters} were
+fixed for each spatial location and energy group.
+
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{ll}\hline\hline
@@ -366,6 +365,7 @@ location and energy group.
       spatial location and energy group.}}
   \label{tab:spn_fixed_parameters}
 \end{table}
+
 Mesh element sizes were the same in all cardinal directions with
 reflecting conditions on each boundary. For the energy parameter, 1
 and 10 energy groups were used with upscatter/downscatter varied for
@@ -422,126 +422,12 @@ and therefore a linear solver that can handle asymmetric linear
 systems is required. Nearly all problems of interest will not have
 full upscattering or downscattering. Second we note the largely
 diagonal character of these systems, although the blocks from
-Eq~(\ref{eq:A_block_matrix}) are readily apparent. Our first attempt
-at preconditioning this system will be to use the point Jacobi
-preconditioning from \S\ref{subsubsec:basic_mcsa_preconditioning} due
-to this diagonal form and the success achieved by applying it to MCSA
-solutions of the thermal radiation diffusion equation as presented in
-\cite{evans_monte_2012}.
-
-\subsection{Point Jacobi Spectral Analysis Results}
-\label{subsec:spn_analysis_results}
-Spectral radius computations were performed for the cases described
-above for the point Jacobi preconditioned iteration matrix, $\ve{H} =
-\ve{I}-\ve{M}^{-1}\ve{A}$, with $\ve{M} =
-diag(\ve{A})$. Table~\ref{tab:group1pj} gives the results for the
-1-group case, Table~\ref{tab:group10dspj} for the 10-group case with
-full downscatter only and Table~\ref{tab:group10uspj} for the 10-group
-case with full downscatter and full upscatter.
-
-\begin{table}[h!]
-  \begin{center}
-    \begin{tabular}{cccccc}\hline\hline
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{$SP_N$ Order}& 
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{} \\
-       &   & \textbf{1} & \textbf{3} & \textbf{5} & \textbf{7}  \\
-       & \textbf{0} & 0.0635 & 0.6722 & 1.3144 & 1.976 \\
-       & \textbf{1} & 0.0666 & 0.6728 & 1.3141 & 1.9755 \\
-      $P_N$ Order & \textbf{3} & 0.0666 & 0.6822 & 1.3141 & 1.9755 \\
-       & \textbf{5} & 0.0666 & 0.6822 & 1.3278 & 1.9847 \\
-       & \textbf{7} & 0.0666 & 0.6822 & 1.3278 & 1.9917 \\
-      %%
-      \hline\hline
-    \end{tabular}
-  \end{center}
-  \caption{\textbf{Spectral radius results for the point Jacobi
-      preconditioned iteration matrix with 1 energy group.}}
-  \label{tab:group1pj}
-\end{table}
-\begin{table}[h!]
-  \begin{center}
-    \begin{tabular}{cccccc}\hline\hline
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{$SP_N$ Order}& 
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{} \\
-       &   & \textbf{1} & \textbf{3} & \textbf{5} & \textbf{7}  \\
-       & \textbf{0} & 0.0655 & 0.677 & 1.32 & 1.982 \\
-       & \textbf{1} & 0.071 & 0.6777 & 1.319 & 1.982 \\
-      $P_N$ Order & \textbf{3} & 0.071 & 0.687 & 1.327 & 1.9872 \\
-       & \textbf{5} & 0.071 & 0.687 & 1.336 & 1.997 \\
-       & \textbf{7} & 0.071 & 0.687 & 1.336 & 1.9995 \\
-      %%
-      \hline\hline
-    \end{tabular}
-  \end{center}
-  \caption{\textbf{Spectral radius results for the point Jacobi
-      preconditioned iteration matrix with 10 energy groups and full
-      downscatter.}}
-  \label{tab:group10dspj}
-\end{table}
-\begin{table}[h!]
-  \begin{center}
-    \begin{tabular}{cccccc}\hline\hline
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{$SP_N$ Order}& 
-      \multicolumn{1}{c}{}& 
-      \multicolumn{1}{c}{} \\
-       &   & \textbf{1} & \textbf{3} & \textbf{5} & \textbf{7}  \\
-       & \textbf{0} & 0.7283 & 0.81 & 1.47 & 2.1446 \\
-       & \textbf{1} & 0.7317 & 0.8 & 1.46 & 2.1368 \\
-      $P_N$ Order & \textbf{3} & 0.7317 & 0.91 & 1.526 & 2.2274 \\
-       & \textbf{5} & 0.7317 & 0.91 & 1.5344 & 2.2562 \\
-       & \textbf{7} & 0.7317 & 0.91 & 1.5345 & 2.2842 \\
-      %%
-      \hline\hline
-    \end{tabular}
-  \end{center}
-  \caption{\textbf{Spectral radius results for the point Jacobi
-      preconditioned iteration matrix with 10 energy groups, full
-      downscatter and full upscatter.}}
-  \label{tab:group10uspj}
-\end{table}
-
-It is readily apparent from the tabulated data that point Jacobi
-preconditioning is insufficient. For problems of order $SP_5$ and
-$SP_7$, the method will not converge at all and for the upscatter case
-with $SP_3$ the spectral radius is still quite large for large $P_N$
-orders and therefore convergence is expected to be slow. These
-eigenvalues signal a need for a better preconditioning strategy to
-both ensure and improve convergence for Monte Carlo methods.
-
-\subsection{Block Jacobi Preconditioning}
-\label{sec:spn_preconditioning}
-If Monte Carlo methods are to be used to solve the $SP_N$ system of
-equations, a different preconditioning strategy is required in order
-to ensure convergence for systems of all $SP_N$ and $P_N$ orders with
-arbitrary energy group structures. As another means of achieving this,
-we look back to the sparsity plots we generated in
-Figures~\ref{fig:group1}, \ref{fig:group10ds} and \ref{fig:group10us}
-as well as the multigroup $SP_N$ equations. Initially, the diagonal
-character of the system and previous success with the thermal
-radiuation difussion equation led us to try point Jacobi
-preconditioning with only marginal results. From the sparsity plots we
-note the block structure that ultimately arises from the multigroup
-scattering matrices and their insertion into
-Eq~(\ref{eq:A_block_matrix}). When full upscatter and downscatter are
-used the resulting blocks are completely dense while only downscatter
-gives a lower triangular scattering matrix and the block structure
-shown in Figure~\ref{fig:group10ds}.
+Eq~(\ref{eq:A_block_matrix}) are readily apparent. 
 
 Based on this both block and diagonally dominant structure for
-matrices formed by the general multigroup $SP_N$ equations, we instead
-choose \textit{block Jacobi} preconditioning as a left preconditioner
-for the system. Like point Jacobi preconditioning, block Jacobi
+matrices formed by the general multigroup $SP_N$ equations, we choose
+\textit{block Jacobi} preconditioning as a left preconditioner for the
+system. Like point Jacobi preconditioning, block Jacobi
 preconditioning extracts the diagonal elements of the matrix as the
 preconditioner where now the elements extracted are the blocks on the
 diagonal as shown on the left side of
@@ -576,8 +462,6 @@ are typically dense and nearly lower triangular for many transport
 problems meaning that established dense matrix methods can be used for
 fast inversion.
 
-\subsection{Block Jacobi Spectral Analysis Results}
-\label{subsec:spn_analysis_results}
 Spectral radius computations for the block Jacobi preconditioned
 iteration matrix were performed for the same problems as the point
 Jacobi preconditioned case. Table~\ref{tab:group1bj} gives the results
@@ -661,11 +545,9 @@ cases.
 From the tabulated block Jacobi data it is clear that this is a viable
 preconditioning choice for all $SP_N$ problems in terms of Monte Carlo
 solution methods. All cases were observed to have a spectral radius
-below unity and often significantly smaller than that, greatly
-improving convergence rates over the point Jacobi preconditioned
-problem. Based on these results, the block Jacobi method should be the
-first preconditioning strategy applied to more complicated problems
-representative of physical nuclear systems.
+below unity. Based on these results, the block Jacobi method should be
+the applicable to more complicated problems representative of physical
+nuclear systems.
 
 %%---------------------------------------------------------------------------%%
 \section{Fuel Assembly Criticality Calculations}
@@ -1772,24 +1654,20 @@ explicit MCSA preconditioning necessary for achieve convergence. Using
 these results, we know compare MCSA directly to conventional linear
 solvers that would be typically used to solve the $SP_N$ form of the
 transport equation as presented here. In particular, we will use a
-pair of production Krylov solvers with which we will compare direct
-numerical results in order to verify MCSA solutions in this section.
+pair of Krylov solvers with which we will compare numerical results to
+verify MCSA solutions the implementation used for this work.
 
-In order to verify the correctness of the MCSA method and
-implementation used for this work, MCSA solutions to the fuel assembly
-problem with 1, 2, and 4 energy groups using $SP_1$ discretization
-will be directly compared point-wise over all group and cell fluxes
-computed by converging the criticality problem using both BiCGStab and
-GMRES production implementations from the Trilinos scientific
-computing library Aztec \cite{heroux_overview_2005}. In addition to
-comparing the cell and group fluxes, the number of eigenvalue
-iterations required to converge the problem along with the eigenvalue
-itself will be compared as a means of verification. For the flux
-values, we look to the 2-norm and infinity norm of the relative
-difference vector between the reference case and the comparison case
-in each energy group:
+MCSA solutions to the fuel assembly problem with 1, 2, and 4 energy
+groups using $SP_1$ discretization will computed using both BiCGStab
+and GMRES implementations from the Trilinos scientific computing
+library Aztec \cite{heroux_overview_2005}. The neutron fluxes, the
+number of eigenvalue iterations required to converge the problem, and
+the eigenvalue itself will be compared as a means of verification. For
+the flux values, we will look at the 2-norm and infinity norm of the
+relative difference vector between the reference case and the
+comparison case in each energy group:
 \begin{equation}
-  \text{Relative Difference} = \frac{\ve{\Phi}_{ref}^g -
+  \text{Relative Group Flux Difference} = \frac{\ve{\Phi}_{ref}^g -
     \ve{\Phi}^g}{\ve{\Phi}_{ref}^g}\:,
   \label{eq:relative_difference_vector}
 \end{equation}
@@ -1797,28 +1675,27 @@ where the addition and subtraction operations are performed
 element-wise to construct the vector. For this work, the BiCGStab
 results will be taken as the reference case.
 
-For the verification calculations, all solvers will be preconditioned
-with ILUT using a drop tolerance of \sn{1}{-5} and a fill level of
-5. For GMRES, no restrictions were placed on the size of the subspace
-and therefore no restarts occurred. When the collision estimator was
-used with MCSA, \sn{2}{4} stochastic histories were used to compute
-the correction for every energy group in the problem (\sn{4}{4} and
-\sn{8}{4} histories total for the 2 and 4 group calculations
-respectively) corresponding to approximately 1 stochastic history per
-DOF. When the expected value estimator was used, \sn{5}{2} stochastic
-histories used for each energy group (\sn{1}{3} and \sn{1.5}{3}
-histories total for the 2 and 4 group calculations) giving
-approximately 1 stochastic history for every 5 DOFs. The reduced
-domain approximation was also applied in conjunction with the ILUT
-preconditioning using a fill level of 100 and a threshold value of
-\sn{1}{-10} to reduce the density of states in the Monte Carlo
-problem. For relaxation parameters, all MCSA computations used a
-Neumann relaxation parameter of 0.7 while a Richardson relaxation of
-1.1 was used with the collision estimator and 1.0 with the expected
-value estimator as determined by the previous analysis of the
-relaxation parameters. Table~\ref{tab:spn_solver_defs} gives
-definitions for the solvers used to generate the results in the
-remainder of this section. For the energy group structures,
+All solvers will be preconditioned with ILUT using a drop tolerance of
+\sn{1}{-5} and a fill level of 5. For GMRES, no restrictions were
+placed on the size of the subspace and therefore no restarts
+occurred. When the collision estimator was used with MCSA, \sn{2}{4}
+stochastic histories were used to compute the correction for every
+energy group in the problem (\sn{4}{4} and \sn{8}{4} histories total
+for the 2 and 4 group calculations respectively) corresponding to
+approximately 1 stochastic history per DOF. When the expected value
+estimator was used, \sn{5}{2} stochastic histories used for each
+energy group (\sn{1}{3} and \sn{1.5}{3} histories total for the 2 and
+4 group calculations) giving approximately 1 stochastic history for
+every 5 DOFs. The reduced domain approximation was also applied in
+conjunction with the ILUT preconditioning using a fill level of 100
+and a threshold value of \sn{1}{-10} to reduce the density of states
+in the Monte Carlo problem. For relaxation parameters, all MCSA
+computations used a Neumann relaxation parameter of 0.7 while a
+Richardson relaxation of 1.1 was used with the collision estimator and
+1.0 with the expected value estimator as determined by the previous
+analysis. Table~\ref{tab:spn_solver_defs} gives definitions for the
+solvers used to generate the results in the remainder of this
+section. For the energy group structures,
 Table~\ref{tab:spn_group_structure} gives the lower bounds of each
 group in eV (an implicit upper bound of \sn{2}{6} eV is assumed for
 group 0).
@@ -1872,8 +1749,9 @@ calculation. Table~\ref{tab:serial_ev_results} gives the eigenvalue
 computed by each solver for each problem as well as the number of
 eigenvalue iterations required to converge. For every problem, each
 solver converged to the same eigenvalue up to the number of digits
-reported by the eigensolver eigensolver in the same number of
-eigenvalue iterations.
+reported by the eigensolver in the same number of eigenvalue
+iterations.
+
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{lccc}\hline\hline
@@ -1923,16 +1801,16 @@ Table~\ref{tab:serial_differences_g4} give the infinity norms and
 2-norms of the flux relative difference vectors given by
 Eq~(\ref{eq:relative_difference_vector}) for all calculations and all
 energy groups. In general, we see good agreement in the two norm
-between the MCSA variants and the GMRES calculation, meaning that the
+between the MCSA variants and the GMRES calculation, meaning that they
 have approximately the same variation from the BiCGStab
 calculation. We do note larger infinity norm values of this vector for
 some of the MCSA variants (i.e. group 1 in the 2-group calculation),
 however this large maximum value was not a global phenomenon with good
 agreement in the 2-norm for the calculations. Based on the good
 agreement between MCSA and GMRES for the relative difference of the
-flux and the eigenvalue results presented here, the MCSA results
-should be deemed correct for the fuel assembly problem for serial
-calculations with multiple energy groups.
+group fluxes and the eigenvalue results presented here, the MCSA
+implementation should be deemed correct for the fuel assembly problem
+for serial calculations with multiple energy groups.
 
 \begin{table}[h!]
   \begin{center}
@@ -1954,8 +1832,8 @@ calculations with multiple energy groups.
   \caption{\textbf{Serial scalar flux verification results for the
       1-group fuel assembly problem.} \textit{The infinity norm and
       2-norm of the relative flux vector in each group is given with
-      BiCGStab is used as the reference. Each calculation was
-      converged with the same eigensolver and linear solver
+      BiCGStab used as the reference. Each calculation was converged
+      with the same eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
       description for each solver type presented.}}
   \label{tab:serial_differences_g1}
@@ -1988,8 +1866,8 @@ calculations with multiple energy groups.
   \caption{\textbf{Serial scalar flux verification results for the
       2-group fuel assembly problem.} \textit{The infinity norm and
       2-norm of the relative flux vector in each group is given with
-      BiCGStab is used as the reference. Each calculation was
-      converged with the same eigensolver and linear solver
+      BiCGStab used as the reference. Each calculation was converged
+      with the same eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
       description for each solver type presented.}}
   \label{tab:serial_differences_g2}
@@ -2036,8 +1914,8 @@ calculations with multiple energy groups.
   \caption{\textbf{Serial scalar flux verification results for the
       4-group fuel assembly problem.} \textit{The infinity norm and
       2-norm of the relative flux vector in each group is given with
-      BiCGStab is used as the reference. Each calculation was
-      converged with the same eigensolver and linear solver
+      BiCGStab used as the reference. Each calculation was converged
+      with the same eigensolver and linear solver
       tolerances. Table~\ref{tab:spn_solver_defs} gives the
       description for each solver type presented.}}
   \label{tab:serial_differences_g4}
@@ -2053,15 +1931,10 @@ assembly calculation were directly compared with production Krylov
 methods in order to verify their correctness. Deemed correct,
 performance of the algorithm for serial computations will now be
 addressed. With the same set of solver parameters used for
-verification, MCSA will now be directly compared to the same
-production Krylov solvers in terms of both iterative performance and
-CPU timing for solutions to the fuel assembly problem. The iterative
-performance will also be compared to using a Richardson iteration
-preconditioned in the same way for all calculations in order to assess
-the acceleration provided by the residual Monte Carlo component of
-MCSA. This performance comparison is necessary in order to assess the
-feasibility of the method and identify areas that require further
-research and development.
+verification caluclation, MCSA will now be compared to the same Krylov
+solvers in terms of both iterative performance and CPU timing. A
+Richardson iteration solution will also be used in order to assess the
+acceleration provided by the residual Monte Carlo component of MCSA.
 
 To compare iterative performance, the number of linear solver
 iterations required to converge each eigenvalue iteration was recorded
@@ -2070,28 +1943,25 @@ solver. Table~\ref{tab:spn_comparison_iterations} gives the average
 number of linear solver iterations required to converge a single
 eigenvalue iteration of the fuel assembly problem as a function of the
 number of energy groups. In general, the iterative performance of all
-the solvers tested is comparable with BiCGStab performing the best. We
-expect this because not only are the multigroup $SP_N$ equations
-elliptic and positive-definite, but they are also nearly symmetric and
-therefore we expect the conjugate gradient-based methods to perform
-well due to the structure of the projection scheme. It important to
-note that the iterative performance of each solver is not a strong
-function of the number of energy groups in the problem (and therefore
-the problem size). Even more important, although BiCGStab produced the
-best iterative results, MCSA did perform better than GMRES in many
-cases with the Richardson iteration accelerated with Monte Carlo using
-the collision estimator performing best. When compared to the
+the solvers tested aside from the Richardson iteration is comparable
+with BiCGStab performing the best. We expect this because not only are
+the multigroup $SP_N$ equations positive-definite, but they are also
+block-symmetric and therefore we expect the conjugate gradient-based
+methods to perform well due to the structure of the projection
+scheme. It important to note that the iterative performance of each
+solver is not a strong function of the number of energy groups in the
+problem (and therefore the problem size). Even more important,
+although BiCGStab produced the best iterative results, MCSA did
+perform better than GMRES in many cases with the Richardson iteration
+clearly accelerated by the Monte Carlo solve. When compared to the
 preconditioned Richardson iteration, the acceleration provided by MCSA
 is clear with 3-4 times fewer iterations required for convergence.
 
-For MCSA, we are linearly increasing the number of stochastic
-histories used to compute the correction at each iteration as the
-number of energy groups are increased and therefore the work performed
-for the problem is of $O(N)$. It is also important to note the reduced
-domain approximation parameters, particularly the fill level, were
-fixed as the number of energy groups was increased. By fixing the fill
-level, we are effectively fixing the amount of information contained
-in the composite linear operator available for the Monte Carlo
+It is also important to note the reduced domain approximation
+parameters, particularly the fill level, were fixed as the number of
+energy groups was increased. By fixing the fill level, we are
+effectively fixing the amount of information contained in the
+composite linear operator available for the Monte Carlo
 problem. Limiting this information to 100 entries per row in the
 preconditioned system did not appear to have a significant effect on
 the iterative performance of the solver. For larger numbers of energy
@@ -2130,15 +2000,12 @@ appropriate preconditioner for the fuel assembly problem.
 \end{table}
 
 Although iterative performance for MCSA was comparable to that
-observed for production Krylov implementations using exactly the same
-preconditioning scheme, timing performance is not as competitive. For
-this comparison, the amount of time to perform each linear solver
-iteration in every eigenvalue iteration was recorded and then averaged
-over all linear solver
-iterations. Figure~\ref{fig:spn_comparison_time} gives the average CPU
-time per linear solver iteration required to converge the fuel
+observed for Krylov implementations using exactly the same
+preconditioning scheme, timing performance is not as
+competitive. Figure~\ref{fig:spn_comparison_time} gives the average
+CPU time per linear solver iteration required to converge the fuel
 assembly problem with all linear solver iterations over all eigenvalue
-iterations used to compute the average. The production Krylov solver
+iterations used to compute the average. The Krylov solver
 implementations are approximately an order of magnitude faster than
 the MCSA implementations presented here. We expect these results for
 several reasons. First, even when the reduced domain approximation is
@@ -2150,25 +2017,23 @@ composite linear operator but rather a sequence of matrix vector
 multiplies to achieve the same preconditioning effect, they do use the
 explicitly extracted inverse of the preconditioning matrices which
 themselves are dense, leading to exceedingly slow computation times
-even in the fixed point iteration. 
+even in the fixed point iteration.
 
-For the production Krylov methods, the ILUT preconditioners are
-applied to a vector with two triangular solves, one for each
-triangular factor. Also, the original linear operator has $O(10)$
-elements in each row of the system, an order of magnitude less than
-that used in the reduced domain composite operator. Second, the
-implementation presented here has not been optimized and it is likely
-that several components of the algorithm can be implemented in a more
-desirable time complexity. The production Krylov solvers presented
-here have enjoyed decades of professional development and
-optimization. However, it is most important to note here that the CPU
-timing data presented in Figure~\ref{fig:spn_comparison_time} shows
-that all methods have the same time complexity; their differences are
-merely the manifestation of a large time constant due to the effects
-of the explicit preconditioning scheme. For transport systems where
-this is not a problem, the literature explicitly shows that MCSA can
-be competitive with these production Krylov methods using CPU time as
-a measure \cite{evans_monte_2012}.
+For the Krylov methods, the ILUT preconditioners are applied to a
+vector with two triangular solves, one for each triangular
+factor. Also, the original linear operator has $O(10)$ elements in
+each row of the system, an order of magnitude less than that used in
+the reduced domain composite operator. Second, the implementation
+presented here has not been optimized and it is likely that several
+components of the algorithm can be implemented in a more desirable
+time complexity. However, it is most important to note here that the
+CPU timing data presented in Figure~\ref{fig:spn_comparison_time}
+shows that all methods have the same time complexity; their
+differences are merely the manifestation of a large time constant due
+to the effects of the explicit preconditioning scheme. For transport
+systems where this is not a problem, the literature explicitly shows
+that MCSA can be competitive with these production Krylov methods
+using CPU time as a measure \cite{evans_monte_2012}.
 
 \begin{figure}[t!]
   \begin{center}
@@ -2220,17 +2085,17 @@ as a competitive and perhaps even superior method for solutions to the
 neutron transport problem discretized with the $SP_N$
 approximation. Not only are the correct answers produced when compared
 to production linear solvers, but the iterative performance is
-comparable to production Krylov methods with identical preconditioning
-that would typically be used every-day calculations. From a CPU timing
+comparable to Krylov methods with identical preconditioning that would
+typically be used every-day calculations. From a CPU timing
 perspective, the methods yield the same time complexity as a function
 of the number of energy groups in the problem when compared to the
-production Krylov methods. Here, a large time constant is generated
-due to the explicit preconditioning strategy and the generation of
-dense linear operators as a result. To improve these results and put
-general MCSA schemes into a performance regime where they are
-competitive with Krylov methods for neutron transport problems,
-significant research will be required to improve upon the explicit
-preconditioning scheme presented here.
+Krylov methods. Here, a large time constant is generated due to the
+explicit preconditioning strategy and the generation of dense linear
+operators as a result. To improve these results and put general MCSA
+schemes into a performance regime where they are competitive with
+Krylov methods for neutron transport problems, significant research
+will be required to improve upon the explicit preconditioning scheme
+presented here.
 
 \clearpage
 
