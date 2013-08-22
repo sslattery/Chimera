@@ -114,16 +114,17 @@ angular-dependence of the solution:
 \end{equation}
 where $\Sigma_n = \sigma-\sigma_{sn}$ and the summations are truncated
 at some level of approximation $N$ such that $n = 0,1,\dotsc,N$. This
-yields a set of $N+1$ equations for $N+2$ flux moments. In multiple
-dimensions, the equation set becomes large and coupled not only
-through angular moments but also through the spatial variables. As a
-simpler alternative to multidimensional $P_N$ solutions, Gelbard
-recognized in 1960 that the planar $P_N$ equations could be simplified
-and applied an ad-hoc method to extend them to multiple dimensions,
-yielding the $SP_N$ equations. These equations are not only fewer in
-number, but also take on a diffusion-like form while maintaining the
-angular character of the flux, making them amenable to solutions with
-modern diffusion methods.
+yields a set of $N+1$ equations for $N+2$ flux moments with the
+highest order moment set to zero for closure. In multiple dimensions,
+the equation set becomes large and coupled not only through angular
+moments but also through the spatial variables. As a simpler
+alternative to multidimensional $P_N$ solutions, Gelbard recognized in
+1960 that the planar $P_N$ equations could be simplified and applied
+an ad-hoc method to extend them to multiple dimensions, yielding the
+$SP_N$ equations. These equations are not only fewer in number, but
+also take on a diffusion-like form while maintaining the angular
+character of the flux, making them amenable to solutions with modern
+diffusion methods.
 
 First, the $P_N$ equations can be simplified to $(N+1)/2$ second-order
 equations by solving for the $n^{th}$ Legendre flux moment in the
@@ -147,10 +148,8 @@ reduced group of equations for the even moments:
   0,2,4,\cdots,N\:.
   \label{eq:reduced_pn}
 \end{multline}
-Immediately, we note the diffusion-like nature of
-Eq~(\ref{eq:reduced_pn}) as compared to the original $P_N$
-equations. To extend these equations to multiple dimensions, Gelbard
-simply replaced the planar spatial derivatives in the reduced set of
+To extend these equations to multiple dimensions, Gelbard simply
+replaced the planar spatial derivatives in the reduced set of
 equations with general multidimensional gradient operators:
 \begin{multline}
   -\nabla \cdot \Bigg[\frac{n}{2n+1}\frac{1}{\Sigma_{n-1}} \nabla
@@ -319,25 +318,29 @@ scattering matrices:
   \mathbb{F}_{nm} \mathbb{U}_m\ \ \ \ \ \ \ n = 1,2,3,4\:.
   \label{eq:spn_fission_matrix}
 \end{equation}
-It should be noted here that with respect to a general MCSA scheme,
-the introduction of fission in the system will only affect the source
-vector in the linear system for the eigenvalue schemes used in this
-work. The linear operator, and therefore overall MCSA performance will
-be dictated by streaming and scattering as defined on the left-hand
-side.
+To complete the spatial discretization, the gradient operators are
+resolved by a finite volume scheme as in
+\cite{evans_simplified_2013}. It should be noted here that with
+respect to a general MCSA scheme, the introduction of fission in the
+system will only affect the source vector in the linear system for the
+eigenvalue schemes used in this work. The linear operator, and
+therefore overall MCSA performance will be dictated by streaming and
+scattering as defined on the left-hand side.
 
 %%---------------------------------------------------------------------------%%
 \section{Basic Preconditioning for the $SP_N$ Equations}
 \label{sec:spn_spectral_analysis}
 Previous work in applying MCSA to the thermal radiation diffusion
-equations had success in using Jacobi preconditioning
-\cite{evans_monte_2012}. In this section, we will compute the spectral
-radius of the iteration matrix formed by the $SP_N$ equations while
-parametrically varying the $SP_N$ order, the $P_N$ order, the number
-of energy groups, and upscattering/downscattering between energy
-groups for Jacobi preconditioned problems to ensure that this type of
-preconditioning will be applicable to the fuel assembly problem. For
-each problem in the parameter study, the values given in
+equation had success in using Jacobi preconditioning
+\cite{evans_monte_2012} and therefore we apply it here to the $SP_N$
+equations given their diffusion-like form. In this section, we will
+compute the spectral radius of the iteration matrix formed by the
+$SP_N$ equations while parametrically varying the $SP_N$ order, the
+$P_N$ order, the number of energy groups, and
+upscattering/downscattering between energy groups for Jacobi
+preconditioned problems to ensure that this type of preconditioning
+will be applicable to the fuel assembly problem. For each problem in
+the parameter study, the values given in
 Table~\ref{tab:spn_fixed_parameters} were fixed for each spatial
 location and energy group.
 
@@ -386,9 +389,10 @@ upscatter respectively. For these figures, the parameters in
 Table~\ref{tab:spn_fixed_parameters} with the number of spatial
 elements reduced to $2 \times 2 \times 2$ to show the blocks generated
 by the discretization.
+
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=3.25in]{chapters/spn_equations/group1.png}
+    \includegraphics[width=3.3in]{chapters/spn_equations/group1.png}
   \end{center}
   \caption{\textbf{Sparsity pattern for 1-group $SP_7$
       discretization.} \textit{A $2\times 2 \times 2$ element mesh was
@@ -397,7 +401,7 @@ by the discretization.
 \end{figure}
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=3.25in]{chapters/spn_equations/group10ds.png}
+    \includegraphics[width=3.3in]{chapters/spn_equations/group10ds.png}
   \end{center}
   \caption{\textbf{Sparsity pattern for 10-group $SP_7$ discretization
       with downscatter only.} \textit{A $2\times 2 \times 2$ element
@@ -407,7 +411,7 @@ by the discretization.
 \end{figure}
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=3.25in]{chapters/spn_equations/group10us.png}
+    \includegraphics[width=3.3in]{chapters/spn_equations/group10us.png}
   \end{center}
   \caption{\textbf{Sparsity pattern for 10-group $SP_7$ discretization
       with downscatter and upscatter.} \textit{A $2\times 2 \times 2$ element
@@ -415,6 +419,7 @@ by the discretization.
       discretization.}}
   \label{fig:group10us}
 \end{figure}
+
 We note a few key features of the sparsity plots. The first is that
 for multigroup problems without full upscatter and downscatter
 (i.e. Figure~\ref{fig:group10ds}), the resulting matrix is asymmetric
@@ -422,22 +427,21 @@ and therefore a linear solver that can handle asymmetric linear
 systems is required. Nearly all problems of interest will not have
 full upscattering or downscattering. Second we note the largely
 diagonal character of these systems, although the blocks from
-Eq~(\ref{eq:A_block_matrix}) are readily apparent. 
+Eq~(\ref{eq:A_block_matrix}) are readily apparent with a block size of
+$N_g\times(N+1)/2$.
 
 Based on this both block and diagonally dominant structure for
 matrices formed by the general multigroup $SP_N$ equations, we choose
 \textit{block Jacobi} preconditioning as a left preconditioner for the
-system. Block Jacobi preconditioning extracts the diagonal elements of
-the matrix as the preconditioner where now the elements extracted are
-the blocks on the diagonal as shown on the left side of
-Figure~\ref{fig:block_jacobi_ex}. Shown on the right side of
-Figure~\ref{fig:block_jacobi_ex}, inversion of the preconditioner is
-trivial with each diagonal block inverted separately. For the $SP_N$
-equations, Eq~(\ref{eq:A_block_matrix}) gives a block size of
-$N_g\times(N+1)/2$.
+system. Block Jacobi preconditioning extracts the diagonal block
+elements of the matrix to use as the preconditioner as shown on the
+left side of Figure~\ref{fig:block_jacobi_ex}. Shown on the right side
+of Figure~\ref{fig:block_jacobi_ex}, inversion of the preconditioner
+is trivial with each diagonal block inverted separately.
+
 \begin{figure}[t!]
   \begin{center}
-    \scalebox{1.5}{
+    \scalebox{1.6}{
     \input{chapters/spn_equations/block_jacobi.pdftex_t} }
   \end{center}
   \caption{\textbf{Block Jacobi preconditioning strategy used for the
@@ -447,17 +451,17 @@ $N_g\times(N+1)/2$.
   \label{fig:block_jacobi_ex}
 \end{figure}
 
-For high performance implementations this has several attractive
-properties. First, the blocks in the matrix come from the energy/angle
-discretization of the transport equation as given by
-Eq~(\ref{eq:A_block_matrix}). Each block on the diagonal is bound to a
-mesh element in the system (note there are 8 blocks on the diagonal in
-each of the sparsity patterns with a mesh of $2 \times 2 \times 2$)
-and therefore we expect the matrix elements forming the block to be
-entirely local in domain decomposed calculations. Second, these blocks
-are typically dense and nearly lower triangular for many transport
-problems meaning that established dense matrix methods can be used for
-fast inversion.
+For high performance implementations block Jacobi preconditioning has
+several attractive properties. First, the blocks in the transport
+operator come from the energy/angle discretization of the transport
+equation as given by Eq~(\ref{eq:A_block_matrix}). Each block on the
+diagonal is bound to a mesh element in the system (note there are 8
+blocks on the diagonal in each of the sparsity patterns with a mesh of
+$2 \times 2 \times 2$) and therefore we expect the matrix elements
+forming the block to be entirely local in domain decomposed
+calculations. Second, these blocks are typically dense and nearly
+lower triangular for many transport problems meaning that established
+dense matrix methods can be used for fast inversion.
 
 Spectral radius computations for the block Jacobi preconditioned
 iteration matrix were performed with Table~\ref{tab:group1bj} giving
@@ -558,8 +562,9 @@ a criticality calculation. A cross section along the vertical axis
 showing homogenized fuel pin, control rod, and moderator materials and
 the associated grid is given by Figure~\ref{fig:problem3_radial_mat}
 while a cross section of the materials configuration along the
-horizontal axis is given by Figure~\ref{fig:problem3_axial_mat}. A
-detailed view of the assembly bottom is given in
+horizontal axis is given by Figure~\ref{fig:problem3_axial_mat}. The
+control rods were removed for these problems leaving only moderator in
+their place. A detailed view of the assembly bottom is given in
 Figure~\ref{fig:problem3_end}. On the top and bottom of the assembly,
 vacuum conditions are used as well as on the top and right boundaries
 in Figure~\ref{fig:problem3_radial_mat}. Reflecting conditions are
@@ -577,9 +582,8 @@ mesh with materials and cross sections homogenized over this region.
     \textit{Reflecting boundaries are used on the left and lower
       boundaries to create a complete $17 \times 17$ assembly
       geometry. Gray regions are homogenized fuel and red regions are
-      homogenized control rods. The control rods were removed for
-      these problems. Each fuel pin is resolved by a $2 \times 2$
-      mesh.}}
+      homogenized control rods. Each fuel pin is resolved by a $2
+      \times 2$ mesh.}}
   \label{fig:problem3_radial_mat}
 \end{figure}
 \begin{figure}[t!]
@@ -591,8 +595,9 @@ mesh with materials and cross sections homogenized over this region.
       spaced to capture material boundaries. Important details include
       spacer grids along the length of the fuel pins and reactor core
       structures on the top and bottom of the assembly. Lighter purple
-      material in the center of the assembly is moderator and darker
-      purple/red material is fuel.}}
+      material in the center of the assembly is homogenized
+      moderator/control rodes and darker purple/red material is
+      homogenized moderator/fuel.}}
   \label{fig:problem3_axial_mat}
 \end{figure}
 \begin{figure}[t!]
@@ -602,7 +607,8 @@ mesh with materials and cross sections homogenized over this region.
   \caption{\textbf{Fuel assembly geometry end detail.}
     \textit{Reactor core structure including spacer grids and plenum
       has been included. Lighter purple material on the right of the
-      figure is moderator and darker purple/red material is fuel.}}
+      figure is homogenized moderator/control rods and darker
+      purple/red material is homogenized moderator/fuel.}}
   \label{fig:problem3_end}
 \end{figure}
 
@@ -665,19 +671,19 @@ within a power iteration strategy to find the multiplication factor.
 \end{algorithm}
 Here, $\mathbf{M}$ is the transport operator generated on the
 left-hand side of the $SP_N$ discretization, $\mathbf{F}$ is the
-fission matrix, and $\mathbf{\Phi}$ the multigroup neutron flux. This
-problem is significantly more complicated than the simple test problem
-used for the previous spectral analysis. Fission has been introduced
-into the set of equations and the addition of moderator into the
-system will increase the amount of scattering, creating a
-significantly more difficult problem manifesting itself in an
-iteration matrix with a larger spectral radius. When using MCSA, the
-linear operator applied to $\mathbf{\Phi}^{n+1}$ at each eigenvalue
-iteration will dictate convergence and remain unchanged throughout the
-eigenvalue computation while the addition of fission to the system
-will only modify the source of neutrons and the multiplication factor
-at every eigenvalue iteration while not affecting Monte Carlo
-transport.
+fission matrix, and $\mathbf{\Phi}$ the multigroup neutron flux. Using
+MCSA in this context is significantly more complicated than the simple
+test problem used for the previous fixed-source preconditioner
+analysis. Fission has been introduced into the set of equations and
+the addition of moderator into the system will increase the amount of
+scattering, creating a significantly more difficult problem
+manifesting itself in an iteration matrix with a larger spectral
+radius. When using MCSA, the linear operator applied to
+$\mathbf{\Phi}^{n+1}$ at each eigenvalue iteration will dictate
+convergence and remain unchanged throughout the eigenvalue computation
+while the addition of fission to the system will only modify the
+source of neutrons and the multiplication factor at every eigenvalue
+iteration while not affecting Monte Carlo transport.
  
 \subsection{Preliminary Jacobi Preconditioned Calculations}
 \label{subsec:jacobi_prec_assembly_calc}
@@ -706,11 +712,9 @@ residual over a few iterations. Based on the spectral radius
 computations performed, these results are not in line with
 expectations for this problem. Additional computations performed with
 \sn{1}{6} histories per iteration exhibited the same divergent
-behavior at a significant computational cost and compute time. Even if
-the problem may be ill-conditioned, we do expect convergence of MCSA
-given that the spectral radius requirement was met. To investigate
-further, a block Jacobi preconditioned Richardson iteration was used
-to solve the same
+behavior at a significant computational cost and compute time. To
+investigate further, a block Jacobi preconditioned Richardson
+iteration was used to solve the same
 problem. Figure~\ref{fig:block_jacobi_res_richardson} gives the
 residual infinity norm as a function of iteration for the Richardson
 linear solve in the first eigenvalue iteration.
@@ -747,7 +751,7 @@ method are eventually being terminated by the weight cutoff as no
 artificial absorption was used for these preliminary
 calculations. Based on this, the correction being generated by the
 Neumann-Ulam solve is the component of MCSA causing a divergent
-solution.
+solution which we study next.
 
 \subsection{MCSA Breakdown}
 \label{subsec:mcsa_break_down}
@@ -801,7 +805,7 @@ factor and flux spectrum within the $SP_N$ eigenvalue scheme for more
 difficult problems like the fuel assembly, making the method unusable.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/breakdown_iterations.pdf}
+    \includegraphics[width=5.75in]{chapters/spn_equations/breakdown_iterations.pdf}
   \end{center}
   \caption{\textbf{Iterations required to converge as a function of
       spectral radius for the neutron diffusion problem.} \textit{The
@@ -812,7 +816,7 @@ difficult problems like the fuel assembly, making the method unusable.
 \end{figure}
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/breakdown_histories.pdf}
+    \includegraphics[width=5.75in]{chapters/spn_equations/breakdown_histories.pdf}
   \end{center}
   \caption{\textbf{Histories per DOF required to converge as a
       function of spectral radius for the neutron diffusion problem.}
@@ -839,7 +843,7 @@ the number of histories required to converge is evidence that for
 problems with spectral radii above $\approx 0.97$, using MCSA to solve
 any problems of interest is entirely ineffective and not practical. At
 iteration matrix spectral radii this large, using significant numbers
-of stochastic histories in the Monte Carlo solve are not enough to
+of stochastic histories in the Monte Carlo solve is not enough to
 reduce the stochastic uncertainty in the correction, causing the MCSA
 sequence to diverge instead of accelerating convergence. We therefore
 require a more expansive set of preconditioning techniques to move the
@@ -847,7 +851,7 @@ eigenvalue spectrum of the $SP_N$ problem into a regime in which MCSA
 is more applicable and in which performance is improved.
 \begin{figure}[t!]
   \begin{center}
-    \includegraphics[width=4.25in]{chapters/spn_equations/breakdown_time.pdf}
+    \includegraphics[width=5.75in]{chapters/spn_equations/breakdown_time.pdf}
   \end{center}
   \caption{\textbf{CPU time per history as a function of spectral
       radius for the neutron diffusion problem.} \textit{As the
@@ -872,20 +876,23 @@ are required beyond simple Jacobi methods that can reduce the spectral
 radius into a region of better MCSA performance. Two modern algebraic
 preconditioning strategies, ILUT and SPAINV, will be presented here
 and used within the explicit preconditioning framework given by
-Eq~(\ref{eq:left_right_mcsa}). Data
-showing their effects on MCSA solutions of the fuel assembly
-criticality problem will be presented.
+Eq~(\ref{eq:left_right_mcsa}). Data showing their effects on MCSA
+solutions of the fuel assembly criticality problem will be provided.
 
 \subsection{ILUT Preconditioning}
 \label{subsec:spn_ilut_preconditioning}
 ILUT preconditioning is chosen first due to its applicability to
 problems that have a dominating elliptic component such as the fuel
 assembly problem or other problems with a high scattering to
-absorption ratio. Incomplete lower-upper (ILU) factorizations of the
-linear operator can be used a simple mechanism to form an approximate
-inverse of a preconditioner. To build the factorization, the sparse
-upper and lower triangular factors, $\mathbf{L}$ and $\mathbf{U}$, are
-computed such that the residual matrix formed by the factorization
+absorption ratio. As with MCSA, the algebraic formulation of ILUT
+requires the physics operator to be fully formed and is therefore
+easily incorporated into our solution sequence. 
+
+Incomplete lower-upper (ILU) factorizations of the linear operator can
+be used as a simple mechanism to form an approximate inverse of a
+preconditioner. To build the factorization, the sparse upper and lower
+triangular factors, $\mathbf{L}$ and $\mathbf{U}$, are computed such
+that the residual matrix formed by the factorization
 \cite{saad_iterative_2003}:
 \begin{equation}
   \mathbf{R} = \mathbf{L} \mathbf{U} - \mathbf{A} \:,
@@ -902,31 +909,28 @@ sparsity pattern of the input matrix while a fill level of 2 will
 contain twice as many elements in the factorization, resulting in a
 better representation of the true LU factorization. The inverse of the
 lower and upper triangular factors may then be easily inverted by
-means of simple elimination to produce the preconditioner. For MCSA,
-$\mathbf{L}^{-1}$ will be used on the left and $\mathbf{U}^{-1}$ on
-the right to precondition the system.
+means of simple elimination procedure to produce the
+preconditioner. For MCSA, $\mathbf{L}^{-1}$ will be used on the left
+and $\mathbf{U}^{-1}$ on the right to precondition the system.
 
-For modern subspace methods, only the action to the preconditioner on
-a vector is required for efficient implementations and therefore a
-triangular solve can be used for this purpose. For the explicit
-preconditioning scheme presented in Eq~(\ref{eq:left_right_mcsa}), the
-fully inverted operator must be generated in order to build the set of
-probabilities and weights required for Monte Carlo
-sampling. Therefore, for a linear system of size $N$, $N$ triangular
-solves will be required in order to extract the inverse matrices from
-production ILU implementations. In addition, parallel implementations
-typically generate lower and upper factors that are only triangular
-locally, providing an easily parallelizable mechanism to generate the
-action of the preconditioner inverse. A consequence of this choice for
-parallel scalability is a degradation of the preconditioning quality
-as the size of the parallel system is increased. For serial
-computations, the triangular factorization is potentially exact
-depending on the parameters chosen while at thousands of parallel
-tasks, the global triangular factors differ significantly from the true
-factorization. As a result, more iterations are required at higher
-levels of parallelism to converge the system and will ultimately
-degrade overall scalability of the system with respect to total wall
-time to converge.
+For the explicit preconditioning scheme presented in
+Eq~(\ref{eq:left_right_mcsa}), the fully inverted operator must be
+generated in order to build the set of probabilities and weights
+required for Monte Carlo sampling. Therefore, for a linear system of
+size $N$, $N$ triangular solves will be required in order to extract
+the inverse matrices from production ILU implementations. In addition,
+parallel implementations typically generate lower and upper factors
+that are only triangular locally, providing an easily parallelizable
+mechanism to generate the action of the preconditioner inverse. A
+consequence of this choice for parallel scalability is a degradation
+of the preconditioning quality as the size of the parallel system is
+increased. For serial computations, the triangular factorization is
+potentially exact depending on the parameters chosen while at
+thousands of parallel tasks, the global triangular factors differ
+significantly from the true factorization. As a result, more
+iterations are required at higher levels of parallelism to converge
+the system and will ultimately degrade overall scalability of the
+system with respect to total wall time to converge.
 
 MCSA preconditioned with ILUT was used to solve the fuel assembly
 problem presented in the previous section for a 1-group $SP_1$
@@ -950,15 +954,16 @@ quality of the ILUT preconditioning.
 Figure~\ref{fig:ilut_iterations} gives the number of iterations to
 converge the fixed source problem to a tolerance of \sn{1}{8}. As
 expected, the higher the fill level chosen for the ILUT factorization,
-the fewer iterations are required to converge the problem (only 9 MCSA
-iterations were required to converge the problem for the fill level of
-3 and drop tolerance of \sn{1}{-5} case). For higher levels of fill,
-the iterations needed to converge were not as sensitive, signaling
-that a larger drop tolerance can perhaps be used without a significant
-degradation in iterative performance. At smaller fill levels, the
-sensitivity to the ILUT drop tolerance is more significant. For all
-fill levels used, convergence was not achieved for the fuel assembly
-problem with a drop tolerance larger than \sn{1}{-3}.
+the fewer iterations are required to converge the problem with only 9
+MCSA iterations were required to converge the problem for the fill
+level of 3 and drop tolerance of \sn{1}{-5} case. For higher levels of
+fill, the iterations needed to converge were not as sensitive,
+signaling that a larger drop tolerance can perhaps be used without a
+significant degradation in iterative performance. At smaller fill
+levels, the sensitivity to the ILUT drop tolerance is more
+significant. For all fill levels used, convergence was not achieved
+for the fuel assembly problem with a drop tolerance larger than
+\sn{1}{-3}.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4.25in]{chapters/spn_equations/ilut_iterations.pdf}
@@ -996,6 +1001,7 @@ the amount of data that must be handled. In parallel, losing sparsity
 severely inhibits performance where now parallel operations require
 communications among orders of magnitude more processors for
 nearest-neighbor type algorithms.
+
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4.25in]{chapters/spn_equations/ilut_size.pdf}
@@ -1030,7 +1036,11 @@ Figure~\ref{fig:ilut_quality} provides the computed metric as a
 function of ILUT drop tolerance for each fill level used. In general,
 the metric is similar to the data observed for the number of
 iterations required to converge as the non-zero row entries changed by
-a smaller fraction over drop tolerances tested.
+a smaller fraction over drop tolerances tested. For higher levels of
+fill, the quality metric is observed to be relatively insensitive to
+the drop tolerance as maintaining more entries in the preconditioner
+has a stronger impact than filtering small values.
+
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4.25in]{chapters/spn_equations/ilut_quality.pdf}
@@ -1043,38 +1053,19 @@ a smaller fraction over drop tolerances tested.
   \label{fig:ilut_quality}
 \end{figure}
 
-It should be noted here that although only the behavior of the linear
-solve during a single eigenvalue iteration is reported, the behavior
-of the linear solver was observed to be consistent throughout the
-eigenvalue iterations (25 total eigenvalue iterations were required to
-converge the 1-group $SP_1$ problem). We expect this as the linear
-operator (which is unchanging in the fuel assembly criticality
-problem) dictates the convergence of MCSA. At each iteration the
-fission source provided to the linear problem is changing, however, we
-expect the same convergence behavior for all source vectors
-$\mathbf{b} \in \mathbb{R}^{N}$ where $||\mathbf{b}||_1 \neq 0$.
 
 \subsection{Sparse Approximate Inverse Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
-SPAINV is chosen next because it the true inverse of the
-preconditioner is product of the algorithm, avoiding the need for many
-inverse matrix applications. In addition, the algorithm seeks to
-maintain the sparsity of the inverse preconditioner, potentially
-alleviating some of the dense operator issues observed with
-ILUT. Explicit formation of the preconditioner inverse is a
-requirement of the current MCSA preconditioning strategy. As a result,
-although ILUT preconditioning provided excellent iterative
-performance, a significant time penalty is paid to extract the inverse
-of the triangular factors through $N$ triangular solves. In addition,
-this explicit inversion yielded a composite linear operator that was
-dense, requiring modification of the system in order to achieve better
-scalability and Monte Carlo performance. 
+Sparse approximate inverse (SPAINV) preconditioning is chosen next because the true inverse of the preconditioner
+is product of the algorithm, avoiding the need for many inverse matrix
+applications as required by using ILUT with MCSA. In addition, the
+algorithm seeks to maintain the sparsity of the inverse
+preconditioner, potentially alleviating some of the dense operator
+issues observed with ILUT.
 
-Sparse approximate inverse (SPAINV) preconditioning is a technique
-that may potentially alleviate both of these constraints at the cost
-of reduced iterative performance. The method produces a sparse
-approximation of the inverse matrix directly by minimizing the
-Frobenius norm of the residual matrix \cite{saad_iterative_2003}:
+SPAINV produces a sparse approximation of the inverse matrix directly
+by minimizing the Frobenius norm of the residual matrix
+\cite{saad_iterative_2003}:
 \begin{equation}
   || \mathbf{I} - \mathbf{A} \mathbf{M} ||^2_F =
   \sum_{j=1}^N ||\mathbf{e}_j - \mathbf{A} \mathbf{m}_j||^2_2 \:,
@@ -1105,7 +1096,7 @@ will converge in the same number of iterations as a computation with
 thousands of cores.
 
 MCSA preconditioned with SPAINV was used to solve the fuel assembly
-problem as with ILUT for a 1-group $SP_1$ discretization. To study
+problem again for a 1-group $SP_1$ discretization. To study
 convergence sensitivity to SPAINV parameters, the number of levels in
 the sparsity pattern and threshold were parametrically varied with the
 number of iterations to converge a single eigenvalue iteration for the
@@ -1134,6 +1125,7 @@ to comparable iterative performance, the sparsity of the composite
 operator is greatly improved with nearly an order of magnitude
 reduction in number of non-zero entries per row for lower level
 values.
+
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4.25in]{chapters/spn_equations/spainv_iterations.pdf}
@@ -1159,19 +1151,14 @@ values.
   \label{fig:spainv_size}
 \end{figure}
 
-With the comparable iterative performance and improved sparsity,
-SPAINV preconditioning should then have a more favorable quality
-metric than ILUT preconditioning. Figure~\ref{fig:spainv_quality}
-gives the quality metric as a function of the threshold value for each
-of the sparsity levels computed. Not only do we see an improved
-quality metric over ILUT preconditioning (about an order of magnitude
-less), but we also note that the ideal sparsity level is not the largest
-nor the smallest. In fact, the largest and smallest levels (3 and 7)
-performed the worst in terms of the quality metric with a level of 4
-performing the best. When CPU time to generate the preconditioner is
-considered, 4 is the clear choice for this problem as more time is
-required to do the approximate inversion as the sparsity pattern of
-the preconditioner grows in size.
+Figure~\ref{fig:spainv_quality} gives the quality metric as a function
+of the threshold value for each of the sparsity levels computed. Not
+only do we see an improved quality metric over ILUT preconditioning
+(about an order of magnitude less), but we also note that the ideal
+sparsity level is not the largest nor the smallest. In fact, the
+largest and smallest levels (3 and 7) performed the worst in terms of
+the quality metric with a level of 4 performing the best.
+
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4.25in]{chapters/spn_equations/spainv_quality.pdf}
@@ -1274,129 +1261,16 @@ important components of the preconditioned MCSA algorithm.
 
 \clearpage
 
-\subsection{MCSA Relaxation Parameters}
-\label{subsec:spn_mcsa_relaxation}
-As another means of preconditioning (or variance reduction) to meet
-the goal of improving iterative performance, the Richardson iteration
-upon which the Neumann-Ulam method is built may be implemented with an
-adjustable scalar relaxation parameter:
-\begin{equation}
-  \mathbf{x} = \mathbf{x} + \omega \mathbf{r}\:,
-  \label{eq:richardson_relaxation}
-\end{equation}
-where $\omega$ is the relaxation parameter. This is very similar to
-point Jacobi preconditioning where the system is now being scaled on
-the left by a constant value in all rows. Analogously, these
-relaxation parameter techniques can be applied to Monte Carlo to
-improve convergence as demonstrated by Dimov \cite{dimov_new_1998}. In
-this case, building an iteration matrix from
-Eq~(\ref{eq:richardson_relaxation}) gives:
-\begin{equation}
-  \mathbf{H} = \mathbf{I} - \omega \mathbf{A}\:,
-  \label{eq:relaxed_iteration_matrix}
-\end{equation}
-with the probabilities and weights for the Monte Carlo procedure
-appropriately scaled via a modified Neumann-Ulam decomposition. For
-MCSA, we can stage this scheme with two separate relaxation
-parameters; one for the outer Richardson iteration and one for the
-inner Monte Carlo solve:
-\begin{subequations}
-  \begin{gather}
-    \ve{x}^{k+1/2} = \ve{x}^k + \omega_R \ve{r}^k\:,\\ \ve{r}^{k+1/2}
-    = \ve{b} -
-    \ve{A}\ve{x}^{k+1/2}\:,\\ \omega_N\ve{A}\delta\ve{x}^{k+1/2} =
-    \omega_N\ve{r}^{k+1/2}\:,\\ \ve{x}^{k+1} = \ve{x}^{k+1/2} + \delta
-    \ve{x}^{k+1/2}\:,\\ \ve{r}^{k+1} = \ve{b} - \ve{A}\ve{x}^{k+1}\:,
-  \end{gather}
-  \label{eq:mcsa_relaxed}
-\end{subequations}
-where $\omega_R$ is the Richardson iteration relaxation parameter and
-$\omega_N$ is the Neumann-Ulam Monte Carlo solve relaxation parameter.
-
-We apply these relaxation parameters to the fuel assembly problem
-along with the reduced domain approximation as a means of studying
-their effects. For each calculation presented, the number of
-iterations required to converge reported was for a single eigenvalue
-iteration.  Again, \sn{3}{4} histories are used at each MCSA iteration
-to compute the Monte Carlo correction using the adjoint collision
-estimator. A reduced domain fill level of 100 is used with a threshold
-of \sn{1}{-10} to filter small values. ILUT preconditioning with a
-drop tolerance of \sn{1}{-5} and fill level of 5 is used as
-well. 
-
-Figure~\ref{fig:relax_iters} gives the number of iterations required
-to converge the fuel assembly problem for a 1-group SP1 discretization
-using varying combinations of the relaxation parameters. First, both
-parameters were fixed at the base case of 1 while the other parameter
-was varied as shown in the left-hand side plots of
-Figure~\ref{fig:relax_iters}. For the Richardson relaxation parameter,
-using a value larger than 1 gave better iterative performance up to a
-point, effectively providing a stronger extrapolation using the
-residual at each iteration. For the Neumann relaxation parameter, a
-value of less than 1 is observed to be ideal. Although initially
-counter-intuitive, the fact that the correction computed by the Monte
-Carlo solver has a stochastic error associated with it means that by
-using a Neumann relaxation parameter less than 1, the correction and
-its error are effectively dampened to improve iterative
-performance. 
-
-Considering the CPU time required to converge a single eigenvalue
-iteration, similar results are also observed for the relaxation
-parameters as given by Figure~\ref{fig:relax_time}. For the base cases
-given by the plots on the left, it was found the a Richardson
-relaxation parameter of 1.1 and a Neumann relaxation parameter of 0.7
-provided the fastest CPU time for convergence. Fixing each parameter
-at these new values, the calculations were repeated as shown for the
-plots on the right hand sides of both Figures~\ref{fig:relax_iters}
-and \ref{fig:relax_time}. For each repeated timing calculation, it was
-found that the same combination of relaxation parameters found in the
-base cases performed the best although they did not necessarily have
-the best iterative performance.
-
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=6in]{chapters/spn_equations/relax_iters.pdf}
-  \end{center}
-  \caption{\textbf{Number of iterations to converge a single
-      eigenvalue iteration of the fuel assembly problem as a function
-      of the relaxation parameters.} \textit{Starting in upper left
-      and moving counter-clockwise: Neumann relaxation parameter fixed
-      at 1.0, Richardson relaxation parameter fixed at 1.0, Neumann
-      relaxation parameter fixed at 0.7, Richardson relaxation
-      parameter fixed at 1.1. For each calculation \sn{3}{4}
-      stochastic histories were used to compute the MCSA correction at
-      each iteration.}}
-  \label{fig:relax_iters}
-\end{figure}
-
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=6in]{chapters/spn_equations/relax_time.pdf}
-  \end{center}
-  \caption{\textbf{CPU time in seconds to converge a single eigenvalue
-      iteration of the fuel assembly problem as a function of the
-      relaxation parameters.} \textit{Starting in upper left and
-      moving counter-clockwise: Neumann relaxation parameter fixed at
-      1.0, Richardson relaxation parameter fixed at 1.0, Neumann
-      relaxation parameter fixed at 0.7, Richardson relaxation
-      parameter fixed at 1.1. For each calculation \sn{3}{4}
-      stochastic histories were used to compute the MCSA correction at
-      each iteration.}}
-  \label{fig:relax_time}
-\end{figure}
-
-\clearpage
-
 \subsection{MCSA Estimator and Fixed Point Iteration Analysis}
 \label{subsec:spn_estimator_comparison}
 The iterative performance of MCSA will next be studied with both the
 collision and expected value estimators using the best preconditioning
-and relaxation parameter combinations found by the previous
-analysis. Additionally, both the Richardson-based MCSA iteration given
-by Eq~(\ref{eq:mcsa}) and the minimal residual-based MCSA iteration
-given by Eq~(\ref{eq:mcsa_min_res}) will be used. Although the
-expected value estimator achieved the best iterative performance in
-the previous comparison and analysis for the simple Poisson problem in
+parameter combinations found by the previous analysis. Additionally,
+both the Richardson-based MCSA iteration given by Eq~(\ref{eq:mcsa})
+and the minimal residual-based MCSA iteration given by
+Eq~(\ref{eq:mcsa_min_res}) will be used. Although the expected value
+estimator achieved the best iterative performance in the previous
+comparison and analysis for the simple Poisson problem in
 \S~\ref{sec:parameter_estimator_analysis}, it is possible that the
 collision estimator may perform better from a timing perspective. The
 deterministic component of the expected value estimator that couples
