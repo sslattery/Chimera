@@ -801,7 +801,7 @@ generation, the remainder of the parallel procedure is simple. The
 linear Newton correction system is solved using the parallel MCSA
 method as described in the previous section and the Newton correction
 applied to the previous iterate's solution through a parallel vector
-update with parallell norm operations applied to check for
+update with parallel norm operations applied to check for
 convergence.
 
 %%---------------------------------------------------------------------------%%
@@ -1711,7 +1711,7 @@ blocks requires more resources and those resources are clearly growing
 with core count (most obviously in the 4 set case with split
 histories). In addition, at 131,072 cores for the largest 4 set
 computation, processors that share a block may be some physical
-distatance from one another in the machine, adding to latency and
+distance from one another in the machine, adding to latency and
 decreasing performance.
 
 \begin{figure}[t!]
