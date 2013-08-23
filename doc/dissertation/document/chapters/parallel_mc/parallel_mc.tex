@@ -317,7 +317,7 @@ overlap between communication and transport of histories.
 
 \begin{figure}[t!]
   \begin{center}
-    \scalebox{1.5}{ \input{chapters/parallel_mc/domain_to_domain.pdftex_t} }
+    \scalebox{1.25}{ \input{chapters/parallel_mc/domain_to_domain.pdftex_t} }
   \end{center}
   \caption{\textbf{Nearest neighbor history communication sequence.}
     \textit{Each subdomain in the system has a set of nearest
@@ -351,7 +351,7 @@ then propagated up the tree in the same manner.
 
 \begin{figure}[t!]
   \begin{center}
-    \scalebox{1.25}{
+    \scalebox{1.0}{
       \input{chapters/parallel_mc/binary_comm_tree.pdftex_t} }
     \caption{\textbf{Binary communication tree for coordinating the
         end of a parallel Neumann-Ulam solve.} \textit{Each child
@@ -632,7 +632,7 @@ processes owned those adjacent states.
 To generate overlap, we use the identical algorithm but in this case
 we perform as many graph level traversals as the specified amount of
 overlap. For example, consider the analytic relations derived in
-\S~\ref{sec:analytic_framework} for the length of random walks in a
+Appendix~\ref{chap:parallel_theory} for the length of random walks in a
 Neumann-Ulam method and the amount of leakage from a domain
 considering a neutron diffusion problem. From these relations we might
 determine that, for our particular problem, if we can grow the domain
@@ -1391,7 +1391,7 @@ In the next set of scaling studies, we will explore how adding overlap
 to the subdomains in the problem affects runtimes and parallel
 performance as compared to the case with pure domain decomposition. To
 do this, we utilize the set of analytic relations developed in
-\S~\ref{sec:analytic_framework} to design these numerical
+Appendix~\ref{chap:parallel_theory} to design these numerical
 experiments. For the neutron diffusion problem used in these scaling
 studies, the linear operator had a spectral radius of 0.787 and a
 weight cutoff of \sn{1}{-2} was used with the Neumann-Ulam
@@ -1402,7 +1402,7 @@ Eq~(\ref{eq:mean_chord_domain_leakage}), we then expect approximately
 5.3\% of the histories born in a particular domain to leak out after
 the first transport stage. By adding overlap, we aim to reduce this
 fraction of communicated histories and therefore boost the parallel
-performance of the algorithm. 
+performance of the algorithm.
 
 To determine the amount of overlap to test for the scaling studies, we
 use a variation of Eq~(\ref{eq:step_k_length}) to determine how many
@@ -2165,6 +2165,7 @@ contributions.
 \item MCSA can be effectively parallelized using domain decomposition
 \item The leakage fraction of stochastic histories from a parallel
   subdomain can be quantified analytically using algebraic quantities
+  (see Appendix~\ref{chap:parallel_theory})
 \item The multiple-set overlapping-domain (MSOD) parallel algorithm
   for particle transport has been adapted to parallelize MCSA
 \item MCSA parallelized with MSOD was verified to produce the same

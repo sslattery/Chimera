@@ -1,17 +1,17 @@
-\chapter{Analytic Framework for Domain-Decomposed Monte Carlo\ }
+\chapter{Analytic Framework for\\ Domain-Decomposed Monte Carlo\ }
 \label{chap:parallel_theory}
-Because we have chosen a domain decomposition strategy in a parallel
-environment, this means that communication of these histories must
-occur between compute nodes owning neighboring pieces of the global
-domain. We wish to characterize this communication not only because
-communication is in general expensive, but also because these
-nearest-neighbor communication sequences, specifically, have poor
-algorithmic strong scaling \cite{gropp_high-performance_2001} in much
-the same way as a parallel matrix-vector multiply
-operation. Therefore, we desire a framework to provide a simple,
-analytic theory based on the properties of the transport system that
-will allow for estimates of the domain decomposed behavior of the
-Neumann-Ulam method in terms of the amount of information that must be
+Because we have chosen a domain decomposition strategy for the
+Neumann-Ulam method, this means that communication of the stochastic
+histories must occur between compute nodes owning neighboring pieces
+of the global domain. We wish to characterize this communication not
+only because communication is in general expensive, but also because
+these nearest-neighbor communication sequences, specifically, have
+poor algorithmic strong scaling \cite{gropp_high-performance_2001} in
+much the same way as a parallel matrix-vector multiply operation. In
+this appendix, we devise a framework to provide a simple, analytic
+theory based on the properties of the transport system that will allow
+for estimates of the domain decomposed behavior of the Neumann-Ulam
+method in terms of the amount of information that must be
 communicated.
 
 When solving problems where the linear operator is symmetric, a host
