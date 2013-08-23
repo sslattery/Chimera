@@ -1878,22 +1878,22 @@ communication boosts
 efficiencies. Figure~\ref{fig:titan_strong_subdomain} gives the
 results of the strong scaling study and
 Figure~\ref{fig:titan_weak_subdomain} gives the results of the the
-weak scaling study in terms of absolute efficiencies. In both cases,
-the benefits to parallel performance of using MCSA as a subdomain
-solver are obvious. In the strong scaling case we make the important
-observation that we hit the strong scaling wall at the same time with
-and without the additional Monte Carlo communication. Although the
-Monte Carlo communication did contribute to the efficiency decrease,
-it is clear that the remaining matrix and vector operations are the
-primary impediment to scalability. Furthermore, we see an even greater
-rise above unity in efficiencies because there is less communication
+weak scaling study in terms of absolute efficiencies.
+
+In the strong scaling case we make the important observation that we
+hit the strong scaling wall at the same time with and without the
+additional Monte Carlo communication. Although the Monte Carlo
+communication did contribute to the efficiency decrease, it is clear
+that the remaining matrix and vector operations are the primary
+impediment to scalability. Furthermore, we see an even greater rise
+above unity in efficiencies because there is less communication
 overhead hiding the better cache utilization as the local problem size
 shrinks. At 16,384 cores, performing the subdomain solves boost the
 absolute efficiency from 38\% to 67\% relative to the reference case.
 
 In the weak scaling study, we do not have the scaling wall to contend
 with and eliminating Monte Carlo communication through subdomain
-solves provides an effectively linear boost in the weak scaling
+solves provides an effectively constant boost in the weak scaling
 absolute efficiency. We still see a small reduction in weak scaling
 efficiency as a function of core count due to the communication
 overhead for the parallel matrix and vector operations. We observe
@@ -1925,37 +1925,22 @@ with Monte Carlo communication.
   \label{fig:titan_weak_subdomain}
 \end{figure}
 
-Of additional concern for the subdomain method is the potential
-decrease in iterative performance due to the fact that histories near
-the boundary will potentially have their random walk truncated, thus
-decreasing the information available to compute the correction
-vector. For both the weak and strong scaling study, all calculations
-with split histories converged in 22 or in only a few cases 21
-iterations for both the subdomain solve and the solve with
-communication giving an algorithmic efficiency of 1.048 for all
-cases. This small improvement in iteration count was not observed to
-be a function of problem size, number of processors, or whether the
-subdomain method was used. For the replicated history cases, the
-algorithmic efficiency improvement was not as good as when
-communication was allowed for the Monte Carlo algorithm. For these
-calculations, the number of iterations to converge was reduced to 18
-or 19 in both the strong and weak scaling studies with lower core
-counts converging in fewer iterations.
-
-Therefore, there is no reason to expect overlap to improve the
-iterative or scaling performance of the method as iterative
-performance is maintained without it for this particular
-problem. Overlap is not as effective because histories relinquish most
-of their useful information within the first few steps (which is why
-we can use such a large weight cutoff and there is an insensitivity to
-weight cutoff as shown in
-Figure~\ref{fig:estimator_wc_iters}). Keeping them around longer with
-overlap to do extra work in the local domain will not improve
-iterative performance and thus increase compute times. Supplemenatary
-scaling studies using the subdomain Neumann-Ulam method with multiple
-sets are presented in Appendix~\ref{chap:extra_scaling}.
-
-\clearpage
+From a parallel performance perspective, MCSA may then be best used in
+a mode where the Monte Carlo is performed over only the subdomains
+with no replication or overlap added to the system. In this mode,
+iterative performance is maintained relative to the solutions with
+communication even for more ill-conditioned problems with larger
+spectral radii. If in the future there are ill-conditioned problems
+where using subdomain Monte Carlo reduces the algorithmic efficiency
+of MCSA due to the information lost in the correction vector, overlap
+would be a viable mechanism to potentially maintain that iterative
+performance, keeping in mind the potential impacts on scalability that
+were observed in this work. However, although eliminating all Monte
+Carlo communication was observed to be the best mode of use for MCSA,
+the parallel Monte Carlo methods developed in this work still provide
+value for cases where only a Monte Carlo solution is desired. In those
+cases, full transport of the Monte Carlo histories are required in
+order to generate the correct solution.
 
 %%---------------------------------------------------------------------------%%
 \section{Summary\ }
@@ -1995,8 +1980,4 @@ contributions.
   solutions using superposition
 \item MCSA is most efficiently used in parallel as a stochastic
   realization of an additive Schwarz method
-\item With future optimization, large scale reactor analyses in which
-  the transport operator is fully formed (e.g. the $SP_N$ equations)
-  could experience improved time to solution on leadership-class
-  machines with MCSA given the improved scaling performance
 \end{itemize}

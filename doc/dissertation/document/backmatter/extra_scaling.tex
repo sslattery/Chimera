@@ -1,4 +1,4 @@
-\chapter{Subdomain Neumann-Ulam Scaling with Multiple Sets}
+\chapter{Subdomain Neumann-Ulam Scaling with Multiple Sets\ }
 \label{chap:extra_scaling}
 As an additional analysis of MCSA using subdomain Monte Carlo, the multiple
 sets scaling studies are repeated to determine if any performance
@@ -14,26 +14,6 @@ with Monte Carlo communication. This is again due to the fact that
 adding sets to the problem is not only an exercise in strong scaling
 but it also adds additional parallel overhead in the form of the tally
 vector reduction across blocks.
-
-From a parallel performance perspective, MCSA may then be best used in
-a mode where the Monte Carlo is performed over only the subdomains
-with no replication or overlap added to the system. In this mode,
-iterative performance is maintained relative to the solutions with
-communication even for more ill-conditioned problems with larger
-spectral radii. Furthermore, no overlap was required to maintain
-iterative performance be letting histories near the boundary take a
-few more steps in their random walks. If in the future there are
-ill-conditioned problems where using subdomain Monte Carlo reduces the
-algorithmic efficiency of MCSA due to the information lost in the
-correction vector, overlap would be a viable mechanism to potentially
-maintain that iterative performance, keeping in mind the potential
-impacts on scalability that were observed in this work. However,
-although eliminating all Monte Carlo communication was observed to be
-the best mode of use for MCSA, the parallel Monte Carlo methods
-developed for this work still provide value for cases where only a
-Monte Carlo solution is desired. In those cases, full transport of the
-Monte Carlo histories are required in order to generate the correct
-solution.
 
 \begin{figure}[t!]
   \begin{center}
