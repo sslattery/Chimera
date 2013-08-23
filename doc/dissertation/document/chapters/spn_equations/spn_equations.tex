@@ -30,7 +30,7 @@ timing with MCSA demonstrated to have improved iterative performance
 over GMRES.
 
 %%---------------------------------------------------------------------------%%
-\section{The Neutron Transport Equation}
+\section{Derivation of the $SP_N$ Equations}
 \label{sec:transport_eq}
 As a starting point for the $SP_N$ equations we define the
 time-independent neutron transport equation
@@ -100,11 +100,11 @@ Eq~(\ref{eq:eigenvalue_transport}) becomes:
   \label{eq:cart_1d_eigenvalue}
 \end{multline}
 
-%%---------------------------------------------------------------------------%%
-\section{Derivation of the Monoenergetic $SP_N$ Equations}
-\label{sec:spn_equations}
-The $P_N$ equations as derived in \cite{lewis_computational_1993}
-give $N+1$ coupled first-order equations capturing the spatial and
+\subsection{Fixed-Source Monoenergetic $SP_N$ Equations}
+\label{subsec:fixed_source_spn}
+Using the one-dimensional Cartesian form of the transport equation,
+the $P_N$ equations as derived in \cite{lewis_computational_1993} give
+$N+1$ coupled first-order equations capturing the spatial and
 angular-dependence of the solution:
 \begin{equation}
    \frac{1}{2n+1} \frac{\partial}{\partial x}\Big[ (n+1) \phi_{n+1} + n
@@ -284,7 +284,7 @@ defines the largest order flux moment maintained in the calculation
 and the $P_N$ order defines the largest order of the cross section
 expansion maintained.
 
-\subsection{Eigenvalue Form of the $SP_N$ Equations}
+\subsection{Eigenvalue Form of the Multigroup $SP_N$ Equations}
 \label{subsec:eigenvalue_form}
 For criticality problems, the space, angle, and energy discretizations
 for the $SP_N$ equations can be applied to the general eigenvalue form

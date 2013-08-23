@@ -1079,17 +1079,17 @@ techniques that require the generation of the composite operator may
 be necessary for convergence.
 
 %%---------------------------------------------------------------------------%%
-\section{Monte Carlo Method Selection}
-\label{sec:mc_method_selection}
-The MCSA method defined in Eq.~(\ref{eq:mcsa}) uses the adjoint method
-to estimate the error in a residual Monte Carlo solve instead of the
-direct method outlined in \S\ref{sec:direct_mc}. To demonstrate the
-effectiveness of the adjoint method over the direct method within the
-context of MCSA, we choose the two-dimensional time-dependent Poisson
-equation as a simple model transport problem\footnote{The Poisson
-  equation is a simple form of the diffusion equation and has a
-  similar elliptic character in its time-dependent form to the neutron
-  transport equations that will be solved in the next chapter.}:
+\section{Monte Carlo Synthetic Acceleration Analysis}
+\label{sec:mcsa_analysis}
+In this section we analyze the effects of various MCSA parameters to
+better our understanding of the algorithm and facilitate future
+work. In addition, we demonstrate the effectiveness of MCSA as
+compared to Halton's Sequential Monte Carlo method. To do this, we
+choose the two-dimensional time-dependent Poisson equation as a simple
+model transport problem\footnote{The Poisson equation is a simple form
+  of the diffusion equation and has a similar elliptic character in
+  its time-dependent form to the neutron transport equations that will
+  be solved in the next chapter.}:
 \begin{equation}
   \frac{\partial \ve{u}}{\partial t} = \nabla^2 \ve{u}\:.
   \label{eq:poisson_equation}
@@ -1119,10 +1119,17 @@ to be solved with the MCSA method:
 Both the stencils will be used to vary the size and density of the sparse
 linear system in Eq.~(\ref{eq:poisson_eq_lin_sys}).
 
-A timing and convergence study is used to demonstrate the
-effectiveness of the adjoint method with the collision estimator as
-compared to the direct method. To assess both the CPU time and number
-of iterations required to converge to a solution, a problem of
+\subsection{Monte Carlo Method Selection}
+\label{sec:mc_method_selection}
+The MCSA method defined in Eq.~(\ref{eq:mcsa}) uses the adjoint method
+to estimate the error in a residual Monte Carlo solve instead of the
+direct method outlined in \S\ref{sec:direct_mc}. To demonstrate the
+effectiveness of the adjoint method over the direct method within the
+context of MCSA, we solve Poisson equation in a series of numerical
+experiments. A timing and convergence study is used to demonstrate
+the effectiveness of the adjoint method with the collision estimator
+as compared to the direct method. To assess both the CPU time and
+number of iterations required to converge to a solution, a problem of
 constant $\Delta$ was used with varying values of the number of mesh
 elements, fixing the spectral radius of the system at a constant value
 for each variation. Both the five-point and nine-point stencils were
@@ -1139,6 +1146,7 @@ specified tolerance, both as a function of the problem size. All
 computations presented in this section and the remaining sections of
 this chapter were completed on a 3.0 GHz Intel Core 2 Quad Q9650 CPU
 machine with 16 GB 1067 MHz DDR3 memory.
+
 \begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_cpu.pdf}
@@ -1177,21 +1185,23 @@ contributes to the state in which it currently resides, sampling the
 residual vector as the Monte Carlo source gives a higher density of
 random walk events in regions with a high residual, thus giving a more
 accurate correction in that region due to reduced statistical
-error. From an iteration perspective,
-Figure~\ref{fig:poisson_iterations} shows that using the direct method
-yields a roughly unchanging number of iterations required to converge
-as the problem size increases. Again, if we desire a correction value
-for all states in the problem, then we must start a random walk in
-each state in the system without taking into account the structure of
-the residual vector. Because of this, as the problem size grows adding
-histories is ineffective as many are added in states where the error
-is smaller than in other parts of the problem, ultimately not reducing
-the number of iterations needed to converge. Conversely, as the
-problem size grows in the adjoint method, the additional stochastic
-histories that will be computed are concentrated in regions with a
-large residual, further reducing the stochastic error in the
-correction in those regions and subsequently reducing the required
-number of iterations to converge.
+error. 
+
+From an iteration perspective, Figure~\ref{fig:poisson_iterations}
+shows that using the direct method yields a roughly unchanging number
+of iterations required to converge as the problem size
+increases. Again, if we desire a correction value for all states in
+the problem, then we must start a random walk in each state in the
+system without taking into account the structure of the residual
+vector. Because of this, as the problem size grows adding histories is
+ineffective as many are added in states where the error is smaller
+than in other parts of the problem, ultimately not reducing the number
+of iterations needed to converge. Conversely, as the problem size
+grows in the adjoint method, the additional stochastic histories that
+will be computed are concentrated in regions with a large residual,
+further reducing the stochastic error in the correction in those
+regions and subsequently reducing the required number of iterations to
+converge.
 
 As an additional comparison, the convergence behavior of MCSA can be
 analyzed using both the adjoint and direct solvers to detect any
@@ -1199,22 +1209,20 @@ performance benefits. To assess the convergence properties of MCSA
 using each solver and stencil, the infinity norm of the residual
 computed in Eq.~(\ref{eq:mcsa}) was collected at each iteration for a
 fixed problem size of $N=500$. Figure~\ref{fig:poisson_convergence}
-gives the results of these computations. First, it is worthy to note
-on the semi-log plot that we are indeed achieving the expected
-exponential convergence from MCSA with both Monte Carlo
-solvers. Second, we note that using the adjoint method with the same
-number of stochastic histories per MCSA iteration gives a faster rate
-of converge for the same reasons as above. We also note here that
-fewer iterations are required for convergence when the 9-point stencil
-is used to discretize the Laplacian operator (although at no gain in
-speed as given by the results in
-Figure~\ref{fig:poisson_cpu_time}). This is due to the fact that the
-smaller discretization error directly corresponds to a more well
-defined residual source generated by the Richardson extrapolation for
-the Monte Carlo calculation. In addition, the better defined source is
-transported through a domain described more accurately by the 9-point
-stencil, thus yielding a more accurate correction vector from the
-Monte Carlo calculation.
+gives the results of these computations. We note that using the
+adjoint method with the same number of stochastic histories per MCSA
+iteration gives a faster rate of converge for the same reasons as
+above. We also note here that fewer iterations are required for
+convergence when the 9-point stencil is used to discretize the
+Laplacian operator (although at no gain in speed as given by the
+results in Figure~\ref{fig:poisson_cpu_time}). This is due to the fact
+that the smaller discretization error directly corresponds to a more
+well defined residual source generated by the Richardson extrapolation
+for the Monte Carlo calculation. In addition, the better defined
+source is transported through a domain described more accurately by
+the 9-point stencil, thus yielding a more accurate correction vector
+from the Monte Carlo calculation.
+
 \begin{figure}[t!]
   \centering
   \includegraphics[width=5in,clip]{chapters/mc_background/dir_adj_conv.pdf}
@@ -1228,24 +1236,21 @@ Monte Carlo calculation.
   \label{fig:poisson_convergence}
 \end{figure}
 
-%%---------------------------------------------------------------------------%%
-\section{MCSA Comparison to Sequential Monte Carlo}
+\subsection{MCSA Comparison to Sequential Monte Carlo}
 \label{subsec:sequential_comparison}
 To further motivate using Monte Carlo Synthetic Acceleration, we
-compare its performance to Halton's Sequential Monte Carlo method on
-which previous work in this area was based. For this comparison, we
-use the same transient Poisson problem as described in the previous
-section and choose only the 5-point stencil to discretize the
-Laplacian operator as the previous results yielded little qualitative
-difference between the discretizations. Both MCSA and Halton's method
-are used with the adjoint Monte Carlo solver and the collision
-estimator. In order to complete the same study as in the previous
-section, the number of histories computed by the Monte Carlo solver at
-each iteration had to be doubled to $2 \times N \times N$ in order to
-ensure convergence in Sequential Monte Carlo Method. For the majority
-of the problems in the previous section, the Sequential method used
-with $N \times N$ histories would not
-converge. 
+compare its performance to Halton's Sequential Monte Carlo. For this
+comparison, we use the same transient Poisson problem as described in
+the previous section and choose only the 5-point stencil to discretize
+the Laplacian operator as the previous results yielded little
+qualitative difference between the discretizations. Both MCSA and
+Halton's method are used with the adjoint Monte Carlo solver and the
+collision estimator. In order to complete the same study as in the
+previous section, the number of histories computed by the Monte Carlo
+solver at each iteration had to be doubled to $2 \times N \times N$ in
+order to ensure convergence in Sequential Monte Carlo Method. For the
+majority of the problems in the previous section, the Sequential
+method used with $N \times N$ histories would not converge.
 
 Figure~\ref{fig:seq_cpu_time} gives the CPU time results for this
 comparison as a function of problem size while
@@ -1324,23 +1329,19 @@ with a monotonically decreasing residual.
 
 \clearpage
 
-%%---------------------------------------------------------------------------%%
-\section{Monte Carlo Parameter and Estimator Analysis}
+\subsection{Monte Carlo Parameter and Estimator Analysis}
 \label{sec:parameter_estimator_analysis}
-With the adjoint method shown to be more effective than the direct
-method and MCSA to have better iterative and timing performance than
-sequential Monte Carlo, we now aim to study the effects of the adjoint
-Monte Carlo parameters, weight cutoff and number of histories, on MCSA
-performance with both the collision and expected value
-estimators. With the same Poisson problem, we will use a $200 \times
-200$ grid and a convergence tolerance of \sn{1}{-8} for all
-calculations. To study the effects of the number of Monte Carlo
-histories per MCSA iteration, the weight cutoff was fixed at
-\sn{1}{-4} while the number of histories per iteration was varied from
-6,000 to 100,000. It was observed that MCSA would not converge for
-this problem using the collision estimator with less than 6,000
-histories while the expected value estimator permitted convergence
-with only 2,000 histories. 
+We now study the effects of the adjoint Monte Carlo parameters, weight
+cutoff and number of histories, on MCSA performance with both the
+collision and expected value estimators. With the same Poisson
+problem, we will use a $200 \times 200$ grid and a convergence
+tolerance of \sn{1}{-8} for all calculations. To study the effects of
+the number of Monte Carlo histories per MCSA iteration, the weight
+cutoff was fixed at \sn{1}{-4} while the number of histories per
+iteration was varied from 6,000 to 100,000. It was observed that MCSA
+would not converge for this problem using the collision estimator with
+less than 6,000 histories while the expected value estimator permitted
+convergence with only 2,000 histories.
 
 Figure~\ref{fig:estimator_nh_iters} gives the number of iterations
 required to converge for both estimators as a function of the number
