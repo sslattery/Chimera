@@ -242,23 +242,23 @@ method and meeting the goal of improved scalability.
 \section{Future Work\ }
 \label{sec:future_work}
 
-Throughout this work, three salient issues were observed over all
-others. First, the performance of the MCSA implementation developed
-for this work was severely lacking in terms of time to solution when
-compared to production Krylov methods. In all cases, this difference
-was several orders of magnitude. Second, the preconditioning strategy
-developed by this work, although often successful in achieving
-convergence for difficult problems, creates many obstacles to a
-production implementation. These obstacles all primarily stem from the
-dense composite operators that are required to form the probabilities
-and weights for the Monte Carlo game. Third, perhaps the most
-restrictive and unattractive piece of MCSA as a whole is the simple
-fact that the spectral radius of the physics operator iteration matrix
-be less than one. This was demonstrated to prohibit convergence for
-cases where the preconditioning was considered aggressive and Krylov
-solvers exhibited excellent convergence properties. We will address
-each one of these problems in turn in this section and provide
-suggestions for their solution.
+Throughout this work, three salient issues were observed. First, the
+performance of the MCSA implementation developed for this work was
+severely lacking in terms of time to solution when compared to
+production Krylov methods. In all cases, this difference was several
+orders of magnitude. Second, the preconditioning strategy developed by
+this work, although often successful in achieving convergence for
+difficult problems, creates many obstacles to a production
+implementation. These obstacles all primarily stem from the dense
+composite operators that are required to form the probabilities and
+weights for the Monte Carlo game. Third, perhaps the most restrictive
+and unattractive piece of MCSA as a whole is the simple fact that the
+spectral radius of the physics operator iteration matrix be less than
+one. This was demonstrated to prohibit convergence for cases where the
+preconditioning was considered aggressive and Krylov solvers exhibited
+excellent convergence properties. We will address each one of these
+problems in turn in this section and provide suggestions for their
+solution.
 
 \subsection{Performance}
 \label{subsec:future_performance}

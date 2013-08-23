@@ -5,7 +5,7 @@
 In this chapter the fundamentals of Newton's method will be presented
 along with a brief discussion of inexact Newton methods. Newton-Krylov
 methods, a variant of inexact Newton methods, will be outlined
-including an automatic technique for generating the Jacobian commonly
+including an automated technique for generating the Jacobian commonly
 used in today's applications. Following this, a new nonlinear solution
 algorithm utilizing Monte Carlo Synthetic Acceleration will be
 presented and implementation details will be discussed. Using the new
@@ -95,15 +95,15 @@ where $\epsilon$ is a user defined tolerance parameter.
 \subsection{Inexact Newton Methods}
 \label{subsec:inexact_newton_methods}
 Inexact Newton methods arise when the Jacobian operator is not exactly
-inverted, resulting in an inexact Newton correction as initially
-described by Dembo and others \cite{dembo_inexact_1982}. For common
-sparse nonlinear systems, which in turn yield a sparse Jacobian
-matrix, this situation occurs when conventional iterative methods are
-applied. In their definition, Dembo formulated inexact methods such
-that they are independent of the linear method used to solve for the
-Newton correction and therefore are amenable to use with any linear
-solver. Furthermore, they bind the convergence of the outer nonlinear
-iteration to the inner linear iteration such that:
+inverted as initially described by Dembo and others
+\cite{dembo_inexact_1982}. For common sparse nonlinear systems, which
+in turn yield a sparse Jacobian matrix, this situation occurs when
+conventional iterative methods are applied. In their definition, Dembo
+formulated inexact methods such that they are independent of the
+linear method used to solve for the Newton correction and therefore
+are amenable to use with any linear solver. Furthermore, they bind the
+convergence of the outer nonlinear iteration to the inner linear
+iteration such that:
 \begin{equation}
   ||\ve{J}(\ve{u}^k)\delta \ve{u}^k + \ve{F}(\ve{u}^k)|| \leq \eta^k
   ||\ve{F}(\ve{u}^k)||\:,
@@ -122,8 +122,8 @@ where $\eta^k \in [0,1)$ is defined as the \textit{forcing term} at
   of the method or even prohibit convergence
   \cite{eisenstat_choosing_1996}. In addition, \textit{globalization
     methods} may be used to modify the Newton correction in a more
-  desirable direction such that convergence properties can be
-  improved when the initial guess for $\ve{u}$ is poor
+  desirable direction such that nonlinear convergence properties can
+  be improved when the initial guess for $\ve{u}$ is poor
   \cite{pawlowski_globalization_2006}.
 
 \subsection{Newton-Krylov Methods\ }
@@ -135,20 +135,13 @@ the linear solver for generating the Newton correction
 Appendix~\ref{ch:linear_problem}, Krylov methods are robust and enjoy
 efficient parallel implementations on modern
 architectures. Furthermore, their lack of explicit dependence on the
-operator make them easier to implement than other
-methods. Additionally, although many iterations can become memory
-intensive due to the need to store the Krylov subspace for the
-orthogonalization procedure, at each nonlinear iteration this cost is
-reset as the Jacobian matrix will change due to its dependence on the
-solution vector. This means that for every nonlinear iteration, a
-completely new linear system is formed for generating the Newton
-correction and we can modify the Krylov solver parameters accordingly
-to accommodate this. In most nonlinear problems, the Jacobian operator
-is generally non-symmetric and therefore either Krylov methods with
-long recurrence relations that can handle non-symmetric systems must
-be considered or the Newton correction system must be preconditioned
-such that the operator is symmetric and short recurrence relation
-methods can be potentially be used.
+operator make them easier to implement than other methods. In most
+nonlinear problems, the Jacobian operator is generally non-symmetric
+and therefore either Krylov methods with long recurrence relations
+that can handle non-symmetric systems must be considered or the Newton
+correction system must be preconditioned such that the operator is
+symmetric and short recurrence relation methods can be potentially be
+used.
 
 With many Krylov methods available, which to use with the Newton
 method is dependent on many factors including convergence rates and
@@ -157,28 +150,11 @@ memory usage. Several studies have been performed to investigate this
 numerical studies in 1995, Knoll and McHugh used the set of highly
 nonlinear and stiff convection-diffusion-reaction equations to solve a
 set of tokamak plasma problems with the goal of measuring solver
-performance with Newton's method. They note several trade-offs in
-using Krylov methods with the Newton solver. The first is that the
-optimization condition that results from the constraints (e.g. the
-minimization of the GMRES residual over the Krylov space) can be
-relaxed by restricting the size of the subspace such that only a fixed
-number of subspace vectors may be maintained, thus reducing memory
-requirements. 
-
-We can also relax the optimization condition by instead restarting the
-recurrence relation with a new set of vectors once a certain number of
-vectors have been generated. The optimization condition is maintained
-over that particular set of vectors, however, Knoll and McHugh note
-that this ultimately slows the convergence rate as compared to keeping
-all vectors as the new set of vectors is not necessarily orthogonal to
-the previous set, and therefore not optimal over the entire iteration
-procedure. The orthogonality condition can be relaxed by using a
-recurrence relation that does not generate a strictly orthonormal
-basis for the Krylov subspace such as the Lanzcos biorthogonalization
-procedure, resulting in memory savings due to the shorter Lanzcos
-recurrence relation. Based on their numerical analysis, they observed
-GMRES to be the most robust for any given nonlinear problem and
-therefore used it for subsequent work in this area.
+performance with Newton's method. Based on their numerical analysis,
+they observed GMRES to be the most robust for any given nonlinear
+problem and therefore used it for subsequent work in this area. Using
+their analysis, this work will also use GMRES as the linear solver for
+all Newton-Krylov reference calculations.
 
 \subsection{Automatic Differentiation for Jacobian Generation}
 \label{subsec:automatic_differentiation}
@@ -192,10 +168,10 @@ the 1990's, \textit{automatic differentiation} is a mechanism by which
 the derivatives of a function can be generated automatically by
 evaluating it. Automatic differentiation is built on the concept that
 all functions discretely represented in a computer are ultimately
-represented by elementary mathematical operations. If the chain rule
-is applied to those elementary operations, then the derivatives of
-those functions can be computed to the order of accuracy of their
-original discretization in a completely automated way
+formed by elementary mathematical operations. If the chain rule is
+applied to those elementary operations, then the derivatives of those
+functions can be computed to the order of accuracy of their original
+discretization in a completely automated way
 \cite{averick_computing_1994}.
 
 The work of Bartlett and others \cite{bartlett_automatic_2006}
@@ -212,15 +188,15 @@ as:
   \label{eq:fad_global_jacobian}
 \end{equation}
 where $\ve{J}_{k_i} = \partial e_{k_i} / \partial P_i u$ is the
-$k^{th}$ element function Jacobian, $\ve{Q} \in \mathbb{R}^{n_{k_i}
-  \times N}$ is a projector onto the element domain and $\ve{P} \in
-\mathbb{R}^{m_{k_i} \times N}$ a projector onto the element range for
+$k^{th}$ element function Jacobian, $\ve{Q} \in \mathbb{R}^{N \times
+  n_{k_i}}$ is a projector onto the element domain and $\ve{P} \in
+\mathbb{R}^{m_{k_i} \times N}$ a projector from the element range for
 $\ve{F}(\ve{u}) \in \mathbb{R}^{N \times N}$. The Jacobian matrix for
 each element will therefore have entirely local data in a dense
 structure, eliminating the need for parallel communication and sparse
 techniques during differentiation. Only when all local differentials
 are computed does communication of the Jacobian occur through
-gather/scatter operations in order to properly assemble it. 
+gather/scatter operations in order to properly assemble it.
 
 Also of benefit is the fact that element-level computations generally
 consist of a smaller number of degrees of freedom, thus reducing
@@ -260,7 +236,7 @@ large-scale, production physics codes.
 \section{The FANM Method\ }
 \label{sec:fanm}
 In physics codes based on nonlinear equations sets, Newton-Krylov
-methods are the primary means of generating a fully consistent
+methods are the primary means of generating a fully implicit
 solution scheme
 \cite{evans_development_2006,evans_enhanced_2007,gaston_parallel_2009,godoy_parallel_2012}. It
 is common that for large scale simulations these problems are memory
@@ -338,17 +314,17 @@ unfortunately not be researched. Explicit algebraic preconditioning
 used in conventional solution methods will almost certainly be
 required to reduce the spectral radius of most Jacobian operators for
 MCSA to apply and therefore the current preconditioning strategy will
-destroy all potential memory benefits of FANM.
+eliminate all potential memory benefits of FANM.
 
 %%---------------------------------------------------------------------------%%
 \section{Navier-Stokes Benchmark Problems\ }
 \label{sec:ns_benchmarks}
 To verify the FANM method for nonlinear problems, we choose benchmark
 solutions for the 2-dimensional, steady, incompressible Navier-Stokes
-equations on a rectilinear grid in much the same way as Shadid and
-Pawlowski's work on Newton-Krylov methods for the solution of these
-equations \cite{shadid_inexact_1997,pawlowski_globalization_2006}. We
-define these equations as follows:
+equations on a rectilinear grid as outlined in Shadid and Pawlowski's
+work on Newton-Krylov methods
+\cite{shadid_inexact_1997,pawlowski_globalization_2006}. We define
+these equations as follows:
 \begin{subequations}
   \begin{gather}
     \rho \ve{u} \cdot \nabla \ve{u} - \nabla \cdot \ve{T} - \rho
@@ -384,10 +360,10 @@ in the fluid, and $k$ is the thermal conductivity of the fluid. This
 set of strongly coupled equations possesses both the nonlinearities
 and asymmetries that we are seeking for qualification of the FANM
 method. Further, physical parameters within these equations can be
-tuned to enhance the nonlinearities. We will then apply these
-equations to the following three standard benchmark problems that
-cover convection dominated flow and flow dominated by inertial
-forces in two different geometries.
+tuned to enhance the nonlinearities. We next apply these equations to
+the following three standard benchmark problems that cover convection
+dominated flow and flow dominated by inertial forces in two different
+geometries.
 
 \subsection{Thermal Convection Cavity Problem}
 \label{subsec:natural_convection_cavity}
@@ -426,10 +402,10 @@ Figure~\ref{fig:convection_isotherms} for Rayleigh numbers of
 Rayleigh number is increased, the fluid begins to rotate in the
 clockwise direction. This causes the temperature gradients to rotate
 as well with the fluid, given the increased rotation observed for the
-isotherms in the figure. As the Rayleigh number increases, thermal
-energy and momentum transport in the system become more dominated by
-convection rather than diffusion, causing the nonlinearities in the
-advective derivatives to grow.
+isotherms in the figure. As the Rayleigh number and rotation
+increases, thermal energy and momentum transport in the system become
+more dominated by convection rather than diffusion, causing the
+nonlinearities in the advective derivatives to grow.
 
 \begin{figure}[t!]
   \begin{center}
@@ -540,7 +516,7 @@ maximum velocity while the formula given in
 Figure~\ref{fig:backward_facing_step} produces a more plug-like flow
 with an average velocity 3/4 that of the maximum velocity. The flow
 over this step will generate a recirculating backflow under the inlet
-flow towards the step and at higher Reynolds numbers a recirculating
+flow towards the step and at higher Reynolds numbers a recirculation
 zone will form farther downstream from the step. As in the lid driven
 cavity problem, the nonlinear behavior of this benchmark and the
 difficulty in obtaining a solution is dictated by the Reynolds number
@@ -623,9 +599,9 @@ for fluid flow and other multiple physics simulations
 \cite{pawlowski_drekar_2012}. Drekar is a massively parallel physics
 framework that utilizes a finite element formulation of the
 Navier-Stokes equations and Newton-Krylov methods with Jacobian
-generation through automatic differentiation. To achieve these
-results, a Monte Carlo solver generated for this work was injected
-into the nonlinear solver sequence within Drekar to form an
+generation through automatic differentiation. To achieve the results
+presented here, a Monte Carlo solver generated for this work was
+injected into the nonlinear solver sequence within Drekar to form an
 implementation of the FANM method. For the Newton-Krylov solutions,
 the same implementation of GMRES used for the $SP_N$ verification from
 the Trilinos scientific computing library Aztec
@@ -643,7 +619,7 @@ physical parameters of the problem and
 Table~\ref{tab:convection_mcsa_parameters} gives the MCSA solver
 parameters used within the FANM method. Variation in the Rayleigh
 number of the system was achieved by keeping the parameters given in
-Table~\ref{tab:thermal_convection_parameters} constant and varying
+Table~\ref{tab:thermal_convection_parameters} constant and varying the
 temperature of the hot side of the cavity. In addition to multigrid
 preconditioning for the linear solution at each Newton step,
 backtracking as outlined in Shadid's work \cite{shadid_inexact_1997}
@@ -716,10 +692,10 @@ properties.
 At each Rayleigh number the fluid velocity in the x and y directions,
 fluid pressure, and fluid temperature values calculated with FANM were
 verified by computing the point-wise absolute difference with the
-Newton-Krylov results. No variation in solution was noted for each of
-the computations larger than the floating point tolerance reported by
-Drekar with an absolute difference value of zero observed at all
-spatial locations for each quantity.
+Newton-Krylov results. No variation in the solution was noted for each
+of the computations larger than the floating point tolerance reported
+by Drekar with an absolute difference value of zero computed at all
+spatial locations for each physical quantity.
 
 \subsection{Lid Driven Cavity Results}
 \label{subsec:lid_driven_verification}
@@ -816,10 +792,10 @@ presented.
 At each Reynolds number the fluid velocity in the x and y directions
 and fluid pressure values calculated with FANM were verified by
 computing the point-wise absolute difference with the Newton-Krylov
-results. No variation in solution was noted for each of the
+results. No variation in the solution was noted for each of the
 computations larger than the floating point tolerance reported by
-Drekar with an absolute difference value of zero observed at all
-spatial locations for each quantity.
+Drekar with an absolute difference value of zero computed at all
+spatial locations for each physical quantity.
 
 \subsection{Backward Facing Step Results}
 \label{subsec:backward_step_verification}
@@ -913,10 +889,10 @@ step benchmark at Reynolds numbers of up to 500 are presented.
 At each Reynolds number the fluid velocity in the x and y directions
 and fluid pressure values calculated with FANM were verified by
 computing the point-wise absolute difference with the Newton-Krylov
-results. No variation in solution was noted for each of the
+results. No variation in the solution was noted for each of the
 computations larger than the floating point tolerance reported by
-Drekar with an absolute difference value of zero observed at all
-spatial locations for each quantity.
+Drekar with an absolute difference value of zero computed at all
+spatial locations for each physical quantity.
 
 %%---------------------------------------------------------------------------%%
 \section{FANM Performance Comparison to Conventional Methods\ }
@@ -988,7 +964,7 @@ As the Rayleigh number increases, the problem becomes more difficult
 to solve and therefore a more aggressive preconditioner should
 maintain iterative performance of the nonlinear method. This was
 observed to be true for the \sn{1}{6} Rayleigh number case. For this
-calculation, the number of multigrid cycle applications was bumped up
+calculation, the number of multigrid cycle applications was increased
 to 3 from 1 and FANM converged in the same number of nonlinear
 iterations as the Newton-Krylov method.
 
@@ -1032,24 +1008,23 @@ minimum number of total linear solver iterations over the course of
 all nonlinear iterations in order to limit matrix-vector multiplies
 and other costly
 operations. Table~\ref{tab:convection_linear_iter_comparison} gives
-the total number of GMRES iterations required to converge the problem
-for the Newton-Krylov method and the total number of MCSA iterations
-for the FANM method at each Rayleigh number used. For all cases, fewer
-MCSA iterations were required than GMRES iterations to converge the
-problem even with both solvers preconditioned with the same multigrid
-package and the same parameters. For the \sn{1}{6} Rayleigh number
-case where a constant forcing term of \sn{1}{-4} was kept, this
-difference is most drastic with FANM requiring only 64\% of the linear
-iterations required by the Newton-Krylov scheme with the linear solver
-per nonlinear iteration given for this case in
+the total number of GMRES, FANM, and Richardson iterations required to
+converge the Newton method at each Rayleigh number used. For all
+cases, fewer MCSA iterations were required than GMRES iterations to
+converge the problem even with both solvers preconditioned with the
+same multigrid package and the same parameters. For the \sn{1}{6}
+Rayleigh number case where a constant forcing term of \sn{1}{-4} was
+kept, this difference is most drastic with FANM requiring only 64\% of
+the linear iterations required by the Newton-Krylov scheme with the
+linear solver per nonlinear iteration given for this case in
 Figure~\ref{fig:ra1e6_linear_iters}. Even the \sn{1}{5} Rayleigh
 number case that required more Newton iterations required 5 fewer MCSA
 iterations to converge than GMRES iterations. In all cases, MCSA
 improved on the iterative performance of using only the Richardson
-iteration through the residual Monte Carlo acceleration. If the performance of
-the MCSA implementation used here were to be potentially optimized in
-the future, this improved iterative performance could also mean
-improved time to solution.
+iteration through the residual Monte Carlo acceleration. If the
+performance of the MCSA implementation used here were to be
+potentially optimized in the future, this improved iterative
+performance could also mean improved time to solution.
 
 \begin{table}[h!]
   \begin{center}
@@ -1095,20 +1070,7 @@ chapter. Table~\ref{tab:convection_speedup_comparison} gives the
 speedup of the Newton-Krylov method over FANM. For all Rayleigh
 numbers, we see a fairly constant speedup of O(400) when using
 Newton-Krylov over FANM meaning that the implementation of the FANM
-method used here is significantly slower. As the inexact Newton scheme
-in Drekar was modified by simply swapping out the linear solver used
-at each Newton step, this increased compute time is coming directly
-from using MCSA as the linear solver and the overhead due to
-preconditioning. When preconditioning overhead for the $SP_N$
-equations was considered as shown by the data in
-Figure~\ref{fig:spn_comparison_prec_time}, a similar speedup of
-approximately two orders of magnitude was noted between the Krylov
-methods and MCSA showing consistency between those results and the
-convection cavity benchmark results presented. In addition, the fairly
-constant speedup values as a function of the primary problem parameter
-show that FANM has effectively the same time complexity as a
-Newton-Krylov method and the implementation timings simply differ by a
-constant value, also consistent with the $SP_N$ observations.
+method used here is significantly slower. 
 
 \begin{table}[h!]
   \begin{center}
@@ -1130,6 +1092,20 @@ constant value, also consistent with the $SP_N$ observations.
       the benchmark verification calculations.}}
   \label{tab:convection_speedup_comparison}
 \end{table}
+
+As the inexact Newton scheme in Drekar was modified by simply swapping
+out the linear solver used at each Newton step, this increased compute
+time is coming directly from using MCSA as the linear solver and the
+overhead due to preconditioning. When preconditioning overhead for the
+$SP_N$ equations was considered as shown by the data in
+Figure~\ref{fig:spn_comparison_prec_time}, a similar speedup of
+approximately two orders of magnitude was noted between the Krylov
+methods and MCSA showing consistency between those results and the
+convection cavity benchmark results presented. In addition, the fairly
+constant speedup values as a function of the primary problem parameter
+show that FANM has effectively the same time complexity as a
+Newton-Krylov method and the implementation timings simply differ by a
+constant value, also consistent with the $SP_N$ observations.
 
 \subsection{Lid Driven Cavity Results}
 \label{subsec:lid_driven_comparison}
@@ -1191,22 +1167,21 @@ can improve the performance of both linear and nonlinear convergence.
 
 The difficulty of this benchmark problem as compared to the thermal
 convection cavity problem is readily apparent in the linear iteration
-counts as given by Table~\ref{tab:driven_linear_iter_comparison}. As
-the opposite of what was observed for that benchmark, lid driven
-cavity results show that the linear models were significantly more
-ill-conditioned, requiring many more MCSA and GMRES iterations. For
-all cases except the 700 Reynolds number case, many more MCSA
-iterations were required to converge with the observed GMRES iteration
-count 64\% of that observed for MCSA when looking at the 100 Reynolds
-number case. For the 700 Reynolds number case, fewer MCSA iterations
-were observed due to the fact that 4 fewer nonlinear iterations were
-performed. The average number of linear iterations per nonlinear
-iteration was still much larger for the FANM calculations. In all
-cases, MCSA improved on the iterative performance of using only the
-Richardson iteration through the residual Monte Carlo acceleration
-even considering the cases with Reynolds numbers of 100 and 700 where
-an extra Newton-Richardson iteration was required to converge the
-nonlinear model.
+counts as given by Table~\ref{tab:driven_linear_iter_comparison}. Lid
+driven cavity results show that the linear models were significantly
+more ill-conditioned, requiring many more MCSA and GMRES
+iterations. For all cases except the 700 Reynolds number case, many
+more MCSA iterations were required to converge with the observed GMRES
+iteration count 64\% of that observed for MCSA when looking at the 100
+Reynolds number case. For the 700 Reynolds number case, fewer MCSA
+iterations were observed due to the fact that 4 fewer nonlinear
+iterations were performed. The average number of linear iterations per
+nonlinear iteration was still much larger for the FANM
+calculations. In all cases, MCSA improved on the iterative performance
+of using only the Richardson iteration through the residual Monte
+Carlo acceleration even considering the cases with Reynolds numbers of
+100 and 700 where an extra Newton-Richardson iteration was required to
+converge the nonlinear model.
 
 As an additional means of analysis for the linear solver iteration
 results, we will look at a case where MCSA performed poorly compared
@@ -1455,7 +1430,7 @@ in the timing data given in
 Table~\ref{tab:step_speedup_comparison}. For the first two cases, we
 see qualitatively similar speedup values for the Newton-Krylov solver
 relative to the observations for the first two benchmark problems of
-O(100). However, the we expect the ill-conditioning to cause the Monte
+O(100). However, we expect the ill-conditioning to cause the Monte
 Carlo histories in the MCSA solver to have longer random walk lengths
 based on our MCSA breakdown analysis in the previous chapter. In
 addition, we observed that the linear model required many more MCSA
@@ -1643,9 +1618,4 @@ and contributions.
 \item More Monte Carlo histories at every FANM iteration can reduce
   the number of linear and nonlinear iterations required to converge
   the problem
-\item With future optimization and improved preconditioning, reactor
-  accident analyses that rely on convection dominated transport or
-  steady state calculations requiring driven flow could experience
-  improved time to solution with FANM given the improved iterative
-  performance observed for problems of these types
 \end{itemize}
