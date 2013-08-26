@@ -173,21 +173,27 @@ production GMRES and Conjugate Gradient method. We note here, however,
 that these scaling studies should be reconsidered if arithmetic
 optimization of the code has been completed.
 
-It was found that the leakage of histories from domain to domain in
-the parallel Monte Carlo algorithm could in fact be quantified
-analytically using the algebraic properties of the system. These
-relationships were then used to determine the amount of overlap one
-may require in the parallel algorithm to reduce communication costs
-and increase parallel efficiencies. Scaling studies showed that in the
-strong case overlap in small quantities on the order of the
-mean-free-path of a stochastic history in the simulation could boost
-parallel efficiencies by a few percent. However, it was found that
-this additional overlap was not effective in boosting strong scaling
-efficiencies. It was found that in general overlap was not very
-effective due to the fact that the parallel communication saved during
-the Monte Carlo transport sequence is simply deferred until after
-transport is complete when it manifests itself as an overlapping
-parallel vector reduction operation.
+Outlined in Appendix~\ref{chap:parallel_theory}, it was found that the
+leakage of histories from domain to domain in the parallel Monte Carlo
+algorithm could in fact be quantified analytically using the algebraic
+properties of the system. These relationships were then used to
+determine the amount of overlap one may require in the parallel
+algorithm to reduce communication costs and increase parallel
+efficiencies. Scaling studies showed that in the strong case overlap
+in small quantities on the order of the mean-free-path of a stochastic
+history in the simulation could boost parallel efficiencies by up to
+10\% in isolated cases. However, it was found that this additional
+overlap was not effective in boosting weak scaling efficiencies. In
+general, overlap was not very effective due to the fact that the
+parallel communication saved during the Monte Carlo transport sequence
+is simply deferred until after transport is complete when it manifests
+itself as an overlapping parallel vector reduction operation. As
+compared to transport calculations where this overlap procedure was
+very effective, in the context of MCSA the Monte Carlo calculations
+are significantly shorter with $O(10,000)$ histories used in this
+work. These shorter calculations and more frequent overlapping tally
+vector reductions create an overhead that is not observed in the
+literature for transport calculations.
 
 Applying multiple sets in the parallel algorithm was found to not
 enhance the weak scaling of the problem as an additional parallel
@@ -210,8 +216,8 @@ converge.
 Finally, given that overlap was not very constructive in boosting
 parallel efficiencies, it was postulated that very little
 domain-to-domain communication of histories was occurring in the first
-place. Using this idea, we implemented a subdomain Neumann-Ulam method
-with MCSA such that MCSA now takes the form of a stochastic
+place. Motivated by this idea, we implemented a subdomain Neumann-Ulam
+method with MCSA such that MCSA now takes the form of a stochastic
 realization of an additive Schwarz method. Scaling studies using this
 technique showed significant improvements in parallel scalability even
 when compared to the MCSA results when domain-to-domain communication
@@ -326,7 +332,7 @@ which in many cases means applying their inverse over each row in the
 system and then perform matrix-matrix multiply operations to build the
 composite physics operator.
 
-These operations were observed to substantially increase runtimes of
+These operations were observed to substantially increase run-times of
 MCSA and consume unacceptable amounts of memory, mostly due to the
 fact that inverting the preconditioners created dense
 matrices. Although a good fraction of the elements in each row of the
@@ -354,8 +360,9 @@ strategies for linear systems. In the same way that this work has been
 able to adapt modern particle transport strategies for parallelism and
 apply them to linear systems, the same strategy may possibly be
 applied to variance reduction techniques to improve MCSA convergence
-by modifying the weights and probabilities of the Monte Carlo game as
-an effective means of preconditioning.
+by modifying the weights and probabilities of the Monte Carlo game,
+effectively serving as a form of preconditioning by modifying the
+Neumann-Ulam decomposition and subsequently the physics operator.
 
 \subsubsection{Physics and PDE-based Preconditioners}
 Studies should be considered for physics or PDE-based preconditioners
@@ -380,7 +387,7 @@ more effective strategy.
 \subsection{Breaking Away from $\rho(H) < 1$}
 \label{subsec:future_spec_rad}
 All numerical methods for solving linear problems require quality
-preconditioning. Even a Krylov method may be effectively useful
+preconditioning. Even a Krylov method may be effectively useless
 without it. However, these methods typically converge eventually
 whereas quality preconditioning may not be enough to guarantee
 convergence of MCSA. We saw in our work that in many cases very
