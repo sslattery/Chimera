@@ -39,17 +39,16 @@ process in the computation. In Figure~\ref{fig:ddmc_example}, the
 tracks of 3 particles born in the center subdomain are shown. In this
 example, particle A is first transported from the center domain to the
 domain directly to the left. Before the scattering event in the new
-domain may be processed, particle A must be communicated between
-between the two parallel processes that own those domains. For any
-given particle in the transport simulation, this communication event
-may hardly occur during the lifetime of the particle (particle B), or
-may occur many times (particle C) depending on the problem parameters
-and the random path in phase space taken by the particle. Scalable
-parallel algorithms for domain decomposed Monte Carlo are those that
-handle this domain-to-domain communication of particles effectively
-and balance it with the on-process computations for particle
-interactions, tallies, response calculations, and other simulation
-requirements.
+domain may be processed, particle A must be communicated between the
+two parallel processes that own those domains. For any given particle
+in the transport simulation, this communication event may hardly occur
+during the lifetime of the particle (particle B), or may occur many
+times (particle C) depending on the problem parameters and the random
+path in phase space taken by the particle. Scalable parallel
+algorithms for domain decomposed Monte Carlo are those that handle
+this domain-to-domain communication of particles effectively and
+balance it with the on-process computations for particle interactions,
+tallies, response calculations, and other simulation requirements.
 \begin{figure}[t!]
   \begin{center}
     \scalebox{1.5}{
@@ -167,16 +166,14 @@ birth states for the histories will exist for at least a single
 transition event within the local domain.
 
 Compared to the serial construction of the Neumann-Ulam decomposition,
-data for all states that is required to be on process must be
-collected in parallel so that all possible local transitions may be
-completed. For the pure domain decomposition case, given an input
-parallel decomposition for the Neumann-Ulam decomposition, for all
-local states $m$ we require access to $P_{mn}$ and $W_{mn}$ (or
-$P^T_{mn}$ and $W^T_{mn}$ for the adjoint method) for all possible
-states $n$. As an example of this state collection,
-Figure~\ref{fig:diffusion_graph} gives the adjacency graph of a single
-state in the neutron diffusion matrix for the model problem presented
-in Appendix~\ref{chap:diffusion_problem}.
+data for all states that are required to be on process must be
+collected in parallel so that all possible transitions that leave the
+local domain may be correctly communicated. As an example of this
+state collection, Figure~\ref{fig:diffusion_graph} gives the adjacency
+graph of a single state in the neutron diffusion matrix for the model
+problem presented in Appendix~\ref{chap:diffusion_problem}. The
+discretization stencil of the diffusion problem dictates the structure
+of this graph and the states to which a history may transition.
 
 \begin{figure}[t!]
   \begin{center}
@@ -197,25 +194,20 @@ in Appendix~\ref{chap:diffusion_problem}.
 
 In this example, we currently reside in state $m$ of the system,
 directly correlating to physical location $(i,j)$ in the mesh (the
-center node). The discretization stencil of the diffusion problem
-dictates the structure of this graph and the states to which a history
-may transition. If we play the Monte Carlo game to move to a new state
+center node). If we play the Monte Carlo game to move to a new state
 $n$, then we may move to any of the nodes in this graph, including the
 node at which we started. If grid point $(i,j)$ in this example is on
 the right side of the local domain boundary and we transition to the
 state $n$ corresponding to mesh point $(i+1,j)$, we are now in a state
-that is owned by the adjacent domain. We must then gather the data in
-the Neumann-Ulam decomposition from the neighboring process that owns
-grid point $(i+1,j)$. Doing this provides us with the data required by
-the estimators permitting $P_{mn}$ and $W_{mn}$ to be computed locally
-for this particular boundary transition. In addition, we also collect
-the identification number for the process that owns this state such
-that we have an address to send all histories that leave the local
-domain boundary with this state as their destination. For the parallel
-source, these adjacent states are not required as histories may only
-be born in states in the local domain. Once the local Neumann-Ulam
-decomposition has been generated with the proper data collected from
-adjacent domains, Monte Carlo transport may proceed in parallel.
+that is owned by the adjacent domain. We must then gather the
+identification number for the neighboring process that owns grid point
+$(i+1,j)$ such that we have an address to send all histories that
+leave the local domain boundary with this state as their
+destination. For the parallel source, these adjacent states are not
+required as histories may only be born in states in the local
+domain. Once the local Neumann-Ulam decomposition has been generated
+with the proper communication data collected from adjacent domains,
+Monte Carlo transport may proceed in parallel.
 
 \subsection{Domain Decomposed Algorithm}
 \label{subsec:parallel_mc_algorithm}
@@ -238,7 +230,7 @@ detail in the same manner as Brunner and Brantley.
     \State get list of neighbor processors 
     \Comment{Each neighbor owns an adjacent subdomain}
     \ForAll{neighbors}
-    \State post nonblocking receive for maximum history buffer size
+    \State post non-blocking receive for maximum history buffer size
     \State allocate history buffer
     \EndFor
     \State \textit{historiesCompleted} = 0
@@ -248,9 +240,9 @@ detail in the same manner as Brunner and Brantley.
     \State calculate parent and children processor ID numbers in
     binary tree
     \ForAll{child processes}
-    \State post nonblocking receive for \textit{historiesCompleted} tally
+    \State post non-blocking receive for \textit{historiesCompleted} tally
     \EndFor
-    \State post nonblocking receive for stop message from parent
+    \State post non-blocking receive for stop message from parent
     \While{stop flag not set}
     \If{any local histories in source or stack}
     \State \textbf{LocalHistoryTransport()}
@@ -264,7 +256,7 @@ detail in the same manner as Brunner and Brantley.
     \State \textbf{ControlTermination()}
     \EndIf
     \EndWhile
-    \State cancel outstanding nonblocking requests
+    \State cancel outstanding non-blocking requests
     \State free all history buffers
   \end{algorithmic}
 \end{algorithm}
@@ -283,7 +275,7 @@ which they will communicate parallel histories and this communication
 goes both ways as represented by the adjacent arrows in the
 figure. For each set of neighbors, a non-blocking send and receive is
 required with data buffers allocated with a user-defined size for
-incoming and outgoing histories. This nonblocking structure is
+incoming and outgoing histories. This non-blocking structure is
 critical to the performance of the algorithm in that it permits local
 history transport to continue while new histories to transport are
 being collected in the buffers. When a given process is ready to do
@@ -308,11 +300,11 @@ Algorithm~\ref{alg:parallel_mc_algorithm}. In these lines we are
 setting up an asynchronous binary communication tree as presented for
 the same 9 subdomain example in Figure~\ref{fig:binary_comm_tree}. In
 this communication pattern, each process has one parent process
-(except for the MASTER process 0) to which it will nonblocking send
+(except for the MASTER process 0) to which it will non-blocking send
 the number of histories that terminated their transport procedure by
 weight cutoff in the local domain. Equivalently, each process has up
 to two child processes from which it will receive their completed
-number of histories with a nonblocking receive operation. Setting up a
+number of histories with a non-blocking receive operation. Setting up a
 tree in this manner lets the completed history tally
 (\textit{historiesCompleted} in the algorithm) be updated
 incrementally and funneled to the root process. Because we are solving
@@ -320,8 +312,8 @@ fixed source problems with the Neumann-Ulam algorithm without any type
 of variance reduction that may generate more histories that we started
 with, once the root process completion sum tallies to the number of
 histories in the source, transport is complete. Once this occurs, the
-root process nonblocking sends the stop message to its children and
-each process nonblocking receives a stop message from its parent as
+root process non-blocking sends the stop message to its children and
+each process non-blocking receives a stop message from its parent as
 shown in Figure~\ref{fig:binary_comm_tree}. The stop message is then
 propagated up the tree in the same manner.
 
@@ -358,7 +350,7 @@ Algorithm~\ref{alg:local_history_transport}. If the history is
 terminated by weight cutoff the \textit{historiesCompleted} tally is
 updated. If it hits the boundary of the domain it is added to the
 outgoing history buffer for the neighboring domain and if the buffer
-is full, it is sent to the neighboring domain with a nonblocking
+is full, it is sent to the neighboring domain with a non-blocking
 operation and the memory associated with that buffer reallocated. In
 all instances that Algorithm~\ref{alg:local_history_transport} is
 executed, \textit{localProcessed} is incremented to account for
@@ -372,7 +364,7 @@ histories that have been processed locally.
     \If{history is in neighbor boundary state}
     \State add history to neighbor buffer
     \If{neighbor buffer is full}
-    \State nonblocking send history buffer to neighbor
+    \State non-blocking send history buffer to neighbor
     \State allocate new history buffer for neighbor
     \EndIf
     \Else
@@ -391,7 +383,7 @@ Algorithm~\ref{alg:local_history_transport} check for more histories
 to transport in the incoming data buffers by calling
 Algorithm~\ref{alg:process_messages}. For each neighboring domain in
 the problem, if there are histories in those data buffers then they
-are added to the stack for processing and the nonblocking receive
+are added to the stack for processing and the non-blocking receive
 operation re-instantiated. In addition, the terminated histories count
 is updated with those values received from the child processes.
 
@@ -402,11 +394,11 @@ is updated with those values received from the child processes.
     \ForAll{received history buffers from neighbor}
     \State unpack number of histories in buffer
     \State add the histories to the running stack
-    \State repost nonblocking receive with neighbor
+    \State re-post non-blocking receive with neighbor
     \EndFor
     \ForAll{\textit{historiesCompleted} messages from children}
     \State \textit{historiesCompleted} += message value
-    \State repost nonblocking receive with child
+    \State re-post non-blocking receive with child
     \EndFor
   \end{algorithmic}
 \end{algorithm}
@@ -419,38 +411,27 @@ Algorithm~\ref{alg:control_termination}, we continue to forward the
 terminated history tally down to the parent in the binary tree and
 send all history buffers to our neighbors, even if they are not
 full. If Algorithm~\ref{alg:control_termination} is called by the
-MASTER process, it checks for completion of the problem and if it is
-complete, forwards to stop flag onto its children as in
+MASTER process, it checks for completion of the problem and if
+complete, forwards the stop flag onto its children as in
 Figure~\ref{fig:binary_comm_tree}. If the process is not the MASTER,
-then we check for a stop signal from the parent and forward to the
-child processes if transport is complete.
+then we check for a stop signal from the parent and forward it to the
+child processes.
 
 \begin{algorithm}[h!]
   \caption{\textbf{ControlTermination()}}
   \label{alg:control_termination}
   \begin{algorithmic}[1]
-    \State nonblocking send an partially full history buffers
-    \ForAll{\textit{historiesCompleted} messages from children}
-    \State \textit{historiesCompleted} += message \textit{historiesCompleted}
-    \State repost nonblocking receive with child
-    \EndFor
-    \If{MASTER processor}
-    \If{\textit{historiesCompleted} == global \# of source histories}
-    \State set stop flag
-    \ForAll{children}
-    \State nonblocking send stop message to child
-    \EndFor
-    \EndIf
-    \Else
-    \State nonblocking send \textit{historiesCompleted} to parent
-    \State \textit{historiesCompleted} = 0
-    \State check for stop signal from parent
-    \If{stop signal from parent}
-    \ForAll{children}
-    \State nonblocking send stop message to child
-    \EndFor
-    \EndIf
-    \EndIf
+    \State non-blocking send all partially full history buffers
+    \ForAll{\textit{historiesCompleted} messages from children} \State
+    \textit{historiesCompleted} += message \textit{historiesCompleted}
+    \State re-post non-blocking receive with child \EndFor \If{MASTER
+      processor} \If{\textit{historiesCompleted} == global \# of
+      source histories} \State set stop flag \ForAll{children} \State
+    non-blocking send stop message to child \EndFor \EndIf \Else \State
+    non-blocking send \textit{historiesCompleted} to parent \State
+    \textit{historiesCompleted} = 0 \State check for stop signal from
+    parent \If{stop signal from parent} \ForAll{children} \State
+    non-blocking send stop message to child \EndFor \EndIf \EndIf
   \end{algorithmic}
 \end{algorithm}
 
@@ -478,28 +459,28 @@ implementation of a binary communication tree.
   \begin{center}
     \scalebox{0.75}{
       \input{chapters/parallel_mc/master_comm_tree.pdftex_t} }
+  \end{center}
     \caption{\textbf{Master/slave scheme for coordinating the end of a
         parallel Neumann-Ulam solve.} \textit{Each slave process
         reports to the master how many histories completed within its
         domain. When the master process sums all complete histories,
         it sends the stop signal to all slave processes. The
         subdomains are indexed by an integer.}}
-  \end{center}
   \label{fig:master_comm_tree}
 \end{figure}
 
 There is an additional advantage to Brunner and Brantley's work that
 although not immediately applicable to this work has the potential to
 provide value in the future. In addition to a robust fully
-asynchronous communication pattern, this algorithm may also be modified
-to account for situations where the total number of histories in a
-given stage are not known before starting transport. From a physics
-perspective, we might expect this for situations where perhaps an
-(n,2n) interaction occurs in a neutronics problem. In this case, the
-algorithm is modified to account for both histories terminated and
+asynchronous communication pattern, this algorithm may also be
+modified to account for situations where the total number of histories
+in a given stage are not known before starting transport. From a
+physics perspective, we might expect this for situations where perhaps
+an (n,2n) interaction occurs in a neutronics problem. In this case,
+the algorithm is modified to account for both histories terminated and
 created and several mechanisms are introduced to determine completion
 of the transport stage. For future variations of this work, certain
-variance reduction techniques which create histories, such as
+variance reduction techniques that create histories, such as
 splitting, have the potential to be successfully employed as a means
 of accelerating the time to solution for a given problem using
 MCSA. The parallel Neumann-Ulam algorithm presented here may be
@@ -588,7 +569,7 @@ Neumann-Ulam presented in the previous section.
 
 \subsection{Generating the MSOD Decomposition }
 \label{subsec:msod_generation}
-In \S~\ref{subsec:domain_generation} we discussed how we generated the
+In \S~\ref{subsec:domain_generation} we discussed how to generate the
 parallel transport domain from the Neumann-Ulam decomposition of a
 domain decomposed linear operator. We can readily adapt those data
 structures to account for the extra information required by an
@@ -596,17 +577,26 @@ implementation of the MSOD algorithm. First, we consider the
 generation of overlap. Conveniently, this is identical to the
 neighboring states discovery problem discussed in conjunction with
 Figure~\ref{fig:diffusion_graph}. To generate the boundary for the
-local transport domain, we needed to gather all data from the
-immediately adjacent states in the system that did not already exist
-in the local domain. We solved this problem by traversing the graph
-of the matrix for each of the boundary states and determining which
-processes owned those adjacent states. 
+local transport domain, we needed to gather the identification numbers
+of all owning processes from the immediately adjacent states in the
+system. We solved this problem by traversing the graph of the matrix
+for each of the boundary states and determining which processes owned
+those adjacent states.
 
 To generate overlap, we use the identical algorithm but in this case
 we perform as many graph level traversals as the specified amount of
-overlap. For example, consider the analytic relations derived in
-Appendix~\ref{chap:parallel_theory} for the length of random walks in a
-Neumann-Ulam method and the amount of leakage from a domain
+overlap and collect additional information. For the overlapping domain
+decomposition case, given an input parallel decomposition for the
+Neumann-Ulam decomposition, for all local states $m$, including those
+in the overlap, we require access to $P_{mn}$ and $W_{mn}$ (or
+$P^T_{mn}$ and $W^T_{mn}$ for the adjoint method) for all possible
+states $n$. Doing this provides us with the data required by the
+estimators permitting $P_{mn}$ and $W_{mn}$ to be computed locally for
+any boundary transition.
+
+As an example, consider the analytic relations derived in
+Appendix~\ref{chap:parallel_theory} for the length of random walks in
+a Neumann-Ulam method and the amount of leakage from a domain
 considering a neutron diffusion problem. From these relations we might
 determine that, for our particular problem, if we can grow the domain
 by 10 additional discrete state transitions, we can reduce the number
@@ -700,8 +690,8 @@ operation, the tally vectors in each set must be summed together and
 applied to the primary set. As each set is an exact replica of the
 others, the parallel decomposition of the tally vector is the same
 within all sets. We can take advantage of this by building a processor
-space that encapsulates each identical domain in each set and then use
-this processor space for the reduction. For the schematic in
+space that encapsulates each identical domain across all sets and then
+use this processor space for the reduction. For the schematic in
 Figure~\ref{fig:msod_tally_reduction}, the combined upper-left domains
 in each set create a block, giving 9 total blocks for this example
 problem. The processor space that encapsulates each of the upper-left
@@ -1090,17 +1080,17 @@ the history buffer size parameter for a given check frequency.
   \end{center}
   \caption{\textbf{Neumann Ulam parallel algorithm history buffer
       check period vs. history buffer size sensitivity.} \textit{The
-      color scale represents the ratio of the runtime of a particular
-      parameter variation with the runtime from the faster parameter
+      color scale represents the ratio of the run time of a particular
+      parameter variation with the run time from the faster parameter
       variation. A value of 1.02 on the color scale corresponds to a
-      runtime 2\% longer than the faster time. All runtimes were
+      run time 2\% longer than the faster time. All run times were
       within 6.5\% of the fastest observed case.}}
   \label{fig:titan_comm_parameters}
 \end{figure}
 
 Compared to the reference work, there was also not a significant
-change in the runtime over the values of parameters tested with all
-runtimes reported within 6.5\% of the fastest case observed. For this
+change in the run time over the values of parameters tested with all
+run times reported within 6.5\% of the fastest case observed. For this
 work, a history buffer size of 4096 and a buffer check period of 128
 performed best for the initial calculations. However, most values in
 the range tested will give good performance. Brunner and Brantley
@@ -1179,14 +1169,14 @@ occurring in the 16 core base case. As the number of cores in the
 strong scaling study was increased and the local problem size
 decreased, more of the local problem fit into the cache of the system,
 thus causing improved serial performance and therefore enhanced
-runtimes. In this region of super-linear efficiencies, we also observe
+run times. In this region of super-linear efficiencies, we also observe
 larger efficiencies for GMRES when compared to conjugate
 gradient. This occurs due to the fact that conjugate gradient has a
 static set of operations performed at every iteration while GMRES
 operates on a continually growing subspace. In addition, the
 orthogonalization operations required to generate that subspace
 consume much more time than the basic conjugate gradient operations,
-causing a larger serial runtime and subsequently higher
+causing a larger serial run time and subsequently higher
 efficiencies. For the same reasons, we also observe higher
 efficiencies for the MCSA implementation due to the serial performance
 of the implementation.
@@ -1222,7 +1212,7 @@ to note that the weak scaling of MCSA when properly parallelized
 remains competitive with the Krylov methods, keeping in mind the
 artificial inflation of efficiencies.
 
-\begin{figure}[t!]
+\begin{figure}[p!]
   \begin{center}
     \includegraphics[width=6in]{chapters/parallel_mc/titan_pure_weak_time.pdf}
   \end{center}
@@ -1256,7 +1246,7 @@ the Krylov algorithm improves as a function of the number of cores in
 the problem due to the fact that the number of iterations required to
 converge decreased from 20 in the base case to 19 and then to 18 for
 the final set of weak scaling computations. When this reduction in
-iterations is used to account for the observed runtimes and computed
+iterations is used to account for the observed run times and computed
 absolute efficiencies for weak scaling we end up with the
 implementation efficiencies computed using
 Eq~(\ref{eq:implementation_efficiency}) given in
@@ -1266,7 +1256,7 @@ weak scaling study, the implementation efficiencies compare more
 favorably to the Krylov methods. Using the implementation efficiency,
 we are effectively measuring the parallel performance of a single
 iteration for each method. If optimization has been performed and
-runtimes potentially approach those of the Krylov methods, this
+run times potentially approach those of the Krylov methods, this
 comparison may not be as favorable. Overall, weak scaling performance
 of the parallel MCSA algorithm is excellent for the pure domain
 decomposition case with absolute parallel efficiencies of over 80\%
@@ -1297,6 +1287,28 @@ observed at over 32,000 cores.
   \label{fig:titan_weak_implementation}
 \end{figure}
 
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_bvsm.pdf}
+  \end{center}
+  \caption{\textbf{Binary tree vs. master/slave communication scheme
+      strong scaling absolute efficiency.} \textit{The master/slave
+      scheme will not scale beyond $O(1,000)$ cores due to load
+      imbalance.}}
+  \label{fig:titan_strong_bvsm}
+\end{figure}
+
+\begin{figure}[t!]
+  \begin{center}
+    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_bvsm.pdf}
+  \end{center}
+  \caption{\textbf{Binary tree vs. master/slave communication scheme
+      weak scaling absolute efficiency.}  \textit{The master/slave
+      scheme will not scale beyond $O(1,000)$ cores due to load
+      imbalance.}}
+  \label{fig:titan_weak_bvsm}
+\end{figure}
+
 In addition to comparing MCSA scaling to conventional methods, we also
 motivate avoiding any type of master/slave algorithms at these high
 levels of concurrency by comparing the binary communication tree
@@ -1316,35 +1328,13 @@ to summing a handful of integers and checking for a few extra
 messages, grows enough to create serious load imbalance and reduce
 performance.
 
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=6in]{chapters/parallel_mc/titan_strong_bvsm.pdf}
-  \end{center}
-  \caption{\textbf{Binary tree vs. master/slave communication scheme
-      strong scaling absolute efficiency.} \textit{The master/slave
-      scheme will not scale beyond $O(1,000)$ cores due to load
-      imbalance.}}
-  \label{fig:titan_strong_bvsm}
-\end{figure}
-
 \clearpage
-
-\begin{figure}[t!]
-  \begin{center}
-    \includegraphics[width=6in]{chapters/parallel_mc/titan_weak_bvsm.pdf}
-  \end{center}
-  \caption{\textbf{Binary tree vs. master/slave communication scheme
-      weak scaling absolute efficiency.}  \textit{The master/slave
-      scheme will not scale beyond $O(1,000)$ cores due to load
-      imbalance.}}
-  \label{fig:titan_weak_bvsm}
-\end{figure}
 
 \subsection{Overlapping Domain Decomposition}
 \label{subsec:overlapping_domain_decomp}
 
 In the next set of scaling studies, we will explore how adding overlap
-to the subdomains in the problem affects runtimes and parallel
+to the subdomains in the problem affects run times and parallel
 performance as compared to the case with pure domain decomposition. To
 do this, we utilize the set of analytic relations developed in
 Appendix~\ref{chap:parallel_theory} to design these numerical
@@ -1521,12 +1511,18 @@ solve. If we choose the split case, then solving the same problem with
 2 sets would give 10,000 histories in each set and 4 sets would give
 5,000 histories in each set. Splitting the histories in this way
 provides the same global number of histories used to compute the
-correction in the single set problem. For the replicated history case,
-each additional set in the problem will use just as many histories as
-the single set case. Using 2 sets with fully replicated histories for
-our example problem then has each set computing 20,000 histories with
+correction in the single set problem and we should therefore expect
+the same iterative performance at a reduced time per iteration and
+thus reduced time to solution. For the replicated history case, each
+additional set in the problem will use just as many histories as the
+single set case. Using 2 sets with fully replicated histories for our
+example problem then has each set computing 20,000 histories with
 40,000 global histories in the computation. For the 4 set case, the
-number of global histories is increased to 80,000.
+number of global histories is increased to 80,000. By increasing the
+global number of histories, the replicated cases should approximately
+maintain time per iteration but should decrease the number of
+iterations required to converge and subsequently reduce time to
+solution.
 
 \subsubsection{Strong Scaling with Multiple Sets}
 \label{subsubsec:ms_strong}
@@ -1560,7 +1556,7 @@ histories through replication does not decrease the iterations
 required to converge by a linear factor. Second, until the strong
 scaling wall is hit starting at around 10,000 cores, the single set
 case actually performs the fastest with only marginal improvement in
-runtimes at higher numbers of cores with more sets. At these larger
+run times at higher numbers of cores with more sets. At these larger
 numbers of cores, however, the improvements are so modest that one is
 better off running the same problem using a single set at lower core
 counts to conserve computational resources while maintaining a good
@@ -1613,10 +1609,11 @@ the single set case has hit the strong scaling wall. In
 Figure~\ref{fig:titan_strong_ms_eff}, at 16,384 cores the single set
 case operates at 38\% efficiency while at the same number of cores,
 the 2 set case with history replication operates at 58\%
-efficiency. This is reasonable improvement in the use of those
-computational resources, gained by replicating the problem. Beyond
-16,384 cores, there is not a compelling reason to use more
-computational resources for this problem.
+efficiency. Although the efficiencies here are still low, this is
+reasonable improvement in the use of those computational resources,
+gained by replicating the problem. Beyond 16,384 cores, there is not a
+compelling reason to use more computational resources for this
+problem.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1646,7 +1643,13 @@ efficiencies, the implementation efficiencies for the multiple set
 cases were computed and are given in
 Figure~\ref{fig:titan_strong_ms_impeff}. From these results, we see
 that the replicated history cases are even less efficient than in the
-absolute case with respect to the performance of a single iteration.
+absolute case with respect to the performance of a single
+iteration. This is due to the fact that doubling the number of
+histories does not halve the number of MCSA iterations required for
+convergence as the acceleration is bound by the Central Limit
+Theorem. As a result, the improved iterative performance from the
+replicated cases comes at a higher cost in terms of time to solution
+than the split cases.
 
 \begin{table}[h!]
   \begin{center}
@@ -1692,7 +1695,7 @@ the pure domain decomposition study to account for the additional
 replication. For each calculation in the single set study, that
 problem will be replicated either 2 or 4 times with both split and
 replicated histories to assess the effects on scalability and
-runtime. Figure~\ref{fig:titan_weak_ms_time} gives the wall times from
+run time. Figure~\ref{fig:titan_weak_ms_time} gives the wall times from
 the multiple sets weak scaling study. Of primary importance here is
 the fact that adding sets to the problem with both split and
 replicated histories actually decreases the time to solution. This was
@@ -1753,9 +1756,9 @@ solution over the base cases for nearly all data points, the
 observation here is that the reduction in time to solution is still
 not large enough to efficiently use all resources. For example, for
 the 2 set case to be a perfect use of resources with either split or
-replicated histories, the runtime of that calculation must be half of
+replicated histories, the run time of that calculation must be half of
 that for the single set case. This was not the observation for the
-runtimes in Figure~\ref{fig:titan_weak_ms_time} and therefore the
+run times in Figure~\ref{fig:titan_weak_ms_time} and therefore the
 single set case is still the most efficient use of computational
 resources in this scaling study.
 
@@ -1771,8 +1774,9 @@ resources in this scaling study.
 As in the strong scaling case, splitting and replicating histories
 across sets had effectively the same results for the weak scaling
 study with the iterations to converge and computed algorithmic
-efficiencies given by Table~\ref{tab:ms_weak_alg_eff}. Again, when the
-implementation efficiencies are computed, we see in
+efficiencies given by Table~\ref{tab:ms_weak_alg_eff}. The iterations
+to converge these problems were not a function of problem size. Again,
+when the implementation efficiencies are computed, we see in
 Figure~\ref{fig:titan_weak_ms_impeff} that splitting histories among
 sets is still a more efficient manner of introducing multiple sets
 rather than replicating histories in an attempt to reduce the number
@@ -1840,8 +1844,8 @@ satisfactory for accelerating the MCSA iteration. In this case,
 histories near the boundaries of the domain may be truncated before
 reaching the weight cutoff if they reach the domain boundary
 first. This truncation has the potential to increase the stochastic
-uncertainty of the Neumann-Ulam result and therefore increase the
-number of MCSA iterations required to converge. In addition, the
+uncertainty and bias of the Neumann-Ulam result and therefore increase
+the number of MCSA iterations required to converge. In addition, the
 scalability of the method will then be purely limited by the parallel
 matrix and vector operations required to implement the remainder of
 the algorithm on the subset of processors containing the linear
@@ -1896,7 +1900,7 @@ absolute efficiency. We still see a small reduction in weak scaling
 efficiency as a function of core count due to the communication
 overhead for the parallel matrix and vector operations. We observe
 super unitary efficiencies for the subdomain case as there was a
-substantial improvement in runtimes relative to the 16-core base case
+substantial improvement in run times relative to the 16-core base case
 with Monte Carlo communication.
 
 \begin{figure}[t!]
