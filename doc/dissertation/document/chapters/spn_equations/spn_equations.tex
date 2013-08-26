@@ -778,21 +778,23 @@ the number of stochastic histories required to converge MCSA increases
 rapidly and the resulting poor performance is compounded by those
 histories being increasingly expensive to compute. To overcome this
 difficulty, advanced preconditioning strategies for the $SP_N$ problem
-are required beyond simple Jacobi methods that can reduce the spectral
-radius into a region of better MCSA performance. Two modern algebraic
-preconditioning strategies, ILUT and SPAINV, will be presented here
-and used within the explicit preconditioning framework given by
-Eq~(\ref{eq:left_right_mcsa}). Data showing their effects on MCSA
-solutions of the fuel assembly criticality problem will be provided.
+are required, beyond simple Jacobi methods, that can reduce the
+spectral radius into a region of better MCSA performance. Two modern
+algebraic preconditioning strategies, ILUT and SPAINV, will be
+presented here and used within the explicit preconditioning framework
+given by Eq~(\ref{eq:left_right_mcsa}). Data showing their effects on
+MCSA solutions of the fuel assembly criticality problem will be
+provided.
 
 \subsection{ILUT Preconditioning}
 \label{subsec:spn_ilut_preconditioning}
 ILUT preconditioning is chosen first due to its applicability to
 problems that have a dominating elliptic character such as the fuel
 assembly problem or other problems with a large scattering to
-absorption ratio. The algebraic formulation of ILUT requires the
-physics operator to be fully formed, also a requirement for MCSA, and
-is therefore easily incorporated into our solution sequence.
+absorption ratio \cite{saad_iterative_2003}. The algebraic formulation
+of ILUT requires the physics operator to be fully formed, also a
+requirement for MCSA, and is therefore easily incorporated into our
+solution sequence.
 
 Incomplete lower-upper (ILU) factorizations of the linear operator can
 be used as a simple mechanism to form an approximate inverse of a
@@ -804,8 +806,8 @@ that the residual matrix formed by the factorization
   \mathbf{R} = \mathbf{L} \mathbf{U} - \mathbf{A} \:,
   \label{eq:ilu_residual_matrix}
 \end{equation}
-has a specified sparsity pattern and element magnitude. When a
-magnitude threshold is used, elements generated in the factors below
+has a specified sparsity pattern and element magnitude. When a drop
+tolerance threshold is used, elements generated in the factors below
 that magnitude are dropped, resulting in ILU threshold (ILUT)
 preconditioning. The sparsity pattern in this case is determined from
 the input matrix to be preconditioned and the number of elements
@@ -820,11 +822,12 @@ preconditioner. For MCSA, $\mathbf{L}^{-1}$ will be used on the left
 and $\mathbf{U}^{-1}$ on the right to precondition the system.
 
 For the explicit preconditioning scheme presented in
-Eq~(\ref{eq:left_right_mcsa}), the fully inverted operator must be
-generated in order to build the set of probabilities and weights
+Eq~(\ref{eq:left_right_mcsa}), the fully inverted preconditioners must
+be generated in order to build the set of probabilities and weights
 required for Monte Carlo sampling. Therefore, for a linear system of
-size $N$, $N$ triangular solves will be required in order to extract
-the inverse matrices from production ILU implementations. In addition,
+size $N$, $N$ triangular solves with the basis of each row in the
+system as a solution vector will be required in order to extract the
+inverse matrices from production ILU implementations. In addition,
 parallel implementations typically generate lower and upper factors
 that are only triangular locally, providing an easily parallelizable
 mechanism to generate the action of the preconditioner inverse. A
@@ -844,18 +847,21 @@ discretization. Unlike the Jacobi preconditioned strategy, convergence
 was achieved with ILUT preconditioning. To study convergence
 sensitivity to ILUT parameters, the fill level and drop tolerance were
 parametrically varied with the number of iterations to converge an
-eigenvalue iteration for the fuel assembly problem recorded along with
-the maximum number of non-zero entries observed in all matrix rows for
-the left/right preconditioned composite linear operator. To provide
-some sparsity to the factorization, the ILUT drop tolerance was used
-to drop elements in the extracted inverse triangular factors. For each
-calculation, the number of iterations required to converge reported
-was for a single eigenvalue iteration with \sn{3}{4} histories at each
-MCSA iteration to compute the Monte Carlo correction using the adjoint
-collision estimator. All ILUT calculations reported here were
-performed on a single CPU and therefore this data does not take into
-account the aforementioned effects of parallel decomposition on the
-quality of the ILUT preconditioning.
+eigenvalue iteration for the fuel assembly problem recorded. In
+addition, the maximum number of non-zero entries observed in all rows
+for the left/right preconditioned composite linear operator was
+recorded to observe the effects of the explicit preconditioner
+inversion and matrix-matrix multiplication on sparsity. To provide
+some sparsity to the factorization, an additional step was added with
+the ILUT drop tolerance used to drop elements in the explicitly
+inverted preconditioners. For each calculation, the number of
+iterations reported was for a single eigenvalue iteration with
+\sn{3}{4} histories at each MCSA iteration to compute the Monte Carlo
+correction using the adjoint collision estimator. All ILUT
+calculations reported here were performed on a single CPU and
+therefore this data does not take into account the aforementioned
+effects of parallel decomposition on the quality of the ILUT
+preconditioning.
 
 Figure~\ref{fig:ilut_iterations} gives the number of iterations to
 converge the fixed source problem to a tolerance of \sn{1}{8}. As
@@ -929,15 +935,18 @@ required to converge the problem desired. For Monte Carlo
 calculations, this improved performance is balanced by the creation of
 a dense composite system and we seek to reduce the number of non-zero
 entries to a minimum value in order to lower the amount of coupling
-among states in the system and reduce the amount of memory used
-along with the potential latency overhead. Given these two objectives,
-the following metric is proposed:
+among states in the system and reduce the amount of memory used along
+with the potential latency overhead. Given these two objectives, the
+following metric is proposed:
 \begin{equation}
   \text{Quality Metric} = (\text{\# iterations}) \times (\text{maximum
     \# non-zero values})\:,
 \end{equation}
 where the highest quality preconditioning is one that minimizes this
-metric. For the ILUT preconditioned data provided,
+metric. This metric gives equal importance to both iterative
+performance and sparsity with the purpose of simply measuring their
+combined effect rather than seeking some optimal relationship of
+importance. For the ILUT preconditioned data provided,
 Figure~\ref{fig:ilut_quality} provides the computed metric as a
 function of ILUT drop tolerance for each fill level used. In general,
 the metric is similar to the data observed for the number of
@@ -962,12 +971,12 @@ has a stronger impact than filtering small values.
 
 \subsection{Sparse Approximate Inverse Preconditioning}
 \label{subsec:spn_spainv_preconditioning}
-Sparse approximate inverse (SPAINV) preconditioning is chosen next because the true inverse of the preconditioner
-is product of the algorithm, avoiding the need for many inverse matrix
-applications as required by using ILUT with MCSA. In addition, the
-algorithm seeks to maintain the sparsity of the inverse
-preconditioner, potentially alleviating some of the dense operator
-issues observed with ILUT.
+Sparse approximate inverse (SPAINV) preconditioning is chosen next
+because the true inverse of the preconditioner is the product of the
+algorithm, avoiding the need for many inverse matrix applications as
+required by using ILUT with MCSA. In addition, the algorithm seeks to
+maintain the sparsity of the inverse preconditioner, potentially
+alleviating some of the dense operator issues observed with ILUT.
 
 SPAINV produces a sparse approximation of the inverse matrix directly
 by minimizing the Frobenius norm of the residual matrix
@@ -1026,11 +1035,11 @@ performance with a relative invariance to the threshold value. The
 threshold did have a significant effect, however, on the time required
 to generate the preconditioner with a threshold of 0.001 over an order
 of magnitude slower than a threshold of 0.01 due to the inclusion of a
-significant number of extra values in the input operator. In addition
-to comparable iterative performance, the sparsity of the composite
-operator is greatly improved with nearly an order of magnitude
-reduction in number of non-zero entries per row for lower level
-values.
+significant number of extra values in the input operator,
+$\mathbf{A}$. In addition to comparable iterative performance, the
+sparsity of the composite operator is greatly improved with nearly an
+order of magnitude reduction in number of non-zero entries per row for
+lower level values.
 
 \begin{figure}[t!]
   \begin{center}
@@ -1098,8 +1107,8 @@ therefore recover as much of the original product as possible.
 
 For each row in the preconditioned system, we can then apply the
 reduced domain approximation to eliminate those elements that either
-fall below a specified tolerance level, keep the $N$ largest elements
-in each row, or both giving:
+fall below a specified threshold level, fall within a fill level $N$
+where we keep the $N$ largest elements in each row, or both giving:
 \begin{subequations}
   \begin{gather}
     \ve{x}^{k+1/2} = \ve{x}^k + \ve{r}^k\:,\\
@@ -1481,7 +1490,7 @@ iterations required to converge each eigenvalue iteration was recorded
 and then averaged over all eigenvalue iterations for each
 solver. 
 
-Table~\ref{tab:spn_comparison_iterations} gives the average number of
+Table~\ref{tab:spn_comparison_iterations} gives this average number of
 linear solver iterations required to converge a single eigenvalue
 iteration of the fuel assembly problem as a function of the number of
 energy groups. In general, the iterative performance of all the
@@ -1490,7 +1499,7 @@ BiCGStab performing the best. We expect this because not only are the
 multigroup $SP_N$ equations positive-definite, but they are also
 block-symmetric and therefore we expect the conjugate gradient-based
 methods to perform well due to the structure of the projection
-scheme. It important to note that the iterative performance of each
+scheme. It is important to note that the iterative performance of each
 solver is not a strong function of the number of energy groups in the
 problem (and therefore the problem size). Even more important,
 although BiCGStab produced the best iterative results, MCSA did
@@ -1552,14 +1561,15 @@ implementations are approximately an order of magnitude faster than
 the MCSA implementations presented here. We expect these results for
 several reasons. First, even when the reduced domain approximation is
 used there are $O(100)$ elements in each row of the system and each of
-those elements must be processed during a transition in the Monte
-Carlo random walk sequence. In addition, although the preconditioned
-fixed point iterations used in the MCSA sequence do not use the
-composite linear operator but rather a sequence of matrix vector
-multiplies to achieve the same preconditioning effect, they do use the
-explicitly extracted inverse of the preconditioning matrices which
-themselves are dense, leading to exceedingly slow computation times
-even in the fixed point iteration.
+those elements must be accessed for next-event sampling and tally
+vector modification during a transition in the Monte Carlo random walk
+sequence. In addition, although the preconditioned fixed point
+iterations used in the MCSA sequence do not use the composite linear
+operator but rather a sequence of matrix vector multiplies to achieve
+the same preconditioning effect, they do use the explicitly extracted
+inverse of the preconditioning matrices which themselves are dense,
+leading to exceedingly slow computation times even in the fixed point
+iteration.
 
 For the Krylov methods, the ILUT preconditioners are applied to a
 vector with two triangular solves, one for each triangular
@@ -1623,18 +1633,19 @@ the MCSA computation time by another order of magnitude.
 \end{figure}
 
 Based on the performance results in this section, MCSA shows promise
-as a competitive and perhaps even superior method for solutions to the
-neutron transport problem discretized with the $SP_N$
-approximation. Not only are the correct answers produced when compared
-to production linear solvers, but the iterative performance is
-comparable to Krylov methods with identical preconditioning that would
-typically be used every-day calculations. From a CPU timing
-perspective, the methods yield the same time complexity as a function
-of the number of energy groups in the problem when compared to the
-Krylov methods. Here, a large time constant is generated due to the
-explicit preconditioning strategy and the generation of dense linear
-operators as a result. To improve these results and put general MCSA
-schemes into a performance regime where they are competitive with
+as a competitive method for solutions to the neutron transport problem
+discretized with the $SP_N$ approximation and could potentially be
+superior if the preconditioning strategy were improved to reduce time
+to solution and memory usage. Not only are the correct answers
+produced when compared to production linear solvers, but the iterative
+performance is comparable to Krylov methods with identical
+preconditioning that would typically be used most calculations. From a
+CPU timing perspective, the methods yield the same time complexity as
+a function of the number of energy groups in the problem when compared
+to the Krylov methods. Here, a large time constant is generated due to
+the explicit preconditioning strategy and the generation of dense
+linear operators as a result. To improve these results and put general
+MCSA schemes into a performance regime where they are competitive with
 Krylov methods for neutron transport problems, significant research
 will be required to improve upon the explicit preconditioning scheme
 presented here.
@@ -1676,7 +1687,7 @@ observations, findings, and contributions.
   iteration than GMRES for the fuel assembly criticality problem and
   more than Bi-CGStab using the same preconditioning
 \item The explicit preconditioning strategy required to overcome the
-  MCSA spectral radius restriction creates runtimes $O(100)$ larger
+  MCSA spectral radius restriction creates run times $O(100)$ larger
   than the production Krylov methods for the fuel assembly criticality
   problem
 \end{itemize}
