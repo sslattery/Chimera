@@ -1189,22 +1189,6 @@ Carlo acceleration even considering the cases with Reynolds numbers of
 100 and 700 where an extra Newton-Richardson iteration was required to
 converge the nonlinear model.
 
-As an additional means of analysis for the linear solver iteration
-results, we will look at a case where MCSA performed poorly compared
-to GMRES. Consider the linear iterations as a function of nonlinear
-iteration given in Figure~\ref{fig:driven_re500_iters} and the forcing
-term as a function of nonlinear iteration given in
-Figure~\ref{fig:driven_re500_forcing} for the 500 Reynolds number
-case. At the later Newton iterations where the region of fast
-quadratic convergence is reached, we see that MCSA required many more
-iterations to converge than GMRES, accounting for the majority of the
-extra iterations. However, we see in the forcing term data that
-forcing terms at later Newton iterations for MCSA were much smaller
-than those for GMRES. Per Eq~(\ref{eq:newton_stopping_criteria}), this
-means that MCSA was converged to a smaller tolerance at these
-nonlinear iterations than GMRES and therefore required extra linear
-iterations to meet the convergence criteria.
-
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=6in]{chapters/nonlinear_problem/driven_re500_iters.pdf}
@@ -1251,6 +1235,22 @@ iterations to meet the convergence criteria.
       iteration.}}
   \label{tab:driven_linear_iter_comparison}
 \end{table}
+
+As an additional means of analysis for the linear solver iteration
+results, we will look at a case where MCSA performed poorly compared
+to GMRES. Consider the linear iterations as a function of nonlinear
+iteration given in Figure~\ref{fig:driven_re500_iters} and the forcing
+term as a function of nonlinear iteration given in
+Figure~\ref{fig:driven_re500_forcing} for the 500 Reynolds number
+case. At the later Newton iterations where the region of fast
+quadratic convergence is reached, we see that MCSA required many more
+iterations to converge than GMRES, accounting for the majority of the
+extra iterations. However, we see in the forcing term data that
+forcing terms at later Newton iterations for MCSA were much smaller
+than those for GMRES. Per Eq~(\ref{eq:newton_stopping_criteria}), this
+means that MCSA was converged to a smaller tolerance at these
+nonlinear iterations than GMRES and therefore required extra linear
+iterations to meet the convergence criteria.
 
 As a final comparison, the timing of both methods was again compared
 with the speedup of using the Newton-Krylov solver over FANM reported
