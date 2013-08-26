@@ -334,23 +334,24 @@ infrastructure for reactor core analysis and design. At this level,
 individual fuel pins may be resolved at fine resolution in a variety
 of configurations. As a sophisticated problem of interest to push the
 limits of MCSA, a hot zero-power $17 \times 17$ pin assembly will be
-used with varying energy group structure and $SP_N$ discretization in
-a criticality calculation. A cross section along the vertical axis
-showing homogenized fuel pin, control rod, and moderator materials and
-the associated grid is given by Figure~\ref{fig:problem3_radial_mat}
-while a cross section of the materials configuration along the
-horizontal axis is given by Figure~\ref{fig:problem3_axial_mat}. The
-control rods were removed for these problems leaving only moderator in
-their place. A detailed view of the assembly bottom is given in
+used with varying energy group structure and the $SP_N$ discretization
+in a criticality calculation. A cross section perpendicular to the
+vertical axis showing homogenized fuel pin, control rod, and moderator
+materials and the associated grid is given by
+Figure~\ref{fig:problem3_radial_mat} while a cross section of the
+materials configuration perpendicular to the horizontal axis is given
+by Figure~\ref{fig:problem3_axial_mat}. The control rods were removed
+for these problems leaving only moderator in their place. A detailed
+view of the assembly bottom is given in
 Figure~\ref{fig:problem3_end}. On the top and bottom of the assembly,
 vacuum conditions are used as well as on the top and right boundaries
 in Figure~\ref{fig:problem3_radial_mat}. Reflecting conditions are
 used on the left and bottom boundaries of
 Figure~\ref{fig:problem3_radial_mat}, effectively giving a
-representation of one quarter of the assembly. For the spatial
-discretization, each fuel pin (gray regions in
-Figure~\ref{fig:problem3_radial_mat}) is resolved by a $2 \times 2$
-mesh with materials and cross sections homogenized over this region.
+representation of the entire assembly. For the spatial discretization,
+each fuel pin (gray regions in Figure~\ref{fig:problem3_radial_mat})
+is resolved by a $2 \times 2$ mesh with materials and cross sections
+homogenized over this region.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4in]{chapters/spn_equations/problem3_radial_mat.png}
@@ -690,24 +691,25 @@ required to converge for the chosen number of histories per iteration
 given by Figure~\ref{fig:breakdown_histories} using the adjoint solver
 with the collision and expected value estimators and the forward
 solver with the collision estimator. For spectral radii less than
-0.97, all MCSA problems converged with 1 history per DOF (10,000 for
-this problem) with the number of iterations required to converge
-increasing as a function of spectral radius. Near a spectral radius of
-0.97, the number of histories required to converge MCSA in less than
-100 iterations takes a dramatic rise that exhibits neither exponential
-nor power law behavior. As the spectral radius approaches 1, the
-number of histories required becomes significant and effectively
-impractical to compute. Even with this simple diffusion problem, the
-behavior is consistent with that observed for the fuel assembly
-problem with $SP_1$ discretization. In that case, we estimated a
-spectral radius of $\approx 0.998$, larger than any of the spectral
-radii that could be computed within even 90 minutes of compute time
-for this simple two dimensional problem. For that problem, even
-1,000,000 histories ($\approx 50$ per DOF) was not enough to provide
-convergence. Even if single solve times of an hour can be tolerated,
-dozens of solves are typically required to compute the multiplication
-factor and flux spectrum within the $SP_N$ eigenvalue scheme for more
-difficult problems like the fuel assembly, making the method unusable.
+0.97, all MCSA problems converged with 1 history per DOF (10,000 total
+histories for this problem) with the number of iterations required to
+converge increasing as a function of spectral radius. Near a spectral
+radius of 0.97, the number of histories required to converge MCSA in
+less than 100 iterations takes a dramatic rise that exhibits neither
+exponential nor power law behavior. As the spectral radius approaches
+1, the number of histories required becomes significant and
+effectively impractical to compute. Even with this simple diffusion
+problem, the behavior is consistent with that observed for the fuel
+assembly problem with $SP_1$ discretization. In that case, we
+estimated a spectral radius of $\approx 0.998$, larger than any of the
+spectral radii that could be computed within even 90 minutes of
+compute time for this simple two dimensional problem. For that large
+of a spectral radius, even 1,000,000 histories ($\approx 50$ per DOF)
+was not enough to provide convergence. Even if single solve times of
+an hour can be tolerated, dozens of solves are typically required to
+compute the multiplication factor and flux spectrum within the $SP_N$
+eigenvalue scheme for more difficult problems like the fuel assembly,
+making the method unusable.
 \begin{figure}[t!]
   \begin{center}
     \includegraphics[width=4.5in]{chapters/spn_equations/breakdown_iterations.pdf}
