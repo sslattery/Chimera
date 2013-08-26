@@ -28,13 +28,12 @@ over Halton's sequential method \cite{evans_monte_2012}.
 
 In this chapter, we will present the fundamentals of the Monte Carlo
 method for discrete linear systems. Both the forward and adjoint
-methods will be presented and analyzed including a brief variance
-analysis of several Monte Carlo estimators. The Sequential Monte Carlo
-method of Halton and Monte Carlo Synthetic Acceleration methods will
-then be presented as a means of leveraging the basic Monte Carlo
-methods devised by Neumann and Ulam in an iterative refinement scheme
-that accelerates their convergence. Using these iterative schemes,
-the effects of the algorithm parameters on solutions to a simple model
+methods will be presented and analyzed. The Sequential Monte Carlo
+method of Halton and Monte Carlo Synthetic Acceleration will then be
+presented as a means of leveraging the basic Monte Carlo methods
+devised by Neumann and Ulam in an iterative refinement scheme that
+accelerates their convergence. Using these iterative schemes, the
+effects of the algorithm parameters on solutions to a simple model
 transport problem are explored.
 
 \section{Preliminaries}
@@ -58,15 +57,13 @@ In addition we can define the residual:
   \ve{r} = \ve{b} - \ve{A}\ve{x}\:,
   \label{eq:linear_residual}
 \end{equation}
-such that an exact solution $\ve{x}$ has been found when
+such that an exact solution, $\ve{x}$, has been found when
 $\ve{r}=\ve{0}$.  From the statement in
 Eq~(\ref{eq:linear_problem_solution}) we can already place a
 restriction on $\ve{A}$ by requiring that it be \textit{nonsingular},
-meaning that we can in fact compute $\ve{A}^{-1}$. In this work we
-will focus our efforts on approximately inverting the operator through
-various means.
+meaning that we can in fact compute $\ve{A}^{-1}$.
 
-In a discussion of methods for solving linear systems, several
+In a discussion of methods for solving linear problems, several
 mathematical tools are useful in characterizing the qualities of the
 linear system. Among the most useful are the \textit{eigenvalues} of
 the matrix, $\sigma(\ve{A})$. We find these by solving the eigenvalue
@@ -86,10 +83,11 @@ determinant yields a characteristic polynomial in terms of $\lambda$
 with roots that form the set of eigenvalues, $\sigma(\ve{A})$. Each
 component of $\sigma(\ve{A})$ can then be used to solve
 Eq~(\ref{eq:eigenvalue_problem_2}) for a particular permutation of
-$\ve{x}$. The set of all permutations form the \textit{eigenvectors}
-of $\ve{A}$. A quantity of particular interest that is computable from
-the eigenvalues of a matrix $\ve{A}$ is the \textit{spectral radius},
-$\rho(\ve{A})$, defined by Saad \cite{saad_iterative_2003} as:
+$\ve{x}$ and the set of all permutations forms the
+\textit{eigenvectors} of $\ve{A}$. A quantity of particular interest
+that is computable from the eigenvalues of a matrix $\ve{A}$ is the
+\textit{spectral radius}, $\rho(\ve{A})$, defined by Saad
+\cite{saad_iterative_2003} as:
 \begin{equation}
   \rho(\ve{A}) = \max_{\lambda \in \sigma(\ve{A})} |\lambda| \:,
   \label{eq:spectral_radius}
@@ -150,11 +148,11 @@ which can interpreted as a series of transitions between states,
  \rightarrow i_{k}\:,
   \label{eq:mc_walk_permutation}
 \end{equation}
-in $\ve{H}$ where $\nu$ is interpreted as a particular random walk
-sequence permutation. We can generate these sequences of transitions
-through Monte Carlo random walks by assigning them both a probability
-and weight. As a reinterpretation of the iteration matrix, we then
-form the \textit{Neumann-Ulam decomposition} of \ve{H}:
+in $\ve{H}$ where $\nu$ is interpreted as a particular sequence
+permutation. We can generate these sequences of transitions through
+Monte Carlo random walks by assigning them both a probability and
+weight. As a reinterpretation of the iteration matrix, we then form
+the \textit{Neumann-Ulam decomposition} of \ve{H}:
 \begin{equation}
   \ve{H} = \ve{P} \circ \ve{W}\:,
   \label{eq:neumann_ulam_decomposition}
@@ -168,12 +166,12 @@ weight matrix. This decomposition, a generalization of Dimov's work
 scheme in that now a weight cutoff can be used to terminate a random
 walk sequence and therefore truncate the Neumann series it is
 approximating. The formulation of $\ve{P}$ and $\ve{W}$ will be
-dependent on whether we choose a direct or adjoint Monte Carlo
+dependent on whether we choose a forward or adjoint Monte Carlo
 sequence to estimate the state transitions in
-Eq~(\ref{eq:expanded_neumann_solution}). In the direct method, we will
-use the provided linear operator $\ve{A}$ to form the Neumann Ulam
-decomposition while the adjoint method will use the adjoint linear
-operator ($\ve{A}^T$ for real-valued systems) to form the
+Eq~(\ref{eq:expanded_neumann_solution}). In the forward method, we
+will use the provided linear operator $\ve{A}$ to form the Neumann
+Ulam decomposition while the adjoint method will use the adjoint
+linear operator ($\ve{A}^T$ for real-valued systems) to form the
 decomposition.
 
 \subsection{Forward Neumann-Ulam Method}
@@ -220,7 +218,9 @@ the weight of that permutation on the $m^{th}$ step to be:
 such that the weight of each transition event contributes to the total
 through multiplication with $W_0 = 1$ as the starting weight. The
 contribution to the solution from a particular random walk permutation
-with $k$ total events is then the \textit{forward estimator}:
+with $k$ total events is then the \textit{forward
+  estimator}\footnote{The variance for this estimator is discussed in
+  Appendix~\ref{chap:estimator_variance}.}:
 \begin{equation}
   X_{i_0 = i}(\nu) = \sum_{m=0}^k W_{m} b_{i_m}\:,
   \label{eq:direct_permutation_contribution}
@@ -230,10 +230,10 @@ which the random walk $\nu$ started is also the state, $i$, in which
 we are tallying. We then define the probability that a particular
 random walk permutation of $k$ events will occur:
 \begin{equation}
-  P_{\nu} = P_{i_0=i} p_{i,i_1} p_{i_1,i_2} \cdots p_{i_{k-1},i_k}\:,
+  P_{\nu} = P_{(i_0=i)} p_{i,i_1} p_{i_1,i_2} \cdots p_{i_{k-1},i_k}\:,
   \label{eq:direct_permutation_probability}
 \end{equation}
-with $P_{i_0=i} = 1$ for the direct method. Finally, we define the
+with $P_{(i_0=i)} = 1$ for the direct method. Finally, we define the
 expectation value of $X$ to be the collection of all random walk
 permutations and their probabilities:
 \begin{equation}
@@ -241,7 +241,7 @@ permutations and their probabilities:
   \label{eq:direct_expectation_value}
 \end{equation}
 which, if expanded, directly recovers the exact solution by forming
-the Neumann series:
+the Neumann series through the Hadamard product:
 \begin{equation}
   \begin{split}
     E\{X_i\}
@@ -255,10 +255,9 @@ therefore providing an unbiased Monte Carlo estimator.
 
 In cases where we seek only approximate solutions, we need only to
 perform a predetermined number of random walks in order to generate an
-approximation for $\ve{x}$. If we are only to approximate the
-solution, we also need conditions by which we may terminate a random
-walk as the Neumann Ulam decomposition defined by
-Eqs~(\ref{eq:direct_probability}) and (\ref{eq:direct_weight}) will
+approximation for $\ve{x}$. We then also need conditions by which we
+may terminate a random walk as the Neumann Ulam decomposition defined
+by Eqs~(\ref{eq:direct_probability}) and (\ref{eq:direct_weight}) will
 create a random walk weight in Eq~(\ref{eq:direct_permutation_weight})
 that approaches, but never reaches zero. We do this by noticing that
 if the problem is convergent, the factors added to
@@ -269,107 +268,6 @@ history to the solution estimate will become negligible. Using this,
 we choose terminate a random walk sequence with a \textit{weight
   cutoff}, $W_c$, that is enforced when $W_m < W_c$ for a particular
 random walk permutation.
-
-\subsubsection{Forward Estimator Variance}
-\label{subsec:forward_variance}
-We can compute the variance of the forward estimator through traditional
-methods by defining the variance, $\sigma_i$, for each component in
-the solution:
-\begin{equation}
-  {\sigma_i}^2 = E\{X_i - (\ve{A}^{-1}\ve{b})_i\}^2 = E\{X_i^2\} - x_i^2\:,
-  \label{eq:direct_variance_1}
-\end{equation}
-where the vector exponentials are computed element-wise. Inserting
-Eq~(\ref{eq:direct_expectation_value}) gives:
-\begin{equation}
-  \sigma_i^2 = \sum_{\nu} P_{\nu} X_{i}(\nu)^2 - x_i^2\:,
-  \label{eq:direct_variance_2}
-\end{equation}
-and applying Eq~(\ref{eq:direct_permutation_contribution}) and
-expanding the square of the summation:
-\begin{equation}
-  \sigma_i^2 = \sum_{\nu} P_{\nu} \Big(\sum_{m=0}^k \Big[ W_{m}^2 b_{i_m}^2
-  + 2 \sum_{j=0}^{m-1} W_m W_j b_{i_m} b_{i_j} \Big] \Big)-
-  x_i^2\:.
-  \label{eq:direct_variance_3}
-\end{equation}
-We can distribute the random walk probability to yield an expanded
-form of the variance:
-\begin{equation}
-  \sigma_i^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 b_{i_m}^2 + 2
-  \sum_{\nu} P_{\nu} \sum_{m=0}^k \sum_{j=0}^{m-1} W_m W_j b_{i_m}
-  b_{i_j} - x_i^2\:.
-  \label{eq:direct_variance_3_2}
-\end{equation}
-In particular, we will isolate the first term of the variance by
-expanding it:
-\begin{equation}
-  \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 b_{i_m}^2 =
-  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
-  p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
-  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k} b_{i_k}^2\:.
-  \label{eq:direct_variance_4}
-\end{equation}
-Using this expansion, we can arrive at a more natural
-reason for enforcing $\rho(\ve{H}) < 1$ for our Monte Carlo method to
-converge. Per the Hadamard product, we can concatenate the summation
-in Eq~(\ref{eq:direct_variance_4}):
-\begin{equation}
-  (\ve{P} \circ \ve{W} \circ \ve{W})^k =
-  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
-  p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
-  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k}\:.
-  \label{eq:double_weighted_decomposition}
-\end{equation}
-If we assign $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$ as in
-Eq~(\ref{eq:neumann_ulam_decomposition}), we then have:
-\begin{equation}
-   (\ve{P} \circ \ve{W} \circ \ve{W})^k =
-  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-  \sum_{i_k}^{N}g_{i,i_1}g_{i_1,i_2}\ldots g_{i_{k-1},i_k}\:,
-  \label{eq:direct_variance_6}
-\end{equation}
-which is the general Neumann series for $\ve{G}$,
-\begin{equation}
-  \ve{T} = \sum_{k=0}^{\infty} \ve{G}^k\:,
-  \label{eq:variance_neumann_series}
-\end{equation}
-where $\ve{T} = (\ve{I}-\ve{G})^{-1}$. We can then insert $T$ back
-into the variance formulation for a more concise definition:
-\begin{equation}
-  \sigma^2_i = (\ve{T}\ve{b}^2)_i + 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k
-  \sum_{j=0}^{m-1} W_m W_j b_{i_m} b_{i_j} - x_i^2\:.
-  \label{eq:direct_variance_5}
-\end{equation}
-We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
-contains an additional Hadamard product with the weight matrix. The
-Hadamard product has the property that:
-\begin{equation}
-  |\ve{H} \circ \ve{W}| \geq |\ve{H}|\ |\ve{W}|\:.
-  \label{eq:hadamard_inequality}
-\end{equation}
-Using the norm property of the Hadamard product and
-Eq~(\ref{eq:neumann_ulam_decomposition}), we can define the norm of
-$\ve{W}$ as:
-\begin{equation}
-  \frac{|\ve{H}|}{|\ve{P}|} \geq |\ve{W}|\:.
-  \label{eq:weight_norm}
-\end{equation}
-Choosing the infinity norm of the operator, the row normalized
-probability matrix will yield a norm of 1 giving the following
-inequality for relating $\ve{G}$ and $\ve{H}$:
-\begin{equation}
-  |\ve{G}| \geq |\ve{H}|^2
-  \label{eq:variance_norm_inequality}
-\end{equation}
-Using these relations to analyze Eq~(\ref{eq:direct_variance_5}), we
-see that if $\rho(\ve{G}) > 1$, then the first sum in
-Eq~(\ref{eq:variance_neumann_series}) will not converge and an
-infinite variance will arise as the elements of $\ve{T}$ become
-infinite in Eq~(\ref{eq:direct_variance_5}). We must restrict $\ve{G}$
-to alleviate this and therefore restrict $\ve{H}$ due to
-Eq~(\ref{eq:variance_norm_inequality}) with $\rho(\ve{H}) < 1$ so that
-our expectation values for the solution may have a finite variance.
 
 \subsubsection{Forward Method: Evolution of a Solution}
 \label{subsec:direct_evolution}
@@ -415,9 +313,9 @@ analogous to the convergence of a traditional iterative method.
 
 \subsection{Adjoint Neumann-Ulam Method}
 \label{sec:adjoint_mc}
-Often a more useful form, an alternative to forward Monte Carlo matrix
-inversion is the adjoint method. We begin by defining the linear
-system adjoint to Eq~(\ref{eq:linear_problem}):
+An alternative to forward Monte Carlo matrix inversion is the adjoint
+method. We begin by defining the linear system adjoint to
+Eq~(\ref{eq:linear_problem}):
 \begin{equation}
   \ve{A}^T \ve{y} = \ve{d}\:,
   \label{eq:adjoint_linear_problem}
@@ -434,7 +332,7 @@ As was required for convergence with the direct method using
 Eq~(\ref{eq:richardson_split}), the spectral radius of $\ve{H}$ must
 remain less than 1 as $\ve{H}^T$ contains the same eigenvalues and
 therefore has the same spectral radius. By defining the following
-inner product equivalence \cite{spanier_monte_1969}:
+adjoint inner product equivalence \cite{spanier_monte_1969}:
 \begin{equation}
   \langle \ve{A}^T \ve{y}, \ve{x} \rangle = \langle \ve{y}, \ve{A}
   \ve{x} \rangle\:.
@@ -495,7 +393,7 @@ a traditional forward method where the initial state $i_0$ of the
 random walk is determined by sampling the source vector $\ve{b}$ with
 probabilities:
 \begin{equation}
-  P_{i_0=i}(\nu) = \frac{|b_i|}{||\ve{b}||_1}\:,
+  P_{(i_0=i)}(\nu) = \frac{|b_i|}{||\ve{b}||_1}\:,
   \label{eq:adjoint_source_probability}
 \end{equation}
 with a random walk starting weight of:
@@ -505,7 +403,7 @@ with a random walk starting weight of:
 \end{equation}
 which gives the additional useful relation:
 \begin{equation}
-  b_{i_0} = W_0 P_{i_0=i}\:.
+  b_{i_0} = W_0 P_{(i_0=i)}\:.
   \label{eq:adjoint_source_definition}
 \end{equation}
 As a result of using the adjoint system, we modify our probabilities
@@ -540,7 +438,8 @@ Eq~(\ref{eq:mc_walk_permutation}) and our result from
 Eq~(\ref{eq:inner_product_constraint}) generated by applying the
 adjoint constraints, the contribution to the solution in state $j$
 from a particular random walk permutation of $k$ events is then the
-\textit{collision estimator}:
+\textit{collision estimator}\footnote{The variance for this estimator
+  is discussed in Appendix~\ref{chap:estimator_variance}.}:
 \begin{equation}
   X_{j}(\nu) = \sum_{m=0}^k W_{m} \delta_{i_m,j}\:,
   \label{eq:adjoint_permutation_contribution}
@@ -566,17 +465,14 @@ directly recovers the exact solution:
 \begin{equation}
   \begin{split}
     E\{X_j\} &=\sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-    \sum_{i_k}^{N} b_{i_0} h_{i_0,i_1}h_{i_1,i_2}\ldots
-    h_{i_{k-1},i_k} \delta_{i_k,j} \\ &= x_{j}\:,
+    \sum_{i_k}^{N} b_{i_0} p_{i_0,i_1}p_{i_1,i_2}\ldots
+    p_{i_{k-1},i_k} w_{i_0,i_1}w_{i_1,i_2}\ldots
+    w_{i_{k-1},i_k} \delta_{i_k,j} \\ &= x_{j}\:,
   \end{split}
   \label{eq:adjoint_expectation_expansion}
 \end{equation}
 therefore, also providing an unbiased Monte Carlo estimate of the
-solution. Note that this expansion produces the effective sequence of
-matrix-vector multiplications with the $b_{i_0}$ component of the
-source vector which will be selected at random for each walk
-permutation and the unbiasedness of the estimator relies on an
-unbiased sampling of the source. It should also be noted here that
+solution. It should be noted here that
 Eq~(\ref{eq:adjoint_expectation_expansion}) only computes a single
 component of our desired solution vector when really what we desire is
 the entire solution vector. In an adjoint Monte Carlo simulation using
@@ -584,8 +480,7 @@ this estimator, the $w_{ij}$ elements that are added into the tally
 for each state are only selected if/when the random walk currently
 resides in that state. Much like a mesh tally in a particle transport
 simulation, we have $N$ simultaneous tallies for $\ve{A} \in
-\mathbb{R}^{N \times N}$ that will yield the entire solution
-vector.
+\mathbb{R}^{N \times N}$ that will yield the entire solution vector.
 
 Like the direct method, we also desire a criteria for random walk
 termination for problems where only an approximate solution is
@@ -599,73 +494,19 @@ where $W_c$ is defined as in the direct method. The adjoint random
 walk will then be terminated after $m$ steps if $W_m < W_f$ as tally
 contributions become increasingly small.
 
-\subsubsection{Collision Estimator Variance}
-\label{subsec:forward_variance}
-We can compute the variance of the collision estimator in the same way
-as the direct estimator for each component in the solution where now:
-\begin{equation}
-  \sigma_j^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 \delta_{i_m,j}
-  + 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k \sum_{l=0}^{m-1} W_m W_l
-  \delta_{i_m,j} \delta_{i_l,j} - x_j^2\:.
-  \label{eq:collision_variance_1}
-\end{equation}
-In this case, in the second summation $m \neq l$ for all states due to
-the form of the summation and therefore the combination of delta
-functions, $\delta_{i_m,j}$ of $\delta_{i_l,j}$, will only be nonzero
-for random walks that are in the current solution state (when $i_m =
-i_l = j$) and other states visited do not contribute to the variance
-of the current state (when $i_m \neq i_l$). This is important as it
-shows a decoupling of the variance among the solution vector states,
-meaning that the variance in solution state $i$ does not depend on the
-variance in solution state $j$.
-
-Expanding the transition probabilities in the first sum again yields a
-Neumann series in the same form as that explored for the forward
-estimator, this time with the terms in reverse order and the
-introduction of the Kronecker delta:
-\begin{multline}
-  \sigma_j^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-  \sum_{i_k}^{N} p_{i_k,i_{k-1}}\ldots p_{i_2,i_1} p_{i_1,i_0}
-  w^2_{i_k,i_{k-1}}\ldots w^2_{i_2,i_1} w^2_{i_1,i_0}
-  b^2_{i_0}\delta_{i_k,j} + \\ 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k
-  \sum_{l=0}^{m-1} W_m W_l \delta_{i_m,j} \delta_{i_l,j} - x_j^2\:.
-  \label{eq:collision_variance_2}
-\end{multline}
-If we again define $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$, we
-then have:
-\begin{multline}
-  \sigma^2_j = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
-  \sum_{i_k}^{N}g_{i_{k},i_{k-1}} \ldots
-  g_{i_2,i_1}g_{i_1,i_0}b_{i_0}\delta_{i_k,j} + \\ 2 \sum_{\nu}
-  P_{\nu} \sum_{m=0}^k \sum_{l=0}^{m-1} W_m W_l \delta_{i_m,j}
-  \delta_{i_l,j} - x_j^2\:,
-\label{eq:collision_variance_3}
-\end{multline}
-where now $\ve{G}$ in this case is the transpose of that used in
-Eq~(\ref{eq:direct_variance_6}). The Kronecker delta again implies
-that the variance contribution from each random walk will only be in
-its current state and for many random walks, many starting weights of
-$b_{i_0}$ will contribute to the variance in the same way as they
-contribute to the solution tally. As the transpose is formed and the
-Neumann series of $\ve{G}$ is in reverse order in
-Eq~(\ref{eq:collision_variance_3}) relative to its formulation in the
-forward estimator, then Eq~(\ref{eq:collision_variance_3}) and
-Eq~(\ref{eq:direct_variance_6}) are equivalent and therefore the
-collision estimator is bound by the same restrictions on
-$\rho(\ve{G})$ and $\rho(\ve{H})$ to ensure that the variance is
-finite.
-
 \subsubsection{Expected Value Estimator}
 \label{subsec:expected_value_estimator}
 In addition to the collision estimator, an additional estimator is
-available due to the work of Okten \cite{okten_solving_2005} that
-uses the method of expected values as a means to improve the Monte
-Carlo estimate. As outlined by Spanier and Gelbard
+available due to the work of Okten \cite{okten_solving_2005} that uses
+the method of expected values as a means to improve the Monte Carlo
+estimate. As outlined by Spanier and Gelbard
 \cite{spanier_monte_1969}, the method of expected values is a
 deterministic averaging of events that may potentially occur in the
 Monte Carlo random walk sequence. Okten applied this principle
 directly to discrete Monte Carlo by forming the \textit{expected value
-  estimator} for a random walk of $k$ events:
+  estimator}\footnote{The variance for this estimator is discussed in
+  Appendix~\ref{chap:estimator_variance}.} for a random walk of $k$
+events:
 \begin{equation}
   X_{j}(\nu) = b_j + \sum_{m=0}^k W_m h_{j,i_m}\,
   \label{eq:expected_value_estimator}
@@ -703,25 +544,6 @@ work. Conveniently, even if no Monte Carlo histories are computed, the
 expected value estimator still deterministically computes the first
 term of the Neumann Series, $\ve{H}^0\ve{b}$, whereas the collision
 estimator will provide no information.
-
-\subsubsection{Expected Value Estimator Variance}
-\label{subsubsec:expected_value_estimator_variance}
-Following the collision estimator variance, the expected value
-estimator variance is given as:
-\begin{multline}
-  \sigma_j^2 = \sum_{\nu} P_{\nu} b_j^2 + 2 \sum_{\nu} P_{\nu} b_j
-  \sum_{m=0}^k W_{m} h_{j,i_m} +\\ \sum_{\nu} P_{\nu} \sum_{m=0}^k
-  W_{m}^2 h_{j,i_m}^2 + 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k
-  \sum_{l=0}^{m-1} W_m W_l h_{j,i_m} h_{j,i_l} - x_j^2\:.
-  \label{eq:expected_value_variance_1}
-\end{multline}
-As the delta functions are no longer present, the final summation in
-Eq~(\ref{eq:expected_value_variance_1}) contains contributions for all
-valid state combinations in the same row of the iteration matrix and
-therefore the variance of each state in the solution tally is coupled
-to a group of other states as defined by the sparsity pattern of the
-iteration matrix. This coupling of variances is expected due to the
-deterministic averaging used to generate the expected value estimator.
 
 \subsubsection{Adjoint Method: Evolution of a Solution}
 \label{subsec:adjoint_evolution}
@@ -766,14 +588,13 @@ convergence rate of $1/\sqrt{N}$ by the Central Limit Theorem where
 $N$ is the number of random walk permutations. In 1962, Halton
 presented a residual Monte Carlo method that moves towards exponential
 convergence rates \cite{halton_sequential_1962} and further refined
-his work some years later \cite{halton_sequential_1994}. Applications
-of his work by the transport community have confirmed convergence
-rates on the order of of $e^{-N}$ \cite{evans_residual_2003}. In much
-the same way as the projection methods outlined in
-Appendix~\ref{ch:linear_problem}, Halton's method, sequential Monte
-Carlo, utilizes the adjoint Monte Carlo solver as a means of directly
-reducing the elements residual vector. He proposed the following
-iterative scheme as a solution to Eq~(\ref{eq:linear_problem})\:
+his work some years later \cite{halton_sequential_1994} with
+applications of his work by the transport community confirming
+exponential convergence rates \cite{evans_residual_2003}. Halton's
+method, sequential Monte Carlo, utilizes the adjoint Monte Carlo
+solver as a means of directly reducing the elements residual
+vector. He proposed the following iterative scheme as a solution to
+Eq~(\ref{eq:linear_problem})\:
 \begin{subequations}
   \begin{gather}
     \ve{r}^k = \ve{b} - \ve{A}\ve{x}^k\:,\\  
@@ -803,13 +624,10 @@ Using the ideas of Halton, Evans and Mosher recently developed a Monte
 Carlo solution method that was not prohibited severely by the quality
 of the initial guess for the system \cite{evans_monte_2009} and later
 applied it more rigorously as a solution mechanism for the radiation
-diffusion equation \cite{evans_monte_2012}. With their new methods,
-they achieved numerical results identical to conventional Krylov
-solvers as well as comparable performance in both number of iterations
-and CPU time. Their approach was instead to use residual Monte Carlo
-as a synthetic acceleration for a stationary method. To derive this
-method, we begin by splitting the operator in
-Eq~(\ref{eq:linear_problem})
+diffusion equation \cite{evans_monte_2012}. Their approach was instead
+to use residual Monte Carlo as a synthetic acceleration for a
+stationary method. To derive this method, we begin by splitting the
+operator in Eq~(\ref{eq:linear_problem})
 \begin{equation}
   \ve{x} = (\ve{I} - \ve{A})\ve{x} + \ve{b}\:.
   \label{eq:linear_split}

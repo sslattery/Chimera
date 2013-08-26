@@ -20,11 +20,11 @@ In order to achieve this high fidelity, state-of-the-art computing
 and considerate of hardware-related issues. As scientific computing
 moves beyond petascale facilities with machines of $O(1,000,000)$
 cores already coming on-line, new algorithms to solve these complex
-problems must be developed to leverage this new hardware
+problems must be developed to utilize this new hardware
 \cite{kogge_using_2011}. Issues such as resiliency to node failure,
 limited growth of memory available per node, and scaling to large
-numbers of cores will be pertinent to robust algorithms aimed at this
-new hardware. 
+numbers of cores will be pertinent to robust algorithms aimed at the
+next generation of machines.
 
 Considering these physics and hardware issues, this goal of this work
 is to research and develop Monte Carlo Synthetic Acceleration methods
@@ -37,7 +37,7 @@ to address both their benefits and their shortcomings in the context
 of the physics of interest and desire to identify areas in which
 improvements can be made. Once the linear and nonlinear methods have
 been developed, we look forward to parallelizing them with the goal
-that they may be leveraged competitively on leadership class computing
+that they may be leveraged competitively on leadership-class computing
 platforms.
 
 To achieve these goals, three complementary research and development
@@ -51,10 +51,9 @@ to research the performance of the Monte Carlo algorithm for nonlinear
 problems using the new Forward-Automated Newton-MCSA (FANM) algorithm
 developed by this work. Third, a novel parallel algorithm based on
 domain decomposed Monte Carlo methods for particle transport is
-developed to fully parallelize the solution techniques developed to
-solve the neutron transport and fluid flow problems on leadership
-class hardware with scaling studies performed in this work using a
-neutron diffusion problem.
+developed to fully parallelize the new solution techniques on
+leadership class hardware with scaling studies performed in this work
+using a neutron diffusion problem.
 
 We discuss in this chapter physics-based motivation for advancing
 Monte Carlo Synthetic Acceleration methods and studying their
@@ -142,18 +141,17 @@ phase space and the problems of interest are often geometrically
 complex, contain large numbers of degrees of freedom, or both,
 requiring tremendous computational resources to generate an adequate
 solution. Modern high fidelity deterministic methods for large scale
-problems are commonly variants on the discrete ordinates ($S_N$)
-method \cite{evans_denovo:_2010}. For fission reactor neutronics
-simulations, the $S_N$ method requires potentially trillions of
-unknown angular flux moments to be computed to achieve good accuracy
-for the responses of interest
-\cite{slaybaugh_acceleration_2011}. Other forms of the transport
-problem, including the $P_N$ method, take on a simpler form than the
-more common $S_N$ methods but lack in accuracy when compared while
-still requiring considerable computational resources for solutions in
-multiple dimensions.
+problems are often variants on the discrete ordinates ($S_N$) method
+\cite{evans_denovo:_2010}. For fission reactor neutronics simulations,
+the $S_N$ method requires potentially trillions of unknown angular
+flux moments to be computed to achieve good accuracy for the responses
+of interest \cite{slaybaugh_acceleration_2011}. Other forms of the
+transport problem, including the $P_N$ method, take on a simpler form
+than the more common $S_N$ methods, but lack in accuracy when compared
+while still requiring considerable computational resources for
+solutions in multiple dimensions.
 
-In the 1960's, Gelbard developed an ad-hoc multidimensional extension
+In the 1960's, Gelbard developed an ad-hoc, multidimensional extension
 of the simple single dimension planar $P_N$ equations that created a
 system of coupled, diffusion-like equations known as the simplified
 $P_N$ ($SP_N$) equations. Up until around the 1990's, the $SP_N$
@@ -175,11 +173,11 @@ domains.
 
 So why reconsider the $SP_N$ equations? Starting in the 1990's and
 primarily due to Larsen and his colleagues, the $SP_N$ equations have
-been given a more rigorous treatment in many forms with both
-variational and asymptotic derivations performed as a means of
-verification \cite{olbrant_asymptotic_2013}. In addition, these
-equations have been more rigorously studied as solution methods to MOX
-fuel problems and have been shown to provide accurate solutions
+been given a more rigorous treatment with both variational and
+asymptotic derivations performed as a means of verification
+\cite{olbrant_asymptotic_2013}. In addition, these equations have been
+more rigorously studied as solution methods to MOX fuel problems and
+have been shown to provide accurate solutions
 \cite{brantley_simplified_2000}. With this mathematical literature to
 provide a solid numerical footing for the method, we look at its
 application to today's challenge problems in neutron transport for
@@ -212,10 +210,10 @@ efficiency achieved by pipe-lining, and energy parallelism achieved by
 decoupling the groups. With the $SP_N$ equations as a full matrix
 system, we now can parallelize the problem as prescribed by the Monte
 Carlo algorithm, which may be significantly more scalable than current
-$S_N$ transport practices. In this work we therefore apply Monte Carlo
-Synthetic Acceleration to the $SP_N$ equations and research its
-applicability, performance, and convergence properties in the context
-of a light water reactor system.
+$S_N$ transport practices. In this work we apply Monte Carlo Synthetic
+Acceleration to the $SP_N$ equations and research its applicability,
+performance, and convergence properties in the context of a light
+water reactor system.
 
 \subsection{Solutions for the Navier-Stokes Equations}
 \label{subsec:ns_motiviation}
@@ -236,9 +234,9 @@ steps, such methods lack consistency and accuracy in resolving the
 nonlinear component of the solution. In the last 30 years, fully
 implicit nonlinear methods based on Newton's method have become more
 popular and many advances have been made in the nuclear engineering
-field to employ these methods.
+field to employ these methods \cite{gaston_parallel_2009}.
 
-In the context of solving standalone linear systems, Monte Carlo
+In the context of solving standalone linear problems, Monte Carlo
 methods do not provide significant merit over subspace methods due to
 the fact that the physics operator must be explicitly formed. For many
 applications including higher fidelity neutron transport
@@ -253,8 +251,8 @@ strategy. Furthermore, modern techniques exist that permit the
 automatic construction of the Jacobian operator generated within a
 Newton method based on the nonlinear residual evaluations, giving all
 of the components necessary for a Monte Carlo solver to provide
-value. We therefore devise a new nonlinear method in this work based
-on the Monte Carlo Synthetic Acceleration algorithm and Newton's
+value. In this work we devise a new nonlinear method in this work
+based on the Monte Carlo Synthetic Acceleration algorithm and Newton's
 method and research its properties, applicability, and performance in
 the context of fluid flow problems.
 
@@ -267,8 +265,9 @@ fluid flow and solid material heat and mass transfer in a reactor
 subsystem, similar to the same components of the departure from
 nucleate boiling example, was performed as part of analysis for the
 Department of Energy's Consortium for Advanced Simulation of Light
-Water Reactors (CASL) modeling and simulation hub. CASL used the
-Drekar multiphysics code developed at Sandia National Laboratories
+Water Reactors (CASL) modeling and simulation hub
+\cite{u.s._department_of_energy_casl_2011}. CASL used the Drekar
+multiphysics code developed at Sandia National Laboratories
 \cite{pawlowski_drekar_2012} for modeling goals in
 grid-to-rod-fretting analysis and will use a similar coupled physics
 structure for future departure from nucleate boiling analysis with
@@ -290,23 +289,23 @@ For Monte Carlo Synthetic Acceleration methods to be viable at the
 production scale for nuclear engineering applications, scalable
 parallel implementations of the algorithm are required. Reviewing the
 literature, Monte Carlo Synthetic Acceleration has yet to be
-parallelized and the Neumann-Ulam Monte Carlo method on which it is
-built has only been parallelized through history-level parallelism
-with full domain replication \cite{alexandrov_efficient_1998}. In
-order to solve large linear physics systems with Monte Carlo Synthetic
-Acceleration, a domain decomposed parallel strategy is required. In
-the formulation of a parallel Monte Carlo Synthetic Acceleration
-algorithm, we recognize that the algorithm occurs in two stages, an
-initial step performing a fixed point iteration and a secondary step
-leveraging a Monte Carlo solver that is providing the
-acceleration. The parallel aspects of both these components must be
-considered. Therefore, in this work we will develop and implement
-parallel algorithms for the fundamental random walk sequence and Monte
-Carlo Synthetic Acceleration methods leveraging both the knowledge
-gained from the general parallel implementations of subspace methods
-reviewed in Appendix~\ref{ch:linear_problem} and modern parallel
-strategies for domain decomposed Monte Carlo as developed by the
-reactor physics community.
+parallelized and the underlying Neumann-Ulam Monte Carlo method has
+only been parallelized through history-level parallelism with full
+domain replication \cite{alexandrov_efficient_1998}. In order to solve
+large linear physics systems with Monte Carlo Synthetic Acceleration,
+a domain decomposed parallel strategy is required. In the formulation
+of a parallel Monte Carlo Synthetic Acceleration algorithm, we
+recognize that the algorithm occurs in two stages, an initial step
+performing a fixed point iteration and a secondary step leveraging a
+Monte Carlo solver that is providing the acceleration. The parallel
+aspects of both these components must be considered. Therefore, in
+this work we will develop and implement parallel algorithms for the
+fundamental random walk sequence and Monte Carlo Synthetic
+Acceleration methods leveraging both the knowledge gained from the
+general parallel implementations of subspace methods reviewed in
+Appendix~\ref{ch:linear_problem} and modern parallel strategies for
+domain decomposed Monte Carlo as developed by the reactor physics
+community.
 
 %%---------------------------------------------------------------------------%%
 \section{Hardware-Based Motivation}
@@ -331,7 +330,7 @@ stagnate while cores per node is expected to increase. As the number
 of cores increases, their clock speed is expected to stagnate or even
 decrease to further reduce power consumption and manufacturing costs.
 
-The end result of these hardware changes is that the larger numbers of
+The end result of these hardware changes is that the larger number of
 low-powered processors will be prone to both soft failures such as bit
 errors in floating point operations and hard failures where the data
 owned by that processor cannot be recovered. Because these failures
@@ -339,29 +338,22 @@ are predicted to be common, resilient solver technologies are required
 to overcome these events at the application level. With linear and
 nonlinear solution schemes based on Monte Carlo techniques, such
 issues are potentially alleviated by statistical arguments. In the
-case of soft failures, isolated floating point errors in Monte Carlo
-simulation are absorbed within tally statistics while completely
-losing hardware during a hard failure is manifested as a high variance
-event where some portion of the Monte Carlo histories are lost. These
-stochastic methods are a paradigm shift from current deterministic
-solver techniques that will in their current form potentially suffer
+case of soft failures, isolated floating point errors in the Monte
+Carlo simulation are absorbed within tally statistics. Completely
+losing memory during a hard failure is treated as a high variance
+event where some portion of the Monte Carlo histories and subsequently
+the solution are lost with other histories maintained by replicating
+the problem and combining the results through superposition. These
+stochastic methods are a paradigm shift from modern deterministic
+solver techniques that will, in their current form, potentially suffer
 greatly from the non-deterministic behavior expected from the next
 generation of machines.
-
-In addition to resiliency concerns, the memory restrictions on future
-hardware will hinder modern solvers that derive their robustness from
-using large amounts of memory. Stochastic methods that are formulated
-to use less memory than conventional methods will serve to alleviate
-some of this pressure. New parallel strategies that may
-be implemented with stochastic methods could offer a new avenue for
-leveraging the expected levels of high concurrency in machines
-operating at hundreds of petaflops and beyond.
 
 %%---------------------------------------------------------------------------%%
 \section{Research and Development Outline}
 \label{sec:research_outline}
-For some time, the particle transport community has been utilizing
-Monte Carlo methods for the solution of transport problems
+For some time, the particle transport community has utilized Monte
+Carlo methods for the solution of transport problems
 \cite{lewis_computational_1993}. The partial differential equation
 (PDE) community has focused on various deterministic methods for
 solutions to linear problems \cite{saad_iterative_2003,
@@ -404,7 +396,7 @@ well-conditioned and well-scaled systems. However, there are two
 potential drawbacks to these methods for high fidelity predictive
 simulations: (1) the Jacobian is approximated by a first-order
 differencing method on the order of machine precision such that this
-error can grow beyond that of those in a fine-grained system
+error can grow beyond that of those in a poorly-scaled system
 \cite{kelley_iterative_1995} and (2) for systems that are not
 symmetric positive-definite (which will be the case for most
 multiphysics systems and certainly for most preconditioned systems)
@@ -414,16 +406,16 @@ prohibitively large \cite{knoll_newton-krylov_1995}.
 In this work, the Forward-Automated Newton-MCSA (FANM) method is
 developed as new nonlinear solution method. The key features of FANM
 are: full Jacobian generation using modern Forward Automated
-Differentiation (FAD) methods \cite{bartlett_automatic_2006}, and MCSA
-as the inner linear solver. This method has several attractive
-properties. First, the first-order approximation to the Jacobian used
-in JFNK type methods is eliminated by generating the Jacobian
-explicitly with the model equations through FAD. Second, the Jacobian
-need not be explicitly formed by the user but is instead automated
-through FAD; this eliminates the complexity of hand-coding derivatives
-and has also been demonstrated to be more efficient computationally
-than evaluating difference derivatives. Third, unlike GMRES, MCSA does
-not build a subspace during iterations. Although the Jacobian must be
+Differentiation (FAD) methods, and MCSA as the inner linear
+solver. This method has several attractive properties. First, the
+first-order approximation to the Jacobian used in JFNK type methods is
+eliminated with the Jacobian fully formed. Second, the Jacobian need
+not be explicitly formed by the user but is instead automated through
+FAD; this eliminates the complexity of hand-coding derivatives and has
+also been demonstrated to be more efficient computationally than
+evaluating difference derivatives
+\cite{bartlett_automatic_2006}. Third, unlike GMRES, MCSA does not
+build a subspace during iterations. Although the Jacobian must be
 explicitly formed to use MCSA, for problems that take more than a few
 GMRES iterations to converge the size of the Krylov subspace will
 typically grow beyond that of the Jacobian. Finally, using MCSA to
@@ -440,9 +432,9 @@ transport problems by researching and developing a new set of domain
 decomposed Monte Carlo Synthetic Acceleration methods. Improvements in
 iterative performance and parallel scalability will be demonstrated in
 a wide variety of numerical experiments using both simple model
-neutron transport problems and neutron transport and fluid flow
-problems generated by production physics codes in both simple and
-complex geometries.
+transport problems and neutron transport and fluid flow problems
+generated by production physics codes in both simple and complex
+geometries.
 
 %%---------------------------------------------------------------------------%%
 \section{Outline of the Document}

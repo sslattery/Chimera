@@ -7,7 +7,7 @@ leverage methods based on subspace iterations to achieve good
 convergence properties and quality parallel scaling on large
 machines. However, the next generation of machines is expected to
 possess both high levels of concurrency and low memory availability
-per core compared to today's machines with a potentially rate of
+per core compared to today's machines with a potentially high rate of
 faults. Therefore, we seek new algorithms to solve these problems in
 reactor analysis that have the potential to perform well on
 forthcoming hardware with the goal of improving both iterative
@@ -62,14 +62,14 @@ were performed on the Titan Cray XK7 machine at Oak Ridge National
 Laboratory with up to 65,356 cores used in the strong scaling studies
 and 131,072 cores used in the weak scaling studies. It was found that
 for the current implementation of MCSA, both weak and strong scaling
-were superior to production implementations of Krylov methods. In
-addition, the replication in the algorithm was able to boost parallel
-efficiencies by up to 20\% at large core counts in the strong scaling
-studies. By using the principle of superposition, replicating the
-Monte Carlo sequence was also demonstrated to enhance time to
-solution. Finally, it was discovered that MCSA exhibits the most
-scalable behavior when it is formulated as a stochastic realization of
-an additive Schwarz method.
+improved on that observed for production implementations of Krylov
+methods. In addition, the replication in the algorithm was able to
+boost parallel efficiencies by up to 20\% at large core counts in the
+strong scaling studies and enhance time to solution in the weak
+scaling stduies by using the principle of superposition. Finally, it
+was discovered that MCSA exhibits the most scalable behavior when it
+is formulated as a stochastic realization of an additive Schwarz
+method.
 
 Each of these research and development activities meet the goals of
 this work by producing methods that in many cases were demonstrated to
@@ -81,7 +81,7 @@ enable high performance simulations with FANM, we require the MCSA
 techniques developed in the research on the neutron transport problem
 and in turn, effectively leveraging MCSA on leadership-class hardware
 requires the new parallel algorithm developed by this work. With the
-further development of these methods based on this work, future
-nuclear reactor simulations may potentially be enabled that have an
-improved time to solution and more efficiently utilize the available
+further development of methods based on this work, future nuclear
+reactor simulations may potentially be enabled that have an improved
+time to solution and more efficiently utilize the available
 computational resources.

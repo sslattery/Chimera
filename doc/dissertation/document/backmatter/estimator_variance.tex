@@ -1,0 +1,193 @@
+\chapter{Monte Carlo Estimator Variance\ }
+\label{chap:estimator_variance}
+
+In this appendix we briefly discuss the variance of the three primary
+Monte Carlo estimators used with the Neumann-Ulam method in this work.
+
+\section{Forward Estimator Variance\ }
+\label{subsec:forward_variance}
+We can compute the variance of the forward estimator through traditional
+methods by defining the variance, $\sigma_i$, for each component in
+the solution:
+\begin{equation}
+  {\sigma_i}^2 = E\{X_i - (\ve{A}^{-1}\ve{b})_i\}^2 = E\{X_i^2\} - x_i^2\:,
+  \label{eq:direct_variance_1}
+\end{equation}
+where the vector exponentials are computed element-wise. Inserting
+Eq~(\ref{eq:direct_expectation_value}) gives:
+\begin{equation}
+  \sigma_i^2 = \sum_{\nu} P_{\nu} X_{i}(\nu)^2 - x_i^2\:,
+  \label{eq:direct_variance_2}
+\end{equation}
+and applying Eq~(\ref{eq:direct_permutation_contribution}) and
+expanding the square of the summation:
+\begin{equation}
+  \sigma_i^2 = \sum_{\nu} P_{\nu} \Big(\sum_{m=0}^k \Big[ W_{m}^2 b_{i_m}^2
+  + 2 \sum_{j=0}^{m-1} W_m W_j b_{i_m} b_{i_j} \Big] \Big)-
+  x_i^2\:.
+  \label{eq:direct_variance_3}
+\end{equation}
+We can distribute the random walk probability to yield an expanded
+form of the variance:
+\begin{equation}
+  \sigma_i^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 b_{i_m}^2 + 2
+  \sum_{\nu} P_{\nu} \sum_{m=0}^k \sum_{j=0}^{m-1} W_m W_j b_{i_m}
+  b_{i_j} - x_i^2\:.
+  \label{eq:direct_variance_3_2}
+\end{equation}
+In particular, we will isolate the first term of the variance by
+expanding it:
+\begin{equation}
+  \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 b_{i_m}^2 =
+  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
+  p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
+  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k} b_{i_k}^2\:.
+  \label{eq:direct_variance_4}
+\end{equation}
+Using this expansion, we can arrive at a more natural
+reason for enforcing $\rho(\ve{H}) < 1$ for our Monte Carlo method to
+converge. Per the Hadamard product, we can concatenate the summation
+in Eq~(\ref{eq:direct_variance_4}):
+\begin{equation}
+  (\ve{P} \circ \ve{W} \circ \ve{W})^k =
+  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots \sum_{i_k}^{N}
+  p_{i,i_1}p_{i_1,i_2}\ldots p_{i_{k-1},i_k}
+  w^2_{i,i_1}w^2_{i_1,i_2}\ldots w^2_{i_{k-1},i_k}\:.
+  \label{eq:double_weighted_decomposition}
+\end{equation}
+If we assign $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$ as in
+Eq~(\ref{eq:neumann_ulam_decomposition}), we then have:
+\begin{equation}
+   (\ve{P} \circ \ve{W} \circ \ve{W})^k =
+  \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}g_{i,i_1}g_{i_1,i_2}\ldots g_{i_{k-1},i_k}\:,
+  \label{eq:direct_variance_6}
+\end{equation}
+which is the general Neumann series for $\ve{G}$,
+\begin{equation}
+  \ve{T} = \sum_{k=0}^{\infty} \ve{G}^k\:,
+  \label{eq:variance_neumann_series}
+\end{equation}
+where $\ve{T} = (\ve{I}-\ve{G})^{-1}$. We can then insert $T$ back
+into the variance formulation for a more concise definition:
+\begin{equation}
+  \sigma^2_i = (\ve{T}\ve{b}^2)_i + 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k
+  \sum_{j=0}^{m-1} W_m W_j b_{i_m} b_{i_j} - x_i^2\:.
+  \label{eq:direct_variance_5}
+\end{equation}
+We can relate $\ve{G}$ to $\ve{H}$ by noting that $\ve{G}$ simply
+contains an additional Hadamard product with the weight matrix. The
+Hadamard product has the property that:
+\begin{equation}
+  ||\ve{H} \circ \ve{W}|| \geq ||\ve{H}||\ ||\ve{W}||\:.
+  \label{eq:hadamard_inequality}
+\end{equation}
+Using the norm property of the Hadamard product and
+Eq~(\ref{eq:neumann_ulam_decomposition}), we can define the norm of
+$\ve{W}$ as:
+\begin{equation}
+  \frac{||\ve{H}||}{||\ve{P}||} \geq ||\ve{W}||\:.
+  \label{eq:weight_norm}
+\end{equation}
+Choosing the 2-norm of the operators, if we assume symmetry of
+$\ve{H}$ and therefore $\ve{P}$, $\ve{W}$, and $\ve{G}$, we have
+\cite{leveque_finite_2007}:
+\begin{equation}
+  ||\ve{H}||_2 = \rho(\ve{H})\:.
+  \label{eq:matrix_2_norm}
+\end{equation}
+The row normalized probability matrix will yield a norm of 1 giving
+the following inequality for relating $\ve{G}$ and $\ve{H}$:
+\begin{equation}
+  ||\ve{G}||_2 \geq ||\ve{H}||^2_2\:,
+  \label{eq:variance_norm_inequality}
+\end{equation}
+or
+\begin{equation}
+  \rho(\ve{G}) \geq \rho(\ve{H})^2\:.
+  \label{eq:variance_norm_inequality_2}
+\end{equation}
+Using these relations to analyze Eq~(\ref{eq:direct_variance_5}), we
+see that if $\rho(\ve{G}) > 1$, then the first sum in
+Eq~(\ref{eq:variance_neumann_series}) will not converge and an
+infinite variance will arise as the elements of $\ve{T}$ become
+infinite in Eq~(\ref{eq:direct_variance_5}). We must restrict $\ve{G}$
+to alleviate this and therefore restrict $\ve{H}$ due to
+Eq~(\ref{eq:variance_norm_inequality_2}) with $\rho(\ve{H}) < 1$ so that
+our expectation values for the solution may have a finite variance.
+
+\section{Collision Estimator Variance\ }
+\label{subsec:forward_variance}
+We can compute the variance of the collision estimator in the same way
+as the direct estimator for each component in the solution where now:
+\begin{equation}
+  \sigma_j^2 = \sum_{\nu} P_{\nu} \sum_{m=0}^k W_{m}^2 \delta_{i_m,j}
+  + 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k \sum_{l=0}^{m-1} W_m W_l
+  \delta_{i_m,j} \delta_{i_l,j} - x_j^2\:.
+  \label{eq:collision_variance_1}
+\end{equation}
+In this case, in the second summation $m \neq l$ for all states due to
+the form of the summation and therefore the combination of delta
+functions, $\delta_{i_m,j}$ of $\delta_{i_l,j}$, will only be nonzero
+for random walks that are in the current solution state (when $i_m =
+i_l = j$) and other states visited do not contribute to the variance
+of the current state (when $i_m \neq i_l$). This is important as it
+shows a decoupling of the variance among the solution vector states,
+meaning that the variance in solution state $i$ does not depend on the
+variance in solution state $j$.
+
+Expanding the transition probabilities in the first sum again yields a
+Neumann series in the same form as that explored for the forward
+estimator, this time with the terms in reverse order and the
+introduction of the Kronecker delta:
+\begin{multline}
+  \sigma_j^2 = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N} p_{i_k,i_{k-1}}\ldots p_{i_2,i_1} p_{i_1,i_0}
+  w^2_{i_k,i_{k-1}}\ldots w^2_{i_2,i_1} w^2_{i_1,i_0}
+  b^2_{i_0}\delta_{i_k,j} + \\ 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k
+  \sum_{l=0}^{m-1} W_m W_l \delta_{i_m,j} \delta_{i_l,j} - x_j^2\:.
+  \label{eq:collision_variance_2}
+\end{multline}
+If we again define $\ve{G} = \ve{P} \circ \ve{W} \circ \ve{W}$, we
+then have:
+\begin{multline}
+  \sigma^2_j = \sum_{k=0}^{\infty}\sum_{i_1}^{N}\sum_{i_2}^{N}\ldots
+  \sum_{i_k}^{N}g_{i_{k},i_{k-1}} \ldots
+  g_{i_2,i_1}g_{i_1,i_0}b_{i_0}\delta_{i_k,j} + \\ 2 \sum_{\nu}
+  P_{\nu} \sum_{m=0}^k \sum_{l=0}^{m-1} W_m W_l \delta_{i_m,j}
+  \delta_{i_l,j} - x_j^2\:,
+\label{eq:collision_variance_3}
+\end{multline}
+where now $\ve{G}$ in this case is the transpose of that used in
+Eq~(\ref{eq:direct_variance_6}). The Kronecker delta again implies
+that the variance contribution from each random walk will only be in
+its current state and for many random walks, many starting weights of
+$b_{i_0}$ will contribute to the variance in the same way as they
+contribute to the solution tally. As the transpose is formed and the
+Neumann series of $\ve{G}$ is in reverse order in
+Eq~(\ref{eq:collision_variance_3}) relative to its formulation in the
+forward estimator, then Eq~(\ref{eq:collision_variance_3}) and
+Eq~(\ref{eq:direct_variance_6}) are equivalent and therefore the
+collision estimator is bound by the same restrictions on
+$\rho(\ve{G})$ and $\rho(\ve{H})$ to ensure that the variance is
+finite.
+
+\section{Expected Value Estimator Variance\ }
+\label{subsubsec:expected_value_estimator_variance}
+Following the collision estimator variance, the expected value
+estimator variance is given as:
+\begin{multline}
+  \sigma_j^2 = \sum_{\nu} P_{\nu} b_j^2 + 2 \sum_{\nu} P_{\nu} b_j
+  \sum_{m=0}^k W_{m} h_{j,i_m} +\\ \sum_{\nu} P_{\nu} \sum_{m=0}^k
+  W_{m}^2 h_{j,i_m}^2 + 2 \sum_{\nu} P_{\nu} \sum_{m=0}^k
+  \sum_{l=0}^{m-1} W_m W_l h_{j,i_m} h_{j,i_l} - x_j^2\:.
+  \label{eq:expected_value_variance_1}
+\end{multline}
+As the delta functions are no longer present, the final summation in
+Eq~(\ref{eq:expected_value_variance_1}) contains contributions for all
+valid state combinations in the same row of the iteration matrix and
+therefore the variance of each state in the solution tally is coupled
+to a group of other states as defined by the sparsity pattern of the
+iteration matrix. This coupling of variances is expected due to the
+deterministic averaging used to generate the expected value estimator.
+
