@@ -54,6 +54,15 @@
 \maketitle
 
 %%---------------------------------------------------------------------------%%
+\begin{frame}{Acknowledgments}
+
+  This work was performed under appointment to the Nuclear Regulatory
+  Commission Fellowship program at the University of Wisconsin - Madison
+  Engineering Physics Department
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
 \begin{frame}{Outline}
 
   \begin{itemize}
@@ -67,15 +76,6 @@
     \bigskip
   \item Summary
   \end{itemize}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Acknowledgments}
-
-  This work was performed under appointment to the Nuclear Regulatory
-  Commission Fellowship program at the University of Wisconsin - Madison
-  Engineering Physics Department
 
 \end{frame}
 
@@ -100,7 +100,7 @@
   \item Potential resolution from Monte Carlo:
     \begin{itemize}
     \item Soft failures buried within the tally variance
-    \item Hard failures are high variance events
+    \item Hard failures mitigated by replication
     \item Memory savings over conventional methods
     \end{itemize}
   \end{itemize}
@@ -111,12 +111,26 @@
 \begin{frame}{Physics-Based Motivation}
 
   \begin{itemize}
+  \item New algorithms required to leverage new computational
+    resources
+    \begin{itemize}
+    \item Tremendous computational resources are required with
+      $O(\sn{1}{9})$ element meshes and $O(100,000)+$ cores used today
+      for neutronics and fluid problems (Evans,2010)(Pawlowski,2012)
+    \end{itemize}
+    \bigskip
+  \item Necessary to determine applicability to reactor physics and
+    potential performance improvements before moving forward with
+    other work
+    \bigskip
   \item Physics-driven development
     \begin{itemize}
-    \item Identify the physics of interest and research MCSA
-      applicability
-    \item Offer solutions or a potential path forward to the observed
+    \item Research applicability and potential improvements to
+      neutronics and fluid flow
+    \item Offer solutions or a potential path forward for the observed
       issues
+    \item Work to improve iterative and parallel performance where
+      possible
     \end{itemize}
   \end{itemize}
 
@@ -146,6 +160,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \bigskip
   \item Development of a nonlinear scheme for discrete systems
     leveraging Monte Carlo Synthetic Acceleration
+    \medskip
     \begin{itemize}
     \item Monte Carlo is a more natural fit
     \item Application to fluid flow
@@ -602,7 +617,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Jacobi Preconditioned Calculations}
+\begin{frame}{Block Jacobi Preconditioned Calculations}
 
 {\tiny  \begin{table}[h!]
     \begin{center}
@@ -873,7 +888,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \begin{frame}{Navier-Stokes Benchmark Problems}
 
   \begin{itemize}
-  \item Sequence of Navier-Stokes benchmarks for the nonlinear methods
+  \item Sequence of Navier-Stokes benchmarks
     \begin{itemize}
     \item Thermal convection cavity problem (De Vahl Davis, 1983)
     \item Lid driven cavity problem (Ghia et al., 1982)
@@ -885,9 +900,9 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \medskip
   \end{itemize}
 
-  \medskip  \medskip
   \begin{columns}
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.4\textwidth}
+      {\small
       \[
       \rho \ve{u} \cdot \nabla \ve{u} - \nabla \cdot \ve{T} - \rho
       \ve{g} = \ve{0}
@@ -898,27 +913,35 @@ decomposed Monte Carlo Synthetic Acceleration methods.
       \[
       \rho C_p \ve{u} \cdot \nabla T + \nabla \cdot \ve{q} = 0
       \]
-    \end{column}
-
-    \begin{column}{0.5\textwidth}
       \[
       \ve{T} = -P \ve{I} + \mu[\nabla \ve{u} + \nabla \ve{u}^T]
       \]
       \[
       \ve{q} = - k \nabla T
       \]
+      }
+    \end{column}
+
+    \begin{column}{0.6\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.9in]{benchmark_solutions.png}
+        \end{center}
+      \end{figure}
+
     \end{column}
   \end{columns}
 
 \end{frame}
 
 %%----------s-----------------------------------------------------------------%%
-\begin{frame}{MCSA for Nonlinear Problems}
+\begin{frame}{MCSA for the Navier-Stokes Equations}
 
   \begin{itemize}
   \item Need a nonlinear solution scheme for the Navier-Stokes equations
     \bigskip
-  \item Signficant research on Newton methods since the 1980's
+  \item Significant research on Newton methods since the 1980's
     \bigskip
   \item Newton methods often leverage Krylov solvers
     \begin{itemize}
@@ -932,9 +955,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \begin{itemize}
     \item Operator overloading for nonlinear residual differentiation
     \item Ideal for Monte Carlo
-    \item Potential parallel scaling and iterative performance
-      improvements
-    \item Potential resiliency benefits
+    \item Similar framework properties to matrix-free methods
     \end{itemize}
   \end{itemize}
 
@@ -1035,7 +1056,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 
   \begin{itemize}
     {\small
-    \item Drekar is a production fluid code base using Newton methods
+    \item Drekar is a production fluid base using Newton methods
       with FAD
       \medskip
     \item MCLS incorporated into Drekar nonlinear scheme to implement
@@ -1380,7 +1401,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
         \begin{center}
           \includegraphics[width=2.4in]{titan_pure_strong_time.pdf}
         \end{center}
-        \caption{CPU Time.}
+        \caption{Wall time.}
       \end{figure}
 
     \end{column}
@@ -1391,7 +1412,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
         \begin{center}
           \includegraphics[width=2.4in]{titan_pure_strong.pdf}
         \end{center}
-        \caption{Absolute Efficiency.}
+        \caption{Absolute efficiency.}
       \end{figure}
 
     \end{column}
@@ -1415,34 +1436,39 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 
       \begin{figure}[htpb!]
         \begin{center}
-          \includegraphics[width=2.4in]{titan_pure_weak_time.pdf}
+          \includegraphics[width=2.3in]{titan_pure_weak_time.pdf}
         \end{center}
-        \caption{CPU Time.}
+%        \caption{Wall Time.}
       \end{figure}
 
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.3in]{titan_weak_implementation.pdf}
+        \end{center}
+%        \caption{Implementation Efficiency.}
+      \end{figure}
 
     \end{column}
 
     \begin{column}{0.5\textwidth}
 
-    \begin{figure}[htpb!]
-      \begin{center}
-        \includegraphics[width=2.4in]{titan_weak_absolute.pdf}
-      \end{center}
-      \caption{Absolute Efficiency.}
-    \end{figure}
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.3in]{titan_weak_absolute.pdf}
+        \end{center}
+%        \caption{Absolute Efficiency.}
+      \end{figure}
+
+      {\small
+        \begin{itemize}
+        \item Krylov implementation efficiencies drop with
+          reduced iteration count
+        \item MCSA maintained constant number of iterations
+        \end{itemize}
+      }
 
     \end{column}
   \end{columns}
-
-  \begin{itemize}
-  \item Improved implementation efficiency means improved
-    iterative performance will potentially give a better time to
-    solution
-    \bigskip
-  \item Implementation efficiency is effectively the parallel
-    efficiency of a single iteration
-  \end{itemize}
 
 
 \end{frame}
@@ -1465,8 +1491,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
         \begin{center}
           \includegraphics[width=2.35in]{titan_strong_ms_eff.pdf}
         \end{center}
-        \caption{\small{Absolute parallel efficiency relative to
-            16-core 1-set base case.}}
+        \caption{\small{Absolute efficiency relative to 16-core 1-set
+            base case.}}
       \end{figure}
 
     \end{column}
@@ -1477,8 +1503,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
         \begin{center}
           \includegraphics[width=2.35in]{titan_strong_ms_time.pdf}
         \end{center}
-        \caption{\small{Wall time in seconds to solution for each
-            case.}}
+        \caption{\small{Wall time}}
       \end{figure}
 
     \end{column}
@@ -1503,8 +1528,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
         \begin{center}
           \includegraphics[width=2.4in]{titan_weak_ms_eff.pdf}
         \end{center}
-        \caption{Absolute parallel efficiency relative to 16-core
-          1-set base case.}
+        \caption{Absolute efficiency relative to 16-core 1-set base
+          case.}
       \end{figure}
 
     \end{column}
@@ -1515,7 +1540,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
         \begin{center}
           \includegraphics[width=2.4in]{titan_weak_ms_time.pdf}
         \end{center}
-        \caption{Wall time in seconds to solution for each case.}
+        \caption{Wall time.}
       \end{figure}
 
     \end{column}
@@ -1583,8 +1608,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
         \begin{center}
           \includegraphics[width=2.35in]{titan_strong_subdomain.pdf}
         \end{center}
-        \caption{Strong scaling absolute efficiency for pure domain
-          decomposition.}
+        \caption{Strong scaling absolute efficiency relative to full
+          transport base case.}
         \label{fig:titan_strong_subdomain}
       \end{figure}
 
@@ -1596,8 +1621,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
         \begin{center}
           \includegraphics[width=2.35in]{titan_weak_subdomain.pdf}
         \end{center}
-        \caption{Weak scaling absolute efficiency for pure domain
-          decomposition.}
+        \caption{Weak scaling absolute efficiency relative to full
+          transport base case.}
         \label{fig:titan_weak_subdomain}
       \end{figure}
 
