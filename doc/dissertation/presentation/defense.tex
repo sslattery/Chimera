@@ -80,16 +80,6 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Statement of Work}
-
-The goal of this work is to improve the iterative performance and
-parallel scalability of solutions to discrete linear and nonlinear
-transport problems by researching and developing a new set of domain
-decomposed Monte Carlo Synthetic Acceleration methods.
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
 \begin{frame}{Hardware-Based Motivation}
 
   \begin{itemize}
@@ -118,6 +108,31 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
+\begin{frame}{Physics-Based Motivation}
+
+  \begin{itemize}
+  \item Physics-driven development
+    \begin{itemize}
+    \item Identify the physics of interest and research MCSA
+      applicability
+    \item Offer solutions or a potential path forward to the observed
+      issues
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Statement of Work}
+
+The goal of this work is to improve the iterative performance and
+parallel scalability of solutions to discrete linear and nonlinear
+transport problems by researching and developing a new set of domain
+decomposed Monte Carlo Synthetic Acceleration methods.
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
 \begin{frame}{Research Outline}
   \begin{itemize}
   \item Development of a linear scheme for discrete systems leveraging
@@ -125,8 +140,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \medskip
     \begin{itemize}
     \item Application to neutron transport
-    \item Research is required to explore general MCSA development
-    \item Performance is of concern
+    \item Research is required to study MCSA preconditioning
+    \item Iterative performance is of concern
     \end{itemize}
     \bigskip
   \item Development of a nonlinear scheme for discrete systems
@@ -143,7 +158,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \item Parallel strategies taken from modern reactor physics
       methods
     \item Research is required to explore varying parallel strategies
-    \item Scalability is of concern
+    \item Parallel scalability is of concern
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -455,6 +470,73 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
+\begin{frame}{Fuel Assembly Criticality Calculations}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=1.5in]{problem3_radial_mat.png}
+        \end{center}
+      \end{figure}
+
+      \begin{figure}[htbp!]
+        \begin{center}
+          \includegraphics[width=2in]{problem3_axial_mat.png}
+        \end{center}
+      \end{figure}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2in]{problem3_end.png}
+        \end{center}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      {\small
+        \begin{itemize}
+        \item CASL Problem 3: $17 \times 17$ quarter symmetry HZP LWR
+          fuel assembly
+        \item Multigroup $SP_N$ discretization
+        \item MCLS leveraged by the Exnihilo code base (ORNL)
+        \item Emphasize algorithm development for iterative
+          performance
+        \end{itemize}
+      }
+      {\tiny
+        \begin{table}[htpb!]
+          \begin{center}
+            \begin{tabular}{ll}\hline\hline
+              \multicolumn{1}{l}{\textbf{Parameter}} & 
+              \multicolumn{1}{l}{\textbf{Value}} \\
+              Power Level & 0 MW \\
+              Inlet Temperature & 326.85C \\
+              Fuel Temperature & 600C \\
+              Boron Concentration & 1300 ppm \\
+              Moderator Density & 0.743 g/cc \\
+              Helium Density & \sn{1.79}{-4} g/cc \\
+              Zirconium Density & 6.56 g/cc \\
+              Stainless Steel Density & 8.0 g/cc \\
+              Inconel Density & 8.19 g/cc \\
+              UO2 Density & 10.257 g/cc \\
+              Fuel Pin Radius (w/o clad) & 0.4096 cm \\
+              %%
+              \hline\hline
+            \end{tabular}
+          \end{center}
+        \end{table}
+      }
+    \end{column}
+
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
 \begin{frame}{$SP_N$ Equations}
 
   \begin{multline}
@@ -510,78 +592,12 @@ decomposed Monte Carlo Synthetic Acceleration methods.
   \end{algorithm}
 
   \begin{itemize}
-  \item Swap in MCSA as the solver at each eigenvalue operation
+  \item Inject MCSA as the solver at each eigenvalue operation
     \medskip
-  \item Use Thyra/Stratimikos interfaces for plug and play with $SP_N$
+  \item Transport operator is static - one time cost for MCSA setup
     \medskip
   \item Current Exnihilo implementation gives the full operator
   \end{itemize}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Fuel Assembly Criticality Calculations}
-
-  \begin{columns}
-
-    \begin{column}{0.5\textwidth}
-
-      \begin{figure}[htpb!]
-        \begin{center}
-          \includegraphics[width=1.5in]{problem3_radial_mat.png}
-        \end{center}
-      \end{figure}
-
-      \begin{figure}[htbp!]
-        \begin{center}
-          \includegraphics[width=2in]{problem3_axial_mat.png}
-        \end{center}
-      \end{figure}
-
-      \begin{figure}[htpb!]
-        \begin{center}
-          \includegraphics[width=2in]{problem3_end.png}
-        \end{center}
-      \end{figure}
-
-    \end{column}
-
-    \begin{column}{0.5\textwidth}
-      {\small
-        \begin{itemize}
-        \item CASL Problem 3: $17 \times 17$ quarter symmetry HZP LWR
-          fuel assembly
-        \item $SP_N$ criticality calculation
-        \item MCLS leveraged by the Exnihilo code base (ORNL)
-        \item Comparison to Trilinos Aztec Krylov solvers with ILUT
-        \end{itemize}
-      }
-      {\tiny
-        \begin{table}[htpb!]
-          \begin{center}
-            \begin{tabular}{ll}\hline\hline
-              \multicolumn{1}{l}{\textbf{Parameter}} & 
-              \multicolumn{1}{l}{\textbf{Value}} \\
-              Power Level & 0 MW \\
-              Inlet Temperature & 326.85C \\
-              Fuel Temperature & 600C \\
-              Boron Concentration & 1300 ppm \\
-              Moderator Density & 0.743 g/cc \\
-              Helium Density & \sn{1.79}{-4} g/cc \\
-              Zirconium Density & 6.56 g/cc \\
-              Stainless Steel Density & 8.0 g/cc \\
-              Inconel Density & 8.19 g/cc \\
-              UO2 Density & 10.257 g/cc \\
-              Fuel Pin Radius (w/o clad) & 0.4096 cm \\
-              %%
-              \hline\hline
-            \end{tabular}
-          \end{center}
-        \end{table}
-      }
-    \end{column}
-
-  \end{columns}
 
 \end{frame}
 
@@ -628,11 +644,13 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 
     \begin{column}{0.5\textwidth}
       \begin{itemize}
+      \item Rapidly divergent results
+        \medskip
       \item Light water moderator creates a lot of scattering and
         $\mathbf{\rho}(\mathbf{H}) \approx 1$
         \medskip
-      \item Intractable number of histories required for MCSA
-        convergence 
+      \item Convergence not achieved with 50 histories per DOF and 90
+        minutes compute time
       \end{itemize}
     \end{column}
 
@@ -720,6 +738,55 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
+\begin{frame}{ILUT Preconditioning}
+
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[t!]
+        \begin{center}
+          \includegraphics[width=2.0in]{ilut_iterations.pdf}
+        \end{center}
+      \end{figure}
+
+      \begin{figure}[t!]
+        \begin{center}
+          \includegraphics[width=2.0in]{ilut_size.pdf}
+        \end{center}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{itemize}
+      \item {\small Factor transport operator into upper and lower
+        triangular parts}
+        \begin{itemize}
+        \item {\small $\mathbf{R} = \mathbf{L} \mathbf{U} -
+          \mathbf{M}$}
+        \end{itemize}
+      \item {\small Control factorization content with level-of-fill
+        and drop tolerance}
+      \item {\small Use the reduced domain approximation to recover
+        sparsity}
+      \end{itemize}
+
+      \begin{figure}[t!]
+        \begin{center}
+          \includegraphics[width=2.0in]{rda_ilut_iterations.pdf}
+        \end{center}
+      \end{figure}
+
+    \end{column}
+
+
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
 \begin{frame}{Fuel Assembly Results}
 
   \begin{columns}
@@ -762,17 +829,21 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \begin{column}{0.5\textwidth}
       
       \begin{itemize}
+        {\small
+        \item Comparison to Trilinos Aztec Krylov solvers with ILUT
+          \medskip
         \item MCLS generates the same k-eigenvalue and neutron flux in
           all groups and spatial locations
-          \bigskip
+          \medskip
         \item MCSA converged in fewer iterations than GMRES, more
           iterations than BiCGStab
-          \bigskip
+          \medskip
         \item Explicit preconditioning strategy destroys sparsity and
           elevates CPU times (Ifpack ILUT)
-          \bigskip
+          \medskip
         \item Spectral radius and memory limitations combine to
           prevent solutions at finer discretizations
+        }
       \end{itemize}
 
     \end{column}
@@ -799,10 +870,53 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Monte Carlo Synthetic Acceleration for Nonlinear Problems}
+\begin{frame}{Navier-Stokes Benchmark Problems}
 
   \begin{itemize}
-  \item Many physics problems of interest are nonlinear
+  \item Sequence of Navier-Stokes benchmarks for the nonlinear methods
+    \begin{itemize}
+    \item Thermal convection cavity problem (De Vahl Davis, 1983)
+    \item Lid driven cavity problem (Ghia et al., 1982)
+    \item Backward-Facing step problem (Gartling, 1990)
+    \end{itemize}
+    \medskip
+  \item Tuning benchmark parameters varies the strength of
+    nonlinearities
+    \medskip
+  \end{itemize}
+
+  \medskip  \medskip
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \[
+      \rho \ve{u} \cdot \nabla \ve{u} - \nabla \cdot \ve{T} - \rho
+      \ve{g} = \ve{0}
+      \]
+      \[
+      \nabla \cdot \ve{u} = 0
+      \]
+      \[
+      \rho C_p \ve{u} \cdot \nabla T + \nabla \cdot \ve{q} = 0
+      \]
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \[
+      \ve{T} = -P \ve{I} + \mu[\nabla \ve{u} + \nabla \ve{u}^T]
+      \]
+      \[
+      \ve{q} = - k \nabla T
+      \]
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%----------s-----------------------------------------------------------------%%
+\begin{frame}{MCSA for Nonlinear Problems}
+
+  \begin{itemize}
+  \item Need a nonlinear solution scheme for the Navier-Stokes equations
     \bigskip
   \item Signficant research on Newton methods since the 1980's
     \bigskip
@@ -818,7 +932,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \begin{itemize}
     \item Operator overloading for nonlinear residual differentiation
     \item Ideal for Monte Carlo
-    \item Potential scaling improvements
+    \item Potential parallel scaling and iterative performance
+      improvements
     \item Potential resiliency benefits
     \end{itemize}
   \end{itemize}
@@ -898,59 +1013,11 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 %%---------------------------------------------------------------------------%%
 \begin{frame}{FANM Numerical Experiments}
 
-  \begin{itemize}
-  \item Sequence of Navier-Stokes benchmarks for the nonlinear methods
-    \begin{itemize}
-    \item Thermal convection cavity problem (De Vahl Davis, 1983)
-    \item Lid driven cavity problem (Ghia et al., 1982)
-    \item Backward-Facing step problem (Gartling, 1990)
-    \end{itemize}
-    \medskip
-  \item Tuning benchmark parameters varies the strength of
-    nonlinearities
-    \medskip
-  \item Newton-Krylov method leveraging Aztec GMRES used for
-    comparisons
-    \medskip
-  \item All problems preconditioned with algebraic multigrid (ML) and
-    leveraged some kind of globalization (e.g. backtracking)
-  \end{itemize}
-
-  \medskip  \medskip
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \[
-      \rho \ve{u} \cdot \nabla \ve{u} - \nabla \cdot \ve{T} - \rho
-      \ve{g} = \ve{0}
-      \]
-      \[
-      \nabla \cdot \ve{u} = 0
-      \]
-      \[
-      \rho C_p \ve{u} \cdot \nabla T + \nabla \cdot \ve{q} = 0
-      \]
-    \end{column}
-
-    \begin{column}{0.5\textwidth}
-      \[
-      \ve{T} = -P \ve{I} + \mu[\nabla \ve{u} + \nabla \ve{u}^T]
-      \]
-      \[
-      \ve{q} = - k \nabla T
-      \]
-    \end{column}
-  \end{columns}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{FANM Numerical Experiments}
-
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{figure}[htpb!]
         \begin{center}
-          \includegraphics[width=2.5in]{drekar1.png}
+          \includegraphics[width=2.0in]{drekar1.png}
         \end{center}
       \end{figure}
     \end{column}
@@ -958,20 +1025,28 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \begin{column}{0.5\textwidth}
       \begin{figure}[htpb!]
         \begin{center}
-          \includegraphics[width=2.5in]{drekar2.png}
+          \includegraphics[width=2.0in]{drekar2.png}
         \end{center}
       \end{figure}
     \end{column}
   \end{columns}
 
-  \bigskip
+  \medskip
 
   \begin{itemize}
-  \item Drekar is a production physics suite that leverages Newton
-    methods with FAD
-  \bigskip
-  \item MCLS incorporated into the Drekar nonlinear solver scheme
-    using Thyra/Stratimikos to implement FANM
+    {\small
+    \item Drekar is a production fluid code base using Newton methods
+      with FAD
+      \medskip
+    \item MCLS incorporated into Drekar nonlinear scheme to implement
+      FANM
+      \medskip
+    \item Newton-Krylov method with Aztec GMRES used for benchmark
+      comparisons
+    \item All problems preconditioned with explicit scheme using
+      algebraic multigrid (ML) and leveraged some kind of
+      globalization (e.g. backtracking) 
+    }
   \end{itemize}
 
   {\small \sl Images source: www.casl.gov}
@@ -1297,14 +1372,38 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Strong Scaling Results}
 
-  \begin{figure}[htpb!]
-    \begin{center}
-      \includegraphics[width=4in]{titan_pure_strong.pdf}
-    \end{center}
-    \caption{\textbf{Pure domain decomposition.} \textit{Super-linear
-        speed-up from memory thrashing in base case. MCLS is an order
-        of magnitude slower arithmetically.}}
-  \end{figure}
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.4in]{titan_pure_strong_time.pdf}
+        \end{center}
+        \caption{CPU Time.}
+      \end{figure}
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+
+      \begin{figure}[htpb!]
+        \begin{center}
+          \includegraphics[width=2.4in]{titan_pure_strong.pdf}
+        \end{center}
+        \caption{Absolute Efficiency.}
+      \end{figure}
+
+    \end{column}
+
+  \end{columns}
+
+  \begin{itemize}
+  \item MCLS is an order of magnitude slower arithmetically.
+  \item Super-linear speed-up from memory thrashing in base case.
+  \item CG demonstrates poor scaling due to the cheaper iteration
+    sequence
+  \end{itemize}
 
 \end{frame}
 
@@ -1312,38 +1411,39 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \begin{frame}{Weak Scaling Results}
 
   \begin{columns}
-    \begin{column}{0.55\textwidth}
+    \begin{column}{0.5\textwidth}
 
       \begin{figure}[htpb!]
         \begin{center}
-          \includegraphics[width=2.5in]{titan_weak_absolute.pdf}
+          \includegraphics[width=2.4in]{titan_pure_weak_time.pdf}
         \end{center}
+        \caption{CPU Time.}
       \end{figure}
 
-      \begin{figure}[htpb!]
-        \begin{center}
-          \includegraphics[width=2.5in]{titan_weak_implementation.pdf}
-        \end{center}
-      \end{figure}
 
     \end{column}
 
-    \begin{column}{0.45\textwidth}
+    \begin{column}{0.5\textwidth}
 
-      \begin{itemize}
-      \item CG demonstrates poor scaling due to the cheaper iteration
-        sequence
-        \bigskip
-      \item Implementation efficiency is effectively the parallel
-        efficiency of a single iteration
-        \bigskip
-      \item Improved implementation efficiency means improved
-        iterative performance will potentially give a better time to
-        solution
-      \end{itemize}
+    \begin{figure}[htpb!]
+      \begin{center}
+        \includegraphics[width=2.4in]{titan_weak_absolute.pdf}
+      \end{center}
+      \caption{Absolute Efficiency.}
+    \end{figure}
 
     \end{column}
   \end{columns}
+
+  \begin{itemize}
+  \item Improved implementation efficiency means improved
+    iterative performance will potentially give a better time to
+    solution
+    \bigskip
+  \item Implementation efficiency is effectively the parallel
+    efficiency of a single iteration
+  \end{itemize}
+
 
 \end{frame}
 
@@ -1424,11 +1524,11 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Strong Scaling Results with Overlap}
+\begin{frame}{Scaling Results with Overlap}
 
   \begin{itemize}
-  \item Overlap values selected based on average 'diffusion length'
-    of a history in the system of 2.6 discrete states
+  \item Overlap values selected based on average 'diffusion length' of
+    a history in the system of 2.6 discrete states
     \bigskip
   \item Overlap eliminates communication in the Monte Carlo sequence
     but simply differs it to an overlapping tally vector reduction
@@ -1542,9 +1642,10 @@ decomposed Monte Carlo Synthetic Acceleration methods.
       the $SP_N$ equations to obtain convergence with ILUT chosen for
       subsequent investigations
       \medskip
-    \item MCSA was observed to converge in fewer iterations per eigenvalue
-      iteration than GMRES for the fuel assembly criticality problem and
-      more than Bi-CGStab using the same preconditioning
+    \item MCSA with the reduced domain approximation was observed to
+      converge in fewer iterations per eigenvalue iteration than GMRES
+      for the fuel assembly criticality problem and more than
+      Bi-CGStab using the same preconditioning
     \end{itemize}
   }
 
@@ -1561,6 +1662,11 @@ decomposed Monte Carlo Synthetic Acceleration methods.
       multiphysics production code base developed at Sandia National
       Laboratories
       \medskip
+    \item The FANM method has been verified to produce the same solutions
+      as a production Newton-Krylov method for three difficult benchmark
+      problems for the Navier-Stokes equations in different flow regimes
+      and geometries
+      \medskip
     \item The FANM method has better iterative performance than the
       Newton-Krylov method for convection dominated problems, converging
       in fewer linear solver iterations with the same preconditioning for
@@ -1569,10 +1675,6 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \item The spectral radius convergence restriction on MCSA was observed
       to be a significant hindrance by preventing solutions to forced flow
       problems at high Reynolds numbers
-      \medskip
-    \item More Monte Carlo histories at every FANM iteration can reduce
-      the number of linear and nonlinear iterations required to converge
-      the problem
     \end{itemize}
   }
 
@@ -1620,14 +1722,12 @@ decomposed Monte Carlo Synthetic Acceleration methods.
   \item Performance improvements
     \begin{itemize}
     \item Random walk optimizations
-    \item Alias sampling implementations
     \item Multiple set reduction analysis
     \item FANM forcing term and MCSA history relationships
     \end{itemize}
     \medskip
   \item Preconditioning improvements
     \begin{itemize}
-    \item Alternative left/right sampling schemes
     \item Variance reduction based strategy
     \item Reduced order physics/PDE models for acceleration
     \end{itemize}
@@ -1635,7 +1735,6 @@ decomposed Monte Carlo Synthetic Acceleration methods.
   \item Breaking away from $\rho(\mathbf{H}) < 1$
     \begin{itemize}
     \item Monte Carlo methods of the second degree
-    \item Stochastic projection methods
     \end{itemize}
   \end{itemize}
 
@@ -1653,17 +1752,17 @@ decomposed Monte Carlo Synthetic Acceleration methods.
       Applications and Monte Carlo 2013 (SNA+MC 2013), Paris, France,
       October 27-31, 2013. Accepted for oral presentation.}
       \medskip
-    \item T.M. Evans, S.W. Mosher, S.R. Slattery, S.P. Hamilton,
-      \textbf{A Monte Carlo Synthetic-Acceleration Method for Solving
-        the Thermal Radiation Diffusion Equation}, \textit{Journal of
-        Computational Physics, Submitted.}
-      \medskip
     \item S.R. Slattery, T.M. Evans, P.P.H. Wilson, \textbf{A Spectral
       Analysis of the Domain Decomposed Monte Carlo Method for Linear
       Systems}, \textit{International Conference on Mathematics and
       Computational Methods Applied to Nuclear Science \& Engineering
       (M\&C 2013), American Nuclear Society, Sun Valley, ID, May 5-9,
       2013.}
+      \medskip
+    \item T.M. Evans, S.W. Mosher, S.R. Slattery, S.P. Hamilton,
+      \textbf{A Monte Carlo Synthetic-Acceleration Method for Solving
+        the Thermal Radiation Diffusion Equation}, \textit{Journal of
+        Computational Physics, Submitted.}
     \end{enumerate}
   }
 \end{frame}
@@ -1672,11 +1771,11 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \begin{frame}{Thank You}
 
   \begin{itemize}
-  \item Paul
-  \item Tom
-  \item Roger
+  \item Paul Wilson
+  \item Tom Evans
+  \item Roger Pawlowski
   \item CASL, ORNL, Sandia, OLCF
-\end{itemize}
+  \end{itemize}
 
 \end{frame}
 
