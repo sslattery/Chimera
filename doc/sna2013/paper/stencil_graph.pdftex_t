@@ -1,0 +1,31 @@
+\begin{picture}(0,0)%
+\includegraphics{chapters/parallel_mc/stencil_graph.pdf}%
+\end{picture}%
+\setlength{\unitlength}{1657sp}%
+%
+\begingroup\makeatletter\ifx\SetFigFont\undefined%
+\gdef\SetFigFont#1#2#3#4#5{%
+  \reset@font\fontsize{#1}{#2pt}%
+  \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
+  \selectfont}%
+\fi\endgroup%
+\begin{picture}(6907,6278)(2838,-6509)
+\put(2926,-1051){\makebox(0,0)[lb]{\smash{{\SetFigFont{7}{8.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\phi_{i-1,j+1}$}%
+}}}}
+\put(8371,-1051){\makebox(0,0)[lb]{\smash{{\SetFigFont{7}{8.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\phi_{i+1,j+1}$}%
+}}}}
+\put(5986,-3391){\makebox(0,0)[lb]{\smash{{\SetFigFont{7}{8.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\phi_{i,j}$}%
+}}}}
+\put(2926,-5866){\makebox(0,0)[lb]{\smash{{\SetFigFont{7}{8.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\phi_{i-1,j-1}$}%
+}}}}
+\put(8416,-5911){\makebox(0,0)[lb]{\smash{{\SetFigFont{7}{8.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\phi_{i+1,j-1}$}%
+}}}}
+\put(5851,-1051){\makebox(0,0)[lb]{\smash{{\SetFigFont{7}{8.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\phi_{i,j+1}$}%
+}}}}
+\put(5851,-5911){\makebox(0,0)[lb]{\smash{{\SetFigFont{7}{8.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\phi_{i,j-1}$}%
+}}}}
+\put(8551,-3436){\makebox(0,0)[lb]{\smash{{\SetFigFont{7}{8.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\phi_{i+1,j}$}%
+}}}}
+\put(3061,-3391){\makebox(0,0)[lb]{\smash{{\SetFigFont{7}{8.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\phi_{i-1,j}$}%
+}}}}
+\end{picture}%
