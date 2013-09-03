@@ -545,7 +545,7 @@
   \end{algorithm}
 
   \begin{itemize}
-  \item Inject MCSA as the solver at each eigenvalue operation
+  \item Inject MCSA as the solver at each eigenvalue iteration
     \medskip
   \item Transport operator is static - one time cost for MCSA setup
     \medskip
@@ -773,7 +773,7 @@
 
       \begin{figure}[htpb!]
         \begin{center}
-          \includegraphics[width=1.9in]{solver_time.pdf}
+          \includegraphics[width=2.25in]{solver_time.pdf}
         \end{center}
       \end{figure}
 
@@ -785,8 +785,8 @@
         {\small
         \item Comparison to Trilinos Aztec Krylov solvers with ILUT
           \medskip
-        \item MCLS generates the same k-eigenvalue and neutron flux in
-          all groups and spatial locations
+        \item MCLS verified for the k-eigenvalue and neutron flux in
+          all groups
           \medskip
         \item MCSA converged in fewer iterations than GMRES, more
           iterations than BiCGStab
@@ -837,7 +837,6 @@
     \medskip
   \item Tuning benchmark parameters varies the strength of
     nonlinearities
-    \medskip
   \end{itemize}
 
   \begin{columns}
@@ -885,7 +884,7 @@
     \bigskip
   \item Newton methods often leverage Krylov solvers
     \begin{itemize}
-    \item Robust implementations
+    \item Simple implementation
     \item No operator required
     \end{itemize}
     \bigskip
@@ -1015,115 +1014,333 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{FANM Nonlinear Iteration Results}
+\begin{frame}{Thermal Convection Cavity Results}
 
-  \begin{table}[h!]
-    \begin{center}
-      \begin{tabular}{lccc}\hline\hline
-        \multicolumn{1}{l}{Benchmark}& 
-        \multicolumn{1}{c}{NK}&
-        \multicolumn{1}{c}{FANM}&
-        \multicolumn{1}{c}{NR}\\
-        \hline
-        Convection, Ra=\sn{1}{3} & 5 & 5 & 5\\
-        Convection, Ra=\sn{1}{4} & 7 & 7 & 7\\
-        Convection, Ra=\sn{1}{5} & 9 & 10 & 9\\
-        Convection, Ra=\sn{1}{6} & 11 & 11 & 11\\
-        \hline
-        Lid Driven, Re=100 & 6 & 6 & 7\\
-        Lid Driven, Re=300 & 9 & 9 & 9\\
-        Lid Driven, Re=500 & 11 & 11 & 11\\
-        Lid Driven, Re=700 & 14 & 10 & 12\\
-        \hline
-        Backward Step, Re=200 & 10 & 9 & 10\\
-        Backward Step, Re=300 & 15 & 14 & 15\\
-        Backward Step, Re=400 & 10 & 10 & 10\\
-        Backward Step, Re=500 & 19 & 20 & 21\\
-        %%
-        \hline\hline
-      \end{tabular}`
-    \end{center}
-    \caption{\textbf{Navier-Stokes benchmark comparison for nonlinear
-        iterations.} \textit{Over all benchmarks, FANM performed better
-        in terms of nonlinear iterations for 1 more case than the
-        Newton-Krylov method.}}
-    \label{tab:benchmark_nonlinear_comparison}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
 
-  \end{table}
+      \small{
+        \begin{table}[h!]
+          \begin{center}
+            \begin{tabular}{lccc}\hline\hline
+              \multicolumn{1}{l}{Benchmark}& 
+              \multicolumn{1}{c}{NK}&
+              \multicolumn{1}{c}{FANM}&
+              \multicolumn{1}{c}{NR}\\
+              \hline
+              Ra=\sn{1}{3} & 5 & 5 & 5\\
+              Ra=\sn{1}{4} & 7 & 7 & 7\\
+              Ra=\sn{1}{5} & 9 & 10 & 9\\
+              Ra=\sn{1}{6} & 11 & 11 & 11\\
+              %%
+              \hline\hline
+            \end{tabular}`
+          \end{center}
+          \caption{Nonlinear iterations.}
+        \end{table}
+
+        \begin{table}[h!]
+          \begin{center}
+            \begin{tabular}{lccc}\hline\hline
+              \multicolumn{1}{l}{Benchmark}& 
+              \multicolumn{1}{c}{GMRES}&
+              \multicolumn{1}{c}{MCSA}&
+              \multicolumn{1}{c}{Richardson}\\
+              \hline
+              Ra=\sn{1}{3} & 32 & 18 & 38\\
+              Ra=\sn{1}{4} & 23 & 17 & 34\\
+              Ra=\sn{1}{5} & 25 & 20 & 34\\
+              Ra=\sn{1}{6} & 39 & 25 & 48\\
+              %%
+              \hline\hline
+            \end{tabular}
+          \end{center}
+          \caption{Total linear solver iterations.}
+        \end{table}
+      }
+
+    \end{column}
+
+    \begin{column}{0.4\textwidth}
+
+      \begin{itemize}
+      \item Weaker preconditioning at \sn{1}{-5} case
+      \item Forcing term method adapts to nonlinear convergence
+      \item Constant forcing term for \sn{1}{-6} case
+      \end{itemize}
+
+      \bigskip
+
+      \tiny{
+        \begin{table}[h!]
+          \begin{center}
+            \begin{tabular}{lc}\hline\hline
+              \multicolumn{1}{l}{Benchmark}& 
+              \multicolumn{1}{c}{NK Speedup}\\
+              \hline
+              Ra=\sn{1}{3} & 338 \\
+              Ra=\sn{1}{4} & 336 \\
+              Ra=\sn{1}{5} & 346 \\
+              Ra=\sn{1}{6} & 465 \\
+              \hline\hline
+            \end{tabular}
+          \end{center}
+          \caption{Newton-Krylov speedup over FANM.}
+        \end{table}
+      }
+
+    \end{column}
+  \end{columns}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{FANM Linear Solver Iteration Results}
+\begin{frame}{Lid Driven Cavity Results}
 
-  \begin{table}[h!]
-    \begin{center}
-      \begin{tabular}{lccc}\hline\hline
-        \multicolumn{1}{l}{Benchmark}& 
-        \multicolumn{1}{c}{GMRES}&
-        \multicolumn{1}{c}{MCSA}&
-        \multicolumn{1}{c}{Richardson}\\
-        \hline
-        Convection, Ra=\sn{1}{3} & 32 & 18 & 38\\
-        Convection, Ra=\sn{1}{4} & 23 & 17 & 34\\
-        Convection, Ra=\sn{1}{5} & 25 & 20 & 34\\
-        Convection, Ra=\sn{1}{6} & 39 & 25 & 48\\
-        \hline
-        Lid Driven, Re=100 & 27 & 42 & 151\\
-        Lid Driven, Re=300 & 35 & 52 & 133\\
-        Lid Driven, Re=500 & 41 & 56 & 154\\
-        Lid Driven, Re=700 & 21 & 14 & 32\\
-        \hline
-        Backward Step, Re=200 & 24 & 13 & 21\\
-        Backward Step, Re=300 & 23 & 17 & 21\\
-        Backward Step, Re=400 & 18 & 12 & 14\\
-        Backward Step, Re=500 & 30 & 52 & 98\\
-        %%
-        \hline\hline
-      \end{tabular}
-    \end{center}
-    \caption{\textbf{Navier-Stokes benchmark comparison for total linear
-        solver iterations.} \textit{Over all benchmarks, FANM performed
-        better in terms of linear solver iterations for twice as many
-        cases as the Newton-Krylov method.}}
-    \label{tab:benchmark_linear_comparison}
-  \end{table}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+
+      \small{
+        \begin{table}[h!]
+          \begin{center}
+            \begin{tabular}{lccc}\hline\hline
+              \multicolumn{1}{l}{Benchmark}& 
+              \multicolumn{1}{c}{NK}&
+              \multicolumn{1}{c}{FANM}&
+              \multicolumn{1}{c}{NR}\\
+              \hline
+              Re=100 & 6 & 6 & 7\\
+              Re=300 & 9 & 9 & 9\\
+              Re=500 & 11 & 11 & 11\\
+              Re=700 & 14 & 10 & 12\\
+              %%
+              \hline\hline
+            \end{tabular}`
+          \end{center}
+          \caption{Nonlinear iterations.}
+        \end{table}
+
+        \begin{table}[h!]
+          \begin{center}
+            \begin{tabular}{lccc}\hline\hline
+              \multicolumn{1}{l}{Benchmark}& 
+              \multicolumn{1}{c}{GMRES}&
+              \multicolumn{1}{c}{MCSA}&
+              \multicolumn{1}{c}{Richardson}\\
+              \hline
+              Re=100 & 27 & 42 & 151\\
+              Re=300 & 35 & 52 & 133\\
+              Re=500 & 41 & 56 & 154\\
+              Re=700 & 21 & 14 & 32\\
+              %%
+              \hline\hline
+            \end{tabular}
+          \end{center}
+          \caption{Total linear solver iterations.}
+        \end{table}
+      }
+
+    \end{column}
+
+    \begin{column}{0.4\textwidth}
+
+      \begin{itemize}
+      \item Forcing term selection can significantly modify nonlinear
+        convergence
+        \medskip
+      \item $\eta_k = \gamma \Big(
+        \frac{||\ve{F}(\ve{u}_k)||}{||\ve{F}(\ve{u}_{k-1})||}
+        \Big)^{\alpha}$
+      \end{itemize}
+
+      \bigskip
+
+      \tiny{
+        \begin{table}[h!]
+          \begin{center}
+            \begin{tabular}{lc}\hline\hline
+              \multicolumn{1}{l}{Benchmark}& 
+              \multicolumn{1}{c}{NK Speedup}\\
+              \hline
+              Re=100 & 299 \\
+              Re=300 & 322 \\
+              Re=500 & 288 \\
+              Re=700 & 488 \\
+              %%
+              \hline\hline
+            \end{tabular}
+          \end{center}
+          \caption{Newton-Krylov speedup over FANM.}
+        \end{table}
+      }
+
+    \end{column}
+  \end{columns}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{FANM CPU Time Results}
+\begin{frame}{Backward Facing Step Results}
 
-\begin{table}[h!]
-  \begin{center}
-    \begin{tabular}{lc}\hline\hline
-      \multicolumn{1}{l}{Benchmark}& 
-      \multicolumn{1}{c}{NK Speedup}\\
-      \hline
-      Convection, Ra=\sn{1}{3} & 338 \\
-      Convection, Ra=\sn{1}{4} & 336 \\
-      Convection, Ra=\sn{1}{5} & 346 \\
-      Convection, Ra=\sn{1}{6} & 465 \\
-      \hline
-      Lid Driven, Re=100 & 299 \\
-      Lid Driven, Re=300 & 322 \\
-      Lid Driven, Re=500 & 288 \\
-      Lid Driven, Re=700 & 488 \\
-      \hline
-      Backward Step, Re=200 & 400 \\
-      Backward Step, Re=300 & 593 \\
-      Backward Step, Re=400 & 825 \\
-      Backward Step, Re=500 & 1057 \\
-      %%
-      \hline\hline
-    \end{tabular}
-  \end{center}
-  \caption{\textbf{Newton-Krylov speedup over FANM.}  \textit{For all
-      benchmarks the explicit MCSA preconditioning strategy caused
-      significantly larger CPU times for FANM when compared to the
-      Newton-Krylov solutions.}}
-  \label{tab:benchmark_time_comparison}
-\end{table}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+
+      \small{
+        \begin{table}[h!]
+          \begin{center}
+            \begin{tabular}{lccc}\hline\hline
+              \multicolumn{1}{l}{Benchmark}& 
+              \multicolumn{1}{c}{NK}&
+              \multicolumn{1}{c}{FANM}&
+              \multicolumn{1}{c}{NR}\\
+              \hline
+              Re=200 & 10 & 9 & 10\\
+              Re=300 & 15 & 14 & 15\\
+              Re=400 & 10 & 10 & 10\\
+              Re=500 & 19 & 20 & 21\\
+              %%
+              \hline\hline
+            \end{tabular}`
+          \end{center}
+          \caption{Nonlinear iterations.}
+        \end{table}
+
+        \begin{table}[h!]
+          \begin{center}
+            \begin{tabular}{lccc}\hline\hline
+              \multicolumn{1}{l}{Benchmark}& 
+              \multicolumn{1}{c}{GMRES}&
+              \multicolumn{1}{c}{MCSA}&
+              \multicolumn{1}{c}{Richardson}\\
+              \hline
+              Re=200 & 24 & 13 & 21\\
+              Re=300 & 23 & 17 & 21\\
+              Re=400 & 18 & 12 & 14\\
+              Re=500 & 30 & 52 & 98\\
+              %%
+              \hline\hline
+            \end{tabular}
+          \end{center}
+          \caption{Total linear solver iterations.}
+        \end{table}
+      }
+
+    \end{column}
+
+    \begin{column}{0.4\textwidth}
+
+      \begin{itemize}
+      \item Significantly more ill-conditioned than cavity problems
+      \item Forcing terms are not the culprit
+      \item Multigrid is doing significantly more work
+      \end{itemize}
+
+      \bigskip
+
+      \tiny{
+        \begin{table}[h!]
+          \begin{center}
+            \begin{tabular}{lc}\hline\hline
+              \multicolumn{1}{l}{Benchmark}& 
+              \multicolumn{1}{c}{NK Speedup}\\
+              \hline
+              Re=200 & 400 \\
+              Re=300 & 593 \\
+              Re=400 & 825 \\
+              Re=500 & 1057 \\
+              %%
+              \hline\hline
+            \end{tabular}
+          \end{center}
+          \caption{Newton-Krylov speedup over FANM.}
+        \end{table}
+      }
+
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Iterative Performance Summary}
+
+  {\tiny
+
+    \begin{columns}
+      \begin{column}{0.5\textwidth}
+
+        \begin{table}[h!]
+          \begin{center}
+            \begin{tabular}{lcc}\hline\hline
+              \multicolumn{1}{l}{Benchmark}& 
+              \multicolumn{1}{c}{Newton-Krylov}&
+              \multicolumn{1}{c}{FANM}\\
+              \hline
+              Convection, Ra=\sn{1}{3} & $\times$ & $\times$ \\
+              Convection, Ra=\sn{1}{4} & $\times$ & $\times$ \\
+              Convection, Ra=\sn{1}{5} & $\times$ & \\
+              Convection, Ra=\sn{1}{6} & $\times$ & $\times$ \\
+              Lid Driven, Re=100 & $\times$ & $\times$ \\
+              Lid Driven, Re=300 & $\times$ & $\times$ \\
+              Lid Driven, Re=500 & $\times$ & $\times$ \\
+              Lid Driven, Re=700 & & $\times$ \\
+              Backward Step, Re=200 & & $\times$ \\
+              Backward Step, Re=300 & & $\times$ \\
+              Backward Step, Re=400 & $\times$ & $\times$ \\
+              Backward Step, Re=500 & $\times$ & \\
+              %%
+              \hline\hline
+            \end{tabular}
+          \end{center}
+          \caption{Navier-Stokes benchmark comparison for nonlinear
+            iterations.}
+        \end{table}
+
+      \end{column}
+
+      \begin{column}{0.5\textwidth}
+
+        \begin{table}[h!]
+          \begin{center}
+            \begin{tabular}{lcc}\hline\hline
+              \multicolumn{1}{l}{Benchmark}& 
+              \multicolumn{1}{c}{Newton-Krylov}&
+              \multicolumn{1}{c}{FANM}\\
+              \hline
+              Convection, Ra=\sn{1}{3} & & $\times$ \\
+              Convection, Ra=\sn{1}{4} & & $\times$ \\
+              Convection, Ra=\sn{1}{5} & & $\times$ \\
+              Convection, Ra=\sn{1}{6} & & $\times$ \\
+              Lid Driven, Re=100 & $\times$ & \\
+              Lid Driven, Re=300 & $\times$ & \\
+              Lid Driven, Re=500 & $\times$ & \\
+              Lid Driven, Re=700 & & $\times$ \\
+              Backward Step, Re=200 & & $\times$ \\
+              Backward Step, Re=300 & & $\times$ \\
+              Backward Step, Re=400 & & $\times$ \\
+              Backward Step, Re=500 & $\times$ & \\
+              %%
+              \hline\hline
+            \end{tabular}
+          \end{center}
+          \caption{Navier-Stokes benchmark comparison for total
+            linear solver iterations.}
+        \end{table}
+
+      \end{column}
+    \end{columns}
+  }
+
+  {\small
+    \begin{itemize}
+    \item Over all benchmarks, FANM performed better in terms of nonlinear
+      iterations for 1 more case than the Newton-Krylov method
+      \medskip
+    \item Over all benchmarks, FANM performed better in terms of linear
+      solver iterations for twice as many cases as the Newton-Krylov
+      method
+    \end{itemize}
+  }
 
 \end{frame}
 
