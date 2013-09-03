@@ -66,6 +66,8 @@
 \begin{frame}{Outline}
 
   \begin{itemize}
+  \item \textbf{Introduction}
+    \bigskip
   \item Monte Carlo Synthetic Acceleration Methods
     \bigskip
   \item Application to Neutron Transport
@@ -129,8 +131,7 @@
       neutronics and fluid flow
     \item Offer solutions or a potential path forward for the observed
       issues
-    \item Work to improve iterative and parallel performance where
-      possible
+    \item Work to improve iterative and parallel performance
     \end{itemize}
   \end{itemize}
 
@@ -139,18 +140,18 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Statement of Work}
 
-The goal of this work is to improve the iterative performance and
-parallel scalability of solutions to discrete linear and nonlinear
-transport problems by researching and developing a new set of domain
-decomposed Monte Carlo Synthetic Acceleration methods.
+  The goal of this work is to improve the iterative performance and
+  parallel scalability of solutions to discrete linear and nonlinear
+  transport problems by researching and developing a new set of domain
+  decomposed Monte Carlo Synthetic Acceleration methods.
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Research Outline}
   \begin{itemize}
-  \item Development of a linear scheme for discrete systems leveraging
-    Monte Carlo Synthetic Acceleration
+  \item Development of a linear scheme for the $SP_N$ equations
+    leveraging Monte Carlo Synthetic Acceleration
     \medskip
     \begin{itemize}
     \item Application to neutron transport
@@ -158,8 +159,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
     \item Iterative performance is of concern
     \end{itemize}
     \bigskip
-  \item Development of a nonlinear scheme for discrete systems
-    leveraging Monte Carlo Synthetic Acceleration
+  \item Development of a nonlinear scheme for the Navier-Stokes
+    equations leveraging Monte Carlo Synthetic Acceleration
     \medskip
     \begin{itemize}
     \item Monte Carlo is a more natural fit
@@ -182,6 +183,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \begin{frame}{Outline}
 
   \begin{itemize}
+  \item Introduction
+    \bigskip
   \item \textbf{Monte Carlo Synthetic Acceleration Methods}
     \bigskip
   \item Application to Neutron Transport
@@ -212,6 +215,7 @@ decomposed Monte Carlo Synthetic Acceleration methods.
         Nuclear Society - International Conference on Mathematics,
         Computational Methods and Reactor Physics, 2009.}}
   \end{itemize}
+
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
@@ -307,101 +311,33 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 
   \begin{figure}[h!]
     \begin{center}
-      \includegraphics[width=4in]{adjoint_1.png}
+      \includegraphics<1>[width=4in]{adjoint_1.png}
+      \includegraphics<2>[width=4in]{adjoint_10.png}
+      \includegraphics<3>[width=4in]{adjoint_100.png}
+      \includegraphics<4>[width=4in]{adjoint_1000.png}
+      \includegraphics<5>[width=4in]{adjoint_10000.png}
+      \includegraphics<6>[width=4in]{adjoint_100000.png}
+      \includegraphics<7>[width=4in]{adjoint_1000000.png}
+      \includegraphics<8>[width=4in]{adjoint_10000000.png}
     \end{center}
-    \caption{\textbf{Adjoint solution to Poisson Equation.}
-      \textit{\sn{1}{0} total histories, 0.286 seconds CPU time.} }
-  \end{figure}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Evolution of a Solution}
-
-  \begin{figure}[h!]
-    \begin{center}
-      \includegraphics[width=4in]{adjoint_10.png}
-    \end{center}
-    \caption{\textbf{Adjoint solution to Poisson Equation.}
-      \textit{\sn{1}{1} total histories, 0.278 seconds CPU time.} }
-  \end{figure}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Evolution of a Solution}
-
-  \begin{figure}[h!]
-    \begin{center}
-      \includegraphics[width=4in]{adjoint_100.png}
-    \end{center}
-    \caption{\textbf{Adjoint solution to Poisson Equation.}
-      \textit{\sn{1}{2} total histories, 0.275 seconds CPU time.} }
-  \end{figure}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Evolution of a Solution}
-
-  \begin{figure}[h!]
-    \begin{center}
-      \includegraphics[width=4in]{adjoint_1000.png}
-    \end{center}
-    \caption{\textbf{Adjoint solution to Poisson Equation.}
-      \textit{\sn{1}{3} total histories, 0.291 seconds CPU time.} }
-  \end{figure}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Evolution of a Solution}
-
-  \begin{figure}[h!]
-    \begin{center}
-      \includegraphics[width=4in]{adjoint_10000.png}
-    \end{center}
-    \caption{\textbf{Adjoint solution to Poisson Equation.}
-      \textit{\sn{1}{4} total histories, 0.428 seconds CPU time.} }
-  \end{figure}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Evolution of a Solution}
-
-  \begin{figure}[h!]
-    \begin{center}
-      \includegraphics[width=4in]{adjoint_100000.png}
-    \end{center}
-    \caption{\textbf{Adjoint solution to Poisson Equation.}
-      \textit{\sn{1}{5} total histories, 1.76 seconds CPU time.} }
-  \end{figure}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Evolution of a Solution}
-
-  \begin{figure}[h!]
-    \begin{center}
-      \includegraphics[width=4in]{adjoint_1000000.png}
-    \end{center}
-    \caption{\textbf{Adjoint solution to Poisson Equation.}
-      \textit{\sn{1}{6} total histories, 15.1 seconds CPU time.} }
-  \end{figure}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Evolution of a Solution}
-
-  \begin{figure}[h!]
-    \begin{center}
-      \includegraphics[width=4in]{adjoint_10000000.png}
-    \end{center}
-    \caption{\textbf{Adjoint solution to Poisson Equation.}
-      \textit{\sn{1}{7} total histories, 149 seconds CPU time.} }
+    \caption{
+      \only<1>{\textbf{Adjoint solution to Poisson Equation.}
+        \textit{\sn{1}{0} total histories, 0.286 seconds CPU time.} }
+      \only<2>{\textbf{Adjoint solution to Poisson Equation.}
+        \textit{\sn{1}{1} total histories, 0.278 seconds CPU time.} }
+      \only<3>{\textbf{Adjoint solution to Poisson Equation.}
+        \textit{\sn{1}{2} total histories, 0.275 seconds CPU time.} }
+      \only<4>{\textbf{Adjoint solution to Poisson Equation.}
+        \textit{\sn{1}{3} total histories, 0.291 seconds CPU time.} }
+      \only<5>{\textbf{Adjoint solution to Poisson Equation.}
+        \textit{\sn{1}{4} total histories, 0.428 seconds CPU time.} }
+      \only<6>{\textbf{Adjoint solution to Poisson Equation.}
+        \textit{\sn{1}{5} total histories, 1.76 seconds CPU time.} }
+      \only<7>{\textbf{Adjoint solution to Poisson Equation.}
+        \textit{\sn{1}{6} total histories, 15.1 seconds CPU time.} }
+      \only<8>{\textbf{Adjoint solution to Poisson Equation.}
+        \textit{\sn{1}{7} total histories, 149 seconds CPU time.} } 
+    }
   \end{figure}
 
 \end{frame}
@@ -471,6 +407,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \begin{frame}{Outline}
 
   \begin{itemize}
+  \item Introduction
+    \bigskip
   \item Monte Carlo Synthetic Acceleration Methods
     \bigskip
   \item \textbf{Application to Neutron Transport}
@@ -871,6 +809,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \begin{frame}{Outline}
 
   \begin{itemize}
+  \item Introduction
+    \bigskip
   \item Monte Carlo Synthetic Acceleration Methods
     \bigskip
   \item Application to Neutron Transport
@@ -1191,6 +1131,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \begin{frame}{Outline}
 
   \begin{itemize}
+  \item Introduction
+    \bigskip
   \item Monte Carlo Synthetic Acceleration Methods
     \bigskip
   \item Application to Neutron Transport
@@ -1635,6 +1577,8 @@ decomposed Monte Carlo Synthetic Acceleration methods.
 \begin{frame}{Outline}
 
   \begin{itemize}
+  \item Introduction
+    \bigskip
   \item Monte Carlo Synthetic Acceleration Methods
     \bigskip
   \item Application to Neutron Transport
