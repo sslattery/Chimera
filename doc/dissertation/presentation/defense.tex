@@ -121,9 +121,6 @@
       for neutronics and fluid problems (Evans,2010)(Pawlowski,2012)
     \end{itemize}
     \bigskip
-  \item Necessary to determine applicability to reactor physics and
-    potential performance improvements before moving forward with
-    other work
     \bigskip
   \item Physics-driven development
     \begin{itemize}
@@ -995,8 +992,8 @@
 
   \begin{itemize}
     {\small
-    \item Drekar is a production fluid base using Newton methods
-      with FAD
+    \item Drekar is a production CFD code using Newton methods with
+      FAD
       \medskip
     \item MCLS incorporated into Drekar nonlinear scheme to implement
       FANM
@@ -1156,7 +1153,7 @@
         \begin{itemize}
         \item Forcing term selection can significantly modify nonlinear
           convergence
-        \item Newton-Krylov had larger forcing terms for Re=100,300,500
+        \item Newton-Krylov always had larger forcing terms
         \item At Re=700, MCSA histories doubled and RDA fill increased
           from 200 to 300
         \end{itemize}
