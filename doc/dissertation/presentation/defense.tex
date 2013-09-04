@@ -1575,15 +1575,15 @@
         \begin{center}
           \includegraphics[width=2.3in]{titan_pure_weak_time.pdf}
         \end{center}
-%        \caption{Wall Time.}
+        \caption{Wall Time.}
       \end{figure}
 
-      \begin{figure}[htpb!]
-        \begin{center}
-          \includegraphics[width=2.3in]{titan_weak_implementation.pdf}
-        \end{center}
-%        \caption{Implementation Efficiency.}
-      \end{figure}
+      %% \begin{figure}[htpb!]
+      %%   \begin{center}
+      %%     \includegraphics[width=2.3in]{titan_weak_implementation.pdf}
+      %%   \end{center}
+      %%   \caption{Implementation Efficiency.}
+      %% \end{figure}
 
     \end{column}
 
@@ -1593,20 +1593,19 @@
         \begin{center}
           \includegraphics[width=2.3in]{titan_weak_absolute.pdf}
         \end{center}
-%        \caption{Absolute Efficiency.}
+        \caption{Absolute Efficiency.}
       \end{figure}
-
-      {\small
-        \begin{itemize}
-        \item Krylov implementation efficiencies drop with
-          reduced iteration count
-        \item MCSA maintained constant number of iterations
-        \end{itemize}
-      }
 
     \end{column}
   \end{columns}
 
+  {\small
+    \begin{itemize}
+    \item Spectral radius maintained by growing the global boundary
+    \item MCSA maintained constant number of iterations
+    \item Krylov iteration count reduced as a function of problem size
+    \end{itemize}
+  }
 
 \end{frame}
 
