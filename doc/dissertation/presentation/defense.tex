@@ -576,9 +576,9 @@
         \hline\hline
       \end{tabular}
     \end{center}
-    \caption{\textbf{Spectral radius results for the block Jacobi
-        preconditioned iteration matrix with 10 energy groups and full
-        downscatter for sample problem.}}
+    \caption{Spectral radius results for the block Jacobi
+      preconditioned iteration matrix with 10 energy groups and full
+      downscatter for sample problem.}
     \label{tab:group10dsbj}
   \end{table}
 }
@@ -766,7 +766,7 @@
             \hline\hline
           \end{tabular}
         \end{center}
-        \caption{ Average number of linear solver iterations per
+        \caption{Average number of linear solver iterations per
           eigenvalue iteration.}
       \end{table}
       }
@@ -1063,11 +1063,19 @@
 
     \begin{column}{0.4\textwidth}
 
-      \begin{itemize}
-      \item Weaker preconditioning at \sn{1}{-5} case
-      \item Forcing term method adapts to nonlinear convergence
-      \item Constant forcing term for \sn{1}{-6} case
-      \end{itemize}
+      \small{
+        \begin{itemize}
+        \item Weaker preconditioning at Ra=\sn{1}{-5} case
+          \medskip
+        \item $\eta_k = \gamma \Big(
+          \frac{||\ve{F}(\ve{u}_k)||}{||\ve{F}(\ve{u}_{k-1})||}
+          \Big)^{\alpha}$
+          \medskip
+        \item Constant forcing term for Ra=\sn{1}{-6} case
+          \medskip
+        \item RDA applied in all cases
+        \end{itemize}
+      }
 
       \bigskip
 
@@ -1144,16 +1152,17 @@
 
     \begin{column}{0.4\textwidth}
 
-      \begin{itemize}
-      \item Forcing term selection can significantly modify nonlinear
-        convergence
-        \medskip
-      \item $\eta_k = \gamma \Big(
-        \frac{||\ve{F}(\ve{u}_k)||}{||\ve{F}(\ve{u}_{k-1})||}
-        \Big)^{\alpha}$
-      \end{itemize}
+      \small{
+        \begin{itemize}
+        \item Forcing term selection can significantly modify nonlinear
+          convergence
+        \item Newton-Krylov had larger forcing terms for Re=100,300,500
+        \item At Re=700, MCSA histories doubled and RDA fill increased
+          from 200 to 300
+        \end{itemize}
+      }
 
-      \bigskip
+      \smallskip
 
       \tiny{
         \begin{table}[h!]
@@ -1262,7 +1271,7 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Iterative Performance Summary}
+\begin{frame}{FANM Iterative Performance Summary}
 
   {\tiny
 
@@ -1403,7 +1412,7 @@
         \begin{center}
           \scalebox{0.75}{ \input{ddnu_example.pdftex_t} }
         \end{center}
-        \caption{\small \sl Domain decomposition example illustrating
+        \caption{\small Domain decomposition example illustrating
           how domain-to-domain transport creates communication costs.}
       \end{figure}
     \end{column}
@@ -1467,8 +1476,8 @@
         \begin{center}
           \scalebox{0.75}{ \input{msod_example.pdftex_t} }
         \end{center}
-        \caption{\small \sl Overlapping domain example illustrating
-          how domain overlap can reduce communication costs.}
+        \caption{\small Overlapping domain example illustrating how
+          domain overlap can reduce communication costs.}
       \end{figure}
     \end{column}
 
@@ -1496,7 +1505,7 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Multiple-Set Overlapping-Domain Decomposition}
+\begin{frame}[fragile]{Multiple-Set Overlapping-Domain Decomposition}
 
   \begin{columns}
 
@@ -1504,9 +1513,9 @@
 
       \begin{figure}[htpb!]
         \begin{center}
-          \scalebox{0.25}{ \input{msod_construction.pdftex_t} }
+          \scalebox{0.2}{ \input{msod_construction.pdftex_t} }
         \end{center}
-        \caption{\small \sl MSOD construction.}
+        \caption{\small MSOD construction.}
       \end{figure}
 
     \end{column}
@@ -1515,14 +1524,27 @@
 
       \begin{figure}[htpb!]
         \begin{center}
-          \scalebox{0.25}{ \input{msod_tally.pdftex_t} }
+          \scalebox{0.2}{ \input{msod_tally.pdftex_t} }
         \end{center}
-        \caption{\small \sl MSOD tally reduction.}
+        \caption{\small MSOD tally reduction.}
       \end{figure}
 
     \end{column}
 
   \end{columns}
+
+    \begin{algorithm}[H]
+      \begin{algorithmic}[1]
+        \tiny
+        \STATE build MSOD domain
+        \STATE build Monte Carlo source
+        \STATE build Monte Carlo tally
+        \STATE perform parallel Neumann-Ulam transport in each set
+        \STATE combine set tallies
+        \STATE combine block tallies
+      \end{algorithmic}
+      \caption{MSOD Transport Sequence}
+    \end{algorithm}
 
 \end{frame}
 
