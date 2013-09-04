@@ -1002,7 +1002,8 @@
       comparisons
     \item All methods and problems preconditioned with explicit scheme
       using algebraic multigrid (ML) and leveraged some kind of
-      globalization (e.g. backtracking) }
+      globalization (e.g. backtracking) with RDA
+    }
   \end{itemize}
 
   {\small \sl Images source: www.casl.gov}
@@ -1063,13 +1064,7 @@
         \begin{itemize}
         \item Weaker preconditioning at Ra=\sn{1}{5} case
           \medskip
-        \item $\eta_k = \gamma \Big(
-          \frac{||\ve{F}(\ve{u}_k)||}{||\ve{F}(\ve{u}_{k-1})||}
-          \Big)^{\alpha}$
-          \medskip
         \item Constant forcing term for Ra=\sn{1}{6} case
-          \medskip
-        \item RDA applied in all cases
         \end{itemize}
       }
 
@@ -1150,8 +1145,9 @@
 
       \small{
         \begin{itemize}
-        \item Forcing term selection can significantly modify nonlinear
-          convergence
+        \item $\eta_k = \gamma \Big(
+          \frac{||\ve{F}(\ve{u}_k)||}{||\ve{F}(\ve{u}_{k-1})||}
+          \Big)^{\alpha}$
         \item Newton-Krylov always had larger forcing terms
         \item At Re=700, MCSA histories doubled and RDA fill increased
           from 200 to 300
@@ -1463,84 +1459,48 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Multiple-Set Overlapping-Domain Decomposition}
-
-  \begin{columns}
-
-    \begin{column}{0.5\textwidth}
-      \begin{figure}[htpb!]
-        \begin{center}
-          \scalebox{0.75}{ \input{msod_example.pdftex_t} }
-        \end{center}
-        \caption{\small Overlapping domain example illustrating how
-          domain overlap can reduce communication costs.}
-      \end{figure}
-    \end{column}
-
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-      \item Developed by Wagner and colleagues in 2010
-        \medskip
-      \item Each set contains the full domain
-        \medskip
-      \item Multiple sets replicate the domain
-        \medskip
-      \item Domains overlap within a set
-        \medskip
-      \item Redundancy for resiliency (and useful work)
-      \end{itemize}
-    \end{column}
-
-  \end{columns}
-
-  \let\thefootnote\relax\footnote{\tiny{Wagner et. al., "Hybrid and
-      parallel domain-decomposition methods development to enable
-      Monte Carlo for reactor analysis", Joint International
-      Conference on Supercomputing in Nuclear Applications and Monte
-      Carlo (SNA+MC 2010), 2010.}}
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
 \begin{frame}[fragile]{Multiple-Set Overlapping-Domain Decomposition}
 
   \begin{columns}
 
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.52\textwidth}
 
-      \begin{figure}[htpb!]
+      \begin{figure}[t!]
         \begin{center}
-          \scalebox{0.2}{ \input{msod_construction.pdftex_t} }
+          \scalebox{0.275}{ \input{msod_construction.pdftex_t} }
         \end{center}
         \caption{\small MSOD construction.}
       \end{figure}
 
     \end{column}
 
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.48\textwidth}
 
-      \begin{figure}[htpb!]
+      \begin{figure}[t!]
         \begin{center}
           \scalebox{0.2}{ \input{msod_tally.pdftex_t} }
         \end{center}
         \caption{\small MSOD tally reduction.}
       \end{figure}
 
+      \begin{itemize}
+        {\small
+        \item Multiple sets replicate the domain
+        \item Domains overlap within a set
+        \item Each set contains the full domain
+        }
+      \end{itemize}
+
     \end{column}
 
   \end{columns}
 
-    \begin{algorithm}[H]
-      \begin{algorithmic}[1]
-        \tiny
-        \STATE build MSOD domain
-        \STATE build Monte Carlo source
-        \STATE build Monte Carlo tally
-        \STATE perform parallel Neumann-Ulam transport in each set
-        \STATE combine set tallies
-        \STATE combine block tallies
-      \end{algorithmic}
-      \caption{MSOD Transport Sequence}
-    \end{algorithm}
+
+  \let\thefootnote\relax\footnote{\tiny{Wagner et. al., "Hybrid and
+      parallel domain-decomposition methods development to enable
+      Monte Carlo for reactor analysis", Joint International
+      Conference on Supercomputing in Nuclear Applications and Monte
+      Carlo (SNA+MC 2010), 2010.}}
 
 \end{frame}
 
