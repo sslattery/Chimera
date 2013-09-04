@@ -436,7 +436,7 @@ within a power iteration strategy to find the multiplication factor.
     \State $k_0 =$ initial guess
     \State $\mathbf{\Phi}_0 =$ initial guess
     \State $n = 0$
-    \While{$|\frac{k^n - k^{n-1}}{k^n}| < \epsilon$}
+    \While{$|\frac{k^n - k^{n-1}}{k^n}| > \epsilon$}
     \Comment{Iterate until convergence of the eigenvalue}
     \State $\mathbf{M} \mathbf{\Phi}^{n+1} = \frac{1}{k^n} \mathbf{F} \mathbf{\Phi}^n$
     \Comment{Solve for the new flux state with MCSA}

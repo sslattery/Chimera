@@ -531,7 +531,7 @@
       \STATE $k_0 =$ initial guess
       \STATE $\mathbf{\Phi}_0 =$ initial guess
       \STATE $n = 0$
-      \WHILE{$|\frac{k^n - k^{n-1}}{k^n}| < \epsilon$}
+      \WHILE{$|\frac{k^n - k^{n-1}}{k^n}| > \epsilon$}
       \STATE $\mathbf{M} \mathbf{\Phi}^{n+1} = \frac{1}{k^n} \mathbf{F} \mathbf{\Phi}^n$
       \COMMENT{Solve for the new flux state with MCSA}
       \STATE $k^{n+1} = k^n \frac{\int \mathbf{F} \mathbf{\Phi}^{n+1} d\mathbf{r}}{\int
@@ -1000,10 +1000,9 @@
       \medskip
     \item Newton-Krylov method with Aztec GMRES used for benchmark
       comparisons
-    \item All problems preconditioned with explicit scheme using
-      algebraic multigrid (ML) and leveraged some kind of
-      globalization (e.g. backtracking) 
-    }
+    \item All methods and problems preconditioned with explicit scheme
+      using algebraic multigrid (ML) and leveraged some kind of
+      globalization (e.g. backtracking) }
   \end{itemize}
 
   {\small \sl Images source: www.casl.gov}
@@ -1062,13 +1061,13 @@
 
       \small{
         \begin{itemize}
-        \item Weaker preconditioning at Ra=\sn{1}{-5} case
+        \item Weaker preconditioning at Ra=\sn{1}{5} case
           \medskip
         \item $\eta_k = \gamma \Big(
           \frac{||\ve{F}(\ve{u}_k)||}{||\ve{F}(\ve{u}_{k-1})||}
           \Big)^{\alpha}$
           \medskip
-        \item Constant forcing term for Ra=\sn{1}{-6} case
+        \item Constant forcing term for Ra=\sn{1}{6} case
           \medskip
         \item RDA applied in all cases
         \end{itemize}
@@ -1498,7 +1497,7 @@
       parallel domain-decomposition methods development to enable
       Monte Carlo for reactor analysis", Joint International
       Conference on Supercomputing in Nuclear Applications and Monte
-      Carl (SNA+MC 2010), 2010.}}
+      Carlo (SNA+MC 2010), 2010.}}
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
@@ -1734,7 +1733,7 @@
     a history in the system of 2.6 discrete states
     \bigskip
   \item Overlap eliminates communication in the Monte Carlo sequence
-    but simply differs it to an overlapping tally vector reduction
+    but simply defers it to an overlapping tally vector reduction
   \end{itemize}
 
   \begin{columns}
