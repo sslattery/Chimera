@@ -1726,12 +1726,12 @@ For a multiple set analysis of the weak scaling timing results, we
 again have to consider that adding sets to the problem is actually a
 form of strong scaling. Consider a single set problem ($S=1$) for a
 given $P$ and $N$. When that problem is now solved using 2 sets we
-have $S=2$, $N$, and $2P$. For any number of sets we then have a
-global problem size of $N$ while the number of processors is $SP$
-where $P$ is the number of processors in the single set
-case. Therefore, $N/P$ is no longer fixed in the weak scaling study
-but rather $N/(SP)$ is fixed. As a result, we modify the weak scaling
-absolute efficiency relationship to account for this fact:
+have $S=2$, $N$, and $2P_s$ where $P_s$ is the number of processors in
+a single set. For any number of sets we then have a global problem
+size of $N$ while the number of processors is $SP_s$. Therefore, $N/P$
+is no longer fixed in the weak scaling study but rather $N/(SP_s)$ is
+fixed. As a result, we modify the weak scaling absolute efficiency
+relationship to account for this fact:
 \begin{equation}
 \eta_{weak}(M|N,P|Q,S) = \frac{T(M,Q)}{S \times T(N,P)}\:,
   \label{eq:ms_weak_efficiency}
