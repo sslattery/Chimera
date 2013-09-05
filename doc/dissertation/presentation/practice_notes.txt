@@ -1,0 +1,16 @@
+Notes from 9/4/13 Practice
+--------------------------
+
+fix rayleigh numbers on slide 31
+
+cut out decimal places on 21
+
+consistent on logarthmic plot axes
+
+eigenvalue threshold wrong 19
+
+30 - all methods and all problems use multigrid
+
+39 - Monte Carl
+
+46 - differs -> defers
