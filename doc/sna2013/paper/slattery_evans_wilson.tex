@@ -217,8 +217,8 @@ Finally, we set a criteria for random walk termination by setting a
   W_f = W_c W_0\:,
   \label{eq:relative_weight_cutoff}
 \end{equation}
-where $W_c$ is a user defined cutoff. The random walk will then be
-terminated after $m$ steps if $W_m < W_f$.
+where $W_c$ is a user-defined cutoff value. The random walk will then
+be terminated after $m$ steps if $W_m < W_f$.
 
 \subsection{Monte Carlo Synthetic Acceleration}
 Using the ideas of Halton's residual method
@@ -269,12 +269,12 @@ outer MCSA iterations also have the following stopping criteria:
   ||\mathbf{r}||_\infty < \epsilon \ ||\mathbf{b}||_\infty\:,
   \label{eq:mcsa_stopping_criteria}
 \end{equation}
-where $\epsilon$ is a user-defined parameter. 
+where $\epsilon$ is a user-defined tolerance.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Parallel Algorithms}
-In this section devise a parallel algorithm for the Neumann-Ulam Monte
-Carlo method based on the multiple-set overlapping-domain
+In this section we devise a parallel algorithm for the Neumann-Ulam
+Monte Carlo method based on the multiple-set overlapping-domain
 decomposition algorithm and a parallel algorithm for the MCSA
 iteration that leverages the parallel Monte Carlo algorithm and
 general parallel matrix-vector operations.
@@ -288,42 +288,37 @@ environments, domain decomposition strategies have been identified as
 important for Monte Carlo applications
 \cite{brunner_comparison_2006,siegel_analysis_2012}. In a domain
 decomposed Monte Carlo implementation, stochastic histories must be
-communicated between domains as the simulation progresses and they
-transition to locations outside of the local domain. In order to
-implement domain decomposition strategy for Monte Carlo solvers in a
-parallel environment, communication of these histories must occur
-between compute nodes owning neighboring pieces of the global domain.
+communicated between adjacent domains and the owning compute nodes as
+the simulation progresses and they transition to locations outside of
+the local domain. 
 
-In the context of radiation transport, in 2009 Brunner and colleagues
+In the context of radiation transport, in 2009 Brunner and Brantley
 provided a fully asynchronous domain decomposed parallel algorithm as
 implemented in production implicit Monte Carlo codes
 \cite{brunner_efficient_2009}. In their algorithm, a set of mutually
 exclusive tasks enabled by the fully asynchronous communication
 patterns are executed. For the Neumann-Ulam method, mutually
 exclusivity permits all local operations to occur independently of
-other processes in the system and their current state to achieve an
-optimal overlap of work and communication. We will adapt their
-algorithm and directly apply it to construct a parallel formulation of
-the Neumann-Ulam method. Direct analogs can be derived from their
-works by noting that the primary difference between solving a linear
-transport system with Monte Carlo methods and traditional fixed source
-Monte Carlo transport problems is the content of the Markov chains
-that are generated.
+other processes in the system to achieve an optimal overlap of work
+and communication. We will adapt their algorithm and directly apply it
+to construct a parallel formulation of the Neumann-Ulam method. Direct
+analogs can be derived from their work by noting that the primary
+difference between solving a linear system with a Neumann-Ulam method
+and traditional fixed source Monte Carlo transport problems is the
+content of the Markov chains that are generated.
 
-Consider this communication pattern for the 9 subdomain example given
+Consider their communication pattern for the 9 subdomain example given
 by Figure~\ref{fig:nearest_neighbor_comm}. In this pattern, each
 boundary domain has two neighbors and the center domain four neighbors
-with which they will communicate parallel histories and this
-communication goes both ways as represented by the adjacent arrows in
-the figure. For each set of neighbors, a non-blocking send and receive
-is required with data buffers allocated with a user-defined size for
-incoming and outgoing histories. This non-blocking structure is
-critical to the performance of the algorithm in that it permits local
-history transport to continue while new histories to transport are
-being collected in the buffers. When a given process is ready to do
-more work, it can check these data buffers for incoming histories
-requiring further transport. In this way there is a maximum amount of
-overlap between communication and transport of histories.
+with which they will communicate parallel histories. For each set of
+neighbors, a non-blocking send and receive is initiated and data
+buffers allocated with a user-defined size for incoming and outgoing
+histories. This non-blocking structure is critical to the performance
+of the algorithm in that it permits local history transport to
+continue while new histories to transport are being collected in the
+buffers. When a given process is ready to do more work, it can check
+these data buffers for incoming histories requiring further
+transport.
 
 \begin{figure}[h!]
   \begin{center}
@@ -336,27 +331,27 @@ overlap between communication and transport of histories.
   \label{fig:nearest_neighbor_comm}
 \end{figure}
 
-Once the nearest-neighbor communication sequence has been completed
-for all histories, the completion of transport sequence is
-required. To stop transport, an asynchronous binary communication tree
-as presented for the same 9 subdomain example in
+Given the mutual exclusivity of the transport algorithm, an additional
+communcation sequence is required to efficiently stop the algorithm
+after all histories have been computed. To stop transport, Brunner and
+Brantley use an asynchronous binary communication tree as presented
+for the same 9 subdomain example in
 Figure~\ref{fig:binary_comm_tree}. In this communication pattern, each
-process has one parent process (except for the MASTER process 0) to
-which it will non-blocking send the number of histories that
-terminated their transport procedure by weight cutoff in the local
+process has one parent process (except for process 0) to which it will
+non-blocking send the number of histories that terminated their
+transport procedure by weight cutoff in the local
 domain. Equivalently, each process has up to two child processes from
 which it will receive their completed number of histories with a
 non-blocking receive operation. Setting up a tree in this manner lets
 the completed history tally be updated incrementally and funneled to
-the root process. Because we are solving fixed source problems with
-the Neumann-Ulam algorithm without any type of variance reduction that
-may generate more histories that we started with, once the root
-process completion sum tallies to the number of histories in the
-source, transport is complete. Once this occurs, the root process
-non-blocking sends the stop message to its children and each process
-non-blocking receives a stop message from its parent as shown in
-Figure~\ref{fig:binary_comm_tree}. The stop message is then propagated
-up the tree in the same manner.
+the root process in a mutually exclusive manner. Once the root process
+has tallied a completed number of histories equal to the number of
+histories in the source, transport is complete. Once this occurs, the
+root process non-blocking sends the stop message to its children and
+each child process non-blocking receives a stop message from the root
+as shown in Figure~\ref{fig:binary_comm_tree}. The stop message is
+then propagated up the tree in the same manner between parents and
+children.
 \begin{figure}[h!]
   \begin{center}
     \scalebox{0.6}{
@@ -378,20 +373,16 @@ for parallel Monte Carlo applications for full-core light water
 reactor analysis \cite{wagner_hybrid_2010}. In their work, overlap
 between adjacent domains in the decomposition was used to decrease the
 number of particles leaving the local domain. In addition, Wagner
-utilized a level of replication of the domain such that the domain was
-only decomposed on $O(100)$ processors and if replicated $O(1,000)$
-times achieves simulation on $O(100,000)$ processors, thus providing
-spatial and particle parallelism. Each collection of processors that
+utilized a level of replication such that the decomposition was only
+generated on $O(100)$ processors and if replicated $O(1,000)$ times
+achieves simulation on $O(100,000)$ processors, thus providing spatial
+and particle parallelism. Each collection of processors that
 constitutes a representation of the entire domain is referred to as a
-set, and within a set overlap occurs among its sub-domains. The
-original motivation was to decompose the domain in a way that it
-remained in a physical cabinet in a large distributed machine, thus
-reducing latency costs during communication.
+set, and within a set overlap occurs among its sub-domains.
 
-To demonstrate the algorithm, consider the example adapted from
-Mervin's work with Wagner and others in the same area
-\cite{mervin_variance_2012} and presented in
-Figure~\ref{fig:msod_example}.
+To demonstrate the algorithm, consider the example presented in
+Figure~\ref{fig:msod_example} adapted from Mervin's work with Wagner
+and others in the same area \cite{mervin_variance_2012}.
 \begin{figure}[h!]
   \begin{center}
     \scalebox{0.8}{ \input{msod_example.pdftex_t} }
@@ -425,33 +416,35 @@ communication would occur.
 We utilize parallel matrix-vector multiply, vector update, and vector
 norm operations as outlined in \cite{saad_iterative_2003} for a
 parallel MCSA implementation with these computations required in
-Eqs~(\ref{eq:mcsa_1}), (\ref{eq:mcsa_2}), (\ref{eq:mcsa_4}), and
-(\ref{eq:mcsa_5}). In the first step, a parallel vector update is used
-to apply the residual to the previous iterate's solution in a
-Richardson iteration. In the next step and Eq~(\ref{eq:mcsa_5}), the
+Eqs~(\ref{eq:mcsa_1}), (\ref{eq:mcsa_2}), (\ref{eq:mcsa_3}), and
+(\ref{eq:mcsa_4}). In Eqs~(\ref{eq:mcsa_1}) and (\ref{eq:mcsa_3}), the
 residual is computed by a parallel matrix-vector multiply and vector
-update. Once the correction is computed with a parallel adjoint
+update. In Eq~(\ref{eq:mcsa_2}) a parallel vector update is used to
+apply the residual to the previous iterate's solution in a Richardson
+iteration. Once the correction is computed with a parallel adjoint
 Neumann-Ulam solve, this correction is applied to the solution with a
-parallel vector update. Additionally, as given by
-Eq~(\ref{eq:mcsa_stopping_criteria}), 2 parallel vector reductions
-will be required to check the stopping criteria: one initially to
-compute the infinity norm of the source vector, and another at every
-iteration to compute the infinity norm of the residual vector.
+parallel vector update in Eq~(\ref{eq:mcsa_5}). Additionally, as given
+by Eq~(\ref{eq:mcsa_stopping_criteria}), 2 parallel vector norm
+operations will be required to check the stopping criteria: one
+initially to compute the infinity norm of the source vector, and
+another at every iteration to compute the infinity norm of the
+residual vector.
 
-To parallelize the solution of Eq~(\ref{eq:mcsa_3}), we apply the
-MSOD Neumann-Ulam algorithm presented in the previous section. The
-problem is potentially replicated with overlap and the Monte Carlo
-procedure returns a correction vector, $\delta \mathbf{x}$, with the same
-parallel decomposition as the input linear problem. As was the case
-for generating the replications required for a multiple set
+To parallelize the solution of Eq~(\ref{eq:mcsa_4}), we apply the MSOD
+Neumann-Ulam algorithm presented in the previous section. The problem
+potentially has both replication and overlap and the Monte Carlo
+procedure returns the correction vector, $\delta \mathbf{x}$, with the
+same parallel decomposition as the input linear problem. Although
+replication of the Monte Carlo problem is required for a multiple set
 implementation, the explicit matrix and vector operations required for
 the rest of an MCSA iteration occur only on the subset of processors
-containing the primary set\footnote{For applications where resiliency
-  is potentially of concern, the operations in Eqs~(\ref{eq:mcsa_1}),
-  (\ref{eq:mcsa_2}), (\ref{eq:mcsa_4}), and (\ref{eq:mcsa_5}) may
-  be replicated without significant penalty. Doing so my alleviate
-  issues where any part of the linear problem or residual is disturbed
-  as now there will be multiple copies of these data
+containing the description of the linear problem\footnote{For
+  applications where resiliency is potentially of concern, the linear
+  problem and subsequently the operations in Eqs~(\ref{eq:mcsa_1}),
+  (\ref{eq:mcsa_2}), (\ref{eq:mcsa_4}), and (\ref{eq:mcsa_5}) may be
+  replicated with the penalty of broadcasting the data. Doing so may
+  alleviate issues where any part of the linear problem or residual is
+  disturbed as now there will be multiple copies of these data
   structures.}. Only the Monte Carlo data structures exist on the rest
 of the processors in the problem as replication of the other
 operations does not generate any more information that could be used
@@ -459,18 +452,18 @@ to accelerate the time to solution.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Parallel Scaling Studies}
-We will next measure performance in various scaling studies using an
-implementation of the parallel MCSA algorithm to assess its quality
-using a simple two-dimensional neutron diffusion problem in a
-homogeneous medium. For the scaling results presented here, all
-parallel MCSA results were computed using the Monte Carlo Linear
-Solvers\footnote{MCLS is an open source C++ library built on the
-  Trilinos\cite{heroux_overview_2005} framework and can be downloaded
-  at \url{https://github.com/sslattery/MCLS}} (MCLS) library generated
+We will next measure performance of the parallel MCSA algorithm in
+various scaling studies to assess its quality using a simple
+two-dimensional neutron diffusion problem in a homogeneous medium. For
+the scaling results presented here, all parallel MCSA results were
+computed using the Monte Carlo Linear Solvers\footnote{MCLS is an open
+  source C++ library built on the Trilinos\cite{heroux_overview_2005}
+  framework and can be downloaded at
+  \url{https://github.com/sslattery/MCLS}} (MCLS) library generated
 specifically for this work. For every scaling study presented, the
 calculations were performed 3 times with the average values reported
 for wall time and those average values used for the efficiency
-computations. 
+computations.
 
 For all cases, both strong and weak scaling studies were
 performed. For strong scaling, the objective is to then decrease the

@@ -758,15 +758,16 @@ for generating the replications required for a multiple set
 implementation, the explicit matrix and vector operations required for
 the rest of an MCSA iteration occur only on the subset of processors
 containing the primary set\footnote{For applications where resiliency
-  is potentially of concern, the operations in Eqs~(\ref{eq:mcsa_r1}),
-  (\ref{eq:mcsa_r2}), (\ref{eq:mcsa_r4}), and (\ref{eq:mcsa_r5}) may
-  be replicated without significant penalty. Doing so my alleviate
-  issues where any part of the linear problem or residual is disturbed
-  as now there will be multiple copies of these data
-  structures.}. Only the Monte Carlo data structures exist on the rest
-of the processors in the problem as replication of the other
-operations does not generate any more information that could be used
-to accelerate the time to solution.
+  is potentially of concern, the linear problem and subsequently the
+  operations in Eqs~(\ref{eq:mcsa_r1}), (\ref{eq:mcsa_r2}),
+  (\ref{eq:mcsa_r4}), and (\ref{eq:mcsa_r5}) may be replicated with
+  the penalty of broadcasting the data. Doing so may alleviate issues
+  where any part of the linear problem or residual is disturbed as now
+  there will be multiple copies of these data structures.}. Only the
+Monte Carlo data structures exist on the rest of the processors in the
+problem as replication of the other operations does not generate any
+more information that could be used to accelerate the time to
+solution.
 
 \subsection{Parallel FANM Implementation}
 \label{subsec:parallel_fanm}
