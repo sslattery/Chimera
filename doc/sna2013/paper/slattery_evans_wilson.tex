@@ -330,7 +330,7 @@ transport.
   \label{fig:nearest_neighbor_comm}
 \end{figure}
 Given the mutual exclusivity of the transport algorithm, an additional
-communcation sequence is required to efficiently stop the algorithm
+communication sequence is required to efficiently stop the algorithm
 after all histories have been computed. To stop transport, Brunner and
 Brantley use an asynchronous binary communication tree as presented
 for the same 9 subdomain example in
@@ -416,13 +416,13 @@ structures required to implement the Neumann-Ulam algorithm to each of
 the sets in the problem. Within each set, the subdomains detect their
 neighboring subdomains and gather the number of adjacent states
 specified for overlap. For each of these overlap states, the
-probablities, weights, tallies, and other information required to
+probabilities, weights, tallies, and other information required to
 implement the Monte Carlo sequence are gathered. When transport
 begins, within each individual set the Neumann-Ulam sequence is
-executed with parallelism provided Brunner and Brantely's algorithm as
+executed with parallelism provided Brunner and Brantley's algorithm as
 outlined in the previous section. Here, transport occurs both in the
 local domain and the overlap region before histories are
-communicated. Once transport in all sets is compelete, the tallies
+communicated. Once transport in all sets is complete, the tallies
 from all overlapping states are gathered to their original owning
 processors within each set and then all tallies are summed onto the
 set of processors occupied by the linear problem to construct the
