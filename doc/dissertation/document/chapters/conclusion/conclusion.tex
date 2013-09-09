@@ -370,23 +370,25 @@ for linear systems that produce a reduced-order model of the original
 system to which the Monte Carlo method may be applied. As the Monte
 Carlo method serves to construct the solution correction vector in the
 MCSA method, the Monte Carlo method may be applied to a reduced-order
-physics or PDE-based system that captures the essence of the original
-system and still allows for acceleration of the iterative
-procedure. By reducing the order of the system, we are effectively
-generating a Monte Carlo problem within MCSA in which the linear
-operator is either more sparse, has a better-conditioned eigenvalue
-spectrum, or both. In addition, the reduced domain approximation has
-shown that a purely algebraic strategy for reducing the order of the
-Monte Carlo problem can result in improved overall timing performance
-due to increased sparsity at the cost of iterative performance as a
-result of loss of information. A more well informed strategy for order
-reduction via either an intelligent simplification of the PDEs that
-describe the system or a simplification of the physics involved may
-prove to be a more effective strategy. In turn, this reduction of
-order strategy for the Monte Carlo problem also potentially simplifies
-the preconditioning strategy with less sophisticated algebraic
-techniques needed for better conditioned approximations of the Monte
-Carlo problem.
+physics or PDE-based system instead of the original system that
+captures the essence of the original system and still allows for
+acceleration of the iterative procedure. By reducing the order of the
+system, we are effectively generating a Monte Carlo problem within
+MCSA in which the linear operator is either more sparse, has a
+better-conditioned eigenvalue spectrum, or both. In addition, the
+reduced domain approximation has shown that a purely algebraic
+strategy for reducing the order of the Monte Carlo problem can result
+in improved overall timing performance due to increased sparsity at
+the cost of iterative performance as a result of loss of
+information. A more well informed strategy for order reduction via
+either an intelligent simplification of the PDEs that describe the
+system or a simplification of the physics involved may prove to be a
+more effective strategy for the acceleration step. In turn, this
+reduction of order strategy for the Monte Carlo problem also
+potentially simplifies the preconditioning strategy with less
+sophisticated algebraic techniques needed for better conditioned
+approximations of the Monte Carlo problem and therefore less
+difficulty with composite operators.
 
 \subsection{Breaking Away from $\rho(H) < 1$}
 \label{subsec:future_spec_rad}
