@@ -1,0 +1,38 @@
+This work researches and develops Monte Carlo Synthetic Acceleration
+(MCSA) methods as a new class of solution techniques for discrete
+neutron transport and fluid flow problems. Monte Carlo Synthetic
+Acceleration methods use a traditional Monte Carlo process to
+approximate the solution to the discrete problem as a means of
+accelerating traditional fixed-point methods. To apply these methods
+to neutronics and fluid flow and determine the feasibility of these
+methods on modern hardware, three complementary research and
+development exercises are performed.
+
+First, solutions to the $SP_N$ discretization of the linear Boltzmann
+neutron transport equation are obtained using MCSA with a difficult
+criticality calculation for a light water reactor fuel assembly used
+as the driving problem. To enable MCSA as a solution technique a group
+of modern preconditioning strategies are researched. MCSA when
+compared to conventional Krylov methods demonstrated improved
+iterative performance over GMRES by converging in fewer iterations
+when using the same preconditioning.
+
+Second, solutions to the compressible Navier-Stokes equations were
+obtained by developing the Forward-Automated Newton-MCSA (FANM) method
+for nonlinear systems based on Newton's method. Three difficult fluid
+benchmark problems in both convective and driven flow regimes were
+used to drive the research and development of the method. For 8 out of
+12 benchmark cases, it was found that FANM had better iterative
+performance than the Newton-Krylov method by converging the nonlinear
+residual in fewer linear solver iterations with the same
+preconditioning.
+
+Third, a new domain decomposed algorithm to parallelize MCSA aimed at
+leveraging leadership-class computing facilities was developed by
+utilizing parallel strategies from the radiation transport
+community. The new algorithm utilizes the Multiple-Set
+Overlapping-Domain strategy in an attempt to reduce parallel overhead
+and add a natural element of replication to the algorithm. It was
+found that for the current implementation of MCSA, both weak and
+strong scaling improved on that observed for production
+implementations of Krylov methods.
