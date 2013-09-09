@@ -47,7 +47,7 @@
 %%---------------------------------------------------------------------------%%
 \author{Stuart R. Slattery\\ University of Wisconsin - Madison}
 
-\date{\today} 
+\date{September 9, 2013} 
 \title{Parallel Monte Carlo Synthetic Acceleration Methods for
   Discrete Transport Problems}
 \begin{document}
@@ -571,8 +571,8 @@
       \end{tabular}
     \end{center}
     \caption{Spectral radius results for the block Jacobi
-      preconditioned iteration matrix with 10 energy groups and full
-      downscatter for sample problem.}
+      preconditioned $SP_N$ iteration matrix with 10 energy groups and
+      full downscatter.}
     \label{tab:group10dsbj}
   \end{table}
 }
@@ -583,7 +583,7 @@
 
       \begin{figure}[t!]
         \begin{center}
-          \includegraphics[width=2.0in]{block_jacobi_res.pdf}
+          \includegraphics[width=2.25in]{block_jacobi_res.pdf}
         \end{center}
       \end{figure}
 
@@ -593,11 +593,11 @@
       \begin{itemize}
       \item Rapidly divergent results
         \medskip
-      \item Light water moderator creates a lot of scattering and
-        $\mathbf{\rho}(\mathbf{H}) \approx 1$
-        \medskip
       \item Convergence not achieved with 50 histories per DOF and 90
         minutes compute time
+        \medskip
+      \item Light water moderator creates a lot of scattering and
+        $\mathbf{\rho}(\mathbf{H}) \approx 1$
       \end{itemize}
     \end{column}
 
@@ -786,7 +786,7 @@
           iterations than BiCGStab
           \medskip
         \item Explicit preconditioning strategy destroys sparsity and
-          elevates CPU times (Ifpack ILUT)
+          elevates CPU times
           \medskip
         \item Spectral radius and memory limitations combine to
           prevent solutions at finer discretizations
