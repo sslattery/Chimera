@@ -292,8 +292,8 @@ a series:
     \label{eq:neumann_series}
   \end{split}
 \end{equation}
-Using this series, we can write an iterative method, known as Richardson's
-Iteration, that solves Eq.~(\ref{eq:Ax=b}):
+Using this series, we can write an iterative method, known as Richardson
+iteration, that solves Eq.~(\ref{eq:Ax=b}):
 \begin{equation}
   \vx^{k+1} = \vH\vx^k + \vb\:.
   \label{eq:richardson}
@@ -538,8 +538,8 @@ $\vA$.
 \subsection{Monte Carlo Method Selection}
 
 The MCSA method defined in Eq.~(\ref{eq:MCSA-iteration}) uses the adjoint
-method to estimate the error in Eq.~(\ref{eq:MCSA-residual_solve}) instead of
-the direct method outlined in \S~\ref{sec:direct-method}. To demonstrate the
+method to estimate the error in Eq.~(\ref{eq:MCSA-residual_solve}).
+To demonstrate the
 effectiveness of the adjoint method over the direct method within the context
 of MCSA, we choose the 2D time-dependent Poisson equation as a
 simple model problem:
