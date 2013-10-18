@@ -244,11 +244,12 @@ ideas for future work in \S~\ref{sec:conclusions}.
 The idea of using Monte Carlo methods (random walks) to invert linear systems
 is not new.  The earliest referenced work dates to a 1950 paper by Forsythe
 and Leibler \cite{forsythe}.  Their paper credits the idea to unpublished work
-by J.v. Neumann and S.M. Ulam dating back to the 1940's.  The basic principles
-of Monte Carlo matrix inversion were further elucidated in Hammersley and
-Handscomb's 1964 text \cite{hammersley_1964}.  These early methods are
-distinguished by very slow, statistically noisy convergence properties; thus,
-they have not made any significant impact in the physics community.
+by J. von Neumann and S.M. Ulam dating back to the 1940's.  The basic
+principles of Monte Carlo matrix inversion were further elucidated in
+Hammersley and Handscomb's 1964 text \cite{hammersley_1964}.  These early
+methods are distinguished by very slow, statistically noisy convergence
+properties; thus, they have not made any significant impact in the physics
+community.
 
 In order to address the convergence issues plaguing Monte Carlo
 solvers, Halton \cite{halton_1962,halton_1994} proposed a sequential
@@ -291,8 +292,8 @@ a series:
     \label{eq:neumann_series}
   \end{split}
 \end{equation}
-Using this series, we can write an iterative method that solves
-Eq.~(\ref{eq:Ax=b}) (Richardson's Iteration):
+Using this series, we can write an iterative method, known as Richardson's
+Iteration, that solves Eq.~(\ref{eq:Ax=b}):
 \begin{equation}
   \vx^{k+1} = \vH\vx^k + \vb\:.
   \label{eq:richardson}
@@ -319,9 +320,9 @@ component of $\vx$:
   \end{split}
   \label{eq:neumann_series_i}
 \end{equation}
-Here, $m$ is the random walk step index and the $h$ terms are the matrix
+Here, $k$ is the random walk step index and the $h$ terms are the matrix
 elements of $\vH$.  The terms in the Neumann series can be interpreted as a
-series of transitions from $i_{m-1}\rightarrow i_m$ that can be simulated by a
+series of transitions from $i_{k-1}\rightarrow i_k$ that can be simulated by a
 random walk.  Let $X$ be a random variable sampled from a random walk with $k$
 events that initiates in state $i$:
 \begin{equation}
@@ -379,9 +380,9 @@ $W_m < W_c$.
 \subsubsection{Adjoint Method}
 \label{sec:adjoint-method}
 
-An alternative approach to the one just described is to calculate
-contributions to every component of $\vx$ during the random walk. In
-this method, the weight change from state $i\rightarrow j$ is
+An alternative approach to the direct method is to calculate contributions to
+every component of $\vx$ during the random walk. In this method, the weight
+change from state $i\rightarrow j$ is
 \begin{equation}
   w_{ij} = \frac{h_{ji}}{p_{ij}}\:.
   \label{eq:adjoint-weight}
@@ -523,7 +524,7 @@ iteration,
 \begin{equation}
   \vx^{l+1} = \vx^{l} + \hat{\vA}^{-1}\vr^l\:,
 \end{equation}
-in which $\vA^{-1}$ indicates the approximate inversion of $\vA$ via the
+in which $\hat{\vA}^{-1}$ indicates the approximate inversion of $\vA$ via the
 adjoint Monte Carlo method.  MCSA, on the other hand, is identical to a
 Richardson iteration followed by a preconditioned Richardson iteration,
 \begin{align}
@@ -571,21 +572,21 @@ to be solved with the MCSA method:
 Both the stencils will be used to vary the size and density of the sparse
 linear system in Eq.~(\ref{eq:poisson_eq_lin_sys}).
 
-A timing and convergence study is used to demonstrate the effectiveness of the
-adjoint method as compared to the direct method. To assess both the CPU time
-and number of iterations required to converge to a solution, a problem of
-constant $\Delta$ was used with varying number of grid points, fixing the
-spectral radius of the system at a constant value for each variation. Both the
-five-point and nine-point stencils were used with both the direct and adjoint
-solvers. For each case, $N \times N$ total random walk permutations were
-computed per MCSA iteration where $N \times N$ is the number of discrete grid
-points in the system. Solver parameters were set to a weight cutoff of
-\sn{1}{-4} for the stochastic linear solver and a convergence tolerance of
-\sn{1}{-8} for the MCSA iterative solver.  Figure~\ref{fig:poisson_cpu_time}
-gives the CPU time needed for each case to converge in seconds and
-Figure~\ref{fig:poisson_iterations} gives the number of iterations needed for
-each case to converge to the specified tolerance as a function of the problem
-size. All computations presented in this section and
+A timing and convergence study is used to demonstrate the improved
+effectiveness of the adjoint method as compared to the direct method. To
+assess both the CPU time and number of iterations required to converge to a
+solution, a problem of constant $\Delta$ was used with varying number of grid
+points, fixing the spectral radius of the system at a constant value for each
+variation. Both the five-point and nine-point stencils were used with both the
+direct and adjoint solvers. For each case, $N \times N$ total random walk
+permutations were computed per MCSA iteration where $N \times N$ is the number
+of discrete grid points in the system. Solver parameters were set to a weight
+cutoff of \sn{1}{-4} for the stochastic linear solver and a convergence
+tolerance of \sn{1}{-8} for the MCSA iterative solver.
+Figure~\ref{fig:poisson_cpu_time} gives the CPU time needed for each case to
+converge in seconds and Figure~\ref{fig:poisson_iterations} gives the number
+of iterations needed for each case to converge to the specified tolerance as a
+function of the problem size. All computations presented in this section and
 \S~\ref{subsec:sequential_comparison} were completed on a 3.0 GHz Intel Core 2
 Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
 \begin{figure}[ht!]
@@ -594,7 +595,7 @@ Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
   \caption{\sl CPU Time (s) to converge vs. Problem Size ($N$ for an
     $N \times N$ square mesh). Both the adjoint and direct solvers are
     used with the five point and nine point stencils. A CPU time
-    speedup is noted with the adjoint method due to the higher density
+    speedup is achieved with the adjoint method due to the higher density
     of random walk events in regions with a large residual.}
   \label{fig:poisson_cpu_time}
 \end{figure}
@@ -608,34 +609,30 @@ Quad Q9650 CPU machine with 16 GB 1067 MHz DDR3 memory.
   \label{fig:poisson_iterations}
 \end{figure}
 
-We see clearly in Figure~\ref{fig:poisson_cpu_time} that the using the
-adjoint solver with MCSA results in a speedup over the direct solver
-while the number of iterations required to converge is also reduced as
-shown in Figure~\ref{fig:poisson_iterations}. We expect this for several
-reasons. First, with an equivalent number of histories specified for
-both solvers per MCSA iteration and a system of size $N \times N$, the
-direct solver will compute a single random walk for each state in the
-system per iteration to acquire a solution in that state, regardless
-of the size of the residual in that state. This is necessary in the
-direct method to ensure a contribution from each state as the random
-walk sequence will only contribute to the starting state. For the
-adjoint method, a total of $N \times N$ random walk events will have
-their starting state determined by sampling the residual
-vector. Because the random walk sequence contributes to the state in
-which it currently resides, sampling the residual vector as the Monte
-Carlo source gives a higher density of random walk events in regions
-with a high residual, thus giving a more accurate correction in that
-region due to reduced statistical error. From an iteration
-perspective, Figure~\ref{fig:poisson_iterations} shows that using the
-direct method yields a roughly unchanging number of iterations
-required to converge as the problem size increases. Again, if we
-desire a correction value for all states in the problem, then we must
-start a random walk in each state in the system which does not reduce
-the number of iterations need as the problem size grows. Conversely,
-as the problem size grows in the adjoint method, the additional
-stochastic histories that will be computed are concentrated in regions
-with a large residual, further reducing the stochastic error in the
-correction in those regions and subsequently reducing the required
+We see in Figures~\ref{fig:poisson_cpu_time} and \ref{fig:poisson_iterations}
+that the adjoint solver with MCSA is faster and requires fewer iterations than
+the direct method. Several reasons explain this result. First, with an
+equivalent number of histories specified for both solvers per MCSA iteration
+and a system of size $N \times N$, the direct solver will compute a single
+random walk for each state in the system per iteration to acquire a solution
+in that state, regardless of the size of the residual in that state. This is
+necessary in the direct method to ensure a contribution from each state as the
+random walk sequence will only contribute to the starting state. For the
+adjoint method, a total of $N \times N$ random walk events will have their
+starting state determined by sampling the residual vector. Because the random
+walk sequence contributes to the state in which it currently resides, sampling
+the residual vector as the Monte Carlo source gives a higher density of random
+walk events in regions with a high residual, thus giving a more effective
+correction in those regions due to reduced statistical error. From an
+iteration perspective, Figure~\ref{fig:poisson_iterations} shows that using
+the direct method yields a roughly unchanging number of iterations required to
+converge as the problem size increases. Again, if we desire a correction value
+for all states in the problem, then we must start a random walk in each state
+in the system which does not reduce the number of iterations needed as the
+problem size grows. Conversely, as the problem size grows in the adjoint
+method, the additional stochastic histories that will be computed are
+concentrated in regions with a large residual, further reducing the stochastic
+error in the correction in those regions and ultimately reducing the required
 number of iterations to converge.
 
 As an additional comparison, the convergence behavior of MCSA can be analyzed
@@ -675,14 +672,14 @@ To further motivate using Monte Carlo Synthetic Acceleration, we compare its
 performance to Halton's sequential Monte Carlo method on which our previous
 work in this area was based. For this comparison, we use the same transient
 Poisson problem as described in the previous section and choose only the
-5-point stencil to discretize the Laplacian operator as the previous results
-yielded little qualitative difference between the discretizations. Both MCSA
-and Halton's method are used with the adjoint Monte Carlo solver. In order to
-complete the same study as in the previous section, the number of histories
-computed by the Monte Carlo solver at each iteration had to be doubled to $2
-\times N \times N$ in order to ensure convergence when using the sequential
-Monte Carlo Method. Figure~\ref{fig:seq_cpu_time} gives the CPU time results
-for this comparison as a function of problem size while
+5-point stencil to discretize the Laplacian operator because the previous
+results yielded little qualitative difference between the
+discretizations. Both MCSA and Halton's method are used with the adjoint Monte
+Carlo solver. In order to complete the same study as in the previous section,
+the number of histories computed by the Monte Carlo solver at each iteration
+had to be doubled to $2 \times N \times N$ in order to ensure convergence when
+using the sequential Monte Carlo Method. Figure~\ref{fig:seq_cpu_time} gives
+the CPU time results for this comparison as a function of problem size, and
 Figure~\ref{fig:seq_iterations} gives the number of iterations to converge as
 a function of problem size. In both cases, using the Monte Carlo solver as a
 synthetic acceleration rather than in a sequential Monte Carlo scheme resulted
@@ -714,11 +711,11 @@ the same level of convergence in the residual.
   \label{fig:seq_iterations}
 \end{figure}
 
-The benefits of using a synthetic acceleration scheme are also noted when the
-infinity norm of the residual computed at each iteration for both methods was
-collected at each iteration for a fixed problem sizes of $N=100$ and $N=500$
-as shown in figures Figure~\ref{fig:seq_100} and \ref{fig:seq_500}
-respectively. In both cases, the sequential method is characterized by a slow
+The benefits of using a synthetic acceleration scheme are also illustrated
+when comparing the residuals at each iteration.  Figures~\ref{fig:seq_100} and
+\ref{fig:seq_500} show the infinity norm of the residual computed at each
+iteration for both methods for fixed problems sizes of $N=100$ and $500$,
+respectively.  In both cases, the sequential method is characterized by a slow
 approach to the asymptotic rate of convergence.  Conversely, MCSA reaches its
 asymptotic convergence rate more quickly and exhibits a faster final rate of
 convergence than Halton's method. Even with the doubling of the number of
@@ -754,8 +751,7 @@ solver is observed to be robust with a monotonically decreasing residual.
 Using the mathematical preliminaries developed in the previous section, we can
 now generate a discrete form of the radiation diffusion equation. We will show
 that this discrete form is amenable to interpretation using Monte Carlo
-concepts and can be written in a way that a random walk sequence can be
-generated.
+concepts and can be written in a way that generates a random walk sequence.
 
 \subsection{Equilibrium Diffusion Model}
 
@@ -779,7 +775,7 @@ opacity.  The source, $Q\equiv Q(\ve{r},t)$
 $[\text{GJ}\cdot\text{cm}^{-3}\cdot\text{ns}^{-1}]$, is assumed to be
 independent of $T$.
 
-We choose to use the angle-energy integrated radiation intensity,
+We choose to use the angle- and energy-integrated radiation intensity,
 $\phi\equiv\phi(\ve{r},t)$
 $[\text{GJ}\cdot\text{cm}^{-2}\cdot\text{ns}^{-1}]$, as the primary state
 variable.  The intensity is defined as
@@ -824,6 +820,7 @@ Applying backward-Euler time differencing to Eq.~(\ref{eq:eq-diff}) and
 lagging the temperature-dependent coefficients at $t^n$ gives
 \begin{equation}
   -\nabla\cdot \Dn\grad{\phi} + \sign\phi = \qn\:,
+  \label{eq:backwards_euler}
 \end{equation}
 where we have suppressed the $n+1$ indices on $\phi$ and
 \begin{align}
@@ -972,7 +969,7 @@ limitation of this interpretation is that it requires a symmetric system to
 implement the Monte Carlo scheme.  More specifically, the operator $\ve{D}$
 must be an M-matrix \cite{kelley_1995} such that the off-diagonal elements are
 negative and symmetric.  In other words, the leakage out of a cell must be
-equivalent to the source into the adjacent cell.
+equivalent to its corresponding source into the adjacent cell.
 
 The methods described in \S\S~\ref{sec:monte-carlo-matrix} and
 \ref{sec:iter-refin-monte} do not suffer this limitation.  Thus, we will
@@ -1295,7 +1292,10 @@ follows:
 \end{center}
 The problem is run to $100$~nanoseconds.  The variable timestep control
 started with \sn{1.25}{-9}~ns and increased to 0.01~ns using a maximum change
-of 10\% per cycle.
+in $\Delta t$ of 10\% per cycle.  This maximum timestep was selected based on
+numerical experiments that showed good agreement with analytic solutions of
+the Marshak wave problem for the time-discretization employed in
+Eq.~(\ref{eq:backwards_euler}).
 
 Figure~\ref{fig:marshak_10} shows the analytic Marshak Wave solution compared
 to the MCSA solution.  As opposed to most Monte Carlo techniques, the MCSA
@@ -1330,13 +1330,14 @@ There are two principal parameters when utilizing the MCSA method: (1) the
 number of particles per iteration and (2) the weight cutoff.
 Figure~\ref{fig:CPU_Np} shows the CPU time as a function of the requested
 number of particles per iteration for a relative weight cutoff of
-$\sn{1}{-4}$.  For less than five particles per iteration, the method does not
-converge.  Figure~\ref{fig:CPU_Ns} shows the variation in the maximum number
-of iterations per cycle with number of particles.  Analysis of these two
-figures shows that increasing the number of particles per iteration reduces
-the number of iterations required to converge the solution.  However, the cost
-of the Monte Carlo transport is high; thus, better performance is attained by
-running more iterations with fewer particles per iteration \cite{evans_2003}.
+$\sn{1}{-4}$.  For fewer than five particles per iteration, the method does
+not converge.  Figure~\ref{fig:CPU_Ns} shows the variation in the maximum
+number of iterations per cycle with number of particles.  Analysis of these
+two figures shows that increasing the number of particles per iteration
+reduces the number of iterations required to converge the solution.  However,
+the cost of the Monte Carlo transport is high; thus, better performance is
+attained by running more iterations with fewer particles per iteration
+\cite{evans_2003}.
 \begin{figure}[ht!]
   \centerline{ \includegraphics[width=5in,clip]{mrshk_np_CPU.pdf}}
   \caption{CPU time versus number of particles per iteration for the

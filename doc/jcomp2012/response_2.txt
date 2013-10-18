@@ -1,0 +1,27 @@
+Thank you for considering our manuscript.  We have addressed both reviewers
+comments as follows:
+
+Reviewer #2:
+We have added all of the edits suggested by this reviewer.  We would also like
+to thank the reviewer for a very careful reading of the manuscript.
+
+Reviewer #3:
+We have clarified the discussion at the beginning of Section 5.1:
+
+"This maximum timestep was selected based on numerical experiments that showed
+good agreement with analytic solutions of the Marshak wave problem for the
+time-discretization employed in Eq. (35)."
+
+We believe this clarifies the reviewers comments about the timestep size.  In
+short, the physics of this problem requires it.  Furthermore, the reviewer's
+comments are valid about larger timestep sizes requiring potentially more
+powerful preconditioners, which could make the ML comparisons more
+competitive.  However, the intent of the article is not to investigate or
+compare linearization strategies for this problem.  We also note that
+implicit, non-linearly consistent numerical approaches (e.g. JFNK) would
+result in assymetric operators, thus requiring GMRES/ML instead of CG/ML.
+Finally, even with fully implicit time-integration, the maximum timestep
+required to resolve the wavefront speed < 1.0ns.
+
+We hope that our modifications have met the reviewers comments.  Please
+contact me if there are any further requirements.
